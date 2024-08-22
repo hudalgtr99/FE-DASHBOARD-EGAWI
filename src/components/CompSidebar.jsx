@@ -20,26 +20,10 @@ const CompSidebar = () => {
         setCurrentMenu((prev) => (prev === value ? '' : value));
     }, []);
 
-    useEffect(() => {
-        const selector = document.querySelector(`.sidebar ul a[href="${window.location.pathname}"]`);
-        if (selector) {
-            selector.classList.add('active');
-            const ul = selector.closest('ul.sub-menu');
-            if (ul) {
-                const navLink = ul.closest('li.menu')?.querySelector('.nav-link');
-                if (navLink) {
-                    setTimeout(() => {
-                        navLink.click();
-                    });
-                }
-            }
-        }
-    }, [location]);
-
     return (
         <div className={semidark ? 'dark' : ''}>
             <nav
-                className={`fixed top-0 h-full z-50 transform transition-transform duration-300 ${sidebar ? 'translate-x-0' : '-translate-x-full'} ${semidark ? 'text-white' : 'text-black'} bg-white dark:bg-gray-900 shadow-lg xl:w-64 xl:translate-x-0 ${sidebar ? 'xl:translate-x-0' : 'xl:-translate-x-full'}`}
+                className={`fixed top-0 h-full z-50 transform transition-transform duration-300 ${sidebar ? 'translate-x-0' : '-translate-x-full'} ${semidark ? 'text-white' : 'text-black'} bg-white dark:bg-gray-900 shadow-lg w-64 lg:w-64 lg:translate-x-0 ${sidebar ? 'lg:translate-x-0' : 'lg:-translate-x-full'}`}
             >
                 <div className="h-full">
                     <div className="flex justify-between items-center px-4 py-3">
@@ -49,7 +33,7 @@ const CompSidebar = () => {
                         </NavLink>
                         <button
                             type="button"
-                            className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300 xl:hidden"
+                            className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300"
                             onClick={() => {
                                 dispatch(toggleSidebar());
                             }}
@@ -117,7 +101,7 @@ const CompSidebar = () => {
                     </PerfectScrollbar>
                 </div>
             </nav>
-            <main className={`transition-all duration-300 xl:ml-64 ${sidebar ? 'xl:ml-64' : 'xl:ml-0'} `}>
+            <main className={`transition-all duration-300 lg:ml-64 ${sidebar ? 'lg:ml-64' : 'lg:ml-0'} `}>
                 {/* Your main content goes here */}
             </main>
         </div>
