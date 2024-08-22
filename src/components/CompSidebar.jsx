@@ -11,7 +11,7 @@ import AnimateHeight from 'react-animate-height';
 const CompSidebar = () => {
     const [currentMenu, setCurrentMenu] = useState('');
     const themeConfig = useSelector((state) => state.themeConfig);
-    const semidark = useSelector((state) => state.themeConfig.semidark);
+    const { sidebar, semidark } = themeConfig;
     const location = useLocation();
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -34,61 +34,81 @@ const CompSidebar = () => {
                 }
             }
         }
-    }, []);
-
-    useEffect(() => {
-        if (window.innerWidth < 1024 && themeConfig.sidebar) {
-            dispatch(toggleSidebar());
-        }
-    }, [location, themeConfig.sidebar, dispatch]);
+    }, [location]);
 
     return (
         <div className={semidark ? 'dark' : ''}>
             <nav
-                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}
+                className={`fixed top-0 h-full z-50 transform transition-transform duration-300 ${sidebar ? 'translate-x-0' : '-translate-x-full'} ${semidark ? 'text-white' : 'text-black'} bg-white dark:bg-gray-900 shadow-lg xl:w-64 xl:translate-x-0 ${sidebar ? 'xl:translate-x-0' : 'xl:-translate-x-full'}`}
             >
-                <div className="bg-white dark:bg-black h-full">
+                <div className="h-full">
                     <div className="flex justify-between items-center px-4 py-3">
-                        <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            <img className="w-20 mx-auto flex-none" src="/assets/Logo.svg" alt="logo" />
+                        <NavLink to="/" className="flex items-center gap-2">
+                            <img className="w-8 ml-[5px] flex-none" src="/assets/Logo.svg" alt="logo" />
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('Queen')}</span>
                         </NavLink>
-
                         <button
                             type="button"
-                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-500/10 dark:hover:bg-dark-light/10 dark:text-white-light transition duration-300 rtl:rotate-180"
-                            onClick={() => dispatch(toggleSidebar())}
+                            className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300 xl:hidden"
+                            onClick={() => {
+                                dispatch(toggleSidebar());
+                            }}
                         >
-                            <PiCaretDoubleDown className="m-auto rotate-90" />
+                            <PiCaretDoubleDown className={`transform transition-transform ${sidebar ? 'rotate-90' : 'rotate-0'}`} />
                         </button>
                     </div>
-                    <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
-                        <ul className="relative font-semibold space-y-0.5 p-4 py-0">
-                            <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
+                    <PerfectScrollbar className="h-[calc(100vh-80px)]">
+                        <ul className="space-y-2 p-4">
+                            <li className="menu">
+                                <button
+                                    type="button"
+                                    className={`flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition ${currentMenu === 'dashboard' ? 'bg-gray-200 dark:bg-gray-800' : ''
+                                        }`}
+                                    onClick={() => toggleMenu('dashboard')}
+                                >
                                     <div className="flex items-center">
-                                        <MdOutlineSpaceDashboard
-                                            className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
+                                        <MdOutlineSpaceDashboard className="text-lg" />
+                                        <span className="pl-3 capitalize">{t('dashboard')}</span>
                                     </div>
-
-                                    <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                        <PiCaretDown />
-                                    </div>
+                                    <PiCaretDown
+                                        className={`transform transition-transform ${currentMenu !== 'dashboard' ? '-rotate-90' : 'rotate-0'
+                                            }`}
+                                    />
                                 </button>
 
                                 <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-gray-500">
+                                    <ul className="pl-8 space-y-1 text-gray-600 dark:text-gray-400">
                                         <li>
-                                            <NavLink to="/">{t('sales')}</NavLink>
+                                            <NavLink
+                                                to="/"
+                                                className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            >
+                                                {t('sales')}
+                                            </NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/analytics">{t('analytics')}</NavLink>
+                                            <NavLink
+                                                to="/analytics"
+                                                className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            >
+                                                {t('analytics')}
+                                            </NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/finance">{t('finance')}</NavLink>
+                                            <NavLink
+                                                to="/finance"
+                                                className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            >
+                                                {t('finance')}
+                                            </NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/crypto">{t('crypto')}</NavLink>
+                                            <NavLink
+                                                to="/crypto"
+                                                className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            >
+                                                {t('crypto')}
+                                            </NavLink>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
@@ -97,6 +117,9 @@ const CompSidebar = () => {
                     </PerfectScrollbar>
                 </div>
             </nav>
+            <main className={`transition-all duration-300 xl:ml-64 ${sidebar ? 'xl:ml-64' : 'xl:ml-0'} `}>
+                {/* Your main content goes here */}
+            </main>
         </div>
     );
 };

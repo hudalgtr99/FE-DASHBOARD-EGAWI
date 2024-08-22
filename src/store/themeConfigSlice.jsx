@@ -2,49 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 import i18next from 'i18next';
 import themeConfig from '../theme.config';
 
-const defaultState = {
+const initialState = {
     isDarkMode: false,
     mainLayout: 'app',
-    theme: 'light',
-    menu: 'vertical',
-    layout: 'full',
-    rtlClass: 'ltr',
-    animation: '',
-    navbar: 'navbar-sticky',
-    locale: 'en',
-    sidebar: false,
-    pageTitle: '',
-    languageList: [
-        { code: 'zh', name: 'Chinese' },
-        { code: 'da', name: 'Danish' },
-        { code: 'en', name: 'English' },
-        { code: 'fr', name: 'French' },
-        { code: 'de', name: 'German' },
-        { code: 'el', name: 'Greek' },
-        { code: 'hu', name: 'Hungarian' },
-        { code: 'it', name: 'Italian' },
-        { code: 'ja', name: 'Japanese' },
-        { code: 'pl', name: 'Polish' },
-        { code: 'pt', name: 'Portuguese' },
-        { code: 'ru', name: 'Russian' },
-        { code: 'es', name: 'Spanish' },
-        { code: 'sv', name: 'Swedish' },
-        { code: 'tr', name: 'Turkish' },
-    ],
-    semidark: false,
-};
-
-const initialState = {
-    theme: localStorage.getItem('theme') || themeConfig.theme,
-    menu: localStorage.getItem('menu') || themeConfig.menu,
-    layout: localStorage.getItem('layout') || themeConfig.layout,
-    rtlClass: localStorage.getItem('rtlClass') || themeConfig.rtlClass,
-    animation: localStorage.getItem('animation') || themeConfig.animation,
-    navbar: localStorage.getItem('navbar') || themeConfig.navbar,
-    locale: localStorage.getItem('i18nextLng') || themeConfig.locale,
-    isDarkMode: false,
-    sidebar: localStorage.getItem('sidebar') || defaultState.sidebar,
-    semidark: localStorage.getItem('semidark') || themeConfig.semidark,
+    theme: localStorage.getItem('theme') || themeConfig.theme || 'light',
+    menu: localStorage.getItem('menu') || themeConfig.menu || 'vertical',
+    layout: localStorage.getItem('layout') || themeConfig.layout || 'full',
+    rtlClass: localStorage.getItem('rtlClass') || themeConfig.rtlClass || 'ltr',
+    animation: localStorage.getItem('animation') || themeConfig.animation || '',
+    navbar: localStorage.getItem('navbar') || themeConfig.navbar || 'navbar-sticky',
+    locale: localStorage.getItem('i18nextLng') || themeConfig.locale || 'en',
+    sidebar: JSON.parse(localStorage.getItem('sidebar')) || themeConfig.sidebar || false,
+    semidark: JSON.parse(localStorage.getItem('semidark')) || themeConfig.semidark || false,
     languageList: [
         { code: 'zh', name: 'Chinese' },
         { code: 'da', name: 'Danish' },
@@ -66,75 +35,68 @@ const initialState = {
 };
 
 const themeConfigSlice = createSlice({
-    name: 'auth',
-    initialState: initialState,
+    name: 'themeConfig',
+    initialState,
     reducers: {
         toggleTheme(state, { payload }) {
-            payload = payload || state.theme; // light | dark | system
-            localStorage.setItem('theme', payload);
-            state.theme = payload;
-            if (payload === 'light') {
+            const theme = payload || state.theme;
+            localStorage.setItem('theme', theme);
+            state.theme = theme;
+
+            if (theme === 'light') {
                 state.isDarkMode = false;
-            } else if (payload === 'dark') {
+            } else if (theme === 'dark') {
                 state.isDarkMode = true;
-            } else if (payload === 'system') {
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    state.isDarkMode = true;
-                } else {
-                    state.isDarkMode = false;
-                }
+            } else if (theme === 'system') {
+                state.isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             }
 
-            if (state.isDarkMode) {
-                document.querySelector('body')?.classList.add('dark');
-            } else {
-                document.querySelector('body')?.classList.remove('dark');
-            }
+            document.body.classList.toggle('dark', state.isDarkMode);
         },
         toggleMenu(state, { payload }) {
-            payload = payload || state.menu; // vertical, collapsible-vertical, horizontal
-            state.sidebar = false; // reset sidebar state
-            localStorage.setItem('menu', payload);
-            state.menu = payload;
+            const menu = payload || state.menu;
+            localStorage.setItem('menu', menu);
+            state.menu = menu;
+            state.sidebar = false; // Reset sidebar state when menu changes
         },
         toggleLayout(state, { payload }) {
-            payload = payload || state.layout; // full, boxed-layout
-            localStorage.setItem('layout', payload);
-            state.layout = payload;
+            const layout = payload || state.layout;
+            localStorage.setItem('layout', layout);
+            state.layout = layout;
         },
         toggleRTL(state, { payload }) {
-            payload = payload || state.rtlClass; // rtl, ltr
-            localStorage.setItem('rtlClass', payload);
-            state.rtlClass = payload;
-            document.querySelector('html')?.setAttribute('dir', state.rtlClass || 'ltr');
+            const rtlClass = payload || state.rtlClass;
+            localStorage.setItem('rtlClass', rtlClass);
+            state.rtlClass = rtlClass;
+            document.documentElement.setAttribute('dir', rtlClass);
         },
         toggleAnimation(state, { payload }) {
-            payload = payload || state.animation; // animate__fadeIn, animate__fadeInDown, animate__fadeInUp, animate__fadeInLeft, animate__fadeInRight, animate__slideInDown, animate__slideInLeft, animate__slideInRight, animate__zoomIn
-            payload = payload?.trim();
-            localStorage.setItem('animation', payload);
-            state.animation = payload;
+            const animation = (payload || state.animation).trim();
+            localStorage.setItem('animation', animation);
+            state.animation = animation;
         },
         toggleNavbar(state, { payload }) {
-            payload = payload || state.navbar; // navbar-sticky, navbar-floating, navbar-static
-            localStorage.setItem('navbar', payload);
-            state.navbar = payload;
+            const navbar = payload || state.navbar;
+            localStorage.setItem('navbar', navbar);
+            state.navbar = navbar;
         },
         toggleSemidark(state, { payload }) {
-            payload = payload === true || payload === 'true' ? true : false;
-            localStorage.setItem('semidark', payload);
-            state.semidark = payload;
+            const semidark = payload === true || payload === 'true';
+            localStorage.setItem('semidark', semidark);
+            state.semidark = semidark;
         },
         toggleLocale(state, { payload }) {
-            payload = payload || state.locale;
-            i18next.changeLanguage(payload);
-            state.locale = payload;
+            const locale = payload || state.locale;
+            localStorage.setItem('i18nextLng', locale);
+            i18next.changeLanguage(locale);
+            state.locale = locale;
         },
         toggleSidebar(state) {
             state.sidebar = !state.sidebar;
+            localStorage.setItem('sidebar', state.sidebar);
         },
-
         setPageTitle(state, { payload }) {
-            document.title = `${payload} | VRISTO - Multipurpose Tailwind Dashboard Template`;
+            document.title = `${payload} | Kepegawaian New`;
         },
     },
 });
