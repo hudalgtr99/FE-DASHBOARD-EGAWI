@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { toggleSidebar } from '../store/themeConfigSlice';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { PiCaretDoubleDown, PiCaretDown } from 'react-icons/pi';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
@@ -12,7 +12,6 @@ const CompSidebar = () => {
     const [currentMenu, setCurrentMenu] = useState('');
     const themeConfig = useSelector((state) => state.themeConfig);
     const { sidebar, semidark } = themeConfig;
-    const location = useLocation();
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
