@@ -1,9 +1,12 @@
-import CompLayout from "./components/CompLayout";
+import { ThemeProvider } from "./context/ThemeContext";
+import Router from "./router";
 
-export default function App() {
-  return (
-    <div>
-      <CompLayout/>
-    </div>
-  )
-}
+const App = () => {
+	return (
+		<ThemeProvider>
+			<Router />
+		</ThemeProvider>
+	);
+};
+
+export default App;
