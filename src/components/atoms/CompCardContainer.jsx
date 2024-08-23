@@ -14,30 +14,29 @@ const CompCardContainer = ({
     return directionColor === "right"
       ? "bg-gradient-to-r"
       : directionColor === "bottomRight"
-      ? "bg-gradient-to-br"
-      : directionColor === "bottom"
-      ? "bg-gradient-to-b"
-      : directionColor === "bottomLeft"
-      ? "bg-gradient-to-bl"
-      : directionColor === "left"
-      ? "bg-gradient-to-l"
-      : directionColor === "topLeft"
-      ? "bg-gradient-to-tl"
-      : directionColor === "top"
-      ? "bg-gradient-to-t"
-      : directionColor === "topRight"
-      ? "bg-gradient-to-tr"
-      : "bg-gradient-to-br";
+        ? "bg-gradient-to-br"
+        : directionColor === "bottom"
+          ? "bg-gradient-to-b"
+          : directionColor === "bottomLeft"
+            ? "bg-gradient-to-bl"
+            : directionColor === "left"
+              ? "bg-gradient-to-l"
+              : directionColor === "topLeft"
+                ? "bg-gradient-to-tl"
+                : directionColor === "top"
+                  ? "bg-gradient-to-t"
+                  : directionColor === "topRight"
+                    ? "bg-gradient-to-tr"
+                    : "bg-gradient-to-br";
   };
 
   return (
     <div
-      className={`w-full border border-gray-100 shadow-md p-3 rounded-xl ${colorDirect()} from-white ${
-        cardColor ? cardColor : "to-white"
-      }`}
+      className={`w-full border border-gray-100 shadow-md p-3 rounded-xl ${colorDirect()} from-white ${cardColor ? cardColor : "to-white"
+        }`}
     >
       {(title || onEdit) && (
-        <div className="flex justify-between items-center pb-4">
+        <div className="flex justify-between items-center">
           {title && (
             <div className="flex justify-between items-center">
               <div className="flex items-center text-sm font-bold">

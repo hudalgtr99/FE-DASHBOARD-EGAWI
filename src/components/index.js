@@ -1,5 +1,5 @@
 import CompCardContainer from "./atoms/CompCardContainer";
-import CompCardDonutChart from "./atoms/CompCardDonutChart";
+import DonutChart from "./atoms/DonutChart";
 import CompCardTable from "./atoms/CompCardTable";
 import CompPagination from "./atoms/CompPagination";
 import CompProgressBar from "./atoms/CompProgressBar";
@@ -8,7 +8,7 @@ import Layout from "./layout/Layout";
 
 export {
 	CompCardContainer,
-	CompCardDonutChart,
+	DonutChart,
 	CompCardTable,
 	CompPagination,
 	CompProgressBar,

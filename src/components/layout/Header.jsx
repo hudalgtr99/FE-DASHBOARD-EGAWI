@@ -1,6 +1,9 @@
 import React, { Fragment } from "react";
 import { icons } from "../../../public/icons";
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
+import { Link } from "react-router-dom";
+import { CiCalendar, CiChat1 } from "react-icons/ci";
+import { RiTodoLine } from "react-icons/ri";
 
 const Header = ({ open, setOpen }) => {
   return (
@@ -22,6 +25,25 @@ const Header = ({ open, setOpen }) => {
             </div>
           )}
         </div>
+        {/* <div className="ltr:mr-2 rtl:ml-2 hidden sm:block">
+          <ul className="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
+            <li>
+              <Link to="/" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
+                <CiCalendar />
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
+                <RiTodoLine />
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
+                <CiChat1 />
+              </Link>
+            </li>
+          </ul>
+        </div> */}
         <Popover as={"div"} className="flex relative">
           <PopoverButton>
             <div className="w-10 h-10 rounded-full cursor-pointer overflow-hidden">

@@ -51,7 +51,7 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 z-50 shadow-lg text-black transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 z-50 shadow-lg text-white transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
@@ -61,13 +61,13 @@ const Sidebar = ({ open, setOpen }) => {
               QUEEN
             </span>
           </div>
-          <div onClick={() => setOpen(!open)} className="cursor-pointer hover:bg-white rounded-full p-2">
+          <div onClick={() => setOpen(!open)} className="cursor-pointer hover:bg-white hover:text-black rounded-full p-2">
             <BsChevronDoubleLeft />
           </div>
         </div>
 
         {/* Menu */}
-        <div className={`px-2 pt-1 pb-5 text-sm overflow-y-auto max-h-[80vh] ${open ? "" : "hidden"}`}>
+        <div className={`px-2 pt-1 pb-5 text-sm overflow-y-auto max-h-[80vh] hidden-scroll ${open ? "" : "hidden"}`}>
           {menu.map((menu, menuIdx) => {
             // If there are no submenu items, skip rendering the Disclosure
             if (menu.subMenu.length === 0) {
@@ -124,7 +124,7 @@ const Sidebar = ({ open, setOpen }) => {
                             <div
                               className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white hover:text-black`}
                             >
-                              {subMenu.subMenuName}
+                              - {subMenu.subMenuName}
                             </div>
                           )}
                         </NavLink>
