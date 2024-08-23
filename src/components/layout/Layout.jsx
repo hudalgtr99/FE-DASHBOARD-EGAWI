@@ -8,7 +8,7 @@ const Layout = () => {
 
     return (
         <Fragment>
-            <div className="flex ">
+            <div className="flex">
                 <Sidebar open={open} setOpen={setOpen} />
                 <div className="w-full min-h-screen overflow-clip">
                     <Header open={open} setOpen={setOpen} />

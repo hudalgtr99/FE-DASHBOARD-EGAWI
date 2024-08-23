@@ -1,17 +1,18 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
-
-// Hooks
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useWindowSize } from "@/hooks/useWindowSize";
-
-// Components
-import { Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
-
-// Assets
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  Transition,
+} from "@headlessui/react";
 import { BiChevronRight } from "react-icons/bi";
 import { menu } from "@/constants/menu";
-import { useRef } from "react";
 
 const Sidebar = ({ open, setOpen }) => {
   const initNav = {
@@ -50,22 +51,21 @@ const Sidebar = ({ open, setOpen }) => {
     <Fragment>
       <div
         onClick={() => setOpen(!open)}
-        className={`fixed w-screen h-screen lg:hidden ${open ? "" : "hidden"
-          }`}
+        className={`fixed w-screen h-screen lg:hidden ${open ? "" : "hidden"}`}
       ></div>
 
       {/* Sidebar */}
       <div
-        className={`${open ? "left-0" : "-left-96 lg:left-0 lg:block"
-          } z-10 w-[260px] fixed lg:relative h-screen flex flex-col bg-white shadow-lg shadow-slate-400 text-black transition-all rounded-none`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"
+          } z-10 fixed lg:relative h-screen flex flex-col bg-white shadow-lg shadow-slate-400 text-black transition-all duration-300 ease-in-out rounded-none`}
       >
         {/* Logo */}
-        <div className="w-full flex justify-center py-2">
-          <img className="w-32" src="/assets/Logo.svg" alt="logo" />
+        <div className={`${open ? "w-full flex justify-center py-2" : "hidden"}`}>
+          <img className={`${navopen ? "w-32" : "hidden"}`} src="/assets/Logo.svg" alt="logo" />
         </div>
 
         {/* Menu */}
-        <div className="px-2 pt-1 pb-5 text-sm overflow-y-auto max-h-[80vh] hidden-scroll">
+        <div className={`px-2 pt-1 pb-5 text-sm overflow-y-auto max-h-[80vh] hidden-scroll ${open ? "" : "hidden"}`}>
           {menu.map((menu, menuIdx) => {
             if (menu.subMenu.length === 0) {
               return (
@@ -78,7 +78,7 @@ const Sidebar = ({ open, setOpen }) => {
                     <div
                       className={`${open
                         ? "flex px-3 py-2 rounded-lg"
-                        : "block p-2 rounded-full shadow-md hover:bg-[#eceff4]"
+                        : "hidden"
                         } ${isActive
                           ? "bg-[#eceff4] text-black"
                           : "shadow-none"
@@ -112,7 +112,7 @@ const Sidebar = ({ open, setOpen }) => {
                         : ""
                         } ${open
                           ? "flex px-3 py-2 rounded-lg"
-                          : "block p-2 rounded-full hover:bg-[#eceff4]"
+                          : "hidden"
                         }
                       }  justify-between items-center w-full transition-all duration-150 hover:bg-[#eceff4] hover:text-black`}
                     >
@@ -128,8 +128,7 @@ const Sidebar = ({ open, setOpen }) => {
                         </span>
                       </span>
                       <BiChevronRight
-                        className={`${open ? "" : "hidden"} ${navopen[menu.menuLink] ? "rotate-90" : ""
-                          } transition-all`}
+                        className={`${open ? "" : "hidden"} ${navopen[menu.menuLink] ? "rotate-90" : ""} transition-all`}
                       />
                     </DisclosureButton>
                     <Transition
@@ -147,7 +146,9 @@ const Sidebar = ({ open, setOpen }) => {
                           <NavLink key={subMenuIdx} to={subMenu.subMenuLink}>
                             {({ isActive }) => (
                               <div
-                                className={`${isActive ? "bg-[#eceff4] text-black" : ""
+                                className={`${isActive
+                                  ? "bg-[#eceff4] text-black"
+                                  : ""
                                   } px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-[#eceff4] hover:text-black`}
                               >
                                 {subMenu.subMenuName}
@@ -169,12 +170,12 @@ const Sidebar = ({ open, setOpen }) => {
                     onClick={() => navOpen(menu.menuLink)}
                     className={`${navopen[menu.menuLink]
                       ? "bg-[#eceff4] text-black shadow-md"
-                      : ""
+                      : "hidden"
                       } ${open
                         ? "flex px-3 py-2 rounded-lg"
                         : "block p-2 rounded-full hover:shadow-xl"
                       }
-                      }  justify-between items-center w-full transition-all duration-150 hover:bg-[#eceff4] hover:text-black`}
+                    }  justify-between items-center w-full transition-all duration-150 hover:bg-[#eceff4] hover:text-black`}
                   >
                     <span className={`${open ? "flex" : "block"}`}>
                       <span
@@ -188,8 +189,7 @@ const Sidebar = ({ open, setOpen }) => {
                       </span>
                     </span>
                     <BiChevronRight
-                      className={`${open ? "" : "hidden"} ${navopen[menu.menuLink] ? "rotate-90" : ""
-                        } transition-all`}
+                      className={`${open ? "" : "hidden"} ${navopen[menu.menuLink] ? "rotate-90" : ""} transition-all`}
                     />
                   </PopoverButton>
                   <Transition
@@ -232,7 +232,7 @@ const Sidebar = ({ open, setOpen }) => {
 
         {/* Copyright */}
         {open && (
-          <div className="text-[8px] text-center flex w-full mt-auto mb-2 items-center justify-center">
+          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center justify-center">
             Copyright &copy; PT. Queen Network Nusantara
           </div>
         )}
