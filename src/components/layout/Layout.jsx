@@ -4,7 +4,7 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 
 const Layout = () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     return (
         <Fragment>

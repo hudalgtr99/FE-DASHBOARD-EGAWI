@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer components {
+
     /* Custom Scroll */
     .custom-scroll::-webkit-scrollbar {
         @apply w-2 h-2;

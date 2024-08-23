@@ -3,18 +3,24 @@ import { icons } from "../../../public/icons";
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 
 const Header = ({ open, setOpen }) => {
-
   return (
     <Fragment>
-      <div className="w-full flex bg-white py-2 justify-between items-center px-3 drop-shadow-sm">
+      <div className="w-full flex py-2 justify-between items-center px-3 drop-shadow-sm">
         <div
           onClick={() => setOpen(!open)}
-          className={`p-1 rounded-lg bg-white text-slate-600 text-xl flex items-center gap-2 cursor-pointer hover:bg-slate-100 transition-all`}
+          className={`p-1 rounded-lg text-black text-xl flex items-center gap-2 cursor-pointer transition-all`}
         >
-          <div>
-            {icons.himenualt2}
-          </div>
-          <div className="font-medium">Dashboard</div>
+          {!open && ( // Hide the logo when the sidebar is open
+            <div className="flex items-center gap-2">
+              <img className="w-8 ml-[5px]" src="/assets/Logo.svg" alt="logo" />
+              <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light sm:block hidden">
+                QUEEN
+              </span>
+              <div className="bg-gray-100 p-1 rounded-full hover:bg-gray-200">
+                {icons.himenualt2}
+              </div>
+            </div>
+          )}
         </div>
         <Popover as={"div"} className="flex relative">
           <PopoverButton>
