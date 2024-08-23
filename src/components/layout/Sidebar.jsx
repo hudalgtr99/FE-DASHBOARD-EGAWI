@@ -16,6 +16,7 @@ const Sidebar = ({ open, setOpen }) => {
     kompetensi: false,
     kemitraan: false,
     dokumentasi: false,
+    api: false,
   };
 
   const { width } = useWindowSize();
@@ -45,12 +46,12 @@ const Sidebar = ({ open, setOpen }) => {
       {/* Overlay for mobile view */}
       <div
         onClick={() => setOpen(!open)}
-        className={`fixed w-screen h-screen transition-opacity duration-150 ${open ? "bg-black bg-opacity-50 min-[1000px]:hidden" : "opacity-0 pointer-events-none"}`}
+        className={`fixed w-screen h-screen transition-opacity duration-150 ${open ? "bg-black bg-opacity-50 min-[1000px]:hidden z-10" : "opacity-0 pointer-events-none"}`}
       ></div>
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} z-10 fixed lg:relative h-screen flex flex-col bg-white shadow-lg text-black transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 z-50 shadow-lg text-black transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
@@ -60,7 +61,7 @@ const Sidebar = ({ open, setOpen }) => {
               QUEEN
             </span>
           </div>
-          <div onClick={() => setOpen(!open)} className="cursor-pointer hover:bg-gray-100 rounded-full p-2">
+          <div onClick={() => setOpen(!open)} className="cursor-pointer hover:bg-white rounded-full p-2">
             <BsChevronDoubleLeft />
           </div>
         </div>
@@ -74,7 +75,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <NavLink key={menuIdx} to={menu.menuLink}>
                   {({ isActive }) => (
                     <div
-                      className={`${isActive ? "bg-[#eceff4] text-black" : ""} px-3 py-2 rounded-lg mt-2 transition hover:bg-[#eceff4] hover:text-black`}
+                      className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 transition hover:bg-white hover:text-black`}
                     >
                       <span className="flex items-center">
                         <span className="text-lg flex justify-center items-center">
@@ -94,7 +95,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <>
                   <DisclosureButton
                     onClick={() => navOpen(menu.menuLink)}
-                    className={`${navopen[menu.menuLink] ? "bg-[#eceff4] text-black shadow-md" : ""} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-[#eceff4] hover:text-black`}
+                    className={`${navopen[menu.menuLink] ? "bg-white text-black shadow-md" : ""} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-white hover:text-black`}
                   >
                     <span className="flex">
                       <span className="text-lg flex justify-center items-center">
@@ -121,7 +122,7 @@ const Sidebar = ({ open, setOpen }) => {
                         <NavLink key={subMenuIdx} to={subMenu.subMenuLink}>
                           {({ isActive }) => (
                             <div
-                              className={`${isActive ? "bg-[#eceff4] text-black" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-[#eceff4] hover:text-black`}
+                              className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white hover:text-black`}
                             >
                               {subMenu.subMenuName}
                             </div>

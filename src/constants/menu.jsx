@@ -1,10 +1,12 @@
 import { icons } from "../../public/icons";
+import Dashboard from "../pages/Dashboard/DashboardPage"
 
 export const menu = [
   {
     menuIcon: icons.mdspacedashboard,
     menuName: "Dashboard",
     menuLink: "/",
+    element: <Dashboard />,
     subMenu: [],
   },
   {

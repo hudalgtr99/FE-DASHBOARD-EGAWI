@@ -7,22 +7,25 @@ const Router = () => {
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Layout />}>
-					{menu.map((item, index) => {
-						if (item.sub?.length > 0) {
-							return item.sub.map((sub, index) => {
-								return (
-									<Route key={index} path={sub.path} element={sub.element} />
-								);
-							});
-						} else {
-							return (
-								<Route key={index} path={item.path} element={item.element} />
-							);
-						}
-					})}
+					{menu.map((item, index) => (
+						item.subMenu && item.subMenu.length > 0 ? (
+							item.subMenu.map((sub, subIndex) => (
+								<Route
+									key={`sub-${subIndex}`}
+									path={sub.subMenuLink}
+									element={sub.element || <h1>SubMenu Not Implemented</h1>}
+								/>
+							))
+						) : (
+							<Route
+								key={index}
+								path={item.menuLink}
+								element={item.element || <h1>Page Not Implemented</h1>}
+							/>
+						)
+					))}
 				</Route>
-
-				<Route path="*" element={<h1>404</h1>} />
+				<Route path="*" element={<h1>404 - Page Not Found</h1>} />
 			</Routes>
 		</BrowserRouter>
 	);

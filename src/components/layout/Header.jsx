@@ -5,7 +5,7 @@ import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/re
 const Header = ({ open, setOpen }) => {
   return (
     <Fragment>
-      <div className="w-full flex py-2 justify-between items-center px-3 drop-shadow-sm">
+      <div className="w-full flex py-2 justify-between bg-orange-200 bg-opacity-30 items-center px-3 drop-shadow-sm">
         <div
           onClick={() => setOpen(!open)}
           className={`p-1 rounded-lg text-black text-xl flex items-center gap-2 cursor-pointer transition-all`}
@@ -16,7 +16,7 @@ const Header = ({ open, setOpen }) => {
               <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light sm:block hidden">
                 QUEEN
               </span>
-              <div className="bg-gray-100 p-1 rounded-full hover:bg-gray-200">
+              <div className="bg-orange-100 p-1 rounded-full hover:bg-white">
                 {icons.himenualt2}
               </div>
             </div>
