@@ -12,7 +12,7 @@ const Layout = () => {
                 <Sidebar open={open} setOpen={setOpen} />
                 <div className="w-full min-screen overflow-clip">
                     <Header open={open} setOpen={setOpen} />
-                    <div className="p-6 h-[90vh] overflow-y-auto bg-gradient-to-b from-orange-100 via-pink-100 to-purple-100 custom-scroll">
+                    <div className="p-6 h-full overflow-y-auto bg-gradient-to-b from-orange-100 via-pink-100 to-purple-100 custom-scroll">
                         <Outlet />
                     </div>
                 </div>

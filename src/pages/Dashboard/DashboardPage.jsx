@@ -39,7 +39,7 @@ const DashboardPage = () => {
             icon={icons.fauserclock}
           />
         </div>
-        <div className="col-span-full lg:col-span-3">
+        {/* <div className="col-span-full lg:col-span-3">
           <CompCardTable
             filter
             title={"Presensi Pegawai"}
@@ -52,7 +52,7 @@ const DashboardPage = () => {
             title={"Absensi Pegawai"}
             icon={icons.fausertimes}
           />
-        </div>
+        </div> */}
       </div>
     </Fragment>
   );

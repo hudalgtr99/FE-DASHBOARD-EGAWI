@@ -1,11 +1,13 @@
 import React, { Fragment } from "react";
 import { icons } from "../../../public/icons";
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
-import { Link } from "react-router-dom";
-import { CiCalendar, CiChat1 } from "react-icons/ci";
-import { RiTodoLine } from "react-icons/ri";
+import { useLocation } from "react-router-dom";
+import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
 
 const Header = ({ open, setOpen }) => {
+  const location = useLocation();
+  const arrLocation = location.pathname.split("/");
+  const title = capitalizeFirstLetter(arrLocation[arrLocation.length - 1]);
   return (
     <Fragment>
       <div className="w-full flex py-2 justify-between bg-orange-200 bg-opacity-30 items-center px-3 drop-shadow-sm">
@@ -23,6 +25,9 @@ const Header = ({ open, setOpen }) => {
                 {icons.himenualt2}
               </div>
             </div>
+          )}
+          {open && ( // Hide the logo when the sidebar is closed
+            <div className="font-medium">{title ? title : "Dashboard"}</div>
           )}
         </div>
         {/* <div className="ltr:mr-2 rtl:ml-2 hidden sm:block">
