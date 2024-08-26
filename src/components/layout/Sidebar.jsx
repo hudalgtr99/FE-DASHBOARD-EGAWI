@@ -58,7 +58,7 @@ const Sidebar = ({ open, setOpen }) => {
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
           <div className="flex items-center gap-2">
             <img className="w-12" src="/assets/Logo.svg" alt="logo" />
-            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light sm:block hidden">
+            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">
               QUEEN
             </span>
           </div>

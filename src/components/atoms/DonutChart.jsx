@@ -1,10 +1,18 @@
 import { Fragment } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import Chart from "react-apexcharts";
 import CardContainer from './CardContainer'; // Adjust the import path as needed
 
-const DonutChart = ({ colors, icon, title, directionColor }) => {
+const DonutChart = ({
+	title,
+	icon,
+	cardColor,
+	dataSeries,
+	dataLabels,
+	dataColor,
+	directionColor,
+}) => {
 	const chartConfig = {
-		series: [44, 55, 13],
+		series: dataSeries,
 		options: {
 			chart: {
 				height: 300,
@@ -19,8 +27,18 @@ const DonutChart = ({ colors, icon, title, directionColor }) => {
 			stroke: {
 				show: false,
 			},
-			labels: ['Team A', 'Team B', 'Team C'],
-			colors: ['#4361ee', '#805dca', '#e2a03f'],
+			noData: {
+				text: "No Data",
+				align: "center",
+				verticalAlign: "middle",
+				offsetX: 0,
+				offsetY: -30,
+				style: {
+					fontSize: "20px",
+				},
+			},
+			labels: dataLabels,
+			colors: dataColor,
 			responsive: [
 				{
 					breakpoint: 480,
@@ -40,17 +58,17 @@ const DonutChart = ({ colors, icon, title, directionColor }) => {
 	return (
 		<Fragment>
 			<CardContainer
-				colors={colors}
+				cardColor={cardColor}
 				icon={icon}
 				title={title}
 				directionColor={directionColor}
 			>
 				<div className="flex justify-center py-4">
-					<ReactApexChart
+					<Chart
 						options={chartConfig.options}
 						series={chartConfig.series}
 						type="donut"
-						height={460}
+						height={300}
 					/>
 				</div>
 			</CardContainer>

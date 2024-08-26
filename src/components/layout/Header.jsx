@@ -18,7 +18,7 @@ const Header = ({ open, setOpen }) => {
           {!open && ( // Hide the logo when the sidebar is open
             <div className="flex items-center gap-2">
               <img className="w-8 ml-[5px]" src="/assets/Logo.svg" alt="logo" />
-              <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light sm:block hidden">
+              <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light md:block hidden">
                 QUEEN
               </span>
               <div className="bg-orange-100 p-1 rounded-full hover:bg-white">
