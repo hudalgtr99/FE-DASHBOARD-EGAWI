@@ -2,7 +2,7 @@ import React from "react";
 import { icons } from "../../../public/icons";
 import { Link } from "react-router-dom";
 
-const CompCardContainer = ({
+const CardContainer = ({
   children,
   cardColor,
   directionColor,
@@ -58,4 +58,4 @@ const CompCardContainer = ({
   );
 };
 
-export default CompCardContainer;
+export default CardContainer;

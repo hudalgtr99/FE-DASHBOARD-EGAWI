@@ -6,6 +6,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@head
 import { BiChevronRight } from "react-icons/bi";
 import { menu } from "@/constants/menu";
 import { BsChevronDoubleLeft } from "react-icons/bs";
+import { TiMinus } from "react-icons/ti";
 
 const Sidebar = ({ open, setOpen }) => {
   const initNav = {
@@ -122,9 +123,9 @@ const Sidebar = ({ open, setOpen }) => {
                         <NavLink key={subMenuIdx} to={subMenu.subMenuLink}>
                           {({ isActive }) => (
                             <div
-                              className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white hover:text-black`}
+                              className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white hover:text-black flex items-center gap-1`}
                             >
-                              - {subMenu.subMenuName}
+                              <TiMinus /> {subMenu.subMenuName}
                             </div>
                           )}
                         </NavLink>

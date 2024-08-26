@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from "react";
-import { DonutChart, CompCardTable } from "../../components";
+import React, { Fragment } from "react";
+import { DonutChart } from "../../components";
 import { icons } from "../../../public/icons";
 
 const DashboardPage = () => {
@@ -10,7 +10,6 @@ const DashboardPage = () => {
           className="cursor-pointer lg:col-span-2 md:col-span-3"
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
-          onClick={() => navigate("/")}
         >
           <DonutChart
             title={"Jumlah Pegawai"}
@@ -21,7 +20,6 @@ const DashboardPage = () => {
           className="cursor-pointer lg:col-span-2 md:col-span-3"
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
-          onClick={() => navigate("/")}
         >
           <DonutChart
             title={"Status Pegawai"}
@@ -32,27 +30,12 @@ const DashboardPage = () => {
           className="cursor-pointer lg:col-span-2 md:col-span-full"
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
-          onClick={() => navigate("/")}
         >
           <DonutChart
             title={"Kehadiran Pegawai"}
             icon={icons.fauserclock}
           />
         </div>
-        {/* <div className="col-span-full lg:col-span-3">
-          <CompCardTable
-            filter
-            title={"Presensi Pegawai"}
-            icon={icons.fausercheck}
-          />
-        </div>
-        <div className="col-span-full lg:col-span-3">
-          <CompCardTable
-            filter
-            title={"Absensi Pegawai"}
-            icon={icons.fausertimes}
-          />
-        </div> */}
       </div>
     </Fragment>
   );
