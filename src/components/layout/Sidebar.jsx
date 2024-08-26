@@ -52,7 +52,7 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-50 shadow-lg text-white transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-lg text-white transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>

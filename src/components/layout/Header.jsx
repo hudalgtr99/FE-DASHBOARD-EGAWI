@@ -27,7 +27,7 @@ const Header = ({ open, setOpen }) => {
         >
           {!open && (
             <div className="flex items-center gap-2">
-              <img className="w-8 ml-[5px]" src="/assets/Logo.svg" alt="logo" />
+              <img className="w-8 ml-[5px]" src="/assets/Logo.png" alt="logo" />
               <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white md:block hidden">
                 QUEEN
               </span>
