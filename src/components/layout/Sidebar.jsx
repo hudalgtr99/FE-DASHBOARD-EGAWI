@@ -52,17 +52,17 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 z-50 shadow-lg text-white transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-50 shadow-lg text-white transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
           <div className="flex items-center gap-2">
             <img className="w-12" src="/assets/Logo.svg" alt="logo" />
-            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">
+            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white">
               QUEEN
             </span>
           </div>
-          <div onClick={() => setOpen(!open)} className="cursor-pointer hover:bg-white hover:text-black rounded-full p-2">
+          <div onClick={() => setOpen(!open)} className="cursor-pointer hover:bg-white hover:text-black dark:hover:bg-gray-600 dark:hover:text-white rounded-full p-2">
             <BsChevronDoubleLeft />
           </div>
         </div>
@@ -76,7 +76,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <NavLink key={menuIdx} to={menu.menuLink}>
                   {({ isActive }) => (
                     <div
-                      className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 transition hover:bg-white hover:text-black`}
+                      className={`${isActive ? "bg-white text-black dark:bg-gray-600 dark:text-white" : ""} px-3 py-2 rounded-lg mt-2 transition hover:bg-white hover:text-black dark:hover:bg-gray-600 dark:hover:text-white`}
                     >
                       <span className="flex items-center">
                         <span className="text-lg flex justify-center items-center">
@@ -96,7 +96,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <>
                   <DisclosureButton
                     onClick={() => navOpen(menu.menuLink)}
-                    className={`${navopen[menu.menuLink] ? "bg-white text-black shadow-md" : ""} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-white hover:text-black`}
+                    className={`${navopen[menu.menuLink] ? "bg-white text-black shadow-md dark:bg-gray-600 dark:text-white" : ""} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-white hover:text-black dark:hover:bg-gray-600 dark:hover:text-white`}
                   >
                     <span className="flex">
                       <span className="text-lg flex justify-center items-center">
@@ -123,7 +123,7 @@ const Sidebar = ({ open, setOpen }) => {
                         <NavLink key={subMenuIdx} to={subMenu.subMenuLink}>
                           {({ isActive }) => (
                             <div
-                              className={`${isActive ? "bg-white text-black" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white hover:text-black flex items-center gap-1`}
+                              className={`${isActive ? "bg-white text-black dark:bg-gray-600 dark:text-white" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white hover:text-black dark:hover:bg-gray-600 dark:hover:text-white flex items-center gap-1`}
                             >
                               <TiMinus /> {subMenu.subMenuName}
                             </div>
@@ -140,7 +140,7 @@ const Sidebar = ({ open, setOpen }) => {
 
         {/* Copyright */}
         {open && (
-          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center justify-center">
+          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center justify-center dark:text-gray-400">
             Copyright &copy; PT. Queen Network Nusantara
           </div>
         )}

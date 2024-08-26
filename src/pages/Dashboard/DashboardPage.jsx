@@ -12,7 +12,7 @@ const DashboardPage = () => {
           data-mdb-ripple-color="light"
         >
           <DonutChart
-            cardColor="to-white"
+            cardColor="to-white dark:to-gray-700"
             title={"Jumlah Pegawai"}
             icon={icons.fausers}
             dataSeries={[20, 10]}
@@ -26,7 +26,7 @@ const DashboardPage = () => {
           data-mdb-ripple-color="light"
         >
           <DonutChart
-            cardColor="to-white"
+            cardColor="to-white dark:to-gray-700"
             title={"Status Pegawai"}
             icon={icons.fauseredit}
             dataSeries={[20, 10, 10]}
@@ -40,7 +40,7 @@ const DashboardPage = () => {
           data-mdb-ripple-color="light"
         >
           <DonutChart
-            cardColor="to-white"
+            cardColor="to-white dark:to-gray-700"
             title={"Kehadiran Pegawai"}
             icon={icons.fauserclock}
             dataSeries={[20, 10, 10]}

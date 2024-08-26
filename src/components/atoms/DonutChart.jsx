@@ -35,6 +35,7 @@ const DonutChart = ({
 				offsetY: -30,
 				style: {
 					fontSize: "20px",
+					color: "dark:text-white",
 				},
 			},
 			labels: dataLabels,
@@ -51,6 +52,9 @@ const DonutChart = ({
 			],
 			legend: {
 				position: 'bottom',
+				labels: {
+					colors: ["dark:text-white", "dark:text-white", "dark:text-white"],
+				},
 			},
 		},
 	};
@@ -69,6 +73,7 @@ const DonutChart = ({
 						series={chartConfig.series}
 						type="donut"
 						height={300}
+						className="text-black dark:text-white" // Ensure the chart text color adapts to dark mode
 					/>
 				</div>
 			</CardContainer>

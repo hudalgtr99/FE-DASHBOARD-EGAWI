@@ -32,22 +32,30 @@ const CardContainer = ({
 
   return (
     <div
-      className={`w-full border border-gray-100 shadow-md p-3 rounded-xl ${colorDirect()} from-white ${cardColor ? cardColor : "to-white"
+      className={`w-full border border-gray-100 shadow-md p-3 rounded-xl ${colorDirect()} from-white dark:from-gray-800 ${cardColor ? cardColor : "to-white dark:to-gray-700"
         }`}
     >
       {(title || onEdit) && (
         <div className="flex justify-between items-center">
           {title && (
             <div className="flex justify-between items-center">
-              <div className="flex items-center text-sm font-bold">
-                {icon && <span className="mr-2 p-3 rounded-xl">{icon}</span>}
-                <span className="">{title}</span>
+              <div className="flex items-center text-sm font-bold dark:text-white">
+                {icon && (
+                  <span className="mr-2 p-3 rounded-xl dark:bg-gray-700">
+                    {icon}
+                  </span>
+                )}
+                <span>{title}</span>
               </div>
             </div>
           )}
 
           {onEdit && (
-            <Link to={onEdit.link} state={{ data: onEdit.data }}>
+            <Link
+              to={onEdit.link}
+              state={{ data: onEdit.data }}
+              className="dark:text-gray-300 hover:dark:text-white"
+            >
               {icons.fiedit}
             </Link>
           )}
