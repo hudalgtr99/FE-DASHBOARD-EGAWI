@@ -30,9 +30,9 @@ const Layout = () => {
             )}
             <div className="flex dark:bg-gray-900">
                 <Sidebar open={open} setOpen={setOpen} />
-                <div className="w-full min-screen overflow-clip">
+                <div className="w-full h-screen overflow-clip">
                     <Header open={open} setOpen={setOpen} />
-                    <div className="p-6 h-full overflow-y-auto bg-gradient-to-b from-orange-100 via-pink-100 to-purple-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 custom-scroll">
+                    <div className="p-6 h-[92vh] max-[450px]:h-[94vh] overflow-y-auto bg-gradient-to-b from-orange-100 via-pink-100 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 custom-scroll">
                         <Outlet />
                     </div>
                 </div>

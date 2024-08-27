@@ -18,7 +18,7 @@ const Pagination = ({
           {limit && (
             <select
               value={limit}
-              className="flex justify-center px-1 bg-white text-xs border border-gray-300 rounded-md h-7 outline-none"
+              className="flex justify-center px-1 bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 rounded-md h-7 outline-none dark:text-white"
               onChange={(e) => setLimit(parseInt(e.target.value))}
             >
               <option value={10}>10</option>
@@ -28,18 +28,18 @@ const Pagination = ({
             </select>
           )}
 
-          <div className="ml-1 text-xs">{pageCount} entries</div>
+          <div className="ml-1 text-xs dark:text-white">{pageCount} entries</div>
         </div>
 
         {limit && (
           <ReactPaginate
-            className="flex justify-center mt-4 sm:mt-0 sm:justify-end text-gray-800"
-            pageLinkClassName="bg-white text-xs border border-gray-300 mx-1 w-7 h-7 flex rounded-md justify-center items-center outline-none"
-            activeLinkClassName="border border-gray-400 bg-gray-100"
-            previousLinkClassName="bg-white text-xs border border-gray-300 mr-1 w-7 h-7 flex rounded-md justify-center items-center"
-            nextLinkClassName="bg-white text-xs border border-gray-300 w-7 ml-1 h-7 flex rounded-md justify-center items-center"
-            breakLinkClassName="bg-white text-xs border border-gray-300 w-7 mx-1 h-7 flex rounded-md justify-center items-end"
-            disabledLinkClassName="text-gray-300"
+            className="flex justify-center mt-4 sm:mt-0 sm:justify-end text-gray-800 dark:text-white"
+            pageLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 mx-1 w-7 h-7 flex rounded-md justify-center items-center outline-none"
+            activeLinkClassName="border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"
+            previousLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 mr-1 w-7 h-7 flex rounded-md justify-center items-center"
+            nextLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 w-7 ml-1 h-7 flex rounded-md justify-center items-center"
+            breakLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 w-7 mx-1 h-7 flex rounded-md justify-center items-end"
+            disabledLinkClassName="text-white dark:text-gray-500"
             breakLabel={icons.hioutlinedotshorizontal}
             renderOnZeroPageCount={null}
             previousLabel={icons.mdkeyboardarrowleft}

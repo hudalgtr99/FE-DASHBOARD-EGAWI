@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { DonutChart } from "../../components";
+import { DonutChart, CardTable } from "@/components";
 import { icons } from "../../../public/icons";
 
 const DashboardPage = () => {
@@ -46,6 +46,34 @@ const DashboardPage = () => {
             dataSeries={[20, 10, 10]}
             dataLabels={["Hadir", "Alfa", "Cuti"]}
             dataColor={["#36AE7C", "#EB5353", "#FF8AAE"]}
+          />
+        </div>
+        <div className="col-span-full lg:col-span-3">
+          <CardTable
+            filter
+            cardColor="to-white dark:to-gray-700"
+            title={"Presensi Pegawai"}
+            icon={icons.fausercheck}
+            dataColumns={[
+              { name: "No", value: "no" },
+              { name: "Nama Pegawai", value: "nama" },
+              { name: "Masuk", value: "masuk" },
+              { name: "Keluar", value: "keluar" },
+            ]}
+          />
+        </div>
+        <div className="col-span-full lg:col-span-3">
+          <CardTable
+            filter
+            cardColor="to-white dark:to-gray-700"
+            title={"Absensi Pegawai"}
+            icon={icons.fausertimes}
+            dataColumns={[
+              { name: "ID", value: "id" },
+              { name: "Nama Pegawai", value: "nama" },
+              { name: "Status", value: "status" },
+              { name: "Keterangan", value: "keterangan" },
+            ]}
           />
         </div>
       </div>
