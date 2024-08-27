@@ -1,5 +1,7 @@
 import { icons } from "../../public/icons";
 import Dashboard from "../pages/Dashboard/DashboardPage"
+import TentangPage from "../pages/Perusahaan/Tentang/TentangPage"
+import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage"
 
 export const menu = [
   {
@@ -15,8 +17,8 @@ export const menu = [
     menuLink: "perusahaan",
 
     subMenu: [
-      { subMenuName: "Tentang", subMenuLink: "/perusahaan/tentang" },
-      { subMenuName: "Pengurus", subMenuLink: "/perusahaan/pengurus" },
+      { subMenuName: "Tentang", subMenuLink: "/perusahaan/tentang", element: <TentangPage /> },
+      { subMenuName: "Pengurus", subMenuLink: "/perusahaan/pengurus", element: <PengurusPage /> },
     ],
   },
   {

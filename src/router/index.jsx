@@ -13,14 +13,14 @@ const Router = () => {
 								<Route
 									key={`sub-${subIndex}`}
 									path={sub.subMenuLink}
-									element={sub.element || <h1>SubMenu Not Implemented</h1>}
+									element={sub.element || <h1 className="dark:text-white">Menu Not Implemented</h1>}
 								/>
 							))
 						) : (
 							<Route
 								key={index}
 								path={item.menuLink}
-								element={item.element || <h1>Page Not Implemented</h1>}
+								element={item.element || <h1 className="dark:text-white">Page Not Implemented</h1>}
 							/>
 						)
 					))}

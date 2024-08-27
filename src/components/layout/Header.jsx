@@ -20,7 +20,7 @@ const Header = ({ open, setOpen }) => {
 
   return (
     <Fragment>
-      <div className="w-full flex py-2 justify-between bg-orange-200 bg-opacity-30 dark:bg-gray-800 items-center px-3 drop-shadow-sm">
+      <div className="w-full flex py-2 justify-between bg-orange-200 bg-opacity-70 dark:bg-gray-800 items-center px-3 drop-shadow-sm">
         <div
           onClick={() => setOpen(!open)}
           className={`p-1 rounded-lg text-black dark:text-white text-xl flex items-center gap-2 cursor-pointer transition-all`}
