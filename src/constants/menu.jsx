@@ -3,6 +3,8 @@ import Dashboard from "../pages/Dashboard/DashboardPage";
 import TentangPage from "../pages/Perusahaan/Tentang/TentangPage";
 import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage";
 import KalenderPage from "../pages/MasterData/Kalender/KalenderPage";
+import OrganPage from "../pages/MasterData/Organ/OrganPage";
+import StrataPage from "../pages/MasterData/Strata/StrataPage";
 
 export const menu = [
   {
@@ -34,8 +36,8 @@ export const menu = [
         subMenuLink: "/masterdata/cabang",
         isSuperAdmin: true,
       },
-      { subMenuName: "Strata", subMenuLink: "/masterdata/strata" },
-      { subMenuName: "Organ", subMenuLink: "/masterdata/organ" },
+      { subMenuName: "Strata", subMenuLink: "/masterdata/strata", element: <StrataPage /> },
+      { subMenuName: "Organ", subMenuLink: "/masterdata/organ", element: <OrganPage /> },
       { subMenuName: "Gaji", subMenuLink: "/masterdata/gaji" },
       { subMenuName: "Tunjangan", subMenuLink: "/masterdata/tunjangan" },
       { subMenuName: "Potongan", subMenuLink: "/masterdata/potongan" },

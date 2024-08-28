@@ -49,15 +49,15 @@ const Layout = () => {
                         id="content-container"
                         className="p-6 h-[92vh] max-[450px]:h-[94vh] overflow-y-auto bg-gradient-to-b from-orange-100 via-pink-100 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 custom-scroll"
                     >
-                        <TransitionGroup>
+                        {/* <TransitionGroup>
                             <CSSTransition
                                 key={location.key}
                                 classNames="fade-up"
                                 timeout={500}
-                            >
+                            > */}
                                 <Outlet />
-                            </CSSTransition>
-                        </TransitionGroup>
+                            {/* </CSSTransition>
+                        </TransitionGroup> */}
                     </div>
                 </div>
             </div>

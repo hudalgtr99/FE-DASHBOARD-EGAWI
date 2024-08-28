@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 
 // components
-import { CompTabs } from "../../../components";
+import { Tabs } from "@/components";
 
 // sub
 import DepartemenSub from "./Sub/DepartemenSub";
@@ -33,7 +33,7 @@ const OrganPage = () => {
 
   return (
     <Fragment>
-      <CompTabs tabs={tabs} />
+      <Tabs tabs={tabs} />
     </Fragment>
   );
 };

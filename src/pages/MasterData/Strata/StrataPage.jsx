@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 
 // components
-import { CompTabs } from "../../../components";
+import { Tabs } from "@/components";
 
 // sub
 import PangkatSub from "./Sub/PangkatSub";
@@ -27,7 +27,7 @@ const StrataPage = () => {
 
   return (
     <Fragment>
-      <CompTabs tabs={tabs} />
+      <Tabs tabs={tabs} />
     </Fragment>
   );
 };

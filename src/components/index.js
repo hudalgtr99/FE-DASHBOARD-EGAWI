@@ -5,6 +5,7 @@ import Pagination from "./atoms/Pagination";
 import Table from "./atoms/Table";
 import ProgressBar from "./atoms/ProgressBar";
 import CardOrgChart from "./atoms/CardOrgChart";
+import Tabs from "./atoms/Tabs";
 import Layout from "./layout/Layout";
 
 export {
@@ -16,4 +17,5 @@ export {
 	Table,
 	ProgressBar,
 	CardOrgChart,
+	Tabs,
 };
