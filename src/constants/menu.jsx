@@ -1,7 +1,8 @@
 import { icons } from "../../public/icons";
-import Dashboard from "../pages/Dashboard/DashboardPage"
-import TentangPage from "../pages/Perusahaan/Tentang/TentangPage"
-import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage"
+import Dashboard from "../pages/Dashboard/DashboardPage";
+import TentangPage from "../pages/Perusahaan/Tentang/TentangPage";
+import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage";
+import KalenderPage from "../pages/MasterData/Kalender/KalenderPage";
 
 export const menu = [
   {
@@ -38,7 +39,7 @@ export const menu = [
       { subMenuName: "Gaji", subMenuLink: "/masterdata/gaji" },
       { subMenuName: "Tunjangan", subMenuLink: "/masterdata/tunjangan" },
       { subMenuName: "Potongan", subMenuLink: "/masterdata/potongan" },
-      { subMenuName: "Kalender", subMenuLink: "/masterdata/kalender" },
+      { subMenuName: "Kalender", subMenuLink: "/masterdata/kalender", element: <KalenderPage /> },
     ],
   },
   {

@@ -41,3 +41,18 @@
 .fade-up-exit-active {
     opacity: 0;
 }
+
+/* Kalender */
+@media only screen and (max-width: 640px) {
+    .calendar-wrapper .fc-toolbar {
+        flex-direction: column !important;
+    }
+
+    .calendar-wrapper .fc-toolbar .fc-toolbar-chunk {
+        margin-top: 16px;
+    }
+
+    .calendar-wrapper .fc-toolbar .fc-toolbar-chunk:first-child {
+        margin-top: 0px !important;
+    }
+}
