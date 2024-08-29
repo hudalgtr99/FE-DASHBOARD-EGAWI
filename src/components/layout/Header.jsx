@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import { icons } from "../../../public/icons";
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
 import { ThemeContext } from "@/context/ThemeContext";
 import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
@@ -72,9 +72,11 @@ const Header = ({ open, setOpen }) => {
                   <div className="text-[10px]">Admin</div>
                 </div>
                 <div className="flex flex-col">
-                  <button className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all">
-                    Keluar
-                  </button>
+                  <Link to={"/login"}>
+                    <button className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all">
+                      Keluar
+                    </button>
+                  </Link>
                 </div>
               </PopoverPanel>
             </Transition>
