@@ -6,6 +6,7 @@ import Table from "./atoms/Table";
 import ProgressBar from "./atoms/ProgressBar";
 import CardOrgChart from "./atoms/CardOrgChart";
 import Tabs from "./atoms/Tabs";
+import Modal from "./atoms/Modal";
 import Layout from "./layout/Layout";
 
 export {
@@ -18,4 +19,5 @@ export {
 	ProgressBar,
 	CardOrgChart,
 	Tabs,
+	Modal,
 };

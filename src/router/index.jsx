@@ -1,6 +1,7 @@
 import { Layout } from "@/components";
 import { menu } from "@/constants/menu";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LoginPage from "@/pages/Login/LoginPage";
 
 const Router = () => {
 	return (
@@ -25,6 +26,9 @@ const Router = () => {
 						)
 					))}
 				</Route>
+
+				<Route path="/login" element={<LoginPage />} />
+
 				<Route path="*" element={<h1>404 - Page Not Found</h1>} />
 			</Routes>
 		</BrowserRouter>
