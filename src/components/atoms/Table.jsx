@@ -24,7 +24,7 @@ const Table = ({
       <div className="py-2 w-auto">
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
-            <thead className="bg-white dark:bg-gray-700 border-b border-gray-300">
+            <thead className="bg-white dark:bg-transparent border-b border-gray-300">
               <tr>
                 {dataColumns &&
                   dataColumns.map((header, headerIdx) => (
@@ -36,7 +36,7 @@ const Table = ({
                     </th>
                   ))}
                 {actions && (
-                  <th className="text-xs text-gray-800 p-2 text-center">
+                  <th className="text-xs text-gray-800 dark:text-white p-2 text-center">
                     Action
                   </th>
                 )}
@@ -47,7 +47,7 @@ const Table = ({
                 dataTables.map((itemTable, itemTableIdx) => (
                   <tr
                     key={itemTableIdx}
-                    className="bg-white dark:bg-gray-700 text-xs md:text-sm border-b border-gray-300 transition duration-300 ease-in-out"
+                    className="bg-white dark:bg-transparent text-xs md:text-sm border-b border-gray-300 transition duration-300 ease-in-out"
                   >
                     {dataColumns.map((colItem, colItemIdx) => {
                       if (colItem.progress) {
