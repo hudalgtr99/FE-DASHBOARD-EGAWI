@@ -1,8 +1,140 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+// plugins
+import moment from "moment";
+
+// components
 import { DonutChart, CardTable } from "@/components";
 import { icons } from "../../../public/icons";
 
+// functions
+import { getData } from "@/actions";
+import { userReducer } from "@/reducers/authReducers";
+import {
+  API_URL_getdataabsensi,
+  API_URL_getdatadashboard,
+  API_URL_getdatapresensi,
+} from "@/constants";
+import axiosAPI from "@/authentication/axiosApi";
+
 const DashboardPage = () => {
+  const navigate = useNavigate();
+  const {
+    getDataPresensiResult,
+  } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [limitPresensi, setLimitPresensi] = useState(10);
+  const [dataAbsensi, setDataAbsensi] = useState([]);
+  const [offset, setOffset] = useState(0);
+
+  // Data
+  const [totalPegawai, setTotalPegawai] = useState([0, 0]);
+  const [statusPegawai, setStatusPegawai] = useState([0, 0, 0]);
+  const [kehadiranPegawai, setKehadiranPegawai] = useState([0, 0, 0]);
+
+  const [filterValue, setFilterValue] = useState(
+    moment(new Date()).format("YYYY-MM-DD")
+  );
+
+  const get = (param) => {
+    getData(
+      { dispatch, redux: userReducer },
+      param,
+      API_URL_getdatapresensi,
+      "GET_PRESENSI"
+    );
+  };
+
+  const handleFilterDate = (e) => {
+    const param = {
+      param:
+        "?date=" +
+        moment(new Date(e)).format("YYYY-MM-DD") +
+        "&limit=" +
+        limitPresensi,
+    };
+    setFilterValue(e);
+    get(param);
+
+    axiosAPI
+      .get(
+        API_URL_getdataabsensi +
+        "?date=" +
+        moment(new Date(e)).format("YYYY-MM-DD")
+      )
+      .then((res) => {
+        setDataAbsensi(res.data);
+      });
+  };
+
+  const handlePageClick = (e) => {
+    const offset = e.selected * limitPresensi;
+    setOffset(offset);
+    const param = {
+      param:
+        "?date=" +
+        moment(new Date(filterValue)).format("YYYY-MM-DD") +
+        "&limit=" +
+        limitPresensi +
+        "&offset=" +
+        offset,
+    };
+    get(param);
+  };
+
+  const handleSelectPresensi = (e) => {
+    const param = {
+      param:
+        "?date=" +
+        moment(new Date(filterValue)).format("YYYY-MM-DD") +
+        "&limit=" +
+        e,
+    };
+    get(param);
+    setLimitPresensi(e);
+  };
+
+  useEffect(() => {
+    get({
+      param:
+        "?date=" +
+        moment(new Date(filterValue)).format("YYYY-MM-DD") +
+        "&limit=" +
+        limitPresensi,
+    });
+
+    axiosAPI
+      .get(
+        API_URL_getdataabsensi +
+        "?date=" +
+        moment(new Date(filterValue)).format("YYYY-MM-DD")
+      )
+      .then((res) => {
+        setDataAbsensi(res.data);
+      });
+
+    axiosAPI
+      .get(
+        API_URL_getdatadashboard +
+        "?date=" +
+        moment(new Date(filterValue)).format("YYYY-MM-DD")
+      )
+      .then((res) => {
+        setTotalPegawai([
+          res.data.totalPegawai["Laki-laki"],
+          res.data.totalPegawai["Perempuan"],
+        ]);
+        setKehadiranPegawai([
+          res.data.kehadiranPegawai["Hadir"],
+          res.data.kehadiranPegawai["Alfa"],
+          res.data.kehadiranPegawai["Cuti"],
+        ]);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Fragment>
       <div className="grid md:grid-cols-6 gap-6">
@@ -10,6 +142,7 @@ const DashboardPage = () => {
           className="cursor-pointer lg:col-span-2 md:col-span-3"
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
+          onClick={() => navigate("/kepegawaian/pegawai")}
         >
           <DonutChart
             cardColor="to-white dark:to-gray-700"
@@ -24,6 +157,7 @@ const DashboardPage = () => {
           className="cursor-pointer lg:col-span-2 md:col-span-3"
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
+          onClick={() => navigate("/kepegawaian/pegawai")}
         >
           <DonutChart
             cardColor="to-white dark:to-gray-700"
@@ -38,6 +172,7 @@ const DashboardPage = () => {
           className="cursor-pointer lg:col-span-2 md:col-span-full"
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
+          onClick={() => navigate("/asesmen/kehadiran")}
         >
           <DonutChart
             cardColor="to-white dark:to-gray-700"
@@ -60,6 +195,20 @@ const DashboardPage = () => {
               { name: "Masuk", value: "masuk" },
               { name: "Keluar", value: "keluar" },
             ]}
+            dataTables={
+              getDataPresensiResult.count > 0
+                ? getDataPresensiResult.results
+                : null
+            }
+            setFilterValue={handleFilterDate}
+            filterValue={filterValue}
+            handlePageClick={handlePageClick}
+            pageCount={
+              getDataPresensiResult.count > 0 ? getDataPresensiResult.count : 0
+            }
+            limit={limitPresensi}
+            setLimit={handleSelectPresensi}
+            offset={offset}
           />
         </div>
         <div className="col-span-full lg:col-span-3">
@@ -74,6 +223,10 @@ const DashboardPage = () => {
               { name: "Status", value: "status" },
               { name: "Keterangan", value: "keterangan" },
             ]}
+            dataTables={dataAbsensi}
+            setFilterValue={handleFilterDate}
+            filterValue={filterValue}
+            pageCount={dataAbsensi.length > 0 ? dataAbsensi.length : 0}
           />
         </div>
       </div>

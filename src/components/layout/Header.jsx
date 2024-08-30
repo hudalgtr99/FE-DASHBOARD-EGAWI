@@ -1,12 +1,17 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { icons } from "../../../public/icons";
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import { Link, useLocation } from "react-router-dom";
 import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
 import { ThemeContext } from "@/context/ThemeContext";
 import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "@/actions/auth";
+import { authReducer } from "@/reducers/authReducers";
 
 const Header = ({ open, setOpen }) => {
+  const { logoutUserResult } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const location = useLocation();
   const arrLocation = location.pathname.split("/");
   const title = capitalizeFirstLetter(arrLocation[arrLocation.length - 1]);
@@ -17,6 +22,17 @@ const Header = ({ open, setOpen }) => {
   const toggleColorMode = () => {
     setColorMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
+
+  const onLogout = (e) => {
+    e.preventDefault();
+    logoutUser(dispatch);
+  };
+
+  useEffect(() => {
+    if (logoutUserResult) {
+      dispatch(authReducer({ type: "LOGOUT_USER", payload: { data: false } }));
+    }
+  }, [logoutUserResult, dispatch]);
 
   return (
     <Fragment>
@@ -72,11 +88,11 @@ const Header = ({ open, setOpen }) => {
                   <div className="text-[10px]">Admin</div>
                 </div>
                 <div className="flex flex-col">
-                  <Link to={"/login"}>
-                    <button className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all">
-                      Keluar
-                    </button>
-                  </Link>
+                  <button
+                    onClick={onLogout}
+                    className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all">
+                    Keluar
+                  </button>
                 </div>
               </PopoverPanel>
             </Transition>
