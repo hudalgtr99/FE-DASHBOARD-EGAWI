@@ -23,8 +23,10 @@ import {
   TableController,
   Modal,
 } from "@/components";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import InputText from "../../../../components/forms/InputText";
+import InputTextArea from "../../../../components/forms/InputTextArea";
 
 const PangkatSub = () => {
   const {
@@ -56,7 +58,11 @@ const PangkatSub = () => {
   const validationSchema = Yup.object({
     nama_pangkat: Yup.string().required("Nama Pangkat is required"),
     grade: Yup.string().required("Grade is required"),
-    level: Yup.string().required("Level is required"),
+    level: Yup.number()
+      .typeError("Level must be a number")
+      .required("Level is required")
+      .positive("Level must be a positive number")
+      .integer("Level must be an integer")
   });
 
   const doSearch = (e) => {
@@ -262,70 +268,27 @@ const PangkatSub = () => {
           onSubmit={doSubmit}
         >
           {({ isSubmitting }) => (
-            <Form>
-              <div className="grid grid-cols-1 gap-4 bg-gray-100 p-2 rounded-lg dark:bg-gray-800">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Nama Pangkat<span className="text-red-500">*</span>
-                  </label>
-                  <Field
-                    type="text"
-                    name="nama_pangkat"
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 dark:border-gray-600 shadow-sm sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    placeholder="Input Pangkat"
-                  />
-                  <ErrorMessage
-                    name="nama_pangkat"
-                    component="div"
-                    className="text-red-600 text-sm mt-1 dark:text-red-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Grade<span className="text-red-500">*</span>
-                  </label>
-                  <Field
-                    type="text"
-                    name="grade"
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 dark:border-gray-600 shadow-sm sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    placeholder="Input Grade"
-                  />
-                  <ErrorMessage
-                    name="grade"
-                    component="div"
-                    className="text-red-600 text-sm mt-1 dark:text-red-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Level<span className="text-red-500">*</span>
-                  </label>
-                  <Field
-                    type="text"
-                    name="level"
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 dark:border-gray-600 shadow-sm sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    placeholder="Input Level"
-                  />
-                  <ErrorMessage
-                    name="level"
-                    component="div"
-                    className="text-red-600 text-sm mt-1 dark:text-red-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Keterangan</label>
-                  <Field
-                    as="textarea"
-                    name="keterangan"
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 dark:border-gray-600 shadow-sm sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    placeholder="Input Keterangan"
-                  />
-                </div>
-              </div>
-
+            <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
+              <InputText
+                label="Nama Pangkat"
+                name="nama_pangkat"
+                placeholder="Input Pangkat"
+              />
+              <InputText
+                label="Grade"
+                name="grade"
+                placeholder="Input Grade"
+              />
+              <InputText
+                label="Level"
+                name="level"
+                placeholder="Input Level"
+              />
+              <InputTextArea
+                label="Keterangan"
+                name="keterangan"
+                placeholder="Input Keterangan"
+              />
               <div className="flex justify-end mt-4">
                 <Button
                   btnName="Submit"

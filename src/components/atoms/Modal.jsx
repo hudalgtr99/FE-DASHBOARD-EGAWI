@@ -13,9 +13,9 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 dark:bg-opacity-75">
       <div
         ref={modalRef}
-        className="bg-white rounded-lg p-6 mx-2 w-full max-w-lg dark:bg-gray-900 dark:text-white"
+        className="bg-white rounded-lg pb-6 mx-2 w-full max-w-lg dark:bg-gray-900 dark:text-white"
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex bg-gray-100 px-6 py-4 rounded-t-lg justify-between items-center mb-4">
           <h2 className="text-xl font-bold">{title}</h2>
           <button
             onClick={onClose}
@@ -24,7 +24,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             <FaTimes />
           </button>
         </div>
-        <div className="relative">
+        <div className="relative px-6">
           {children}
         </div>
       </div>
