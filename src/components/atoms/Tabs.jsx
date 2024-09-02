@@ -7,7 +7,7 @@ const Tabs = ({ tabs }) => {
 
     return (
         <Fragment>
-            <ul className="flex flex-wrap list-none border-b border-orange-200 dark:border-gray-700" role="tablist">
+            <ul className="flex flex-wrap list-none space-x-2" role="tablist">
                 {tabs.listTabs.map((tab, tabIdx) => (
                     <li
                         key={tabIdx}
@@ -16,9 +16,9 @@ const Tabs = ({ tabs }) => {
                     >
                         <Link
                             to={`#${tab.linkTabs}`}
-                            className={`block px-4 py-2 rounded-t-lg transition-colors duration-300 ${activeTab === tab.linkTabs
+                            className={`block px-4 py-2 rounded-lg transition-colors duration-300 ${activeTab === tab.linkTabs
                                     ? "bg-white text-black dark:bg-gray-800 dark:text-white"
-                                    : "bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                                 }`}
                             onClick={() => setActiveTab(tab.linkTabs)}
                             role="tab"

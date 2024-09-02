@@ -10,7 +10,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 dark:bg-opacity-75">
+    <div className="fixed inset-0 flex items-center overflow-y-auto justify-center z-50 bg-black bg-opacity-50 dark:bg-opacity-75">
       <div
         ref={modalRef}
         className="bg-white rounded-lg pb-6 mx-2 w-full max-w-lg dark:bg-gray-900 dark:text-white"

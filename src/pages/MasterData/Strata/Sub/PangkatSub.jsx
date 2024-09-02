@@ -1,5 +1,3 @@
-// src/pages/PangkatSub.jsx
-
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -22,11 +20,11 @@ import {
   Table,
   TableController,
   Modal,
+  InputText,
+  InputTextArea,
 } from "@/components";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputText from "../../../../components/forms/InputText";
-import InputTextArea from "../../../../components/forms/InputTextArea";
 
 const PangkatSub = () => {
   const {

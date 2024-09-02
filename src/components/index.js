@@ -8,7 +8,10 @@ import CardOrgChart from "./atoms/CardOrgChart";
 import Tabs from "./atoms/Tabs";
 import Modal from "./atoms/Modal";
 import Button from "./atoms/Button";
+import Card from "./atoms/Card";
 import TableController from "./atoms/TableController";
+import InputText from "./forms/InputText";
+import InputTextArea from "./forms/InputTextArea";
 import Layout from "./layout/Layout";
 
 export {
@@ -23,5 +26,8 @@ export {
 	Tabs,
 	Modal,
 	Button,
+	Card,
 	TableController,
+	InputText,
+	InputTextArea,
 };

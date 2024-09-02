@@ -5,6 +5,7 @@ import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage";
 import KalenderPage from "../pages/MasterData/Kalender/KalenderPage";
 import OrganPage from "../pages/MasterData/Organ/OrganPage";
 import StrataPage from "../pages/MasterData/Strata/StrataPage";
+import CabangPage from "../pages/MasterData/Cabang/CabangPage";
 
 export const menu = [
   {
@@ -34,6 +35,7 @@ export const menu = [
       {
         subMenuName: "Cabang",
         subMenuLink: "/masterdata/cabang",
+        element: <CabangPage />,
         isSuperAdmin: true,
       },
       { subMenuName: "Strata", subMenuLink: "/masterdata/strata", element: <StrataPage /> },
