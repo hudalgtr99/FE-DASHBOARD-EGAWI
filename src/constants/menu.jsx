@@ -6,6 +6,7 @@ import KalenderPage from "../pages/MasterData/Kalender/KalenderPage";
 import OrganPage from "../pages/MasterData/Organ/OrganPage";
 import StrataPage from "../pages/MasterData/Strata/StrataPage";
 import CabangPage from "../pages/MasterData/Cabang/CabangPage";
+import PegawaiPage from "../pages/Kepegawaian/Pegawai/PegawaiPage";
 
 export const menu = [
   {
@@ -52,7 +53,7 @@ export const menu = [
     menuLink: "kepegawaian",
 
     subMenu: [
-      { subMenuName: "Pegawai", subMenuLink: "/kepegawaian/pegawai" },
+      { subMenuName: "Pegawai", subMenuLink: "/kepegawaian/pegawai", element: <PegawaiPage /> },
       { subMenuName: "Payroll", subMenuLink: "/kepegawaian/payroll" },
       { subMenuName: "Penugasan", subMenuLink: "/kepegawaian/penugasan" },
       { subMenuName: "Rekrutmen", subMenuLink: "/kepegawaian/rekrutmen" },

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -23,6 +23,8 @@ import {
   API_URL_edelcabang,
   API_URL_getcabang,
 } from "@/constants";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside"; // Import the custom hook
+import { FaTimes } from "react-icons/fa";
 
 const CabangPage = () => {
   const {
@@ -40,6 +42,10 @@ const CabangPage = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [card, setCard] = useState([]);
   const [jadwalData, setJadwalData] = useState({});
+
+  const modalRef = useRef(null); // Ref for the modal container
+
+  useOnClickOutside(modalRef, () => setModal({ ...modal, modalOpen: false }));
 
   const jadwalColumns = [
     { name: "Senin", value: "senin" },
@@ -218,15 +224,26 @@ const CabangPage = () => {
       </div>
 
       {modal.modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-[600px] overflow-y-auto max-h-[600px] mx-2">
-            <h2 className="text-lg font-semibold mb-4">
-              {modal.modalType === "add" ? "Tambah Cabang" : "Edit Cabang"}
-            </h2>
-            <form onSubmit={formik.handleSubmit}>
-              <div className="grid grid-cols-1 gap-4 bg-gray-100 p-4 rounded-lg">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 dark:bg-opacity-75">
+          <div
+            ref={modalRef} // Attach ref to modal container
+            className="bg-white rounded-lg pb-6 w-full max-w-[600px] max-h-[600px] overflow-y-auto hidden-scroll mx-2 dark:bg-gray-900 dark:text-white"
+          >
+            <div className="flex bg-gray-100 px-6 py-4 rounded-t-lg justify-between items-center mb-4 dark:bg-gray-800 dark:text-white">
+              <h2 className="text-xl font-bold">
+                {modal.modalType === "add" ? "Tambah Cabang" : "Edit Cabang"}
+              </h2>
+              <button
+                onClick={() => setModal({ ...modal, modalOpen: false })}
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <form onSubmit={formik.handleSubmit} className="px-6">
+              <div className="grid grid-cols-1 gap-4 dark:bg-gray-800 p-2 rounded-lg">
                 <div>
-                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Nama <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -236,7 +253,7 @@ const CabangPage = () => {
                     value={formik.values.nama}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                     aria-invalid={formik.touched.nama && formik.errors.nama ? "true" : undefined}
                     aria-describedby={formik.touched.nama && formik.errors.nama ? "nama-error" : undefined}
                   />
@@ -248,7 +265,7 @@ const CabangPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="no_telepon" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="no_telepon" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     No Telepon
                   </label>
                   <input
@@ -257,12 +274,12 @@ const CabangPage = () => {
                     name="no_telepon"
                     value={formik.values.no_telepon}
                     onChange={formik.handleChange}
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="latitude" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Latitude <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -272,7 +289,7 @@ const CabangPage = () => {
                     value={formik.values.latitude}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                     aria-invalid={formik.touched.latitude && formik.errors.latitude ? "true" : undefined}
                     aria-describedby={formik.touched.latitude && formik.errors.latitude ? "latitude-error" : undefined}
                   />
@@ -284,7 +301,7 @@ const CabangPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="longitude" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Longitude <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -294,7 +311,7 @@ const CabangPage = () => {
                     value={formik.values.longitude}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                     aria-invalid={formik.touched.longitude && formik.errors.longitude ? "true" : undefined}
                     aria-describedby={formik.touched.longitude && formik.errors.longitude ? "longitude-error" : undefined}
                   />
@@ -306,7 +323,7 @@ const CabangPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="radius" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="radius" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Radius <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -316,7 +333,7 @@ const CabangPage = () => {
                     value={formik.values.radius}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                     aria-invalid={formik.touched.radius && formik.errors.radius ? "true" : undefined}
                     aria-describedby={formik.touched.radius && formik.errors.radius ? "radius-error" : undefined}
                   />
@@ -326,10 +343,11 @@ const CabangPage = () => {
                     </div>
                   )}
                 </div>
+
                 {jadwalColumns.map((column) => (
                   <div key={column.value} className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor={`${column.value}_masuk`} className="block text-sm font-medium text-gray-700">
+                      <label htmlFor={`${column.value}_masuk`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         {column.name} Masuk <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -338,11 +356,11 @@ const CabangPage = () => {
                         name={`${column.value}_masuk`}
                         value={formik.values[`${column.value}_masuk`]}
                         onChange={formik.handleChange}
-                        className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                        className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                       />
                     </div>
                     <div>
-                      <label htmlFor={`${column.value}_keluar`} className="block text-sm font-medium text-gray-700">
+                      <label htmlFor={`${column.value}_keluar`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         {column.name} Keluar <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -351,7 +369,7 @@ const CabangPage = () => {
                         name={`${column.value}_keluar`}
                         value={formik.values[`${column.value}_keluar`]}
                         onChange={formik.handleChange}
-                        className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm sm:text-sm"
+                        className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                       />
                     </div>
                   </div>
@@ -359,17 +377,10 @@ const CabangPage = () => {
               </div>
               <div className="flex justify-end mt-4">
                 <button
-                  type="button"
-                  className="bg-gray-300 px-8 py-2.5 rounded font-medium text-xs leading-tight"
-                  onClick={() => setModal({ ...modal, modalOpen: false })}
-                >
-                  Batal
-                </button>
-                <button
                   type="submit"
                   className="px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-2"
                 >
-                  {modal.modalType === "add" ? "Tambah" : "Simpan"}
+                  {modal.modalType === "add" ? "Submit" : "Submit"}
                 </button>
               </div>
             </form>
