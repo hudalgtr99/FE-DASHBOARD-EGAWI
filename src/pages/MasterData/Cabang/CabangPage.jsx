@@ -244,7 +244,7 @@ const CabangPage = () => {
               <div className="grid grid-cols-1 gap-4 dark:bg-gray-800 p-2 rounded-lg">
                 <div>
                   <label htmlFor="nama" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Nama <span className="text-red-500">*</span>
+                    Nama<span className="text-red-500">*</span>
                   </label>
                   <input
                     id="nama"
@@ -280,7 +280,7 @@ const CabangPage = () => {
 
                 <div>
                   <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Latitude <span className="text-red-500">*</span>
+                    Latitude<span className="text-red-500">*</span>
                   </label>
                   <input
                     id="latitude"
@@ -302,7 +302,7 @@ const CabangPage = () => {
 
                 <div>
                   <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Longitude <span className="text-red-500">*</span>
+                    Longitude<span className="text-red-500">*</span>
                   </label>
                   <input
                     id="longitude"
@@ -324,7 +324,7 @@ const CabangPage = () => {
 
                 <div>
                   <label htmlFor="radius" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Radius <span className="text-red-500">*</span>
+                    Radius<span className="text-red-500">*</span>
                   </label>
                   <input
                     id="radius"
@@ -348,7 +348,7 @@ const CabangPage = () => {
                   <div key={column.value} className="grid grid-cols-2 gap-4">
                     <div>
                       <label htmlFor={`${column.value}_masuk`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {column.name} Masuk <span className="text-red-500">*</span>
+                        {column.name} Masuk<span className="text-red-500">*</span>
                       </label>
                       <input
                         id={`${column.value}_masuk`}
@@ -361,7 +361,7 @@ const CabangPage = () => {
                     </div>
                     <div>
                       <label htmlFor={`${column.value}_keluar`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {column.name} Keluar <span className="text-red-500">*</span>
+                        {column.name} Keluar<span className="text-red-500">*</span>
                       </label>
                       <input
                         id={`${column.value}_keluar`}
@@ -380,7 +380,7 @@ const CabangPage = () => {
                   type="submit"
                   className="px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-2"
                 >
-                  {modal.modalType === "add" ? "Submit" : "Submit"}
+                  {modal.modalType === "add" ? "Tambah" : "Simpan"}
                 </button>
               </div>
             </form>

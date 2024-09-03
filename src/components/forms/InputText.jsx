@@ -4,7 +4,7 @@ import { Field, ErrorMessage } from 'formik';
 const InputText = ({ label, name, placeholder, type = 'text', as = 'input', required = true }) => (
     <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label}{required && <span className="text-red-500">*</span>}
         </label>
         <Field
             as={as}

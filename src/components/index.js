@@ -12,6 +12,7 @@ import Card from "./atoms/Card";
 import TableController from "./atoms/TableController";
 import InputText from "./forms/InputText";
 import InputTextArea from "./forms/InputTextArea";
+import InputSelect from "./forms/InputSelect";
 import Layout from "./layout/Layout";
 
 export {
@@ -30,4 +31,5 @@ export {
 	TableController,
 	InputText,
 	InputTextArea,
+	InputSelect,
 };

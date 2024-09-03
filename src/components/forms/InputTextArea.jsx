@@ -3,7 +3,9 @@ import { Field } from 'formik';
 
 const InputTextArea = ({ label, name, placeholder }) => (
     <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            {label}
+        </label>
         <Field
             as="textarea"
             name={name}

@@ -247,7 +247,7 @@ const JabatanSub = () => {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editItem ? "Edit Pangkat" : "Tambah Pangkat"}
+        title={editItem ? "Edit Jabatan" : "Tambah Jabatan"}
       >
         <Formik
           initialValues={{
