@@ -13,6 +13,8 @@ import TableController from "./atoms/TableController";
 import InputText from "./forms/InputText";
 import InputTextArea from "./forms/InputTextArea";
 import InputSelect from "./forms/InputSelect";
+import InputDate from "./forms/InputDate";
+import InputEmail from "./forms/InputEmail";
 import Layout from "./layout/Layout";
 
 export {
@@ -32,4 +34,6 @@ export {
 	InputText,
 	InputTextArea,
 	InputSelect,
+	InputDate,
+	InputEmail,
 };

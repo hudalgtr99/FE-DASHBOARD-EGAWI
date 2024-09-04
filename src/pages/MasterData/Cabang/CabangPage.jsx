@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  Button,
+  Modal,
   Card,
   CardContainer,
   TableController,
@@ -34,18 +34,10 @@ const CabangPage = () => {
   } = useSelector((state) => state.cabang);
   const dispatch = useDispatch();
 
-  const [modal, setModal] = useState({
-    modalOpen: false,
-    modalTitle: "Cabang",
-    modalType: "add",
-  });
+  const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [card, setCard] = useState([]);
   const [jadwalData, setJadwalData] = useState({});
-
-  const modalRef = useRef(null); // Ref for the modal container
-
-  useOnClickOutside(modalRef, () => setModal({ ...modal, modalOpen: false }));
 
   const jadwalColumns = [
     { name: "Senin", value: "senin" },
@@ -223,172 +215,158 @@ const CabangPage = () => {
         </div>
       </div>
 
-      {modal.modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 dark:bg-opacity-75">
-          <div
-            ref={modalRef} // Attach ref to modal container
-            className="bg-white rounded-lg pb-6 w-full max-w-[600px] max-h-[600px] overflow-y-auto hidden-scroll mx-2 dark:bg-gray-900 dark:text-white"
-          >
-            <div className="flex bg-gray-100 px-6 py-4 rounded-t-lg justify-between items-center mb-4 dark:bg-gray-800 dark:text-white">
-              <h2 className="text-xl font-bold">
-                {modal.modalType === "add" ? "Tambah Cabang" : "Edit Cabang"}
-              </h2>
-              <button
-                onClick={() => setModal({ ...modal, modalOpen: false })}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-              >
-                <FaTimes />
-              </button>
+      <Modal
+        isOpen={modal}
+        onClose={() => setModal(false)}
+        title="CabangPage"
+      >
+        <form onSubmit={formik.handleSubmit}>
+          <div className="grid grid-cols-1 gap-4 dark:bg-gray-800 p-2 rounded-lg">
+            <div>
+              <label htmlFor="nama" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Nama<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="nama"
+                type="text"
+                name="nama"
+                value={formik.values.nama}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
+                aria-invalid={formik.touched.nama && formik.errors.nama ? "true" : undefined}
+                aria-describedby={formik.touched.nama && formik.errors.nama ? "nama-error" : undefined}
+              />
+              {formik.touched.nama && formik.errors.nama && (
+                <div id="nama-error" className="text-red-600 mt-1 text-sm">
+                  {formik.errors.nama}
+                </div>
+              )}
             </div>
-            <form onSubmit={formik.handleSubmit} className="px-6">
-              <div className="grid grid-cols-1 gap-4 dark:bg-gray-800 p-2 rounded-lg">
+
+            <div>
+              <label htmlFor="no_telepon" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                No Telepon
+              </label>
+              <input
+                id="no_telepon"
+                type="text"
+                name="no_telepon"
+                value={formik.values.no_telepon}
+                onChange={formik.handleChange}
+                className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Latitude<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="latitude"
+                type="text"
+                name="latitude"
+                value={formik.values.latitude}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
+                aria-invalid={formik.touched.latitude && formik.errors.latitude ? "true" : undefined}
+                aria-describedby={formik.touched.latitude && formik.errors.latitude ? "latitude-error" : undefined}
+              />
+              {formik.touched.latitude && formik.errors.latitude && (
+                <div id="latitude-error" className="text-red-600 mt-1 text-sm">
+                  {formik.errors.latitude}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Longitude<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="longitude"
+                type="text"
+                name="longitude"
+                value={formik.values.longitude}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
+                aria-invalid={formik.touched.longitude && formik.errors.longitude ? "true" : undefined}
+                aria-describedby={formik.touched.longitude && formik.errors.longitude ? "longitude-error" : undefined}
+              />
+              {formik.touched.longitude && formik.errors.longitude && (
+                <div id="longitude-error" className="text-red-600 mt-1 text-sm">
+                  {formik.errors.longitude}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="radius" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Radius<span className="text-red-500">*</span>
+              </label>
+              <input
+                id="radius"
+                type="number"
+                name="radius"
+                value={formik.values.radius}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
+                aria-invalid={formik.touched.radius && formik.errors.radius ? "true" : undefined}
+                aria-describedby={formik.touched.radius && formik.errors.radius ? "radius-error" : undefined}
+              />
+              {formik.touched.radius && formik.errors.radius && (
+                <div id="radius-error" className="text-red-600 mt-1 text-sm">
+                  {formik.errors.radius}
+                </div>
+              )}
+            </div>
+
+            {jadwalColumns.map((column) => (
+              <div key={column.value} className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Nama<span className="text-red-500">*</span>
+                  <label htmlFor={`${column.value}_masuk`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {column.name} Masuk<span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="nama"
-                    type="text"
-                    name="nama"
-                    value={formik.values.nama}
+                    id={`${column.value}_masuk`}
+                    type="time"
+                    name={`${column.value}_masuk`}
+                    value={formik.values[`${column.value}_masuk`]}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
                     className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
-                    aria-invalid={formik.touched.nama && formik.errors.nama ? "true" : undefined}
-                    aria-describedby={formik.touched.nama && formik.errors.nama ? "nama-error" : undefined}
                   />
-                  {formik.touched.nama && formik.errors.nama && (
-                    <div id="nama-error" className="text-red-600 mt-1 text-sm">
-                      {formik.errors.nama}
-                    </div>
-                  )}
                 </div>
-
                 <div>
-                  <label htmlFor="no_telepon" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    No Telepon
+                  <label htmlFor={`${column.value}_keluar`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {column.name} Keluar<span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="no_telepon"
-                    type="text"
-                    name="no_telepon"
-                    value={formik.values.no_telepon}
+                    id={`${column.value}_keluar`}
+                    type="time"
+                    name={`${column.value}_keluar`}
+                    value={formik.values[`${column.value}_keluar`]}
                     onChange={formik.handleChange}
                     className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
                   />
                 </div>
-
-                <div>
-                  <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Latitude<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="latitude"
-                    type="text"
-                    name="latitude"
-                    value={formik.values.latitude}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
-                    aria-invalid={formik.touched.latitude && formik.errors.latitude ? "true" : undefined}
-                    aria-describedby={formik.touched.latitude && formik.errors.latitude ? "latitude-error" : undefined}
-                  />
-                  {formik.touched.latitude && formik.errors.latitude && (
-                    <div id="latitude-error" className="text-red-600 mt-1 text-sm">
-                      {formik.errors.latitude}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Longitude<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="longitude"
-                    type="text"
-                    name="longitude"
-                    value={formik.values.longitude}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
-                    aria-invalid={formik.touched.longitude && formik.errors.longitude ? "true" : undefined}
-                    aria-describedby={formik.touched.longitude && formik.errors.longitude ? "longitude-error" : undefined}
-                  />
-                  {formik.touched.longitude && formik.errors.longitude && (
-                    <div id="longitude-error" className="text-red-600 mt-1 text-sm">
-                      {formik.errors.longitude}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="radius" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Radius<span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="radius"
-                    type="number"
-                    name="radius"
-                    value={formik.values.radius}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
-                    aria-invalid={formik.touched.radius && formik.errors.radius ? "true" : undefined}
-                    aria-describedby={formik.touched.radius && formik.errors.radius ? "radius-error" : undefined}
-                  />
-                  {formik.touched.radius && formik.errors.radius && (
-                    <div id="radius-error" className="text-red-600 mt-1 text-sm">
-                      {formik.errors.radius}
-                    </div>
-                  )}
-                </div>
-
-                {jadwalColumns.map((column) => (
-                  <div key={column.value} className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor={`${column.value}_masuk`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {column.name} Masuk<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id={`${column.value}_masuk`}
-                        type="time"
-                        name={`${column.value}_masuk`}
-                        value={formik.values[`${column.value}_masuk`]}
-                        onChange={formik.handleChange}
-                        className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor={`${column.value}_keluar`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {column.name} Keluar<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id={`${column.value}_keluar`}
-                        type="time"
-                        name={`${column.value}_keluar`}
-                        value={formik.values[`${column.value}_keluar`]}
-                        onChange={formik.handleChange}
-                        className="mt-1 block w-full p-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:border-gray-600"
-                      />
-                    </div>
-                  </div>
-                ))}
               </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-2"
-                >
-                  {modal.modalType === "add" ? "Tambah" : "Simpan"}
-                </button>
-              </div>
-            </form>
+            ))}
           </div>
-        </div>
-      )}
+          <div className="flex justify-end mt-4">
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-2"
+            >
+              {modal.modalType === "add" ? "Tambah" : "Simpan"}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
-  );
-};
+  )
+}
 
 export default CabangPage;
