@@ -5,25 +5,25 @@ import { useContext, useState } from "react";
 /**
  *
  * @param {{
- * variant: "solid" | "tonal" | "border" | "gradient";
- * color: "primary" | "base" | "success" | "warning" | "danger" | "info" | "white";
- * rounded: "none" | "sm" | "rounded" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
- * density: "tight" | "normal" | "loose";
- * borderPosition: "top" | "right" | "bottom" | "left" | "all";
- * onClick: () => void;
- * children: React.ReactNode;
+ * variant?: "solid" | "tonal" | "border" | "gradient";
+ * color?: "primary" | "base" | "success" | "warning" | "danger" | "info" | "white";
+ * rounded?: "none" | "sm" | "rounded" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+ * density?: "tight" | "normal" | "loose";
+ * borderPosition?: "top" | "right" | "bottom" | "left" | "all";
+ * onClick?: () => void;
+ * children?: React.ReactNode;
  * }}
  *
  */
 
 const Card = ({
-  variant,
-  color,
-  rounded,
-  density,
-  borderPosition,
+  variant = "solid",
+  color = "primary",
+  rounded = "md",
+  density = "normal",
+  borderPosition = "bottom",
   onClick,
-  children,
+  children = null,
 }) => {
   const { themeColor, colorMode } = useContext(ThemeContext);
   const [isHover, setIsHover] = useState(false);
@@ -125,8 +125,7 @@ const Card = ({
       onClick={onClick}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
-      className={`transition-[border,box-shadow] shadow hover:shadow-lg ${onClick ? "cursor-pointer" : ""
-        } ${cardDensity} ${cardRounded}`}
+      className={`transition-[border,box-shadow] shadow hover:shadow-lg ${onClick ? "cursor-pointer" : ""} ${cardDensity} ${cardRounded}`}
     >
       {children}
     </div>
@@ -162,15 +161,6 @@ Card.propTypes = {
   borderPosition: PropTypes.oneOf(["top", "right", "bottom", "left", "all"]),
   onClick: PropTypes.func,
   children: PropTypes.node,
-};
-
-Card.defaultProps = {
-  variant: "solid",
-  color: "primary",
-  rounded: "md",
-  density: "normal",
-  borderPosition: "bottom",
-  children: null,
 };
 
 export default Card;

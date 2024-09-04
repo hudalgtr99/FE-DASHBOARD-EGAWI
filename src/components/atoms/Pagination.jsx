@@ -6,35 +6,18 @@ import { ThemeContext } from "@/context/ThemeContext";
 import PropTypes from "prop-types";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
-/**
- *
- * @param {{
- * onPageChange: (page: number) => void;
- * totalCount: number;
- * siblingCount: number;
- * currentPage: number;
- * pageSize: number;
- * activeColor: "primary" | "base" | "success" | "warning" | "danger" | "info";
- * rounded: "none" | "sm" | "rounded" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
- * variant: "solid" | "flat";
- * size: "xs" | "sm" | "md" | "lg" | "xl";
- * }}
- *
- */
-
 const Pagination = ({
   onPageChange,
   totalCount,
   siblingCount = 1,
   currentPage,
   pageSize,
-  activeColor,
-  rounded,
-  variant,
-  size,
+  activeColor = "primary",
+  rounded = "md",
+  variant = "flat",
+  size = "md",
 }) => {
   const { themeColor, colorMode } = useContext(ThemeContext);
-
   const { width } = useWindowSize();
   const siblings = width < 640 ? 0 : siblingCount;
 
@@ -43,14 +26,18 @@ const Pagination = ({
     totalCount,
     siblingCount: siblings,
     pageSize,
-  });
+  }) || [];
 
   const onNext = () => {
-    onPageChange(currentPage + 1);
+    if (currentPage < paginationRange.length) {
+      onPageChange(currentPage + 1);
+    }
   };
 
   const onPrevious = () => {
-    onPageChange(currentPage - 1);
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
   };
 
   // Color
@@ -74,18 +61,18 @@ const Pagination = ({
       xl: 45,
     }[size] || size;
 
-  let lastPage = paginationRange[paginationRange?.length - 1];
+  let lastPage = paginationRange.length ? paginationRange[paginationRange.length - 1] : 1;
 
   return (
-    <div className={`flex gap-2`}>
+    <div className="flex gap-2">
       {totalCount > 0 && (
         <>
           {/* Left */}
           <Button
             size={sizePagination}
-            className={`text-xs`}
+            className="text-xs"
             color={colorMode === "light" ? "#BABCBD95" : "#4D535595"}
-            textcolor={`${colorMode === "light" ? "#171C1E" : "white"}`}
+            textcolor={colorMode === "light" ? "#171C1E" : "white"}
             variant={variant}
             rounded={rounded}
             onClick={onPrevious}
@@ -95,9 +82,6 @@ const Pagination = ({
           </Button>
 
           {paginationRange.map((pageNumber, index) => {
-            {
-              /* Dots */
-            }
             if (pageNumber === DOTS) {
               return (
                 <Button
@@ -105,7 +89,7 @@ const Pagination = ({
                   size={sizePagination}
                   className="text-xs"
                   color={colorMode === "light" ? "#BABCBD95" : "#4D535595"}
-                  textcolor={`${colorMode === "light" ? "#171C1E" : "white"}`}
+                  textcolor={colorMode === "light" ? "#171C1E" : "white"}
                   variant={variant}
                   rounded={rounded}
                   disabled
@@ -115,9 +99,6 @@ const Pagination = ({
               );
             }
 
-            {
-              /* Number */
-            }
             return (
               <Button
                 key={index}
@@ -151,7 +132,7 @@ const Pagination = ({
             size={sizePagination}
             className="text-xs"
             color={colorMode === "light" ? "#BABCBD95" : "#4D535595"}
-            textcolor={`${colorMode === "light" ? "#171C1E" : "white"}`}
+            textcolor={colorMode === "light" ? "#171C1E" : "white"}
             variant={variant}
             rounded={rounded}
             disabled={currentPage === lastPage}
@@ -166,11 +147,11 @@ const Pagination = ({
 };
 
 Pagination.propTypes = {
-  onPageChange: PropTypes.func,
-  totalCount: PropTypes.number,
+  onPageChange: PropTypes.func.isRequired,
+  totalCount: PropTypes.number.isRequired,
   siblingCount: PropTypes.number,
-  currentPage: PropTypes.number,
-  pageSize: PropTypes.number,
+  currentPage: PropTypes.number.isRequired,
+  pageSize: PropTypes.number.isRequired,
   activeColor: PropTypes.oneOfType([
     PropTypes.oneOf([
       "primary",
@@ -198,14 +179,6 @@ Pagination.propTypes = {
     PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"]),
     PropTypes.number,
   ]),
-};
-
-Pagination.defaultProps = {
-  siblingCount: 1,
-  activeColor: "primary",
-  rounded: "md",
-  variant: "flat",
-  size: "md",
 };
 
 export default Pagination;

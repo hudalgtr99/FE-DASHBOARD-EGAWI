@@ -4,11 +4,12 @@ import Container from "./atoms/Container";
 import CardOrgChart from "./atoms/CardOrgChart";
 import ColumnChart from "./atoms/ColumnChart";
 import DonutChart from "./atoms/DonutChart";
+import Limit from "./atoms/Limit";
 import Modal from "./atoms/Modal";
 import Pagination from "./atoms/Pagination";
 import PieChart from "./atoms/PieChart";
-import ProgressBar from "./atoms/ProgressBar";
 import RadialBarChart from "./atoms/RadialBarChart";
+import Select from "./atoms/Select";
 import Tables from "./atoms/Tables";
 import Tabs from "./atoms/Tabs";
 import Layout from "./layout/Layout";
@@ -25,11 +26,12 @@ export {
 	CardOrgChart,
 	ColumnChart,
 	DonutChart,
+	Limit,
 	Modal,
 	Pagination,
 	PieChart,
-	ProgressBar,
 	RadialBarChart,
+	Select,
 	Tables,
 	Tabs,
 	Layout,

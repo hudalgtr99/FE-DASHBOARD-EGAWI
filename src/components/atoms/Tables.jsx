@@ -13,7 +13,13 @@ import PropTypes from "prop-types";
  *
  */
 
-const Tables = ({ size, density, tablefix, height, children }) => {
+const Tables = ({
+	size = "md",
+	density = "normal",
+	tablefix = false,
+	height = "auto",
+	children,
+}) => {
 	// Size
 	const tableSize =
 		{
@@ -43,9 +49,8 @@ const Tables = ({ size, density, tablefix, height, children }) => {
 				style={{
 					fontSize: `${tableSize}px`,
 				}}
-				className={`w-full border-separate border-spacing-0 ${tableDensity} ${
-					tablefix ? "table-fixed" : "table-auto"
-				}`}
+				className={`w-full border-separate border-spacing-0 ${tableDensity} ${tablefix ? "table-fixed" : "table-auto"
+					}`}
 			>
 				{children}
 			</table>
@@ -63,15 +68,14 @@ const Tables = ({ size, density, tablefix, height, children }) => {
  *
  */
 
-const TableHead = ({ children, style, sticky }) => {
+const TableHead = ({ children, style, sticky = false }) => {
 	return (
 		<thead
 			style={{
 				...style,
 			}}
-			className={`${
-				sticky ? "sticky top-0 bg-white dark:bg-base-600 shadow-sm" : ""
-			}`}
+			className={`${sticky ? "sticky top-0 bg-white dark:bg-base-600 shadow-sm" : ""
+				}`}
 		>
 			{children}
 		</thead>
@@ -109,7 +113,7 @@ const TableBody = ({ children, style }) => {
  *
  */
 
-const TableRow = ({ children, style, expandable }) => {
+const TableRow = ({ children, style, expandable = null }) => {
 	const ref = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
 
@@ -138,9 +142,8 @@ const TableRow = ({ children, style, expandable }) => {
 							style={{
 								height: isExpanded ? `${ref.current.scrollHeight}px` : "0px",
 							}}
-							className={`overflow-hidden transition-[height] duration-300 ease-in-out ${
-								isExpanded ? "border-b dark:border-base-500" : ""
-							}`}
+							className={`overflow-hidden transition-[height] duration-300 ease-in-out ${isExpanded ? "border-b dark:border-base-500" : ""
+								}`}
 						>
 							{expandable}
 						</div>
@@ -161,15 +164,14 @@ const TableRow = ({ children, style, expandable }) => {
  *
  */
 
-const TableHeader = ({ children, style, center }) => {
+const TableHeader = ({ children, style, center = false }) => {
 	return (
 		<th
 			style={{
 				...style,
 			}}
-			className={`border-b dark:border-base-500 font-normal uppercase tracking-wide px-2 sticky ${
-				center ? "text-center" : "text-left"
-			}`}
+			className={`border-b dark:border-base-500 font-normal capitalize tracking-wide px-2 sticky ${center ? "text-center" : "text-left"
+				}`}
 		>
 			{children}
 		</th>
@@ -182,21 +184,25 @@ const TableHeader = ({ children, style, center }) => {
  * children: React.ReactNode;
  * style: React.CSSProperties;
  * center: boolean;
- * colspan: integer;
+ * colspan: number;
  * }}
  *
  */
 
-const TableData = ({ children, style, center, colspan }) => {
+const TableData = ({
+	children,
+	style,
+	center = false,
+	colspan = 1,
+}) => {
 	return (
 		<td
 			style={{
 				...style,
 			}}
 			colSpan={colspan}
-			className={`border-b dark:border-base-500 px-2 ${
-				center ? "text-center" : "text-left"
-			}`}
+			className={`border-b dark:border-base-500 px-2 ${center ? "text-center" : "text-left"
+				}`}
 		>
 			{children}
 		</td>
@@ -210,20 +216,11 @@ Tables.propTypes = {
 	height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	children: PropTypes.node,
 };
-Tables.defaultProps = {
-	size: "md",
-	density: "normal",
-	tablefix: false,
-	height: "auto",
-};
 
 TableHead.propTypes = {
 	children: PropTypes.node,
 	style: PropTypes.object,
 	sticky: PropTypes.bool,
-};
-TableHead.defaultProps = {
-	sticky: false,
 };
 
 TableBody.propTypes = {
@@ -236,17 +233,11 @@ TableRow.propTypes = {
 	style: PropTypes.object,
 	expandable: PropTypes.node,
 };
-TableRow.defaultProps = {
-	expandable: null,
-};
 
 TableHeader.propTypes = {
 	children: PropTypes.node,
 	style: PropTypes.object,
 	center: PropTypes.bool,
-};
-TableHeader.defaultProps = {
-	center: false,
 };
 
 TableData.propTypes = {
@@ -254,10 +245,6 @@ TableData.propTypes = {
 	style: PropTypes.object,
 	center: PropTypes.bool,
 	colspan: PropTypes.number,
-};
-TableData.defaultProps = {
-	center: false,
-	colspan: 1,
 };
 
 Tables.Head = TableHead;
