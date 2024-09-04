@@ -9,7 +9,6 @@ import {
 } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { cabangReducer } from "@/reducers/cabangReducers";
-import { icons } from "../../../../public/icons";
 import axiosAPI from "@/authentication/axiosApi";
 import {
   addData,
@@ -23,8 +22,6 @@ import {
   API_URL_edelcabang,
   API_URL_getcabang,
 } from "@/constants";
-import { useOnClickOutside } from "@/hooks/useOnClickOutside"; // Import the custom hook
-import { FaTimes } from "react-icons/fa";
 
 const CabangPage = () => {
   const {
@@ -34,7 +31,7 @@ const CabangPage = () => {
   } = useSelector((state) => state.cabang);
   const dispatch = useDispatch();
 
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState({ modalOpen: false, modalType: "add" });
   const [isEdit, setIsEdit] = useState(false);
   const [card, setCard] = useState([]);
   const [jadwalData, setJadwalData] = useState({});
@@ -216,9 +213,9 @@ const CabangPage = () => {
       </div>
 
       <Modal
-        isOpen={modal}
-        onClose={() => setModal(false)}
-        title="CabangPage"
+        isOpen={modal.modalOpen}
+        onClose={() => setModal({ ...modal, modalOpen: false })}
+        title={isEdit ? "Edit Cabang" : "Tambah Cabang"}
       >
         <form onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-1 gap-4 dark:bg-gray-800 p-2 rounded-lg">

@@ -23,10 +23,12 @@ import {
   API_URL_createuser,
   API_URL_edeluser,
   API_URL_getdatapegawai,
+  API_URL_getcabang,
 } from "@/constants";
 import { pegawaiReducer } from "@/reducers/kepegawaianReducers";
+import axiosAPI from "@/authentication/axiosApi";
 import * as Yup from "yup";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field } from "formik";
 import classNames from "classnames";
 
 const PegawaiPage = () => {
@@ -191,13 +193,13 @@ const PegawaiPage = () => {
   useEffect(() => {
     fetchData();
     setFirstFetch(true);
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (addPegawaiResult || deletePegawaiResult) {
       fetchData();
     }
-  }, [addPegawaiResult, deletePegawaiResult]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [addPegawaiResult, deletePegawaiResult, fetchData]);
 
   useEffect(() => {
     if (firstFetch) {
@@ -206,7 +208,23 @@ const PegawaiPage = () => {
       }, 1000);
       return () => clearTimeout(getData);
     }
-  }, [search]);
+  }, [search, firstFetch, get]);
+
+  // Fetch cabang options when the component mounts
+  useEffect(() => {
+    const fetchCabangOptions = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getcabang);
+        setCabangOptions(response.data.map(cabang => ({
+          value: cabang.pk,
+          label: cabang.nama,
+        })));
+      } catch (error) {
+        console.error('Error fetching cabang options:', error);
+      }
+    };
+    fetchCabangOptions();
+  }, []);
 
   const [actions] = useState([
     {
@@ -241,169 +259,221 @@ const PegawaiPage = () => {
           />
         </div>
         <Pagination
-          handlePageClick={(e) => handlePageClick(e)}
-          pageCount={getPegawaiResult.count > 0 ? getPegawaiResult.count : 0}
-          limit={limit}
-          setLimit={(e) => handleSelect(e)}
+          handlePageClick={(e) => setPageActive(e.selected)}
+          handleLimitChange={(e) => setLimit(e.target.value)}
           pageActive={pageActive}
+          limit={limit}
+          totalItems={getPegawaiResult.count}
         />
       </CardContainer>
-
       <Modal
         isOpen={modal.modalOpen}
-        onClose={() => setModal({ ...modal, modalOpen: false })}
+        setIsOpen={() => setModal({ ...modal, modalOpen: false })}
         title={modal.modalTitle}
       >
-        <div className="flex justify-between border-b mb-6">
-          <button
-            className={classNames("w-1/2 py-2", {
-              "border-b-2 border-blue-500": activeTab === "pribadi",
-              "text-gray-500": activeTab !== "pribadi",
-            })}
-            onClick={() => setActiveTab("pribadi")}
-          >
-            Data Pribadi
-          </button>
-          <button
-            className={classNames("w-1/2 py-2", {
-              "border-b-2 border-blue-500": activeTab === "pegawai",
-              "text-gray-500": activeTab !== "pegawai",
-            })}
-            onClick={() => setActiveTab("pegawai")}
-          >
-            Data Pegawai
-          </button>
-        </div>
-
-        {activeTab === "pribadi" ? (
-          <Formik
-            initialValues={modal.initialValues}
-            validationSchema={validationSchemaPribadi}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-                <InputText
-                  label="Nama"
-                  name="nama"
-                  placeholder="Nama"
-                />
-                <InputText
-                  label="Username"
-                  name="username"
-                  placeholder="Username"
-                />
-                <InputEmail
-                  label="Email"
-                  name="email"
-                  placeholder="Email"
-                />
-                <InputText
-                  label="No Identitas (KTP)"
-                  name="no_identitas"
-                  placeholder="No Identitas (KTP)"
-                />
-                <InputSelect
-                  label="Jenis Kelamin"
-                  name="jenis_kelamin"
-                  options={[
-                    { value: "Laki-laki", label: "Laki-laki" },
-                    { value: "Perempuan", label: "Perempuan" },
-                  ]}
-                  placeholder="Pilih Jenis Kelamin"
-                />
-                <InputText
-                  label="No Telepon"
-                  name="no_telepon"
-                  placeholder="No Telepon"
-                />
-                <InputText
-                  label="Tempat Lahir"
-                  name="tempat_lahir"
-                  placeholder="Tempat Lahir"
-                />
-                <InputDate
-                  label="Tanggal Lahir"
-                  name="tgl_lahir"
-                  placeholder="Tanggal Lahir"
-                />
-                <InputSelect
-                  label="Agama"
-                  name="agama"
-                  options={[
-                    { label: "Islam", value: "Islam" },
-                    { label: "Protestan", value: "Protestan" },
-                    { label: "Katolik", value: "Katolik" },
-                    { label: "Hindu", value: "Hindu" },
-                    { label: "Buddha", value: "Buddha" },
-                    { label: "Khonghucu", value: "Khonghucu" },
-                  ]}
-                  placeholder="Pilih Agama"
-                />
-                <InputText
-                  label="NPWP"
-                  name="npwp"
-                  placeholder="NPWP"
-                />
-                <InputText
-                  label="Alamat (KTP)"
-                  name="alamat_ktp"
-                  placeholder="Alamat (KTP)"
-                />
-                <InputText
-                  label="Alamat (Domisili)"
-                  name="alamat_domisili"
-                  placeholder="Alamat (Domisili)"
-                />
-                <InputSelect
-                  label="Cabang"
-                  name="cabang_id"
-                  options={[
-                    { label: "1", value: "1" },
-                    { label: "2", value: "2" },
-                  ]}
-                />
-                <div className="flex justify-end mt-4">
-                  <Button
-                    btnName={"Submit"}
-                    doClick={() => { }}
-                    onLoading={isSubmitting}
-                    type="button"
+        <Formik
+          initialValues={modal.initialValues}
+          validationSchema={
+            modal.modalType === "add" ? validationSchemaPribadi : validationSchemaPegawai
+          }
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched }) => (
+            <Form>
+              {activeTab === "pribadi" && (
+                <>
+                  <InputText
+                    label="Nama"
+                    name="nama"
+                    placeholder="Nama"
+                    required
+                    error={errors.nama}
+                    touched={touched.nama}
                   />
-                </div>
-              </Form>
-            )}
-          </Formik>
-        ) : (
-          <Formik
-            initialValues={modal.initialValues}
-            validationSchema={validationSchemaPegawai}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-                <InputText
-                  label="ID Pegawai"
-                  name="id_pegawai"
-                  placeholder="Input ID Pegawai"
-                />
-                <InputText
-                  label="Pangkat"
-                  name="pangkat_id"
-                  placeholder="Input Pangkat"
-                />
-                <div className="flex justify-end mt-4">
-                  <Button
-                    btnName={"Submit"}
-                    doClick={() => { }}
-                    onLoading={isSubmitting}
-                    type="button"
+                  <InputText
+                    label="Username"
+                    name="username"
+                    placeholder="Username"
+                    required
+                    error={errors.username}
+                    touched={touched.username}
                   />
-                </div>
-              </Form>
-            )}
-          </Formik>
-        )}
+                  <InputEmail
+                    label="Email"
+                    name="email"
+                    placeholder="Email"
+                    required
+                    error={errors.email}
+                    touched={touched.email}
+                  />
+                  <InputText
+                    label="No Identitas"
+                    name="no_identitas"
+                    placeholder="No Identitas"
+                    required
+                    error={errors.no_identitas}
+                    touched={touched.no_identitas}
+                  />
+                  <InputSelect
+                    label="Jenis Kelamin"
+                    name="jenis_kelamin"
+                    placeholder="Jenis Kelamin"
+                    options={[
+                      { value: "", label: "Select" },
+                      { value: "L", label: "Laki-laki" },
+                      { value: "P", label: "Perempuan" },
+                    ]}
+                    required
+                    error={errors.jenis_kelamin}
+                    touched={touched.jenis_kelamin}
+                  />
+                  <InputText
+                    label="No Telepon"
+                    name="no_telepon"
+                    placeholder="No Telepon"
+                    required
+                    error={errors.no_telepon}
+                    touched={touched.no_telepon}
+                  />
+                  <InputText
+                    label="Tempat Lahir"
+                    name="tempat_lahir"
+                    placeholder="Tempat Lahir"
+                    required
+                    error={errors.tempat_lahir}
+                    touched={touched.tempat_lahir}
+                  />
+                  <InputDate
+                    label="Tanggal Lahir"
+                    name="tgl_lahir"
+                    placeholder="Tanggal Lahir"
+                    required
+                    error={errors.tgl_lahir}
+                    touched={touched.tgl_lahir}
+                  />
+                  <InputText
+                    label="Agama"
+                    name="agama"
+                    placeholder="Agama"
+                    required
+                    error={errors.agama}
+                    touched={touched.agama}
+                  />
+                  <InputText
+                    label="NPWP"
+                    name="npwp"
+                    placeholder="NPWP"
+                    required
+                    error={errors.npwp}
+                    touched={touched.npwp}
+                  />
+                  <InputText
+                    label="Alamat KTP"
+                    name="alamat_ktp"
+                    placeholder="Alamat KTP"
+                    required
+                    error={errors.alamat_ktp}
+                    touched={touched.alamat_ktp}
+                  />
+                  <InputText
+                    label="Alamat Domisili"
+                    name="alamat_domisili"
+                    placeholder="Alamat Domisili"
+                    required
+                    error={errors.alamat_domisili}
+                    touched={touched.alamat_domisili}
+                  />
+                  <InputSelect
+                    label="Cabang"
+                    name="cabang_id"
+                    placeholder="Cabang"
+                    options={cabangOptions}
+                    required
+                    error={errors.cabang_id}
+                    touched={touched.cabang_id}
+                  />
+                </>
+              )}
+              {activeTab === "pegawai" && (
+                <>
+                  <InputText
+                    label="ID Pegawai"
+                    name="id_pegawai"
+                    placeholder="ID Pegawai"
+                    required
+                    error={errors.id_pegawai}
+                    touched={touched.id_pegawai}
+                  />
+                  <InputSelect
+                    label="Pangkat"
+                    name="pangkat_id"
+                    placeholder="Pangkat"
+                    options={[]} // Populate these options based on your API data
+                    required
+                    error={errors.pangkat_id}
+                    touched={touched.pangkat_id}
+                  />
+                  <InputSelect
+                    label="Jabatan"
+                    name="jabatan_id"
+                    placeholder="Jabatan"
+                    options={[]} // Populate these options based on your API data
+                    required
+                    error={errors.jabatan_id}
+                    touched={touched.jabatan_id}
+                  />
+                  <InputSelect
+                    label="Departemen"
+                    name="departemen_id"
+                    placeholder="Departemen"
+                    options={[]} // Populate these options based on your API data
+                    required
+                    error={errors.departemen_id}
+                    touched={touched.departemen_id}
+                  />
+                  <InputSelect
+                    label="Divisi"
+                    name="divisi_id"
+                    placeholder="Divisi"
+                    options={[]} // Populate these options based on your API data
+                    required
+                    error={errors.divisi_id}
+                    touched={touched.divisi_id}
+                  />
+                  <InputSelect
+                    label="Unit"
+                    name="unit_id"
+                    placeholder="Unit"
+                    options={[]} // Populate these options based on your API data
+                    required
+                    error={errors.unit_id}
+                    touched={touched.unit_id}
+                  />
+                  <InputDate
+                    label="Tanggal Bergabung"
+                    name="tgl_bergabung"
+                    placeholder="Tanggal Bergabung"
+                    required
+                    error={errors.tgl_bergabung}
+                    touched={touched.tgl_bergabung}
+                  />
+                  <InputDate
+                    label="Tanggal Resign"
+                    name="tgl_resign"
+                    placeholder="Tanggal Resign"
+                    error={errors.tgl_resign}
+                    touched={touched.tgl_resign}
+                  />
+                </>
+              )}
+              <div className="flex justify-end mt-4">
+                <Button type="submit" color="blue">
+                  Submit
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </div>
   );
