@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 // components
-import { DonutChart, CardTable } from "@/components";
+import { DonutChart, Card } from "@/components";
 import { icons } from "../../../public/icons";
 
 // functions
@@ -184,7 +184,7 @@ const DashboardPage = () => {
           />
         </div>
         <div className="col-span-full lg:col-span-3">
-          <CardTable
+          <Card
             filter
             cardColor="to-white dark:to-gray-700"
             title={"Presensi Pegawai"}
@@ -212,7 +212,7 @@ const DashboardPage = () => {
           />
         </div>
         <div className="col-span-full lg:col-span-3">
-          <CardTable
+          <Card
             filter
             cardColor="to-white dark:to-gray-700"
             title={"Absensi Pegawai"}

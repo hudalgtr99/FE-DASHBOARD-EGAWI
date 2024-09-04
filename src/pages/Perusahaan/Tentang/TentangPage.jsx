@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 
 // components
-import { CardContainer } from "@/components";
+import { Container } from "@/components";
 
 const TentangPage = () => {
   return (
@@ -14,7 +14,7 @@ const TentangPage = () => {
             alt="LogoQNN"
           />
         </div>
-        <CardContainer>
+        <Container>
           <h1 className="text-black dark:text-white text-md font-bold text-center my-2 md:text-center md:text-2xl md:my-8">
             Merupakan Perusahaan bergerak dalam jasa penyedia layanan internet,
             backbone, maintenance jaringan internet, Pengembangan Perangkat
@@ -25,7 +25,7 @@ const TentangPage = () => {
           </h1>
           <div className="flex justify-between items-center py-4">
             <div className="flex flex-col py-4 md:pt-0 gap-8">
-              <h1 className="text-sm md:text-xl text-black dark:text-white font-bold text-justify">
+              <h1 className="text-sm md:text-xl text-black dark:text-white font-bold text-justify mx-4">
                 Nilai-Nilai Perusahaan Kami adalah Nilai Nilai Orientasi pada
                 Kemitraan. Kami Sangat sadar bahwa Mitra Merupakan Salah satu
                 kesatuan yang tidak dapat dipisahkan. Oleh Karena itu kami
@@ -33,7 +33,7 @@ const TentangPage = () => {
                 kerja sama yang kami jalani. Hubungan baik antar mitra akan
                 selalu kami bina walaupin masa kerja sama telah berakhir.
               </h1>
-              <h1 className="text-sm md:text-xl text-black dark:text-white font-bold text-justify">
+              <h1 className="text-sm md:text-xl text-black dark:text-white font-bold text-justify mx-4">
                 Efektivitas dan Efisiensi solusi Orientasi Kemitraan Memberikan
                 Solusi Merupakan tujuan utama dalam setiap jasa yang kami
                 berikan. Kami mengkaji dengan seksama setiap masalah yang
@@ -44,7 +44,7 @@ const TentangPage = () => {
               </h1>
             </div>
           </div>
-        </CardContainer>
+        </Container>
       </div>
     </Fragment>
   );

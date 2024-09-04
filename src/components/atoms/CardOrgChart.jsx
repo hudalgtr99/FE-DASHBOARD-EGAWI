@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
 // components
-import { CardContainer } from "@/components";
+import { Container } from "@/components";
 
 const propTypes = {
 	nodeData: PropTypes.object.isRequired,
@@ -13,7 +13,7 @@ const CardOrgChart = ({ nodeData }) => {
 		<Fragment>
 			<div className="flex justify-center text-xs">
 				<div className="w-32 rounded">
-					<CardContainer>
+					<Container>
 						{nodeData.fotoProfil && (
 							<div className="flex mb-2 justify-center w-full h-28 overflow-clip">
 								<img
@@ -31,7 +31,7 @@ const CardOrgChart = ({ nodeData }) => {
 								{nodeData.jabatan}
 							</span>
 						)}
-					</CardContainer>
+					</Container>
 				</div>
 			</div>
 		</Fragment>

@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import CardContainer from './CardContainer'; // Adjust the import path as needed
+import Container from './Container'; // Adjust the import path as needed
 
 const ColumnChart = ({ colors, icon, title, directionColor, isDark, isRtl }) => {
     const chartConfig = {
@@ -74,7 +74,7 @@ const ColumnChart = ({ colors, icon, title, directionColor, isDark, isRtl }) => 
 
     return (
         <Fragment>
-            <CardContainer
+            <Container
                 colors={colors}
                 icon={icon}
                 title={title}
@@ -88,7 +88,7 @@ const ColumnChart = ({ colors, icon, title, directionColor, isDark, isRtl }) => 
                         height={460}
                     />
                 </div>
-            </CardContainer>
+            </Container>
         </Fragment>
     );
 };

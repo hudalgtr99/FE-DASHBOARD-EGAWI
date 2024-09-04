@@ -4,8 +4,7 @@ import * as Yup from "yup";
 import {
   Modal,
   Card,
-  CardContainer,
-  TableController,
+  Container,
 } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { cabangReducer } from "@/reducers/cabangReducers";
@@ -186,13 +185,8 @@ const CabangPage = () => {
   return (
     <div>
       <div className="grid grid-cols-1 gap-4">
-        <CardContainer>
-          <TableController
-            title="Cabang"
-            doSearch={() => { }}
-            onAdd={onAdd}
-          />
-        </CardContainer>
+        <Container>
+        </Container>
         <div className="grid grid-cols-6 gap-3">
           {card.map((item, itemIdx) => (
             <div

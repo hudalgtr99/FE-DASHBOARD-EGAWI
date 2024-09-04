@@ -1,59 +1,211 @@
-import React, { Fragment } from "react";
+import { DOTS, usePagination } from "@/hooks/usePagination";
+import { TbChevronLeft, TbChevronRight, TbDots } from "react-icons/tb";
+import { Button } from "..";
+import { useContext } from "react";
+import { ThemeContext } from "@/context/ThemeContext";
+import PropTypes from "prop-types";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
-// components
-import ReactPaginate from "react-paginate";
-import { icons } from "../../../public/icons";
+/**
+ *
+ * @param {{
+ * onPageChange: (page: number) => void;
+ * totalCount: number;
+ * siblingCount: number;
+ * currentPage: number;
+ * pageSize: number;
+ * activeColor: "primary" | "base" | "success" | "warning" | "danger" | "info";
+ * rounded: "none" | "sm" | "rounded" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+ * variant: "solid" | "flat";
+ * size: "xs" | "sm" | "md" | "lg" | "xl";
+ * }}
+ *
+ */
 
 const Pagination = ({
-  handlePageClick,
-  pageCount,
-  limit,
-  setLimit,
-  pageActive,
+  onPageChange,
+  totalCount,
+  siblingCount = 1,
+  currentPage,
+  pageSize,
+  activeColor,
+  rounded,
+  variant,
+  size,
 }) => {
+  const { themeColor, colorMode } = useContext(ThemeContext);
+
+  const { width } = useWindowSize();
+  const siblings = width < 640 ? 0 : siblingCount;
+
+  const paginationRange = usePagination({
+    currentPage,
+    totalCount,
+    siblingCount: siblings,
+    pageSize,
+  });
+
+  const onNext = () => {
+    onPageChange(currentPage + 1);
+  };
+
+  const onPrevious = () => {
+    onPageChange(currentPage - 1);
+  };
+
+  // Color
+  const colorPagination =
+    {
+      primary: themeColor,
+      base: "#BABCBD",
+      success: "#4ED17E",
+      warning: "#EEC239",
+      danger: "#F26969",
+      info: "#629BF8",
+    }[activeColor] || activeColor;
+
+  // Size
+  const sizePagination =
+    {
+      xs: 25,
+      sm: 30,
+      md: 35,
+      lg: 40,
+      xl: 45,
+    }[size] || size;
+
+  let lastPage = paginationRange[paginationRange?.length - 1];
+
   return (
-    <Fragment>
-      <div className="sm:flex justify-between items-center mt-2">
-        <div className="flex items-center">
-          {limit && (
-            <select
-              value={limit}
-              className="flex justify-center px-1 bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 rounded-md h-7 outline-none dark:text-white"
-              onChange={(e) => setLimit(parseInt(e.target.value))}
-            >
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-          )}
+    <div className={`flex gap-2`}>
+      {totalCount > 0 && (
+        <>
+          {/* Left */}
+          <Button
+            size={sizePagination}
+            className={`text-xs`}
+            color={colorMode === "light" ? "#BABCBD95" : "#4D535595"}
+            textcolor={`${colorMode === "light" ? "#171C1E" : "white"}`}
+            variant={variant}
+            rounded={rounded}
+            onClick={onPrevious}
+            disabled={currentPage === 1}
+          >
+            <TbChevronLeft />
+          </Button>
 
-          <div className="ml-1 text-xs dark:text-white">{pageCount} entries</div>
-        </div>
+          {paginationRange.map((pageNumber, index) => {
+            {
+              /* Dots */
+            }
+            if (pageNumber === DOTS) {
+              return (
+                <Button
+                  key={index}
+                  size={sizePagination}
+                  className="text-xs"
+                  color={colorMode === "light" ? "#BABCBD95" : "#4D535595"}
+                  textcolor={`${colorMode === "light" ? "#171C1E" : "white"}`}
+                  variant={variant}
+                  rounded={rounded}
+                  disabled
+                >
+                  <TbDots />
+                </Button>
+              );
+            }
 
-        {limit && (
-          <ReactPaginate
-            className="flex justify-center mt-4 sm:mt-0 sm:justify-end text-gray-800 dark:text-white"
-            pageLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 mx-1 w-7 h-7 flex rounded-md justify-center items-center outline-none"
-            activeLinkClassName="border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"
-            previousLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 mr-1 w-7 h-7 flex rounded-md justify-center items-center"
-            nextLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 w-7 ml-1 h-7 flex rounded-md justify-center items-center"
-            breakLinkClassName="bg-white dark:bg-gray-800 text-xs border border-gray-300 dark:border-gray-700 w-7 mx-1 h-7 flex rounded-md justify-center items-end"
-            disabledLinkClassName="text-white dark:text-gray-500"
-            breakLabel={icons.hioutlinedotshorizontal}
-            renderOnZeroPageCount={null}
-            previousLabel={icons.mdkeyboardarrowleft}
-            nextLabel={icons.mdkeyboardarrowright}
-            pageCount={Math.ceil(pageCount / limit)}
-            onPageChange={(e) => handlePageClick(e)}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={2}
-            forcePage={pageActive}
-          />
-        )}
-      </div>
-    </Fragment>
+            {
+              /* Number */
+            }
+            return (
+              <Button
+                key={index}
+                size={sizePagination}
+                className="text-xs"
+                color={
+                  pageNumber === currentPage
+                    ? colorPagination
+                    : colorMode === "light"
+                      ? "#BABCBD95"
+                      : "#4D535595"
+                }
+                textcolor={
+                  pageNumber === currentPage
+                    ? "white"
+                    : colorMode === "light"
+                      ? "#171C1E"
+                      : "white"
+                }
+                variant={variant}
+                rounded={rounded}
+                onClick={() => onPageChange(pageNumber)}
+              >
+                {pageNumber}
+              </Button>
+            );
+          })}
+
+          {/* Right */}
+          <Button
+            size={sizePagination}
+            className="text-xs"
+            color={colorMode === "light" ? "#BABCBD95" : "#4D535595"}
+            textcolor={`${colorMode === "light" ? "#171C1E" : "white"}`}
+            variant={variant}
+            rounded={rounded}
+            disabled={currentPage === lastPage}
+            onClick={onNext}
+          >
+            <TbChevronRight />
+          </Button>
+        </>
+      )}
+    </div>
   );
+};
+
+Pagination.propTypes = {
+  onPageChange: PropTypes.func,
+  totalCount: PropTypes.number,
+  siblingCount: PropTypes.number,
+  currentPage: PropTypes.number,
+  pageSize: PropTypes.number,
+  activeColor: PropTypes.oneOfType([
+    PropTypes.oneOf([
+      "primary",
+      "base",
+      "success",
+      "warning",
+      "danger",
+      "info",
+    ]),
+    PropTypes.string,
+  ]),
+  rounded: PropTypes.oneOf([
+    "none",
+    "sm",
+    "rounded",
+    "md",
+    "lg",
+    "xl",
+    "2xl",
+    "3xl",
+    "full",
+  ]),
+  variant: PropTypes.oneOf(["solid", "flat"]),
+  size: PropTypes.oneOfType([
+    PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"]),
+    PropTypes.number,
+  ]),
+};
+
+Pagination.defaultProps = {
+  siblingCount: 1,
+  activeColor: "primary",
+  rounded: "md",
+  variant: "flat",
+  size: "md",
 };
 
 export default Pagination;

@@ -6,13 +6,12 @@ import * as Yup from "yup";
 // components
 import {
   Button,
-  CardContainer,
+  Container,
   Pagination,
-  Table,
+  Tables,
   Modal,
   InputText,
   InputSelect,
-  TableController,
 } from "@/components";
 import { icons } from "../../../../../public/icons";
 
@@ -228,16 +227,11 @@ const DivisiSub = () => {
 
   return (
     <div>
-      <CardContainer>
-        <TableController
-          title="Divisi"
-          doSearch={doSearch}
-          onAdd={onAdd}
-        />
+      <Container>
         <div className="mt-2">
-          <Table
+          <Tables
             dataColumns={dataColumns}
-            dataTables={dataWithIndex}
+            dataTabless={dataWithIndex}
             isLoading={getDivisiLoading}
             isError={getDivisiError}
             actions={actions}
@@ -250,7 +244,7 @@ const DivisiSub = () => {
           pageActive={pageActive}
           setLimit={handleSelect}
         />
-      </CardContainer>
+      </Container>
 
       <Modal
         isOpen={modalOpen}

@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import CardContainer from './CardContainer'; // Adjust the import path as needed
+import Container from './Container'; // Adjust the import path as needed
 
 const RadialBarChart = ({ colors, icon, title, directionColor, isDark }) => {
     const chartConfig = {
@@ -48,7 +48,7 @@ const RadialBarChart = ({ colors, icon, title, directionColor, isDark }) => {
 
     return (
         <Fragment>
-            <CardContainer
+            <Container
                 colors={colors}
                 icon={icon}
                 title={title}
@@ -62,7 +62,7 @@ const RadialBarChart = ({ colors, icon, title, directionColor, isDark }) => {
                         height={460}
                     />
                 </div>
-            </CardContainer>
+            </Container>
         </Fragment>
     );
 };

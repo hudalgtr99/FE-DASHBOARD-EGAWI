@@ -15,10 +15,9 @@ import {
 import { icons } from "../../../../../public/icons";
 import {
   Button,
-  CardContainer,
+  Container,
   Pagination,
-  Table,
-  TableController,
+  Tables,
   Modal,
   InputText,
   InputTextArea,
@@ -226,16 +225,11 @@ const PangkatSub = () => {
 
   return (
     <div>
-      <CardContainer>
-        <TableController
-          title="Pangkat"
-          doSearch={doSearch}
-          onAdd={onAdd}
-        />
+      <Container>
         <div className="mt-2">
-          <Table
+          <Tables
             dataColumns={dataColumns}
-            dataTables={dataWithIndex}
+            dataTabless={dataWithIndex}
             isLoading={getPangkatLoading}
             isError={getPangkatError}
             actions={actions}
@@ -248,7 +242,7 @@ const PangkatSub = () => {
           setLimit={handleSelect}
           pageActive={pageActive}
         />
-      </CardContainer>
+      </Container>
 
       <Modal
         isOpen={modalOpen}

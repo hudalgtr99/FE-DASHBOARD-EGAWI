@@ -1,9 +1,8 @@
 import {
   Button,
-  CardContainer,
+  Container,
   Pagination,
-  Table,
-  TableController,
+  Tables,
   Modal,
   InputText,
   InputTextArea,
@@ -219,16 +218,11 @@ const JabatanSub = () => {
 
   return (
     <div>
-      <CardContainer>
-        <TableController
-          title="Jabatan"
-          doSearch={doSearch}
-          onAdd={onAdd}
-        />
+      <Container>
         <div className="mt-2">
-          <Table
+          <Tables
             dataColumns={dataColumns}
-            dataTables={dataWithIndex}
+            dataTabless={dataWithIndex}
             isLoading={getJabatanLoading}
             isError={getJabatanError}
             actions={actions}
@@ -241,7 +235,7 @@ const JabatanSub = () => {
           setLimit={handleSelect}
           pageActive={pageActive}
         />
-      </CardContainer>
+      </Container>
 
       {/* Modal Implementation */}
       <Modal

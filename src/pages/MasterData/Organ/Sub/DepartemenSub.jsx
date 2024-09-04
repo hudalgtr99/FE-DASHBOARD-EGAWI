@@ -6,12 +6,11 @@ import * as Yup from 'yup';
 // components
 import {
   Button,
-  CardContainer,
+  Container,
   Pagination,
-  Table,
+  Tables,
   Modal,
   InputText,
-  TableController,
 } from "@/components";
 import { icons } from "../../../../../public/icons";
 
@@ -220,16 +219,11 @@ const DepartemenSub = () => {
 
   return (
     <div>
-      <CardContainer>
-        <TableController
-          title="Departemen"
-          doSearch={doSearch}
-          onAdd={onAdd}
-        />
+      <Container>
         <div className="mt-2">
-          <Table
+          <Tables
             dataColumns={dataColumns}
-            dataTables={dataWithIndex}
+            dataTabless={dataWithIndex}
             isLoading={getDepartemenLoading}
             isError={getDepartemenError}
             actions={actions}
@@ -242,7 +236,7 @@ const DepartemenSub = () => {
           setLimit={handleSelect}
           pageActive={pageActive}
         />
-      </CardContainer>
+      </Container>
 
       <Modal
         isOpen={modalOpen}
