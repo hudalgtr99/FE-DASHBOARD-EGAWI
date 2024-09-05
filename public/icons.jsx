@@ -71,6 +71,8 @@ import {
   AiFillCamera,
   AiTwotoneApi,
 } from "react-icons/ai";
+import { CiTrash } from "react-icons/ci";
+import { BsPencil } from "react-icons/bs";
 
 export const icons = {
   aitwotoneapi: <AiTwotoneApi />,
@@ -135,4 +137,6 @@ export const icons = {
   aifilleye: <AiFillEye />,
   aifilleyeinvisible: <AiFillEyeInvisible />,
   aifillcamera: <AiFillCamera />,
+  citrash: <CiTrash />,
+  bspencil: <BsPencil />,
 };

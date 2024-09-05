@@ -11,49 +11,41 @@ import {
 } from '@/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { addData, updateData } from '@/actions';
-import { pangkatReducers } from '@/reducers/strataReducers';
-import { API_URL_createpangkat, API_URL_edelpangkat } from '@/constants';
+import { jabatanReducers } from '@/reducers/strataReducers';
+import { API_URL_createjabatan, API_URL_edeljabatan } from '@/constants';
 
-const PangkatSubForm = () => {
+const JabatanSubForm = () => {
   const { pk } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { getPangkatResult } = useSelector(state => state.strata);
+  const { getJabatanResult } = useSelector(state => state.strata);
   const [initialValues, setInitialValues] = useState({
     nama: '',
-    grade: '',
-    level: '',
     keterangan: '',
   });
   const [loading, setLoading] = useState(true);
 
-  const validationSchema = Yup.object({
-    nama: Yup.string().required('Nama Pangkat is required'),
-    grade: Yup.string().required('Grade is required'),
-    level: Yup.number()
-      .typeError('Level must be a number')
-      .required('Level is required')
-      .positive('Level must be a positive number')
-      .integer('Level must be an integer'),
+  const validationSchema = Yup.object().shape({
+    nama: Yup.string().required("Nama Jabatan is required"),
     keterangan: Yup.string(),
   });
 
   const isEdit = pk && pk !== 'add';
 
   useEffect(() => {
-    if (isEdit && getPangkatResult?.results) {
-      const foundPangkat = getPangkatResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundPangkat) {
+    if (isEdit && getJabatanResult?.results) {
+      const foundJabatan = getJabatanResult.results.find(item => item.pk === parseInt(pk, 10));
+      if (foundJabatan) {
         setInitialValues({
-          nama: foundPangkat.nama || '',
-          grade: foundPangkat.grade || '',
-          level: foundPangkat.level || '',
-          keterangan: foundPangkat.keterangan || '',
+          nama: foundJabatan.nama || '',
+          grade: foundJabatan.grade || '',
+          level: foundJabatan.level || '',
+          keterangan: foundJabatan.keterangan || '',
         });
       }
     }
     setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getPangkatResult]);
+  }, [isEdit, pk, getJabatanResult]);
 
   const formik = useFormik({
     initialValues,
@@ -63,17 +55,17 @@ const PangkatSubForm = () => {
       try {
         if (isEdit) {
           await updateData(
-            { dispatch, redux: pangkatReducers },
+            { dispatch, redux: jabatanReducers },
             { pk: pk, ...values },
-            API_URL_edelpangkat,
-            'UPDATE_PANGKAT'
+            API_URL_edeljabatan,
+            'UPDATE_JABATAN'
           );
         } else {
           await addData(
-            { dispatch, redux: pangkatReducers },
+            { dispatch, redux: jabatanReducers },
             values,
-            API_URL_createpangkat,
-            'ADD_PANGKAT'
+            API_URL_createjabatan,
+            'ADD_JABATAN'
           );
         }
         navigate('/masterdata/strata');
@@ -97,34 +89,17 @@ const PangkatSubForm = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Pangkat' : 'Add Pangkat'}</h1>
+          <h1>{isEdit ? 'Edit Jabatan' : 'Add Jabatan'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
-              label="Nama Pangkat"
+              label="Nama Jabatan"
               name="nama"
               value={formik.values.nama}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.nama ? formik.errors.nama : ''}
-            />
-            <TextField
-              label="Grade"
-              name="grade"
-              value={formik.values.grade}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.grade ? formik.errors.grade : ''}
-            />
-            <TextField
-              label="Level"
-              name="level"
-              type="text"
-              value={formik.values.level}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.level ? formik.errors.level : ''}
             />
             <TextArea
               label="Keterangan"
@@ -142,4 +117,4 @@ const PangkatSubForm = () => {
   );
 }
 
-export default PangkatSubForm;
+export default JabatanSubForm;

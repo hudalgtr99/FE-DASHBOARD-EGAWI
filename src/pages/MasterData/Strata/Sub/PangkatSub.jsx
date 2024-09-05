@@ -19,9 +19,12 @@ import {
   Container,
   Pagination,
   Tables,
+  Limit,
+  TextField,
+  Tooltip,
 } from '@/components';
-import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { debounce } from 'lodash'; // Import lodash debounce
 
 const PangkatSub = () => {
   const {
@@ -51,12 +54,21 @@ const PangkatSub = () => {
       .integer("Level must be an integer")
   });
 
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const param = value
+        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      get(param);
+    }, 300),
+    [limit, pageActive]
+  );
+
   const doSearch = (e) => {
     const { value } = e.target;
     setSearch(value);
-    setLimit(10);
+    debouncedSearch(value);
     setPageActive(0);
-    get({ param: "?search=" + value });
   };
 
   const onAdd = () => {
@@ -88,41 +100,35 @@ const PangkatSub = () => {
     [dispatch]
   );
 
-  const handlePageClick = (e) => {
-    const offset = e.selected * limit;
-    const param =
-      search === ""
-        ? { param: "?limit=" + limit + "&offset=" + offset }
-        : {
-          param:
-            "?search=" + search + "&limit=" + limit + "&offset=" + offset,
-        };
+  const handlePageClick = (page) => {
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+    const param = search
+      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
+      : { param: `?limit=${limit}&offset=${offset}` };
+
     get(param);
-    setPageActive(e.selected);
+    setPageActive(page - 1); // Set the active page
   };
 
-  const handleSelect = (e) => {
-    const param =
-      search === ""
-        ? { param: "?limit=" + e }
-        : {
-          param: "?search=" + search + "&limit=" + e,
-        };
+  const handleSelect = (newLimit) => {
+    const param = search
+      ? { param: `?search=${search}&limit=${newLimit}` }
+      : { param: `?limit=${newLimit}` };
     get(param);
-    setLimit(e);
+    setLimit(newLimit);
     setPageActive(0);
   };
 
   const [actions] = useState([
     {
-      name: "edit",
-      icon: icons.fiedit,
-      color: "text-blue-500",
+      name: "Edit",
+      icon: icons.bspencil,
+      color: "text-green-500",
       func: onEdit,
     },
     {
-      name: "delete",
-      icon: icons.rideletebin6line,
+      name: "Delete",
+      icon: icons.citrash,
       color: "text-red-500",
       func: doDelete,
     },
@@ -131,7 +137,7 @@ const PangkatSub = () => {
   useEffect(() => {
     const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
     get(param);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [limit, pageActive, get]);
 
   useEffect(() => {
     if (
@@ -141,13 +147,9 @@ const PangkatSub = () => {
       deletePangkatResult
     ) {
       const offset = pageActive * limit;
-      const param =
-        search === ""
-          ? { param: "?limit=" + limit + "&offset=" + offset }
-          : {
-            param:
-              "?search=" + search + "&limit=" + limit + "&offset=" + offset,
-          };
+      const param = search
+        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
+        : { param: `?limit=${limit}&offset=${offset}` };
       get(param);
     }
   }, [
@@ -155,8 +157,11 @@ const PangkatSub = () => {
     addPangkatResult,
     deleteJabatanResult,
     deletePangkatResult,
-    dispatch,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
   const dataWithIndex = getPangkatResult.results
     ? getPangkatResult.results.map((item, index) => ({
@@ -168,7 +173,16 @@ const PangkatSub = () => {
   return (
     <div>
       <Container>
-        <Button onClick={onAdd}>Add Pangkat</Button>
+        <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
+          <div className="w-full sm:w-60">
+            <TextField
+              onChange={doSearch}
+              placeholder="Search"
+              value={search}
+            />
+          </div>
+          <Button onClick={onAdd}>Tambah Pangkat</Button>
+        </div>
         <Tables>
           <Tables.Head>
             <tr>
@@ -177,7 +191,7 @@ const PangkatSub = () => {
               <Tables.Header>Grade</Tables.Header>
               <Tables.Header>Level</Tables.Header>
               <Tables.Header>Keterangan</Tables.Header>
-              <Tables.Header>Actions</Tables.Header>
+              <Tables.Header center>Actions</Tables.Header>
             </tr>
           </Tables.Head>
           <Tables.Body>
@@ -188,30 +202,42 @@ const PangkatSub = () => {
                 <Tables.Data>{item.grade}</Tables.Data>
                 <Tables.Data>{item.level}</Tables.Data>
                 <Tables.Data>{item.keterangan}</Tables.Data>
-                <Tables.Data>
-                  {actions.map((action) => (
-                    <Button
-                      key={action.name}
-                      onClick={() => action.func(item)}
-                      className={action.color}
-                    >
-                      <img src={action.icon} alt={action.name} />
-                    </Button>
-                  ))}
+                <Tables.Data center>
+                  <div className="flex items-center justify-center gap-2">
+                    {actions.map((action) => (
+                      <Tooltip key={action.name} tooltip={action.name}>
+                        <div
+                          key={action.name}
+                          onClick={() => action.func(item)}
+                          className={action.color}
+                        >
+                          {action.icon}
+                        </div>
+                      </Tooltip>
+                    ))}
+                  </div>
                 </Tables.Data>
               </Tables.Row>
             ))}
           </Tables.Body>
         </Tables>
-        <Pagination
-          pageCount={Math.ceil(getPangkatResult.count / limit)}
-          onPageChange={handlePageClick}
-          onSelectChange={handleSelect}
-          currentPage={pageActive}
-          limit={limit}
-        />
+        <div className="flex justify-between items-center mt-4">
+          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
+          <Pagination
+            totalCount={getPangkatResult.count} // Total items count from the API result
+            pageSize={limit} // Items per page (limit)
+            currentPage={pageActive + 1} // Current page
+            onPageChange={handlePageClick} // Page change handler
+            siblingCount={1} // Number of sibling pages (adjust as needed)
+            activeColor="primary" // Optional: active page color
+            rounded="md" // Optional: rounded button style
+            variant="flat" // Optional: button variant
+            size="md" // Optional: button size
+          />
+        </div>
       </Container>
     </div>
   );
 };
+
 export default PangkatSub;

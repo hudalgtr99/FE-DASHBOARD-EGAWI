@@ -14,11 +14,14 @@ import Tables from "./atoms/Tables";
 import Tabs from "./atoms/Tabs";
 import Layout from "./layout/Layout";
 import Loading from "./atoms/Loading";
+import Tooltip from "./atoms/Tooltip";
 import InputDate from "./forms/InputDate";
 import InputEmail from "./forms/InputEmail";
 import InputSelect from "./forms/InputSelect";
 import InputText from "./forms/InputText";
 import InputTextArea from "./forms/InputTextArea";
+import TextArea from "./forms/TextArea";
+import TextField from "./forms/TextField";
 
 export {
 	Button,
@@ -37,9 +40,12 @@ export {
 	Tabs,
 	Layout,
 	Loading,
+	Tooltip,
 	InputDate,
 	InputEmail,
 	InputSelect,
 	InputText,
 	InputTextArea,
+	TextArea,
+	TextField,
 };
