@@ -1,29 +1,27 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   addData,
   deleteData,
   getData,
   updateData,
-} from "@/actions";
-import { pangkatReducers } from "@/reducers/strataReducers";
+} from '@/actions';
+import { pangkatReducers } from '@/reducers/strataReducers';
 import {
   API_URL_createpangkat,
   API_URL_edelpangkat,
   API_URL_getpangkat,
-} from "@/constants";
+} from '@/constants';
 import { icons } from "../../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Modal,
-  InputText,
-  InputTextArea,
-} from "@/components";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+} from '@/components';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 
 const PangkatSub = () => {
   const {
@@ -36,21 +34,12 @@ const PangkatSub = () => {
     deletePangkatResult,
   } = useSelector((state) => state.strata);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editItem, setEditItem] = useState(null);
-
-  const dataColumns = [
-    { name: "ID", value: "index" },
-    { name: "Nama Pangkat", value: "nama" },
-    { name: "Grade", value: "grade" },
-    { name: "Level", value: "level" },
-    { name: "Keterangan", value: "keterangan" },
-  ];
 
   const validationSchema = Yup.object({
     nama_pangkat: Yup.string().required("Nama Pangkat is required"),
@@ -71,13 +60,11 @@ const PangkatSub = () => {
   };
 
   const onAdd = () => {
-    setEditItem(null);
-    setModalOpen(true);
+    navigate('/pangkat/form');
   };
 
   const onEdit = (item) => {
-    setEditItem(item);
-    setModalOpen(true);
+    navigate(`/pangkat/form/${item.pk}`);
   };
 
   const doDelete = (item) => {
@@ -87,51 +74,6 @@ const PangkatSub = () => {
       API_URL_edelpangkat,
       "DELETE_PANGKAT"
     );
-  };
-
-  const doSubmit = async (values, { setSubmitting }) => {
-    try {
-      if (editItem) {
-        updateData(
-          { dispatch, redux: pangkatReducers },
-          {
-            pk: editItem.pk,
-            nama: values.nama_pangkat,
-            grade: values.grade,
-            level: values.level,
-            keterangan: values.keterangan,
-          },
-          API_URL_edelpangkat,
-          "UPDATE_PANGKAT"
-        );
-      } else {
-        addData(
-          { dispatch, redux: pangkatReducers },
-          {
-            nama: values.nama_pangkat,
-            grade: values.grade,
-            level: values.level,
-            keterangan: values.keterangan,
-          },
-          API_URL_createpangkat,
-          "ADD_PANGKAT"
-        );
-      }
-
-      const offset = pageActive * limit;
-      const param =
-        search === ""
-          ? { param: "?limit=" + limit + "&offset=" + offset }
-          : { param: "?search=" + search + "&limit=" + limit + "&offset=" + offset };
-
-      await get(param);
-
-    } catch (error) {
-      console.error("Error in submitting form: ", error);
-    } finally {
-      setSubmitting(false);
-      setModalOpen(false);
-    }
   };
 
   const get = useCallback(
@@ -226,75 +168,50 @@ const PangkatSub = () => {
   return (
     <div>
       <Container>
-        <div className="mt-2">
-          <Tables
-            dataColumns={dataColumns}
-            dataTabless={dataWithIndex}
-            isLoading={getPangkatLoading}
-            isError={getPangkatError}
-            actions={actions}
-          />
-        </div>
+        <Button onClick={onAdd}>Add Pangkat</Button>
+        <Tables>
+          <Tables.Head>
+            <tr>
+              <Tables.Header>No</Tables.Header>
+              <Tables.Header>Nama Pangkat</Tables.Header>
+              <Tables.Header>Grade</Tables.Header>
+              <Tables.Header>Level</Tables.Header>
+              <Tables.Header>Keterangan</Tables.Header>
+              <Tables.Header>Actions</Tables.Header>
+            </tr>
+          </Tables.Head>
+          <Tables.Body>
+            {dataWithIndex.map((item) => (
+              <Tables.Row key={item.pk}>
+                <Tables.Data>{item.index}</Tables.Data>
+                <Tables.Data>{item.nama}</Tables.Data>
+                <Tables.Data>{item.grade}</Tables.Data>
+                <Tables.Data>{item.level}</Tables.Data>
+                <Tables.Data>{item.keterangan}</Tables.Data>
+                <Tables.Data>
+                  {actions.map((action) => (
+                    <Button
+                      key={action.name}
+                      onClick={() => action.func(item)}
+                      className={action.color}
+                    >
+                      <img src={action.icon} alt={action.name} />
+                    </Button>
+                  ))}
+                </Tables.Data>
+              </Tables.Row>
+            ))}
+          </Tables.Body>
+        </Tables>
         <Pagination
-          handlePageClick={handlePageClick}
-          pageCount={getPangkatResult.count > 0 ? getPangkatResult.count : 0}
+          pageCount={Math.ceil(getPangkatResult.count / limit)}
+          onPageChange={handlePageClick}
+          onSelectChange={handleSelect}
+          currentPage={pageActive}
           limit={limit}
-          setLimit={handleSelect}
-          pageActive={pageActive}
         />
       </Container>
-
-      <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={editItem ? "Edit Pangkat" : "Tambah Pangkat"}
-      >
-        <Formik
-          initialValues={{
-            nama_pangkat: editItem ? editItem.nama : "",
-            grade: editItem ? editItem.grade : "",
-            level: editItem ? editItem.level : "",
-            keterangan: editItem ? editItem.keterangan : "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={doSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-              <InputText
-                label="Nama Pangkat"
-                name="nama_pangkat"
-                placeholder="Input Pangkat"
-              />
-              <InputText
-                label="Grade"
-                name="grade"
-                placeholder="Input Grade"
-              />
-              <InputText
-                label="Level"
-                name="level"
-                placeholder="Input Level"
-              />
-              <InputTextArea
-                label="Keterangan"
-                name="keterangan"
-                placeholder="Input Keterangan"
-              />
-              <div className="flex justify-end mt-4">
-                <Button
-                  btnName="Submit"
-                  doClick={() => { }}
-                  onLoading={isSubmitting}
-                  type="submit"
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
     </div>
   );
 };
-
 export default PangkatSub;

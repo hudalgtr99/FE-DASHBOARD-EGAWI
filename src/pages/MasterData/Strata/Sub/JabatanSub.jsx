@@ -218,63 +218,7 @@ const JabatanSub = () => {
 
   return (
     <div>
-      <Container>
-        <div className="mt-2">
-          <Tables
-            dataColumns={dataColumns}
-            dataTabless={dataWithIndex}
-            isLoading={getJabatanLoading}
-            isError={getJabatanError}
-            actions={actions}
-          />
-        </div>
-        <Pagination
-          handlePageClick={handlePageClick}
-          pageCount={getJabatanResult.count > 0 ? getJabatanResult.count : 0}
-          limit={limit}
-          setLimit={handleSelect}
-          pageActive={pageActive}
-        />
-      </Container>
-
-      {/* Modal Implementation */}
-      <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={editItem ? "Edit Jabatan" : "Tambah Jabatan"}
-      >
-        <Formik
-          initialValues={{
-            nama_jabatan: editItem ? editItem.nama : "",
-            keterangan: editItem ? editItem.keterangan : "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={doSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-              <InputText
-                label="Nama Jabatan"
-                name="nama_jabatan"
-                placeholder="Input Jabatan"
-              />
-              <InputTextArea
-                label="Keterangan"
-                name="keterangan"
-                placeholder="Input Keterangan"
-              />
-              <div className="flex justify-end mt-4">
-                <Button
-                  btnName="Submit"
-                  doClick={() => { }}
-                  onLoading={isSubmitting}
-                  type="submit"
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
+      Jabatan
     </div>
   );
 };

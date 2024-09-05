@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { DonutChart, Tables, Container, Limit } from "@/components";
+import { DonutChart, Tables, Container, Limit, Pagination } from "@/components"; // Assuming Pagination component is available
 import { icons } from "../../../public/icons";
 import { getData } from "@/actions";
 import { userReducer } from "@/reducers/authReducers";
@@ -57,9 +57,10 @@ const DashboardPage = () => {
       });
   };
 
+  // Pagination handler
   const handlePageClick = (e) => {
-    const offset = e.selected * limitPresensi;
-    setOffset(offset);
+    const newOffset = e.selected * limitPresensi;
+    setOffset(newOffset);
     const param = {
       param:
         "?date=" +
@@ -67,7 +68,7 @@ const DashboardPage = () => {
         "&limit=" +
         limitPresensi +
         "&offset=" +
-        offset,
+        newOffset,
     };
     get(param);
   };
@@ -122,8 +123,6 @@ const DashboardPage = () => {
         ]);
       });
   }, [filterValue, limitPresensi]);
-
-  const currentPage = Math.floor(offset / limitPresensi);
 
   return (
     <Fragment>
@@ -180,8 +179,16 @@ const DashboardPage = () => {
         {/* Presensi Pegawai Table */}
         <div className="col-span-full lg:col-span-3">
           <Container>
-            <div className="text-center font-semibold">
-              {moment(new Date()).format("MMMM Do, YYYY")}
+            <div className="flex justify-between">
+              <div className="items-center gap-2 flex">
+                {icons.fausercheck} Presensi Pegawai
+              </div>
+              <input
+                className="bg-white text-sm outline-none font-light"
+                type="date"
+                value={filterValue}
+                onChange={(e) => handleFilterDate(e.target.value)}
+              />
             </div>
             <Tables size="md" density="normal" tablefix={false} height="auto">
               <Tables.Head>
@@ -193,7 +200,7 @@ const DashboardPage = () => {
                 </Tables.Row>
               </Tables.Head>
               <Tables.Body>
-                {getDataPresensiResult && getDataPresensiResult.count > 0 ? (
+                {getDataPresensiResult && getDataPresensiResult.count > 0 &&
                   getDataPresensiResult.results.map((item, index) => (
                     <Tables.Row key={index}>
                       <Tables.Data>{index + 1}</Tables.Data>
@@ -202,19 +209,32 @@ const DashboardPage = () => {
                       <Tables.Data>{item.keluar}</Tables.Data>
                     </Tables.Row>
                   ))
-                ) : (
-                  <Tables.Row>
-                    <Tables.Data colSpan={4}>No Data Available</Tables.Data>
-                  </Tables.Row>
-                )}
+                }
               </Tables.Body>
             </Tables>
+            {/* <div className="mt-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
+              <div className="flex gap-2 items-baseline text-sm">
+                <Limit
+                  limit={limitPresensi}
+                  setLimit={handleSelectPresensi}
+                  onChange={() => setOffset(0)}
+                />
+                {getDataPresensiResult && getDataPresensiResult.count} entries
+              </div>
+              <Pagination
+                totalPages={Math.ceil(getDataPresensiResult.count / limitPresensi)}
+                onPageChange={handlePageClick}
+              />
+            </div> */}
           </Container>
         </div>
 
         {/* Absensi Pegawai Table */}
         <div className="col-span-full lg:col-span-3">
           <Container>
+            <div className="flex items-center gap-2">
+              {icons.fausertimes} Absensi Pegawai
+            </div>
             <Tables>
               <Tables.Head>
                 <Tables.Row>
@@ -224,8 +244,8 @@ const DashboardPage = () => {
                   <Tables.Header>Keterangan</Tables.Header>
                 </Tables.Row>
               </Tables.Head>
-              <Tables.Body>
-                {dataAbsensi.length > 0 ? (
+              {/* <Tables.Body>
+                {dataAbsensi.length > 0 &&
                   dataAbsensi.map((item, index) => (
                     <Tables.Row key={index}>
                       <Tables.Data>{item.id}</Tables.Data>
@@ -234,23 +254,9 @@ const DashboardPage = () => {
                       <Tables.Data>{item.keterangan}</Tables.Data>
                     </Tables.Row>
                   ))
-                ) : (
-                  <Tables.Row>
-                    <Tables.Data colSpan={4}>No Data Available</Tables.Data>
-                  </Tables.Row>
-                )}
-              </Tables.Body>
+                }
+              </Tables.Body> */}
             </Tables>
-            <div className="mt-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-              <div className="flex gap-2 items-baseline text-sm">
-                <Limit
-                  limit={limitPresensi}
-                  setLimit={handleSelectPresensi}
-                  onChange={() => setOffset(0)}
-                />
-                {dataAbsensi.length} entries
-              </div>
-            </div>
           </Container>
         </div>
       </div>

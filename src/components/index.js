@@ -9,10 +9,11 @@ import Modal from "./atoms/Modal";
 import Pagination from "./atoms/Pagination";
 import PieChart from "./atoms/PieChart";
 import RadialBarChart from "./atoms/RadialBarChart";
-import Select from "./atoms/Select";
+import Select from "./forms/Select";
 import Tables from "./atoms/Tables";
 import Tabs from "./atoms/Tabs";
 import Layout from "./layout/Layout";
+import Loading from "./atoms/Loading";
 import InputDate from "./forms/InputDate";
 import InputEmail from "./forms/InputEmail";
 import InputSelect from "./forms/InputSelect";
@@ -35,6 +36,7 @@ export {
 	Tables,
 	Tabs,
 	Layout,
+	Loading,
 	InputDate,
 	InputEmail,
 	InputSelect,
