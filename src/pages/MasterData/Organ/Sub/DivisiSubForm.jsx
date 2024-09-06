@@ -68,7 +68,7 @@ const DivisiSubForm = () => {
           await updateData(
             { dispatch, redux: divisiReducers },
             {
-              pk: parseInt(pk, 10), // Ensure pk is an integer
+              pk: pk, // Ensure pk is an integer
               nama: values.nama,
               departemen_id: values.divisi,
             },

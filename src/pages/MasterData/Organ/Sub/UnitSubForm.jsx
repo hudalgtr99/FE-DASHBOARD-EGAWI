@@ -75,7 +75,7 @@ const UnitSubForm = () => {
           await updateData(
             { dispatch, redux: unitReducers },
             {
-              pk: isEdit.pk,
+              pk: pk, // Ensure pk is an integer
               nama: values.nama_unit, // Adjusted field name to match API expectations
               divisi_id: values.divisi,
               departemen_id: values.departemen // Ensure the field name matches what the API expects

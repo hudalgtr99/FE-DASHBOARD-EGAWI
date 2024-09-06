@@ -22,6 +22,7 @@ import InputText from "./forms/InputText";
 import InputTextArea from "./forms/InputTextArea";
 import TextArea from "./forms/TextArea";
 import TextField from "./forms/TextField";
+import DatePicker from "./forms/DatePicker";
 
 export {
 	Button,
@@ -48,4 +49,5 @@ export {
 	InputTextArea,
 	TextArea,
 	TextField,
+	DatePicker,
 };

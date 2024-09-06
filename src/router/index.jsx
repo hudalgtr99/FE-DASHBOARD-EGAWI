@@ -9,6 +9,7 @@ import JabatanSubForm from "@/pages/MasterData/Strata/Sub/JabatanSubForm";
 import DepartemenSubForm from "@/pages/MasterData/Organ/Sub/DepartemenSubForm";
 import DivisiSubForm from "@/pages/MasterData/Organ/Sub/DivisiSubForm";
 import UnitSubForm from "@/pages/MasterData/Organ/Sub/UnitSubForm";
+import PegawaiForm from "../pages/Kepegawaian/Pegawai/PegawaiForm";
 
 const Router = () => {
 	return (
@@ -52,6 +53,9 @@ const Router = () => {
 					<Route path="/divisi/form/:pk" element={<DivisiSubForm />} />
 					<Route path="/unit/form" element={<UnitSubForm />} />
 					<Route path="/unit/form/:pk" element={<UnitSubForm />} />
+
+					{/* Pegawai */}
+					<Route path="/pegawai/form" element={<PegawaiForm />} />
 				</Route>
 
 				{/* Protect the login route with the LoginPrivateRoute */}
