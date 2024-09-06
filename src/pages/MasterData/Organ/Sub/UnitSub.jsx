@@ -1,36 +1,32 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-
-// components
-import {
-  Button,
-  Container,
-  Pagination,
-  Tables,
-  Modal,
-  InputText,
-  InputSelect,
-} from "@/components";
-import { icons } from "../../../../../public/icons";
-
-// functions
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   addData,
   deleteData,
   getData,
   updateData,
-} from "@/actions";
+} from '@/actions';
+import { unitReducers } from '@/reducers/organReducers';
 import {
   API_URL_createunit,
   API_URL_edelunit,
   API_URL_getunit,
   API_URL_getspesifikdivisi,
   API_URL_getmasterpegawai,
-} from "@/constants";
-import { unitReducers } from "@/reducers/organReducers";
-import axiosAPI from "@/authentication/axiosApi";
+} from '@/constants';
+import { icons } from "../../../../../public/icons";
+import {
+  Button,
+  Container,
+  Pagination,
+  Tables,
+  Limit,
+  TextField,
+  Tooltip,
+} from '@/components';
+import * as Yup from 'yup';
+import { debounce } from 'lodash'; // Import lodash debounce
 
 const UnitSub = () => {
   const {
@@ -46,48 +42,36 @@ const UnitSub = () => {
     deleteUnitResult,
   } = useSelector((state) => state.organ);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editItem, setEditItem] = useState(null);
-  const [departemenOptions, setDepartemenOptions] = useState([]);
-  const [divisiOptions, setDivisiOptions] = useState([]);
 
-  // dataColumns
-  const [dataColumns] = useState([
-    { name: "ID", value: "index" },
-    { name: "Nama Departemen", value: "divisi.departemen.nama" },
-    { name: "Nama Divisi", value: "divisi.nama" },
-    { name: "Nama Unit", value: "nama" },
-  ]);
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const param = value
+        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      get(param);
+    }, 300),
+    [limit, pageActive]
+  );
 
-  // Validation schema
-  const validationSchema = Yup.object({
-    nama_unit: Yup.string().required('Nama Unit is required'),
-    departemen: Yup.string().required('Departemen is required'),
-    divisi: Yup.string().required('Divisi is required'),
-  });
-
-  // Function
   const doSearch = (e) => {
     const { value } = e.target;
     setSearch(value);
-    setLimit(10);
+    debouncedSearch(value);
     setPageActive(0);
-    get({ param: "?search=" + value });
   };
 
   const onAdd = () => {
-    setEditItem(null);
-    setModalOpen(true);
+    navigate('/unit/form');
   };
 
   const onEdit = (item) => {
-    setEditItem(item);
-    setModalOpen(true);
+    navigate(`/unit/form/${item.pk}`);
   };
 
   const doDelete = (item) => {
@@ -97,43 +81,6 @@ const UnitSub = () => {
       API_URL_edelunit,
       "DELETE_UNIT"
     );
-  };
-
-  const doSubmit = async (values, { resetForm }) => {
-    try {
-      if (editItem) {
-        updateData(
-          { dispatch, redux: unitReducers },
-          {
-            pk: editItem.pk,
-            nama: values.nama_unit,
-            divisi_id: values.divisi,
-          },
-          API_URL_edelunit,
-          "UPDATE_UNIT"
-        );
-      } else {
-        addData(
-          { dispatch, redux: unitReducers },
-          { nama: values.nama_unit, divisi_id: values.divisi },
-          API_URL_createunit,
-          "ADD_UNIT"
-        );
-      }
-      const offset = pageActive * limit;
-      const param =
-        search === ""
-          ? { param: "?limit=" + limit + "&offset=" + offset }
-          : { param: "?search=" + search + "&limit=" + limit + "&offset=" + offset };
-
-      await get(param); // Fetch the data again after successful update or add
-
-    } catch (error) {
-      console.error("Error in submitting form: ", error);
-    } finally {
-      resetForm(false);
-      setModalOpen(false);
-    }
   };
 
   const get = useCallback(
@@ -148,73 +95,44 @@ const UnitSub = () => {
     [dispatch]
   );
 
-  const handlePageClick = (e) => {
-    const offset = e.selected * limit;
-    const param =
-      search === ""
-        ? { param: "?limit=" + limit + "&offset=" + offset }
-        : {
-          param:
-            "?search=" + search + "&limit=" + limit + "&offset=" + offset,
-        };
+  const handlePageClick = (page) => {
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+    const param = search
+      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
+      : { param: `?limit=${limit}&offset=${offset}` };
+
     get(param);
-    setPageActive(e.selected);
+    setPageActive(page - 1); // Set the active page
   };
 
-  const handleSelect = (e) => {
-    const param =
-      search === ""
-        ? { param: "?limit=" + e }
-        : {
-          param: "?search=" + search + "&limit=" + e,
-        };
+  const handleSelect = (newLimit) => {
+    const param = search
+      ? { param: `?search=${search}&limit=${newLimit}` }
+      : { param: `?limit=${newLimit}` };
     get(param);
-    setLimit(e);
+    setLimit(newLimit);
     setPageActive(0);
   };
 
-  // Action Button
   const [actions] = useState([
     {
-      name: "edit",
-      icon: icons.fiedit,
-      color: "text-blue-500",
+      name: "Edit",
+      icon: icons.bspencil,
+      color: "text-green-500",
       func: onEdit,
     },
     {
-      name: "delete",
-      icon: icons.rideletebin6line,
+      name: "Delete",
+      icon: icons.citrash,
       color: "text-red-500",
       func: doDelete,
     },
   ]);
 
-  // Fetch data
-  const fetchData = useCallback(
-    async (param = false) => {
-      setModalOpen(false);
-      get(param ? param : { param: "?limit=" + limit });
-
-      const res_pegawai = await axiosAPI.get(API_URL_getmasterpegawai);
-      setDepartemenOptions(
-        res_pegawai.data.departemen.map((item) => ({
-          value: item.pk,
-          label: item.nama,
-        }))
-      );
-      setDivisiOptions(
-        res_pegawai.data.divisi.map((item) => ({
-          value: item.pk,
-          label: item.nama,
-        }))
-      );
-    },
-    [modalOpen, limit, get]
-  );
-
   useEffect(() => {
-    fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
+    get(param);
+  }, [limit, pageActive, get]);
 
   useEffect(() => {
     if (
@@ -226,14 +144,10 @@ const UnitSub = () => {
       deleteUnitResult
     ) {
       const offset = pageActive * limit;
-      const param =
-        search === ""
-          ? { param: "?limit=" + limit + "&offset=" + offset }
-          : {
-            param:
-              "?search=" + search + "&limit=" + limit + "&offset=" + offset,
-          };
-      fetchData(param);
+      const param = search
+        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
+        : { param: `?limit=${limit}&offset=${offset}` };
+      get(param);
     }
   }, [
     addDepartemenResult,
@@ -242,83 +156,83 @@ const UnitSub = () => {
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,
-    dispatch,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
-  // Adding index to data
   const dataWithIndex = getUnitResult.results
     ? getUnitResult.results.map((item, index) => ({
       ...item,
-      index: pageActive * limit + index + 1, // Incremental index
+      index: pageActive * limit + index + 1,
     }))
     : [];
 
   return (
     <div>
       <Container>
-        <div className="mt-2">
-          <Tables
-            dataColumns={dataColumns}
-            dataTabless={dataWithIndex}
-            isLoading={getUnitLoading}
-            isError={getUnitError}
-            actions={actions}
+        <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
+          <div className="w-full sm:w-60">
+            <TextField
+              onChange={doSearch}
+              placeholder="Search"
+              value={search}
+            />
+          </div>
+          <Button onClick={onAdd}>Tambah Divisi</Button>
+        </div>
+        <Tables>
+          <Tables.Head>
+            <tr>
+              <Tables.Header>No</Tables.Header>
+              <Tables.Header>Nama Departemen</Tables.Header>
+              <Tables.Header>Nama Divisi</Tables.Header>
+              <Tables.Header>Nama Unit</Tables.Header>
+              <Tables.Header center>Actions</Tables.Header>
+            </tr>
+          </Tables.Head>
+          <Tables.Body>
+            {dataWithIndex.map((item) => (
+              <Tables.Row key={item.pk}>
+                <Tables.Data>{item.index}</Tables.Data>
+                <Tables.Data>{item.divisi.departemen.nama}</Tables.Data>
+                <Tables.Data>{item.divisi.nama}</Tables.Data>
+                <Tables.Data>{item.nama}</Tables.Data>
+                <Tables.Data center>
+                  <div className="flex items-center justify-center gap-2">
+                    {actions.map((action) => (
+                      <Tooltip key={action.name} tooltip={action.name}>
+                        <div
+                          key={action.name}
+                          onClick={() => action.func(item)}
+                          className={action.color}
+                        >
+                          {action.icon}
+                        </div>
+                      </Tooltip>
+                    ))}
+                  </div>
+                </Tables.Data>
+              </Tables.Row>
+            ))}
+          </Tables.Body>
+        </Tables>
+        <div className="flex justify-between items-center mt-4">
+          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
+          <Pagination
+            totalCount={getUnitResult.count} // Total items count from the API result
+            pageSize={limit} // Items per page (limit)
+            currentPage={pageActive + 1} // Current page
+            onPageChange={handlePageClick} // Page change handler
+            siblingCount={1} // Number of sibling pages (adjust as needed)
+            activeColor="primary" // Optional: active page color
+            rounded="md" // Optional: rounded button style
+            variant="flat" // Optional: button variant
+            size="md" // Optional: button size
           />
         </div>
-        <Pagination
-          handlePageClick={handlePageClick}
-          pageCount={getUnitResult.count > 0 ? getUnitResult.count : 0}
-          limit={limit}
-          setLimit={handleSelect}
-          pageActive={pageActive}
-        />
       </Container>
-
-      <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={editItem ? "Edit Unit" : "Tambah Unit"}
-      >
-        <Formik
-          initialValues={{
-            nama_unit: editItem ? editItem.nama : "",
-            departemen: editItem ? editItem.divisi.departemen.id : "",
-            divisi: editItem ? editItem.divisi.id : "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={doSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-              <InputText
-                label="Nama Unit"
-                name="nama_unit"
-                placeholder="Input Unit"
-              />
-              <InputSelect
-                label="Nama Departemen"
-                name="departemen"
-                options={departemenOptions}
-                placeholder="Select Departemen"
-              />
-              <InputSelect
-                label="Nama Divisi"
-                name="divisi"
-                options={divisiOptions}
-                placeholder="Select Divisi"
-              />
-              <div className="flex justify-end mt-4">
-                <Button
-                  btnName={"Submit"}
-                  doClick={() => { }}
-                  onLoading={isSubmitting}
-                  type="button"
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
     </div>
   );
 };

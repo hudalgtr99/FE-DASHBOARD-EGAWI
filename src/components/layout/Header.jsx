@@ -47,12 +47,16 @@ const Header = ({ open, setOpen }) => {
               <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white md:block hidden">
                 QUEEN
               </span>
-              <div className="bg-white dark:bg-gray-700 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600">
+              <div className="dark:bg-gray-700 p-1 rounded-full">
                 {icons.himenualt2}
               </div>
             </div>
           )}
-          {open && <div className="font-medium dark:text-white">{title ? title : "Dashboard"}</div>}
+          {/* {open &&
+            <div className="font-medium dark:text-white">
+              {title ? title : "Dashboard"}
+            </div>
+          } */}
         </div>
 
         <div className="flex items-center space-x-4">
@@ -82,7 +86,7 @@ const Header = ({ open, setOpen }) => {
               leaveFrom="transform scale-100 opacity-100"
               leaveTo="transform scale-95 opacity-0"
             >
-              <PopoverPanel className="absolute w-max min-w-[170px] flex flex-col right-3 top-14 rounded-lg shadow-lg bg-white dark:bg-gray-800 pt-3 pb-1 px-1 text-black dark:text-white">
+              <PopoverPanel className="absolute w-max min-w-[170px] z-[99999] flex flex-col right-3 top-14 rounded-lg shadow-lg bg-white dark:bg-gray-800 pt-3 pb-1 px-1 text-black dark:text-white">
                 <div className="px-2 pb-2">
                   <div className="text-xs font-medium">M. Aldi Kurniawan</div>
                   <div className="text-[10px]">Admin</div>

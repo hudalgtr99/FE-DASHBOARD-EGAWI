@@ -45,11 +45,6 @@ const JabatanSub = () => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
 
-  const validationSchema = Yup.object().shape({
-    nama_jabatan: Yup.string().required("Nama Jabatan is required"),
-    keterangan: Yup.string(),
-  });
-
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = value

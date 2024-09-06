@@ -44,16 +44,6 @@ const PangkatSub = () => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
 
-  const validationSchema = Yup.object({
-    nama_pangkat: Yup.string().required("Nama Pangkat is required"),
-    grade: Yup.string().required("Grade is required"),
-    level: Yup.number()
-      .typeError("Level must be a number")
-      .required("Level is required")
-      .positive("Level must be a positive number")
-      .integer("Level must be an integer")
-  });
-
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = value

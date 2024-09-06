@@ -1,33 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-
-// components
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {
+  addData,
+  deleteData,
+  getData,
+  updateData,
+} from '@/actions';
+import { departemenReducers } from '@/reducers/organReducers';
+import {
+  API_URL_createdepartemen,
+  API_URL_edeldepartemen,
+  API_URL_getdepartemen,
+} from '@/constants';
+import { icons } from "../../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Modal,
-  InputText,
-} from "@/components";
-import { icons } from "../../../../../public/icons";
-
-// functions
-import {
-  addData,
-  deleteData,
-  getData,
-  handleInputError,
-  updateData,
-} from "@/actions";
-import {
-  API_URL_createdepartemen,
-  API_URL_edeldepartemen,
-  API_URL_getdepartemen,
-} from "@/constants";
-import { departemenReducers } from "@/reducers/organReducers";
+  Limit,
+  TextField,
+  Tooltip,
+} from '@/components';
+import * as Yup from 'yup';
+import { debounce } from 'lodash'; // Import lodash debounce
 
 const DepartemenSub = () => {
   const {
@@ -43,40 +40,36 @@ const DepartemenSub = () => {
     deleteUnitResult,
   } = useSelector((state) => state.organ);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editItem, setEditItem] = useState(null);
 
-  const [dataColumns] = useState([
-    { name: "ID", value: "index" },
-    { name: "Nama Departemen", value: "nama" },
-  ]);
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const param = value
+        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      get(param);
+    }, 300),
+    [limit, pageActive]
+  );
 
-  const validationSchema = Yup.object({
-    nama_departemen: Yup.string().required('Nama Departemen is required'),
-  });
-
-  // Function
   const doSearch = (e) => {
     const { value } = e.target;
     setSearch(value);
-    setLimit(10);
+    debouncedSearch(value);
     setPageActive(0);
-    get({ param: "?search=" + value });
   };
 
   const onAdd = () => {
-    setEditItem(null);
-    setModalOpen(true);
+    navigate('/departemen/form');
   };
 
   const onEdit = (item) => {
-    setEditItem(item);
-    setModalOpen(true);
+    navigate(`/departemen/form/${item.pk}`);
   };
 
   const doDelete = (item) => {
@@ -86,39 +79,6 @@ const DepartemenSub = () => {
       API_URL_edeldepartemen,
       "DELETE_DEPARTEMEN"
     );
-  };
-
-  const doSubmit = async (values, { setSubmitting }) => {
-    try {
-      if (editItem) {
-        updateData(
-          { dispatch, redux: departemenReducers },
-          { pk: editItem.pk, nama: values.nama_departemen },
-          API_URL_edeldepartemen,
-          "UPDATE_DEPARTEMEN"
-        );
-      } else {
-        addData(
-          { dispatch, redux: departemenReducers },
-          { nama: values.nama_departemen },
-          API_URL_createdepartemen,
-          "ADD_DEPARTEMEN"
-        );
-      }
-      const offset = pageActive * limit;
-      const param =
-        search === ""
-          ? { param: "?limit=" + limit + "&offset=" + offset }
-          : { param: "?search=" + search + "&limit=" + limit + "&offset=" + offset };
-
-      await get(param); // Fetch the data again after successful update or add
-
-    } catch (error) {
-      console.error("Error in submitting form: ", error);
-    } finally {
-      setSubmitting(false);
-      setModalOpen(false);
-    }
   };
 
   const get = useCallback(
@@ -133,52 +93,44 @@ const DepartemenSub = () => {
     [dispatch]
   );
 
-  const handlePageClick = (e) => {
-    const offset = e.selected * limit;
-    const param =
-      search === ""
-        ? { param: "?limit=" + limit + "&offset=" + offset }
-        : {
-          param:
-            "?search=" + search + "&limit=" + limit + "&offset=" + offset,
-        };
+  const handlePageClick = (page) => {
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+    const param = search
+      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
+      : { param: `?limit=${limit}&offset=${offset}` };
+
     get(param);
-    setPageActive(e.selected);
+    setPageActive(page - 1); // Set the active page
   };
 
-  const handleSelect = (e) => {
-    const param =
-      search === ""
-        ? { param: "?limit=" + e }
-        : {
-          param: "?search=" + search + "&limit=" + e,
-        };
+  const handleSelect = (newLimit) => {
+    const param = search
+      ? { param: `?search=${search}&limit=${newLimit}` }
+      : { param: `?limit=${newLimit}` };
     get(param);
-    setLimit(e);
+    setLimit(newLimit);
     setPageActive(0);
   };
 
-  // Action Button
   const [actions] = useState([
     {
-      name: "edit",
-      icon: icons.fiedit,
-      color: "text-blue-500",
+      name: "Edit",
+      icon: icons.bspencil,
+      color: "text-green-500",
       func: onEdit,
     },
     {
-      name: "delete",
-      icon: icons.rideletebin6line,
+      name: "Delete",
+      icon: icons.citrash,
       color: "text-red-500",
       func: doDelete,
     },
   ]);
 
-  // useEffect
   useEffect(() => {
     const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
     get(param);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [limit, pageActive, get]);
 
   useEffect(() => {
     if (
@@ -190,13 +142,9 @@ const DepartemenSub = () => {
       deleteUnitResult
     ) {
       const offset = pageActive * limit;
-      const param =
-        search === ""
-          ? { param: "?limit=" + limit + "&offset=" + offset }
-          : {
-            param:
-              "?search=" + search + "&limit=" + limit + "&offset=" + offset,
-          };
+      const param = search
+        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
+        : { param: `?limit=${limit}&offset=${offset}` };
       get(param);
     }
   }, [
@@ -206,69 +154,79 @@ const DepartemenSub = () => {
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,
-    dispatch,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
-  // Adding index to data
   const dataWithIndex = getDepartemenResult.results
     ? getDepartemenResult.results.map((item, index) => ({
       ...item,
-      index: pageActive * limit + index + 1, // Incremental index
+      index: pageActive * limit + index + 1,
     }))
     : [];
 
   return (
     <div>
       <Container>
-        <div className="mt-2">
-          <Tables
-            dataColumns={dataColumns}
-            dataTabless={dataWithIndex}
-            isLoading={getDepartemenLoading}
-            isError={getDepartemenError}
-            actions={actions}
+        <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
+          <div className="w-full sm:w-60">
+            <TextField
+              onChange={doSearch}
+              placeholder="Search"
+              value={search}
+            />
+          </div>
+          <Button onClick={onAdd}>Tambah Departemen</Button>
+        </div>
+        <Tables>
+          <Tables.Head>
+            <tr>
+              <Tables.Header>No</Tables.Header>
+              <Tables.Header>Nama Departemen</Tables.Header>
+              <Tables.Header center>Actions</Tables.Header>
+            </tr>
+          </Tables.Head>
+          <Tables.Body>
+            {dataWithIndex.map((item) => (
+              <Tables.Row key={item.pk}>
+                <Tables.Data>{item.index}</Tables.Data>
+                <Tables.Data>{item.nama}</Tables.Data>
+                <Tables.Data center>
+                  <div className="flex items-center justify-center gap-2">
+                    {actions.map((action) => (
+                      <Tooltip key={action.name} tooltip={action.name}>
+                        <div
+                          key={action.name}
+                          onClick={() => action.func(item)}
+                          className={action.color}
+                        >
+                          {action.icon}
+                        </div>
+                      </Tooltip>
+                    ))}
+                  </div>
+                </Tables.Data>
+              </Tables.Row>
+            ))}
+          </Tables.Body>
+        </Tables>
+        <div className="flex justify-between items-center mt-4">
+          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
+          <Pagination
+            totalCount={getDepartemenResult.count} // Total items count from the API result
+            pageSize={limit} // Items per page (limit)
+            currentPage={pageActive + 1} // Current page
+            onPageChange={handlePageClick} // Page change handler
+            siblingCount={1} // Number of sibling pages (adjust as needed)
+            activeColor="primary" // Optional: active page color
+            rounded="md" // Optional: rounded button style
+            variant="flat" // Optional: button variant
+            size="md" // Optional: button size
           />
         </div>
-        <Pagination
-          handlePageClick={handlePageClick}
-          pageCount={getDepartemenResult.count > 0 ? getDepartemenResult.count : 0}
-          limit={limit}
-          setLimit={handleSelect}
-          pageActive={pageActive}
-        />
       </Container>
-
-      <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={editItem ? "Edit Departemen" : "Tambah Departemen"}
-      >
-        <Formik
-          initialValues={{
-            nama_departemen: editItem ? editItem.nama : '',
-          }}
-          validationSchema={validationSchema}
-          onSubmit={doSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-              <InputText
-                label="Nama Departemen"
-                name="nama_departemen"
-                placeholder="Input Departemen"
-              />
-              <div className="flex justify-end mt-4">
-                <Button
-                  btnName={"Submit"}
-                  doClick={() => { }}
-                  onLoading={isSubmitting}
-                  type="button"
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
     </div>
   );
 };

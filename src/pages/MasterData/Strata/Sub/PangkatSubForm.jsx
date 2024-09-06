@@ -120,7 +120,6 @@ const PangkatSubForm = () => {
             <TextField
               label="Level"
               name="level"
-              type="text"
               value={formik.values.level}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

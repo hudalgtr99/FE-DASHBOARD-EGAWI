@@ -52,7 +52,7 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-lg text-white transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-orange-50 bg-opacity-25 brightness-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-lg text-white transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
@@ -62,7 +62,7 @@ const Sidebar = ({ open, setOpen }) => {
               QUEEN
             </span>
           </div>
-          <div onClick={() => setOpen(!open)} className="cursor-pointer text-black hover:bg-white hover:text-black dark:hover:bg-gray-600 dark:hover:text-white rounded-full p-2">
+          <div onClick={() => setOpen(!open)} className="cursor-pointer text-black dark:hover:text-white rounded-full p-2">
             <BsChevronDoubleLeft />
           </div>
         </div>
@@ -140,7 +140,7 @@ const Sidebar = ({ open, setOpen }) => {
 
         {/* Copyright */}
         {open && (
-          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center justify-center dark:text-gray-400">
+          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center text-black justify-center dark:text-gray-400">
             Copyright &copy; PT. Queen Network Nusantara
           </div>
         )}

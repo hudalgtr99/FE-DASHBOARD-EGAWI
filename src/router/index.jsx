@@ -6,6 +6,9 @@ import LoginPrivateRoute from "@/pages/Login/LoginPrivateRoute"; // Import the n
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PangkatSubForm from "@/pages/MasterData/Strata/Sub/PangkatSubForm";
 import JabatanSubForm from "@/pages/MasterData/Strata/Sub/JabatanSubForm";
+import DepartemenSubForm from "@/pages/MasterData/Organ/Sub/DepartemenSubForm";
+import DivisiSubForm from "@/pages/MasterData/Organ/Sub/DivisiSubForm";
+import UnitSubForm from "@/pages/MasterData/Organ/Sub/UnitSubForm";
 
 const Router = () => {
 	return (
@@ -36,10 +39,19 @@ const Router = () => {
 							/>
 						)
 					))}
+					{/* Strata */}
 					<Route path="/pangkat/form" element={<PangkatSubForm />} />
 					<Route path="/pangkat/form/:pk" element={<PangkatSubForm />} />
 					<Route path="/jabatan/form" element={<JabatanSubForm />} />
 					<Route path="/jabatan/form/:pk" element={<JabatanSubForm />} />
+
+					{/* Organ */}
+					<Route path="/departemen/form" element={<DepartemenSubForm />} />
+					<Route path="/departemen/form/:pk" element={<DepartemenSubForm />} />
+					<Route path="/divisi/form" element={<DivisiSubForm />} />
+					<Route path="/divisi/form/:pk" element={<DivisiSubForm />} />
+					<Route path="/unit/form" element={<UnitSubForm />} />
+					<Route path="/unit/form/:pk" element={<UnitSubForm />} />
 				</Route>
 
 				{/* Protect the login route with the LoginPrivateRoute */}

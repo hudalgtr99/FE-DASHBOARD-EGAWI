@@ -11,39 +11,36 @@ import {
 } from '@/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { addData, updateData } from '@/actions';
-import { jabatanReducers } from '@/reducers/strataReducers';
-import { API_URL_createjabatan, API_URL_edeljabatan } from '@/constants';
+import { departemenReducers } from '@/reducers/organReducers';
+import { API_URL_createdepartemen, API_URL_edeldepartemen } from '@/constants';
 
-const JabatanSubForm = () => {
+const DepartemenSubForm = () => {
   const { pk } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { getJabatanResult } = useSelector(state => state.strata);
+  const { getDepartemenResult } = useSelector(state => state.organ);
   const [initialValues, setInitialValues] = useState({
     nama: '',
-    keterangan: '',
   });
   const [loading, setLoading] = useState(true);
 
   const validationSchema = Yup.object().shape({
-    nama: Yup.string().required("Nama Jabatan is required"),
-    keterangan: Yup.string(),
+    nama: Yup.string().required("Nama Departemen is required"),
   });
 
   const isEdit = pk && pk !== 'add';
 
   useEffect(() => {
-    if (isEdit && getJabatanResult?.results) {
-      const foundJabatan = getJabatanResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundJabatan) {
+    if (isEdit && getDepartemenResult?.results) {
+      const foundDepartemen = getDepartemenResult.results.find(item => item.pk === parseInt(pk, 10));
+      if (foundDepartemen) {
         setInitialValues({
-          nama: foundJabatan.nama || '',
-          keterangan: foundJabatan.keterangan || '',
+          nama: foundDepartemen.nama || '',
         });
       }
     }
     setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getJabatanResult]);
+  }, [isEdit, pk, getDepartemenResult]);
 
   const formik = useFormik({
     initialValues,
@@ -53,20 +50,20 @@ const JabatanSubForm = () => {
       try {
         if (isEdit) {
           await updateData(
-            { dispatch, redux: jabatanReducers },
+            { dispatch, redux: departemenReducers },
             { pk: pk, ...values },
-            API_URL_edeljabatan,
-            'UPDATE_JABATAN'
+            API_URL_edeldepartemen,
+            'UPDATE_DEPARTEMEN'
           );
         } else {
           await addData(
-            { dispatch, redux: jabatanReducers },
+            { dispatch, redux: departemenReducers },
             values,
-            API_URL_createjabatan,
-            'ADD_JABATAN'
+            API_URL_createdepartemen,
+            'ADD_DEPARTEMEN'
           );
         }
-        navigate('/masterdata/strata');
+        navigate('/masterdata/organ');
       } catch (error) {
         console.error('Error in form submission: ', error);
       }
@@ -83,29 +80,21 @@ const JabatanSubForm = () => {
         <div className='flex items-center gap-2 mb-4'>
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#7367f0] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/masterdata/strata")}
+            onClick={() => navigate("/masterdata/organ")}
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Jabatan' : 'Add Jabatan'}</h1>
+          <h1>{isEdit ? 'Edit Departemen' : 'Add Departemen'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
-              label="Nama Jabatan"
+              label="Nama Departemen"
               name="nama"
               value={formik.values.nama}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.nama ? formik.errors.nama : ''}
-            />
-            <TextArea
-              label="Keterangan"
-              name="keterangan"
-              value={formik.values.keterangan}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.keterangan ? formik.errors.keterangan : ''}
             />
             <Button type="submit">Submit</Button>
           </form>
@@ -115,4 +104,4 @@ const JabatanSubForm = () => {
   );
 }
 
-export default JabatanSubForm;
+export default DepartemenSubForm;
