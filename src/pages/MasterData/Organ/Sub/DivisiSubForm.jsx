@@ -3,12 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
-import {
-  Button,
-  Container,
-  TextField,
-  Select,
-} from '@/components';
+import { Button, Container, TextField, Select } from '@/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { divisiReducers } from '@/reducers/organReducers';
@@ -36,11 +31,15 @@ const DivisiSubForm = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axiosAPI.get(API_URL_getspesifikdepartemen);
-      setDepartemenOptions(response.data.map((item) => ({
-        value: item.pk,
-        label: item.nama,
-      })));
+      try {
+        const response = await axiosAPI.get(API_URL_getspesifikdepartemen);
+        setDepartemenOptions(response.data.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        })));
+      } catch (error) {
+        console.error('Error fetching departemen options: ', error);
+      }
     };
 
     fetchData();
@@ -68,14 +67,18 @@ const DivisiSubForm = () => {
         if (isEdit) {
           await updateData(
             { dispatch, redux: divisiReducers },
-            { pk: pk, ...values },
+            {
+              pk: parseInt(pk, 10), // Ensure pk is an integer
+              nama: values.nama,
+              departemen_id: values.divisi,
+            },
             API_URL_edeldivisi,
             'UPDATE_DIVISI'
           );
         } else {
           await addData(
             { dispatch, redux: divisiReducers },
-            values,
+            { nama: values.nama, departemen_id: values.divisi },
             API_URL_createdivisi,
             'ADD_DIVISI'
           );
@@ -114,7 +117,12 @@ const DivisiSubForm = () => {
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <Select
-              options={departemenOptions} // Pass departemen options to Select
+              label="Nama Departemen"
+              name="divisi"
+              value={departemenOptions.find(option => option.value === formik.values.divisi) || null}
+              onChange={(option) => formik.setFieldValue('divisi', option ? option.value : '')}
+              options={departemenOptions}
+              error={formik.touched.divisi ? formik.errors.divisi : ''}
             />
             <Button type="submit">Submit</Button>
           </form>

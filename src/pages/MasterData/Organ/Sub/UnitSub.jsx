@@ -180,7 +180,7 @@ const UnitSub = () => {
               value={search}
             />
           </div>
-          <Button onClick={onAdd}>Tambah Divisi</Button>
+          <Button onClick={onAdd}>Tambah Unit</Button>
         </div>
         <Tables>
           <Tables.Head>
