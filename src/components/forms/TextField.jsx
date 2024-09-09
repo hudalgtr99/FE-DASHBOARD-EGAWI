@@ -11,8 +11,8 @@ import { TbX } from "react-icons/tb";
  * name: string;
  * type: string;
  * label: string;
- * value: string;
- * setValue: React.Dispatch<React.SetStateAction<string>>;
+ * value: string | number;
+ * setValue: React.Dispatch<React.SetStateAction<string | number>>;
  * onChange: React.Dispatch<React.SetStateAction<string>>;
  * onBlur: React.Dispatch<React.SetStateAction<string>>;
  * onClick: React.Dispatch<React.SetStateAction<string>>;
@@ -276,8 +276,8 @@ const TextField = ({
 			<div
 				style={containerStyle}
 				className={`relative ${!vaiants.includes(variant)
-						? `flex items-center w-full border ${!disabled ? "cursor-pointer" : "cursor-not-allowed"}`
-						: "w-full"
+					? `flex items-center w-full border ${!disabled ? "cursor-pointer" : "cursor-not-allowed"}`
+					: "w-full"
 					} ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
 			>
 				{/* Prefix */}
@@ -345,7 +345,7 @@ TextField.propTypes = {
 	name: PropTypes.string,
 	type: PropTypes.string,
 	label: PropTypes.string,
-	value: PropTypes.string,
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	setValue: PropTypes.func,
 	onChange: PropTypes.func,
 	onBlur: PropTypes.func,
