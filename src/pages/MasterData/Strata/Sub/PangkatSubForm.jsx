@@ -97,7 +97,7 @@ const PangkatSubForm = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Pangkat' : 'Add Pangkat'}</h1>
+          <h1>{isEdit ? 'Edit Pangkat' : 'Tambah Pangkat'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>

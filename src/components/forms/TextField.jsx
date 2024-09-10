@@ -269,6 +269,7 @@ const TextField = ({
 					className={`mb-1 ${required && "required"}`}
 				>
 					{label}
+					{required && <span className="text-red-500">*</span>}
 				</label>
 			)}
 
@@ -322,17 +323,13 @@ const TextField = ({
 					style={inputStyle}
 					className={`w-full bg-transparent border-none outline-none placeholder:text-neutral-500 text-sm text-neutral-700 focus:placeholder-transparent ${isFocus && "focus:ring-0"} ${!disabled ? "cursor-pointer" : "cursor-not-allowed"}`}
 				/>
-
-				{/* Error */}
-				{error && (
-					<p
-						style={{ fontSize: textFieldSize - 2 }}
-						className="text-sm text-red-500 absolute -bottom-6 left-0"
-					>
-						{error}
-					</p>
-				)}
 			</div>
+
+			{error && (
+				<span className="text-red-500 text-sm mt-1 block">
+					{error}
+				</span>
+			)}
 
 			{/* Note */}
 			{note && <p className="text-xs text-gray-500 mt-1">{note}</p>}

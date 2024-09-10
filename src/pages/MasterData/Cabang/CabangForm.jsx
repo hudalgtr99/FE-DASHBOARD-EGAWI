@@ -14,7 +14,6 @@ import {
     Container,
     TextField,
     Button,
-    Loading
 } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
 const CabangForm = () => {
@@ -162,7 +161,7 @@ const CabangForm = () => {
 
 
     if (loading) {
-        return <div><Loading /></div>;
+        return <div>Loading...</div>;
     }
 
     return (
@@ -175,7 +174,7 @@ const CabangForm = () => {
                     >
                         <IoMdReturnLeft />
                     </button>
-                    <h1>{isEdit ? 'Edit Cabang' : 'Add Cabang'}</h1>
+                    <h1>{isEdit ? 'Edit Cabang' : 'Tambah Cabang'}</h1>
                 </div>
                 <div>
                     <form onSubmit={formik.handleSubmit} className='space-y-6'>

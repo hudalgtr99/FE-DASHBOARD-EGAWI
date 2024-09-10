@@ -9,10 +9,6 @@ import {
 } from "@/constants";
 import {
   Button,
-  InputText,
-  InputDate,
-  InputSelect,
-  Modal,
 } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { kalenderReducer } from "@/reducers/kalenderReducers";
@@ -133,53 +129,6 @@ const KalenderPage = () => {
         eventColor="#FF2300"
         events={kalender}
       />
-      <Modal
-        isOpen={modal}
-        onClose={() => setModal(false)}
-        title="Tambah Event"
-      >
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="grid grid-cols-1 gap-4 p-2 rounded-lg dark:bg-gray-800">
-              <InputText
-                label="Nama Event"
-                name="nama_event"
-                placeholder="Input Event"
-              />
-              <InputDate
-                label="Tanggal Mulai"
-                name="tgl_mulai"
-                placeholder="Tanggal Mulai"
-              />
-              <InputDate
-                label="Tanggal Berakhir"
-                name="tgl_berakhir"
-                placeholder="Tanggal Berakhir"
-              />
-              <InputSelect
-                label="Tipe Event"
-                name="type_event"
-                options={[
-                  { value: true, label: "Libur" },
-                  { value: false, label: "Event" },
-                ]}
-                placeholder="Pilih Tipe"
-              />
-              <div className="flex justify-end items-center">
-                <Button
-                  btnName={"Submit"}
-                  onLoading={isSubmitting || addKalenderLoading}
-                  type="submit"
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
     </div>
   );
 };

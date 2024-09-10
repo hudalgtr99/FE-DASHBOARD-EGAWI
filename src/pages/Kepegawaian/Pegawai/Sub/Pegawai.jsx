@@ -34,7 +34,7 @@ const Pegawai = () => {
 
   const { getPegawaiResult } = useSelector(state => state.kepegawaian);
   const [initialValues, setInitialValues] = useState({
-    nama: "",
+    id_pegawai: "",
     pangkat: "",
     jabatan: "",
     departemen: "",
@@ -46,16 +46,54 @@ const Pegawai = () => {
   const [loading, setLoading] = useState(true);
 
   const validationSchema = Yup.object({
-    nama: Yup.string().required("Nama is required"),
+    id_pegawai: Yup.string().required("ID Pegawai is required"),
     pangkat: Yup.string().required("Pangkat is required"),
     jabatan: Yup.string().required("Jabatan is required"),
     departemen: Yup.string().required("Departemen is required"),
     divisi: Yup.string().required("Divisi is required"),
     unit: Yup.string().required("Unit is required"),
     tgl_bergabung: Yup.date().required("Tanggal Bergabung is required"),
+    tgl_resign: Yup.date().required("Tanggal Resign is required"),
   });
 
   const isEdit = pk && pk !== 'add';
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axiosAPI.get(API_URL_getmasterpegawai);
+      setPangkatOptions(
+        response.data.pangkat.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
+      setJabatanOptions(
+        response.data.jabatan.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
+      setDepartemenOptions(
+        response.data.departemen.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
+      setDivisiOptions(
+        response.data.divisi.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
+      setUnitOptions(
+        response.data.unit.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (isEdit && getPegawaiResult?.results) {
@@ -63,7 +101,6 @@ const Pegawai = () => {
       if (foundPegawai) {
         setInitialValues({
           id_pegawai: foundPegawai.id_pegawai || "",
-          nama: foundPegawai.nama || "",
           pangkat: foundPegawai.pangkat?.id || "",
           jabatan: foundPegawai.jabatan?.id || "",
           departemen: foundPegawai.departemen?.id || "",
@@ -119,64 +156,66 @@ const Pegawai = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Data Pegawai' : 'Add Data Pegawai'}</h1>
+          <h1>{isEdit ? 'Edit Data Pegawai' : 'Tambah Data Pegawai'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
-              label="Nama"
-              name="nama"
-              value={formik.values.nama}
+              required
+              label="ID Pegawai"
+              name="id_pegawai"
+              value={formik.values.id_pegawai}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.nama ? formik.errors.nama : ''}
+              error={formik.touched.id_pegawai ? formik.errors.id_pegawai : ''}
             />
             <Select
+              required
               label="Pangkat"
               name="pangkat"
-              value={formik.values.pangkat}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={pangkatOptions.find(option => option.value === formik.values.pangkat) || null}
+              onChange={(option) => formik.setFieldValue('pangkat', option ? option.value : '')}
+              options={pangkatOptions}
               error={formik.touched.pangkat ? formik.errors.pangkat : ''}
-              options={pangkatOptions.map(option => ({ value: option.id, label: option.nama }))}
             />
             <Select
+              required
               label="Jabatan"
               name="jabatan"
-              value={formik.values.jabatan}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={jabatanOptions.find(option => option.value === formik.values.jabatan) || null}
+              onChange={(option) => formik.setFieldValue('jabatan', option ? option.value : '')}
+              options={jabatanOptions}
               error={formik.touched.jabatan ? formik.errors.jabatan : ''}
-              options={jabatanOptions.map(option => ({ value: option.id, label: option.nama }))}
             />
             <Select
+              required
               label="Departemen"
               name="departemen"
-              value={formik.values.departemen}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={departemenOptions.find(option => option.value === formik.values.departemen) || null}
+              onChange={(option) => formik.setFieldValue('departemen', option ? option.value : '')}
+              options={departemenOptions}
               error={formik.touched.departemen ? formik.errors.departemen : ''}
-              options={departemenOptions.map(option => ({ value: option.id, label: option.nama }))}
             />
             <Select
+              required
               label="Divisi"
               name="divisi"
-              value={formik.values.divisi}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={divisiOptions.find(option => option.value === formik.values.divisi) || null}
+              onChange={(option) => formik.setFieldValue('divisi', option ? option.value : '')}
+              options={divisiOptions}
               error={formik.touched.divisi ? formik.errors.divisi : ''}
-              options={divisiOptions.map(option => ({ value: option.id, label: option.nama }))}
             />
             <Select
+              required
               label="Unit"
               name="unit"
-              value={formik.values.unit}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={unitOptions.find(option => option.value === formik.values.unit) || null}
+              onChange={(option) => formik.setFieldValue('unit', option ? option.value : '')}
+              options={unitOptions}
               error={formik.touched.unit ? formik.errors.unit : ''}
-              options={unitOptions.map(option => ({ value: option.id, label: option.nama }))}
             />
             <TextField
+              required
               label="Tanggal Bergabung"
               name="tgl_bergabung"
               type="date"
@@ -186,6 +225,7 @@ const Pegawai = () => {
               error={formik.touched.tgl_bergabung ? formik.errors.tgl_bergabung : ''}
             />
             <TextField
+              required
               label="Tanggal Resign"
               name="tgl_resign"
               type="date"
@@ -194,7 +234,7 @@ const Pegawai = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.tgl_resign ? formik.errors.tgl_resign : ''}
             />
-            <Button type="submit" text="Submit" className="bg-[#7367f0] text-white rounded-md p-2 shadow-lg" />
+            <Button type="submit">Submit</Button>
           </form>
         </div>
       </Container>

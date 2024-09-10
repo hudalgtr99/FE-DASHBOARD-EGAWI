@@ -104,7 +104,7 @@ const DivisiSubForm = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Divisi' : 'Add Divisi'}</h1>
+          <h1>{isEdit ? 'Edit Divisi' : 'Tambah Divisi'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>

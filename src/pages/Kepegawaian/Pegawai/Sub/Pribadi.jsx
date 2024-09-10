@@ -158,11 +158,12 @@ const Pribadi = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Data Pribadi' : 'Add Data Pribadi'}</h1>
+          <h1>{isEdit ? 'Edit Data Pribadi' : 'Tambah Data Pribadi'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
+              required
               label="Nama"
               name="nama"
               value={formik.values.nama}
@@ -171,6 +172,7 @@ const Pribadi = () => {
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <TextField
+              required
               label="Username"
               name="username"
               value={formik.values.username}
@@ -179,6 +181,7 @@ const Pribadi = () => {
               error={formik.touched.username ? formik.errors.username : ''}
             />
             <TextField
+              required
               label="Email"
               name="email"
               value={formik.values.email}
@@ -187,6 +190,7 @@ const Pribadi = () => {
               error={formik.touched.email ? formik.errors.email : ''}
             />
             <TextField
+              required
               label="No Identitas"
               name="no_identitas"
               value={formik.values.no_identitas}
@@ -195,6 +199,7 @@ const Pribadi = () => {
               error={formik.touched.no_identitas ? formik.errors.no_identitas : ''}
             />
             <Select
+              required
               label="Jenis Kelamin"
               name="jenis_kelamin"
               value={formik.values.jenis_kelamin ? { value: formik.values.jenis_kelamin, label: formik.values.jenis_kelamin } : null}
@@ -206,6 +211,7 @@ const Pribadi = () => {
               error={formik.touched.jenis_kelamin ? formik.errors.jenis_kelamin : ''}
             />
             <TextField
+              required
               label="No Telepon"
               name="no_telepon"
               value={formik.values.no_telepon}
@@ -214,6 +220,7 @@ const Pribadi = () => {
               error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
             />
             <TextField
+              required
               label="Tempat Lahir"
               name="tempat_lahir"
               value={formik.values.tempat_lahir}
@@ -222,6 +229,7 @@ const Pribadi = () => {
               error={formik.touched.tempat_lahir ? formik.errors.tempat_lahir : ''}
             />
             <TextField
+              required
               label="Tanggal Lahir"
               name="tgl_lahir"
               type="date"
@@ -231,6 +239,7 @@ const Pribadi = () => {
               error={formik.touched.tgl_lahir ? formik.errors.tgl_lahir : ''}
             />
             <Select
+              required
               label="Agama"
               name="agama"
               value={formik.values.agama ? { value: formik.values.agama, label: formik.values.agama } : null}
@@ -246,6 +255,7 @@ const Pribadi = () => {
               error={formik.touched.agama ? formik.errors.agama : ''}
             />
             <TextField
+              required
               label="NPWP"
               name="npwp"
               value={formik.values.npwp}
@@ -254,6 +264,7 @@ const Pribadi = () => {
               error={formik.touched.npwp ? formik.errors.npwp : ''}
             />
             <TextArea
+              required
               label="Alamat KTP"
               name="alamat_ktp"
               value={formik.values.alamat_ktp}
@@ -262,6 +273,7 @@ const Pribadi = () => {
               error={formik.touched.alamat_ktp ? formik.errors.alamat_ktp : ''}
             />
             <TextArea
+              required
               label="Alamat Domisili"
               name="alamat_domisili"
               value={formik.values.alamat_domisili}
@@ -270,6 +282,7 @@ const Pribadi = () => {
               error={formik.touched.alamat_domisili ? formik.errors.alamat_domisili : ''}
             />
             <Select
+              required
               label="Cabang ID"
               name="cabang_id"
               value={cabangOptions.find(option => option.value === String(formik.values.cabang_id)) || null}
@@ -278,6 +291,7 @@ const Pribadi = () => {
               error={formik.touched.cabang_id ? formik.errors.cabang_id : ''}
             />
             <Select
+              required
               label="Titik Lokasi"
               name="titik_lokasi"
               value={lokasiOptions.find(option => option.value === String(formik.values.titik_lokasi)) || null}

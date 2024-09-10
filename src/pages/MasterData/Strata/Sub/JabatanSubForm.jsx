@@ -87,7 +87,7 @@ const JabatanSubForm = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Jabatan' : 'Add Jabatan'}</h1>
+          <h1>{isEdit ? 'Edit Jabatan' : 'Tambah Jabatan'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>

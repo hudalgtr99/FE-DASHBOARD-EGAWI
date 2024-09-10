@@ -84,7 +84,7 @@ const DepartemenSubForm = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Departemen' : 'Add Departemen'}</h1>
+          <h1>{isEdit ? 'Edit Departemen' : 'Tambah Departemen'}</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>

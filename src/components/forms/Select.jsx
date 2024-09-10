@@ -214,6 +214,7 @@ const Select = ({
 					className={`mb-1 ${required && "required"}`}
 				>
 					{label}
+					{required && <span className="text-red-500">*</span>}
 				</label>
 			)}
 

@@ -7,8 +7,8 @@ const TextArea = ({
 	name = "",
 	label = "",
 	value = "",
-	onChange = () => {},
-	onBlur = () => {},
+	onChange = () => { },
+	onBlur = () => { },
 	disabled = false,
 	readOnly = false,
 	placeholder = "",
@@ -81,25 +81,25 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-				? colorMode === "light"
-					? "#BABCBA80"
-					: "#4D535580"
-				: isFocus
-				? textFieldColor
-				: isHover
-				? colorMode === "light"
-					? "#9A9C9A"
-					: "#6F6F6F"
-				: colorMode === "light"
-				? "#BABCBA"
-				: "#4D5355",
+					? colorMode === "light"
+						? "#BABCBA80"
+						: "#4D535580"
+					: isFocus
+						? textFieldColor
+						: isHover
+							? colorMode === "light"
+								? "#9A9C9A"
+								: "#6F6F6F"
+							: colorMode === "light"
+								? "#BABCBA"
+								: "#4D5355",
 			borderWidth: 1,
 			borderStyle: "solid",
 			outline: error
 				? `2px solid #ef4444`
 				: isFocus
-				? `2px solid ${textFieldColor}`
-				: "none",
+					? `2px solid ${textFieldColor}`
+					: "none",
 			outlineOffset: -2,
 			borderRadius: textFieldRounded,
 		};
@@ -108,18 +108,18 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-				? colorMode === "light"
-					? "#BABCBA80"
-					: "#4D535580"
-				: isFocus
-				? textFieldColor
-				: isHover
-				? colorMode === "light"
-					? "#9A9C9A"
-					: "#6F6F6F"
-				: colorMode === "light"
-				? "#BABCBA"
-				: "#4D5355",
+					? colorMode === "light"
+						? "#BABCBA80"
+						: "#4D535580"
+					: isFocus
+						? textFieldColor
+						: isHover
+							? colorMode === "light"
+								? "#9A9C9A"
+								: "#6F6F6F"
+							: colorMode === "light"
+								? "#BABCBA"
+								: "#4D5355",
 			borderBottomWidth: 1,
 			borderBottomStyle: "solid",
 			borderTopLeftRadius: textFieldRounded,
@@ -131,18 +131,18 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-				? colorMode === "light"
-					? "#BABCBA80"
-					: "#4D535580"
-				: isFocus
-				? textFieldColor
-				: isHover
-				? colorMode === "light"
-					? "#9A9C9A"
-					: "#6F6F6F"
-				: colorMode === "light"
-				? "#BABCBA"
-				: "#4D5355",
+					? colorMode === "light"
+						? "#BABCBA80"
+						: "#4D535580"
+					: isFocus
+						? textFieldColor
+						: isHover
+							? colorMode === "light"
+								? "#9A9C9A"
+								: "#6F6F6F"
+							: colorMode === "light"
+								? "#BABCBA"
+								: "#4D5355",
 			borderBottomWidth: 1,
 			borderBottomStyle: "solid",
 		};
@@ -151,18 +151,18 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-				? colorMode === "light"
-					? "#BABCBA80"
-					: "#4D535580"
-				: isFocus
-				? textFieldColor
-				: isHover
-				? colorMode === "light"
-					? "#9A9C9A"
-					: "#6F6F6F"
-				: colorMode === "light"
-				? "#BABCBA"
-				: "#4D5355",
+					? colorMode === "light"
+						? "#BABCBA80"
+						: "#4D535580"
+					: isFocus
+						? textFieldColor
+						: isHover
+							? colorMode === "light"
+								? "#9A9C9A"
+								: "#6F6F6F"
+							: colorMode === "light"
+								? "#BABCBA"
+								: "#4D5355",
 			borderWidth: 1,
 			borderStyle: "solid",
 			outline: "none",
@@ -240,6 +240,7 @@ const TextArea = ({
 					className={`mb-1 ${required && "required"}`}
 				>
 					{label}
+					{required && <span className="text-red-500">*</span>}
 				</label>
 			)}
 
@@ -266,12 +267,11 @@ const TextArea = ({
 					{vaiants.includes(variant) && label && (
 						<span
 							style={{ ...labelStyle }}
-							className={`absolute pointer-events-none transition-[top,font,padding,margin] leading-none whitespace-nowrap ${
-								(isFocus && variant === "outline") ||
-								(variant === "outline" && value)
+							className={`absolute pointer-events-none transition-[top,font,padding,margin] leading-none whitespace-nowrap ${(isFocus && variant === "outline") ||
+									(variant === "outline" && value)
 									? "bg-white/80 dark:bg-base-600/80 backdrop-blur px-1 -ml-1"
 									: ""
-							}`}
+								}`}
 						>
 							{label}
 						</span>
@@ -322,9 +322,9 @@ const TextArea = ({
 
 			{/* Error */}
 			{error && (
-				<p className="text-red-500 text-xs mt-1">
+				<span className="text-red-500 text-sm mt-1 block">
 					{error}
-				</p>
+				</span>
 			)}
 
 			{/* Note */}
