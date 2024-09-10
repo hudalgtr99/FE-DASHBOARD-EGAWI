@@ -66,7 +66,7 @@ const CabangPage = () => {
                 doDelete={() => doDelete(item.pk)}
                 data={item}
               >
-                {item.alamat}
+                {item.nama} - {item.alamat}
               </Card>
             </div>
           ))}

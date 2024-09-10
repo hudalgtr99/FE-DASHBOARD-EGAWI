@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { cabangReducer } from "@/reducers/cabangReducers";
-import { addData, updateData, fetchCabangData } from "@/actions"; // Import the fetch action
+import { addData, updateData } from "@/actions";
 import {
     API_URL_createcabang,
     API_URL_edelcabang,
@@ -17,7 +17,6 @@ import {
     Loading
 } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
-
 const CabangForm = () => {
     const { pk } = useParams();
     const navigate = useNavigate();
@@ -154,16 +153,13 @@ const CabangForm = () => {
                         'ADD_CABANG'
                     );
                 }
-
-                // Refresh the data after successful add or update
-                dispatch(fetchCabangData(API_URL_getcabang));
-
                 navigate('/masterdata/cabang');
             } catch (error) {
                 console.error('Error in form submission: ', error);
             }
         },
     });
+
 
     if (loading) {
         return <div><Loading /></div>;
@@ -224,8 +220,29 @@ const CabangForm = () => {
                             onBlur={formik.handleBlur}
                             error={formik.touched.radius ? formik.errors.radius : ''}
                         />
-                        {/* Add fields for jadwal here */}
-                        <Button type="submit" className="bg-[#7367f0] text-white">Save</Button>
+                        {['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'].map(day => (
+                            <div key={day} className='flex gap-4'>
+                                <TextField
+                                    label={`${day.charAt(0).toUpperCase() + day.slice(1)} Masuk`}
+                                    name={`${day}_masuk`}
+                                    type="time"
+                                    value={formik.values[`${day}_masuk`]}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched[`${day}_masuk`] ? formik.errors[`${day}_masuk`] : ''}
+                                />
+                                <TextField
+                                    label={`${day.charAt(0).toUpperCase() + day.slice(1)} Keluar`}
+                                    name={`${day}_keluar`}
+                                    type="time"
+                                    value={formik.values[`${day}_keluar`]}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched[`${day}_keluar`] ? formik.errors[`${day}_keluar`] : ''}
+                                />
+                            </div>
+                        ))}
+                        <Button type="submit">Submit</Button>
                     </form>
                 </div>
             </Container>

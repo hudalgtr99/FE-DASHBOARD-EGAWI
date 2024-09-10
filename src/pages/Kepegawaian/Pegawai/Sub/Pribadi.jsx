@@ -25,6 +25,7 @@ const Pribadi = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [cabangOptions, setCabangOptions] = useState([]);
+  const [lokasiOptions, setLokasiOptions] = useState([]);
   const { getPegawaiResult } = useSelector(state => state.kepegawaian);
   const [initialValues, setInitialValues] = useState({
     nama: "",
@@ -40,6 +41,7 @@ const Pribadi = () => {
     alamat_ktp: "",
     alamat_domisili: "",
     cabang_id: "",
+    titik_lokasi: "",
   });
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +59,7 @@ const Pribadi = () => {
     alamat_ktp: Yup.string().required("Alamat KTP is required"),
     alamat_domisili: Yup.string().required("Alamat Domisili is required"),
     cabang_id: Yup.string().required("Cabang is required"),
+    titik_lokasi: Yup.string().required("Titik Lokasi is required"),
   });
 
   const isEdit = pk && pk !== 'add';
@@ -69,6 +72,10 @@ const Pribadi = () => {
           value: String(item.pk), // Convert pk to a string
           label: item.nama,
         })));
+        setLokasiOptions(response.data.map((item) => ({
+          value: String(item.pk), // Convert pk to a string
+          label: item.nama,
+        })));
       } catch (error) {
         console.error('Error fetching cabang options: ', error);
       }
@@ -76,7 +83,6 @@ const Pribadi = () => {
 
     fetchData();
   }, []);
-
 
   useEffect(() => {
     if (isEdit && getPegawaiResult?.results) {
@@ -96,6 +102,7 @@ const Pribadi = () => {
           alamat_ktp: foundPegawai.alamat_ktp || '',
           alamat_domisili: foundPegawai.alamat_domisili || '',
           cabang_id: foundPegawai.cabang_id || '',
+          titik_lokasi: foundPegawai.titik_lokasi || '',
         });
       }
     }
@@ -108,17 +115,23 @@ const Pribadi = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
+        // Convert titik_lokasi to a JSON string
+        const updatedValues = {
+          ...values,
+          titik_lokasi: JSON.stringify(values.titik_lokasi),
+        };
+
         if (isEdit) {
           await updateData(
             { dispatch, redux: pegawaiReducer },
-            { pk: pk, ...values },
+            { pk: pk, ...updatedValues },
             API_URL_edeluser,
             'UPDATE_PEGAWAI'
           );
         } else {
           await addData(
             { dispatch, redux: pegawaiReducer },
-            values,
+            updatedValues,
             API_URL_createuser,
             'ADD_PEGAWAI'
           );
@@ -129,6 +142,7 @@ const Pribadi = () => {
       }
     },
   });
+
 
   if (loading) {
     return <div>Loading...</div>; // Show loading indicator until data is ready
@@ -262,6 +276,14 @@ const Pribadi = () => {
               onChange={(option) => formik.setFieldValue('cabang_id', option ? option.value : '')}
               options={cabangOptions}
               error={formik.touched.cabang_id ? formik.errors.cabang_id : ''}
+            />
+            <Select
+              label="Titik Lokasi"
+              name="titik_lokasi"
+              value={lokasiOptions.find(option => option.value === String(formik.values.titik_lokasi)) || null}
+              onChange={(option) => formik.setFieldValue('titik_lokasi', option ? option.value : '')}
+              options={lokasiOptions}
+              error={formik.touched.titik_lokasi ? formik.errors.titik_lokasi : ''}
             />
             <Button type="submit">Submit</Button>
           </form>

@@ -26,8 +26,8 @@ const UnitSubForm = () => {
 
   const validationSchema = Yup.object().shape({
     nama_unit: Yup.string().required("Nama Unit is required"),
-    divisi: Yup.string().required("Nama Departemen is required"),
-    departemen: Yup.string().required('Departemen is required'),
+    divisi: Yup.string().required("Nama Divisi is required"),
+    departemen: Yup.string().required('Nama Departemen is required'),
   });
 
   const isEdit = pk && pk !== 'add';

@@ -9,6 +9,7 @@ import Pegawai from "./Sub/Pegawai";
 import Keluarga from "./Sub/Keluarga";
 import Pendidikan from "./Sub/Pendidikan";
 import Lainnya from "./Sub/Lainnya";
+import Jadwal from "./Sub/Jadwal";
 
 const PegawaiForm = () => {
   const [tabs] = useState({
@@ -39,6 +40,11 @@ const PegawaiForm = () => {
         nameTabs: "Lainnya",
         linkTabs: "formLainnya",
         contentTabs: <Lainnya />,
+      },
+      {
+        nameTabs: "Jadwal",
+        linkTabs: "formJadwal",
+        contentTabs: <Jadwal />,
       },
     ],
   });
