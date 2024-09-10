@@ -64,7 +64,6 @@ const Select = ({
 	onChange = () => { },
 	onBlur = () => { },
 	required = false,
-	menuposition = "absolute",
 }) => {
 	const { themeColor, colorMode } = useContext(ThemeContext);
 

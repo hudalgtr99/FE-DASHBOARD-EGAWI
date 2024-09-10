@@ -18,13 +18,13 @@ const DivisiSubForm = () => {
   const { getDivisiResult } = useSelector(state => state.organ);
   const [initialValues, setInitialValues] = useState({
     nama: '',
-    divisi: '',
+    departemen: '',
   });
   const [loading, setLoading] = useState(true);
 
   const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama Divisi is required"),
-    divisi: Yup.string().required("Nama Departemen is required"),
+    departemen: Yup.string().required("Nama Departemen is required"),
   });
 
   const isEdit = pk && pk !== 'add';
@@ -34,7 +34,7 @@ const DivisiSubForm = () => {
       try {
         const response = await axiosAPI.get(API_URL_getspesifikdepartemen);
         setDepartemenOptions(response.data.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         })));
       } catch (error) {
@@ -51,7 +51,7 @@ const DivisiSubForm = () => {
       if (foundDivisi) {
         setInitialValues({
           nama: foundDivisi.nama || '',
-          divisi: foundDivisi.divisi || '',
+          departemen: foundDivisi.departemen || '',
         });
       }
     }
@@ -70,7 +70,7 @@ const DivisiSubForm = () => {
             {
               pk: pk, // Ensure pk is an integer
               nama: values.nama,
-              departemen_id: values.divisi,
+              departemen_id: values.departemen,
             },
             API_URL_edeldivisi,
             'UPDATE_DIVISI'
@@ -78,7 +78,7 @@ const DivisiSubForm = () => {
         } else {
           await addData(
             { dispatch, redux: divisiReducers },
-            { nama: values.nama, departemen_id: values.divisi },
+            { nama: values.nama, departemen_id: values.departemen },
             API_URL_createdivisi,
             'ADD_DIVISI'
           );
@@ -109,6 +109,7 @@ const DivisiSubForm = () => {
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
+              required
               label="Nama Divisi"
               name="nama"
               value={formik.values.nama}
@@ -117,12 +118,13 @@ const DivisiSubForm = () => {
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <Select
+              required
               label="Nama Departemen"
-              name="divisi"
-              value={departemenOptions.find(option => option.value === formik.values.divisi) || null}
-              onChange={(option) => formik.setFieldValue('divisi', option ? option.value : '')}
+              name="departemen"
+              value={departemenOptions.find(option => option.value === formik.values.departemen) || null}
+              onChange={(option) => formik.setFieldValue('departemen', option ? option.value : '')}
               options={departemenOptions}
-              error={formik.touched.divisi ? formik.errors.divisi : ''}
+              error={formik.touched.departemen ? formik.errors.departemen : ''}
             />
             <Button type="submit">Submit</Button>
           </form>

@@ -63,31 +63,31 @@ const Pegawai = () => {
       const response = await axiosAPI.get(API_URL_getmasterpegawai);
       setPangkatOptions(
         response.data.pangkat.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );
       setJabatanOptions(
         response.data.jabatan.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );
       setDepartemenOptions(
         response.data.departemen.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );
       setDivisiOptions(
         response.data.divisi.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );
       setUnitOptions(
         response.data.unit.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );

@@ -18,14 +18,14 @@ const UnitSubForm = () => {
   const [divisiOptions, setDivisiOptions] = useState([]);
   const { getUnitResult } = useSelector(state => state.organ);
   const [initialValues, setInitialValues] = useState({
-    nama_unit: '',
+    nama: '',
     divisi: '',
     departemen: '',
   });
   const [loading, setLoading] = useState(true);
 
   const validationSchema = Yup.object().shape({
-    nama_unit: Yup.string().required("Nama Unit is required"),
+    nama: Yup.string().required("Nama Unit is required"),
     divisi: Yup.string().required("Nama Divisi is required"),
     departemen: Yup.string().required('Nama Departemen is required'),
   });
@@ -37,13 +37,13 @@ const UnitSubForm = () => {
       const response = await axiosAPI.get(API_URL_getmasterpegawai);
       setDepartemenOptions(
         response.data.departemen.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );
       setDivisiOptions(
         response.data.divisi.map((item) => ({
-          value: item.pk,
+          value: String(item.pk), // Convert pk to a string
           label: item.nama,
         }))
       );
@@ -56,7 +56,7 @@ const UnitSubForm = () => {
       const foundUnit = getUnitResult.results.find(item => item.pk === parseInt(pk, 10));
       if (foundUnit) {
         setInitialValues({
-          nama_unit: foundUnit.nama_unit || '',
+          nama: foundUnit.nama || '',
           divisi: foundUnit.divisi || '',
           departemen: foundUnit.departemen || '',
         });
@@ -122,14 +122,16 @@ const UnitSubForm = () => {
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
+              required
               label="Nama Unit"
-              name="nama_unit"
-              value={formik.values.nama_unit}
+              name="nama"
+              value={formik.values.nama}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.nama_unit ? formik.errors.nama_unit : ''}
+              error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <Select
+              required
               label="Nama Departemen"
               name="departemen"
               value={departemenOptions.find(option => option.value === formik.values.departemen) || null}
@@ -138,6 +140,7 @@ const UnitSubForm = () => {
               error={formik.touched.departemen ? formik.errors.departemen : ''}
             />
             <Select
+              required
               label="Nama Divisi"
               name="divisi"
               value={divisiOptions.find(option => option.value === formik.values.divisi) || null}

@@ -179,6 +179,7 @@ const CabangForm = () => {
                 <div>
                     <form onSubmit={formik.handleSubmit} className='space-y-6'>
                         <TextField
+                            required
                             label="Nama Cabang"
                             name="nama"
                             value={formik.values.nama}
@@ -187,6 +188,7 @@ const CabangForm = () => {
                             error={formik.touched.nama ? formik.errors.nama : ''}
                         />
                         <TextField
+                            required
                             label="No Telepon"
                             name="no_telepon"
                             value={formik.values.no_telepon}
@@ -195,6 +197,7 @@ const CabangForm = () => {
                             error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
                         />
                         <TextField
+                            required
                             label="Latitude"
                             name="latitude"
                             value={formik.values.latitude}
@@ -203,6 +206,7 @@ const CabangForm = () => {
                             error={formik.touched.latitude ? formik.errors.latitude : ''}
                         />
                         <TextField
+                            required
                             label="Longitude"
                             name="longitude"
                             value={formik.values.longitude}
@@ -211,6 +215,7 @@ const CabangForm = () => {
                             error={formik.touched.longitude ? formik.errors.longitude : ''}
                         />
                         <TextField
+                            required
                             label="Radius"
                             name="radius"
                             type="number"
@@ -222,6 +227,7 @@ const CabangForm = () => {
                         {['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'].map(day => (
                             <div key={day} className='flex gap-4'>
                                 <TextField
+                                    required
                                     label={`${day.charAt(0).toUpperCase() + day.slice(1)} Masuk`}
                                     name={`${day}_masuk`}
                                     type="time"
@@ -231,6 +237,7 @@ const CabangForm = () => {
                                     error={formik.touched[`${day}_masuk`] ? formik.errors[`${day}_masuk`] : ''}
                                 />
                                 <TextField
+                                    required
                                     label={`${day.charAt(0).toUpperCase() + day.slice(1)} Keluar`}
                                     name={`${day}_keluar`}
                                     type="time"

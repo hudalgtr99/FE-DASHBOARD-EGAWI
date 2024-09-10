@@ -102,6 +102,7 @@ const PangkatSubForm = () => {
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
+              required
               label="Nama Pangkat"
               name="nama"
               value={formik.values.nama}
@@ -110,6 +111,7 @@ const PangkatSubForm = () => {
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <TextField
+              required
               label="Grade"
               name="grade"
               value={formik.values.grade}
@@ -118,6 +120,7 @@ const PangkatSubForm = () => {
               error={formik.touched.grade ? formik.errors.grade : ''}
             />
             <TextField
+              required
               label="Level"
               name="level"
               value={formik.values.level}

@@ -92,6 +92,7 @@ const JabatanSubForm = () => {
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
+              required
               label="Nama Jabatan"
               name="nama"
               value={formik.values.nama}

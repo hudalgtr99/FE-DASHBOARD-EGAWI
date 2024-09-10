@@ -89,6 +89,7 @@ const DepartemenSubForm = () => {
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
             <TextField
+              required
               label="Nama Departemen"
               name="nama"
               value={formik.values.nama}
