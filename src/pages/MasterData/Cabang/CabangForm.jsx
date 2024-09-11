@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { cabangReducer } from "@/reducers/cabangReducers";
 import { addData, updateData } from "@/actions";
 import {
     API_URL_createcabang,
     API_URL_edelcabang,
-    API_URL_getcabang
 } from "@/constants";
 import {
     Container,
@@ -18,90 +17,55 @@ import {
 import { IoMdReturnLeft } from "react-icons/io";
 const CabangForm = () => {
     const { pk } = useParams();
+    const { state } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { getCabangResult } = useSelector(state => state.cabang);
-    const [initialValues, setInitialValues] = useState({
-        nama: "",
-        no_telepon: "",
-        latitude: "",
-        longitude: "",
-        radius: 25,
-        senin_masuk: "08:00",
-        senin_keluar: "17:00",
-        selasa_masuk: "08:00",
-        selasa_keluar: "17:00",
-        rabu_masuk: "08:00",
-        rabu_keluar: "17:00",
-        kamis_masuk: "08:00",
-        kamis_keluar: "17:00",
-        jumat_masuk: "08:00",
-        jumat_keluar: "17:00",
-        sabtu_masuk: "00:00",
-        sabtu_keluar: "00:00",
-        minggu_masuk: "00:00",
-        minggu_keluar: "00:00",
-    });
-    const [loading, setLoading] = useState(true);
-
-    const validationSchema = Yup.object().shape({
-        nama: Yup.string().required("Nama is required"),
-        latitude: Yup.string().required("Latitude is required"),
-        longitude: Yup.string().required("Longitude is required"),
-        radius: Yup.number().required("Radius is required"),
-        no_telepon: Yup.string().required("No Telepon is required"),
-        senin_masuk: Yup.string().required("Senin Masuk is required"),
-        senin_keluar: Yup.string().required("Senin Keluar is required"),
-        selasa_masuk: Yup.string().required("Selasa Masuk is required"),
-        selasa_keluar: Yup.string().required("Selasa Keluar is required"),
-        rabu_masuk: Yup.string().required("Rabu Masuk is required"),
-        rabu_keluar: Yup.string().required("Rabu Keluar is required"),
-        kamis_masuk: Yup.string().required("Kamis Masuk is required"),
-        kamis_keluar: Yup.string().required("Kamis Keluar is required"),
-        jumat_masuk: Yup.string().required("Jumat Masuk is required"),
-        jumat_keluar: Yup.string().required("Jumat Keluar is required"),
-        sabtu_masuk: Yup.string().required("Sabtu Masuk is required"),
-        sabtu_keluar: Yup.string().required("Sabtu Keluar is required"),
-        minggu_masuk: Yup.string().required("Minggu Masuk is required"),
-        minggu_keluar: Yup.string().required("Minggu Keluar is required"),
-    });
 
     const isEdit = pk && pk !== 'add';
 
-    useEffect(() => {
-        if (isEdit && getCabangResult?.results) {
-            const foundCabang = getCabangResult.results.find(item => item.pk === parseInt(pk, 10));
-            if (foundCabang) {
-                setInitialValues({
-                    nama: foundCabang.nama || '',
-                    no_telepon: foundCabang.no_telepon || '',
-                    latitude: foundCabang.latitude || '',
-                    longitude: foundCabang.longitude || '',
-                    radius: foundCabang.radius || 25,
-                    senin_masuk: foundCabang.senin_masuk || "08:00",
-                    senin_keluar: foundCabang.senin_keluar || "17:00",
-                    selasa_masuk: foundCabang.selasa_masuk || "08:00",
-                    selasa_keluar: foundCabang.selasa_keluar || "17:00",
-                    rabu_masuk: foundCabang.rabu_masuk || "08:00",
-                    rabu_keluar: foundCabang.rabu_keluar || "17:00",
-                    kamis_masuk: foundCabang.kamis_masuk || "08:00",
-                    kamis_keluar: foundCabang.kamis_keluar || "17:00",
-                    jumat_masuk: foundCabang.jumat_masuk || "08:00",
-                    jumat_keluar: foundCabang.jumat_keluar || "17:00",
-                    sabtu_masuk: foundCabang.sabtu_masuk || "00:00",
-                    sabtu_keluar: foundCabang.sabtu_keluar || "00:00",
-                    minggu_masuk: foundCabang.minggu_masuk || "00:00",
-                    minggu_keluar: foundCabang.minggu_keluar || "00:00",
-                });
-            }
-        }
-        setLoading(false); // Data fetching complete
-    }, [isEdit, pk, getCabangResult]);
-
     const formik = useFormik({
-        initialValues,
-        enableReinitialize: true,
-        validationSchema,
+        initialValues: {
+            nama: state?.item?.nama,
+            no_telepon: state?.item?.no_telepon,
+            latitude: state?.item?.latitude,
+            longitude: state?.item?.longitude,
+            radius: 25,
+            senin_masuk: "08:00",
+            senin_keluar: "17:00",
+            selasa_masuk: "08:00",
+            selasa_keluar: "17:00",
+            rabu_masuk: "08:00",
+            rabu_keluar: "17:00",
+            kamis_masuk: "08:00",
+            kamis_keluar: "17:00",
+            jumat_masuk: "08:00",
+            jumat_keluar: "17:00",
+            sabtu_masuk: "00:00",
+            sabtu_keluar: "00:00",
+            minggu_masuk: "00:00",
+            minggu_keluar: "00:00",
+        },
+        validationSchema: Yup.object().shape({
+            nama: Yup.string().required("Nama is required"),
+            latitude: Yup.string().required("Latitude is required"),
+            longitude: Yup.string().required("Longitude is required"),
+            radius: Yup.number().required("Radius is required"),
+            no_telepon: Yup.string().required("No Telepon is required"),
+            senin_masuk: Yup.string().required("Senin Masuk is required"),
+            senin_keluar: Yup.string().required("Senin Keluar is required"),
+            selasa_masuk: Yup.string().required("Selasa Masuk is required"),
+            selasa_keluar: Yup.string().required("Selasa Keluar is required"),
+            rabu_masuk: Yup.string().required("Rabu Masuk is required"),
+            rabu_keluar: Yup.string().required("Rabu Keluar is required"),
+            kamis_masuk: Yup.string().required("Kamis Masuk is required"),
+            kamis_keluar: Yup.string().required("Kamis Keluar is required"),
+            jumat_masuk: Yup.string().required("Jumat Masuk is required"),
+            jumat_keluar: Yup.string().required("Jumat Keluar is required"),
+            sabtu_masuk: Yup.string().required("Sabtu Masuk is required"),
+            sabtu_keluar: Yup.string().required("Sabtu Keluar is required"),
+            minggu_masuk: Yup.string().required("Minggu Masuk is required"),
+            minggu_keluar: Yup.string().required("Minggu Keluar is required"),
+        }),
         onSubmit: async (values) => {
             try {
                 const jadwal = JSON.stringify({
@@ -158,11 +122,6 @@ const CabangForm = () => {
             }
         },
     });
-
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div>

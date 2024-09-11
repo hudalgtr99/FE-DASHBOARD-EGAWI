@@ -373,25 +373,25 @@ const Select = ({
 };
 
 Select.propTypes = {
-	id: PropTypes.string,
-	name: PropTypes.string,
-	label: PropTypes.string,
+	id: PropTypes.any,
+	name: PropTypes.any,
+	label: PropTypes.any,
 	options: PropTypes.arrayOf(
 		PropTypes.shape({
-			value: PropTypes.string.isRequired,
-			label: PropTypes.string.isRequired,
+			value: PropTypes.any.isRequired,
+			label: PropTypes.any.isRequired,
 		})
 	),
 	value: PropTypes.oneOfType([
 		PropTypes.arrayOf(
 			PropTypes.shape({
-				value: PropTypes.string.isRequired,
-				label: PropTypes.string.isRequired,
+				value: PropTypes.any.isRequired,
+				label: PropTypes.any.isRequired,
 			})
 		),
 		PropTypes.shape({
-			value: PropTypes.string.isRequired,
-			label: PropTypes.string.isRequired,
+			value: PropTypes.any.isRequired,
+			label: PropTypes.any.isRequired,
 		}),
 	]),
 	variant: PropTypes.oneOf(["basic", "outline"]),
@@ -408,7 +408,7 @@ Select.propTypes = {
 	searchable: PropTypes.bool,
 	disabled: PropTypes.bool,
 	multi: PropTypes.bool,
-	placeholder: PropTypes.string,
+	placeholder: PropTypes.any,
 	error: PropTypes.node,
 	note: PropTypes.node,
 	onChange: PropTypes.func,

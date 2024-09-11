@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, Select } from '@/components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { unitReducers } from '@/reducers/organReducers';
 import { API_URL_createunit, API_URL_edelunit, API_URL_getmasterpegawai } from '@/constants';
@@ -12,23 +12,11 @@ import axiosAPI from "@/authentication/axiosApi";
 
 const UnitSubForm = () => {
   const { pk } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [departemenOptions, setDepartemenOptions] = useState([]);
   const [divisiOptions, setDivisiOptions] = useState([]);
-  const { getUnitResult } = useSelector(state => state.organ);
-  const [initialValues, setInitialValues] = useState({
-    nama: '',
-    divisi: '',
-    departemen: '',
-  });
-  const [loading, setLoading] = useState(true);
-
-  const validationSchema = Yup.object().shape({
-    nama: Yup.string().required("Nama Unit is required"),
-    divisi: Yup.string().required("Nama Divisi is required"),
-    departemen: Yup.string().required('Nama Departemen is required'),
-  });
 
   const isEdit = pk && pk !== 'add';
 
@@ -37,13 +25,13 @@ const UnitSubForm = () => {
       const response = await axiosAPI.get(API_URL_getmasterpegawai);
       setDepartemenOptions(
         response.data.departemen.map((item) => ({
-          value: String(item.pk), // Convert pk to a string
+          value: item.pk,
           label: item.nama,
         }))
       );
       setDivisiOptions(
         response.data.divisi.map((item) => ({
-          value: String(item.pk), // Convert pk to a string
+          value: item.pk,
           label: item.nama,
         }))
       );
@@ -51,24 +39,17 @@ const UnitSubForm = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (isEdit && getUnitResult?.results) {
-      const foundUnit = getUnitResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundUnit) {
-        setInitialValues({
-          nama: foundUnit.nama || '',
-          divisi: foundUnit.divisi || '',
-          departemen: foundUnit.departemen || '',
-        });
-      }
-    }
-    setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getUnitResult]);
-
   const formik = useFormik({
-    initialValues,
-    enableReinitialize: true, // This ensures formik will update when initialValues change
-    validationSchema,
+    initialValues: {
+      nama: state?.item?.nama,
+      divisi: state?.item?.divisi.id,
+      departemen: state?.item?.divisi.departemen.id
+    },
+    validationSchema: Yup.object().shape({
+      nama: Yup.string().required("Nama Unit is required"),
+      divisi: Yup.string().required("Nama Divisi is required"),
+      departemen: Yup.string().required('Nama Departemen is required'),
+    }),
     onSubmit: async (values) => {
       try {
         if (isEdit) {
@@ -100,12 +81,7 @@ const UnitSubForm = () => {
         console.error('Error in form submission: ', error);
       }
     }
-
   });
-
-  if (loading) {
-    return <div>Loading...</div>; // Show loading indicator until data is ready
-  }
 
   return (
     <div>

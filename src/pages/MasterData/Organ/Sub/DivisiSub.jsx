@@ -2,17 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  addData,
   deleteData,
   getData,
-  updateData,
 } from '@/actions';
 import { divisiReducers } from '@/reducers/organReducers';
 import {
-  API_URL_createdivisi,
   API_URL_edeldivisi,
   API_URL_getdivisi,
-  API_URL_getspesifikdepartemen,
 } from '@/constants';
 import { icons } from "../../../../../public/icons";
 import {
@@ -24,14 +20,11 @@ import {
   TextField,
   Tooltip,
 } from '@/components';
-import * as Yup from 'yup';
 import { debounce } from 'lodash'; // Import lodash debounce
 
 const DivisiSub = () => {
   const {
     getDivisiResult,
-    getDivisiLoading,
-    getDivisiError,
     addDivisiResult,
     deleteDivisiResult,
   } = useSelector((state) => state.organ);
@@ -65,7 +58,11 @@ const DivisiSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/divisi/form/${item.pk}`);
+    navigate(`/divisi/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (item) => {
@@ -172,8 +169,8 @@ const DivisiSub = () => {
           <Tables.Head>
             <tr>
               <Tables.Header>No</Tables.Header>
-              <Tables.Header>Nama Departemen</Tables.Header>
               <Tables.Header>Nama Divisi</Tables.Header>
+              <Tables.Header>Nama Departemen</Tables.Header>
               <Tables.Header center>Actions</Tables.Header>
             </tr>
           </Tables.Head>
@@ -181,8 +178,8 @@ const DivisiSub = () => {
             {dataWithIndex.map((item) => (
               <Tables.Row key={item.pk}>
                 <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.departemen.nama}</Tables.Data>
                 <Tables.Data>{item.nama}</Tables.Data>
+                <Tables.Data>{item.departemen.nama}</Tables.Data>
                 <Tables.Data center>
                   <div className="flex items-center justify-center gap-2">
                     {actions.map((action) => (

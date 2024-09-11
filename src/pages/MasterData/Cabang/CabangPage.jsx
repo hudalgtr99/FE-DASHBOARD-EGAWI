@@ -34,8 +34,12 @@ const CabangPage = () => {
     navigate("/cabang/form"); // Navigate to the add form
   };
 
-  const onEdit = (pk) => {
-    navigate(`/cabang/form/${pk}`); // Navigate to the edit form
+  const onEdit = (item) => {
+    navigate(`/cabang/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (id) => {
@@ -61,7 +65,7 @@ const CabangPage = () => {
           {card.map((item, itemIdx) => (
             <div key={itemIdx} className="col-span-full sm:col-span-3 lg:col-span-2">
               <Card
-                onClick={() => onEdit(item.pk)}
+                onClick={() => onEdit(item)}
                 deleted
                 doDelete={() => doDelete(item.pk)}
                 data={item}

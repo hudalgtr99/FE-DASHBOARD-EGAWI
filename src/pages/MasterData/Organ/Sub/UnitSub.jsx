@@ -2,18 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  addData,
   deleteData,
   getData,
-  updateData,
 } from '@/actions';
 import { unitReducers } from '@/reducers/organReducers';
 import {
-  API_URL_createunit,
   API_URL_edelunit,
   API_URL_getunit,
-  API_URL_getspesifikdivisi,
-  API_URL_getmasterpegawai,
 } from '@/constants';
 import { icons } from "../../../../../public/icons";
 import {
@@ -25,18 +20,14 @@ import {
   TextField,
   Tooltip,
 } from '@/components';
-import * as Yup from 'yup';
 import { debounce } from 'lodash'; // Import lodash debounce
 
 const UnitSub = () => {
   const {
     getUnitResult,
-    getUnitLoading,
-    getUnitError,
     addDepartemenResult,
     addDivisiResult,
     addUnitResult,
-    addUnitLoading,
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,
@@ -71,7 +62,11 @@ const UnitSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/unit/form/${item.pk}`);
+    navigate(`/unit/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (item) => {
@@ -186,9 +181,9 @@ const UnitSub = () => {
           <Tables.Head>
             <tr>
               <Tables.Header>No</Tables.Header>
+              <Tables.Header>Nama Unit</Tables.Header>
               <Tables.Header>Nama Departemen</Tables.Header>
               <Tables.Header>Nama Divisi</Tables.Header>
-              <Tables.Header>Nama Unit</Tables.Header>
               <Tables.Header center>Actions</Tables.Header>
             </tr>
           </Tables.Head>
@@ -196,9 +191,9 @@ const UnitSub = () => {
             {dataWithIndex.map((item) => (
               <Tables.Row key={item.pk}>
                 <Tables.Data>{item.index}</Tables.Data>
+                <Tables.Data>{item.nama}</Tables.Data>
                 <Tables.Data>{item.divisi.departemen.nama}</Tables.Data>
                 <Tables.Data>{item.divisi.nama}</Tables.Data>
-                <Tables.Data>{item.nama}</Tables.Data>
                 <Tables.Data center>
                   <div className="flex items-center justify-center gap-2">
                     {actions.map((action) => (

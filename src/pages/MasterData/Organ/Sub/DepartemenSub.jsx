@@ -69,7 +69,11 @@ const DepartemenSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/departemen/form/${item.pk}`);
+    navigate(`/departemen/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (item) => {

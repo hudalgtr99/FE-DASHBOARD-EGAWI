@@ -59,7 +59,7 @@ const Pribadi = () => {
     alamat_ktp: Yup.string().required("Alamat KTP is required"),
     alamat_domisili: Yup.string().required("Alamat Domisili is required"),
     cabang_id: Yup.string().required("Cabang is required"),
-    titik_lokasi: Yup.string().required("Titik Lokasi is required"),
+    titik_lokasi: Yup.object().required("fsdf")
   });
 
   const isEdit = pk && pk !== 'add';
@@ -118,7 +118,7 @@ const Pribadi = () => {
         // Convert titik_lokasi to a JSON string
         const updatedValues = {
           ...values,
-          titik_lokasi: JSON.stringify(values.titik_lokasi),
+          titik_lokasi: JSON.stringify([values.titik_lokasi]),
         };
 
         if (isEdit) {
@@ -294,8 +294,9 @@ const Pribadi = () => {
               required
               label="Titik Lokasi"
               name="titik_lokasi"
-              value={lokasiOptions.find(option => option.value === String(formik.values.titik_lokasi)) || null}
-              onChange={(option) => formik.setFieldValue('titik_lokasi', option ? option.value : '')}
+
+              value={formik.values.titik_lokasi}
+              onChange={(option) => formik.setFieldValue('titik_lokasi', option)}
               options={lokasiOptions}
               error={formik.touched.titik_lokasi ? formik.errors.titik_lokasi : ''}
             />

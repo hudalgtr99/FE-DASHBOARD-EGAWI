@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
@@ -16,36 +16,19 @@ import { API_URL_createdepartemen, API_URL_edeldepartemen } from '@/constants';
 
 const DepartemenSubForm = () => {
   const { pk } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { getDepartemenResult } = useSelector(state => state.organ);
-  const [initialValues, setInitialValues] = useState({
-    nama: '',
-  });
-  const [loading, setLoading] = useState(true);
-
-  const validationSchema = Yup.object().shape({
-    nama: Yup.string().required("Nama Departemen is required"),
-  });
 
   const isEdit = pk && pk !== 'add';
 
-  useEffect(() => {
-    if (isEdit && getDepartemenResult?.results) {
-      const foundDepartemen = getDepartemenResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundDepartemen) {
-        setInitialValues({
-          nama: foundDepartemen.nama || '',
-        });
-      }
-    }
-    setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getDepartemenResult]);
-
   const formik = useFormik({
-    initialValues,
-    enableReinitialize: true, // This ensures formik will update when initialValues change
-    validationSchema,
+    initialValues: {
+      nama: state?.item?.nama,
+    },
+    validationSchema: Yup.object().shape({
+      nama: Yup.string().required("Nama Departemen is required"),
+    }),
     onSubmit: async (values) => {
       try {
         if (isEdit) {
@@ -69,10 +52,6 @@ const DepartemenSubForm = () => {
       }
     },
   });
-
-  if (loading) {
-    return <div>Loading...</div>; // Show loading indicator until data is ready
-  }
 
   return (
     <div>
