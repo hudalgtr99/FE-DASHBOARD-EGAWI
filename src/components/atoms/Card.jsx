@@ -1,6 +1,8 @@
 import { ThemeContext } from "@/context/ThemeContext";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
+import { icons } from "../../../public/icons";
+import { Tooltip } from "@/components";
 
 /**
  *
@@ -11,6 +13,9 @@ import { useContext, useState } from "react";
  * density?: "tight" | "normal" | "loose";
  * borderPosition?: "top" | "right" | "bottom" | "left" | "all";
  * onClick?: () => void;
+ * doDelete?: () => void;
+ * onEdit?: () => void;
+ * data?: { pk: number };
  * children?: React.ReactNode;
  * }}
  *
@@ -23,6 +28,9 @@ const Card = ({
   density = "normal",
   borderPosition = "bottom",
   onClick,
+  doDelete,
+  onEdit,
+  data,
   children = null,
 }) => {
   const { themeColor, colorMode } = useContext(ThemeContext);
@@ -127,7 +135,39 @@ const Card = ({
       onMouseLeave={() => setIsHover(false)}
       className={`transition-[border,box-shadow] shadow hover:shadow-lg ${onClick ? "cursor-pointer" : ""} ${cardDensity} ${cardRounded}`}
     >
-      {children}
+      <div className="flex items-center">
+        <div>
+          {children}
+        </div>
+        <div className="space-y-2">
+          <Tooltip tooltip="Edit">
+            {onEdit && (
+              <button
+                className="text-green-500 bg-white p-1 rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering onClick if Card is clickable
+                  onEdit();
+                }}
+              >
+                {icons.bspencil}
+              </button>
+            )}
+          </Tooltip>
+          <Tooltip tooltip="Hapus">
+            {doDelete && data && (
+              <button
+                className="text-red-500 bg-white p-1 rounded-full"
+                onClick={(e) => {
+                  doDelete(data.pk);
+                }}
+              >
+                {icons.citrash}
+              </button>
+            )}
+          </Tooltip>
+        </div>
+      </div>
+
     </div>
   );
 };
@@ -160,6 +200,11 @@ Card.propTypes = {
   density: PropTypes.oneOf(["tight", "normal", "loose"]),
   borderPosition: PropTypes.oneOf(["top", "right", "bottom", "left", "all"]),
   onClick: PropTypes.func,
+  doDelete: PropTypes.func,
+  onEdit: PropTypes.func,
+  data: PropTypes.shape({
+    pk: PropTypes.number,
+  }),
   children: PropTypes.node,
 };
 

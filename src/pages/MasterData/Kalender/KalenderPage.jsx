@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import * as Yup from "yup";
+import { Formik, Form } from "formik";
 import {
   API_URL_createkalender,
   API_URL_getkalender,
@@ -17,13 +18,13 @@ import axiosAPI from "@/authentication/axiosApi";
 import moment from "moment";
 
 const KalenderPage = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const { addKalenderResult, addKalenderLoading } = useSelector(
     (state) => state.kalender
   );
   const dispatch = useDispatch();
   const calendarRef = useRef(null);
   const [kalender, setKalender] = useState([]);
-  const [modal, setModal] = useState(false);
 
   const initialValues = {
     id: "",
@@ -59,7 +60,6 @@ const KalenderPage = () => {
 
     resetForm();
     setSubmitting(false);
-    setModal(false); // Close the modal after submission
   };
 
   const getEvent = async (month_year = false) => {
@@ -74,13 +74,13 @@ const KalenderPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (addKalenderResult) {
       fetchData();
     }
-  }, [addKalenderResult]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [addKalenderResult]);
 
   return (
     <div className="p-6 bg-white dark:bg-gray-800 dark:text-white rounded-lg shadow-lg calendar-wrapper">
@@ -89,9 +89,7 @@ const KalenderPage = () => {
         customButtons={{
           buttonAdd: {
             text: "Tambah +",
-            click: function () {
-              setModal(true);
-            },
+            click: () => navigate('/kalender/form'), // Use navigate for redirection
           },
           prev: {
             click: () => {

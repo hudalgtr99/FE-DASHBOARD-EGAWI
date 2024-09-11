@@ -11,6 +11,7 @@ import DivisiSubForm from "@/pages/MasterData/Organ/Sub/DivisiSubForm";
 import UnitSubForm from "@/pages/MasterData/Organ/Sub/UnitSubForm";
 import PegawaiForm from "@/pages/Kepegawaian/Pegawai/PegawaiForm";
 import CabangForm from "@/pages/MasterData/Cabang/CabangForm";
+import KalenderForm from "@/pages/MasterData/Kalender/KalenderForm";
 
 const Router = () => {
 	return (
@@ -61,6 +62,9 @@ const Router = () => {
 					{/* Cabang */}
 					<Route path="/cabang/form" element={<CabangForm />} />
 					<Route path="/cabang/form/:pk" element={<CabangForm />} />
+
+					{/* Kalender */}
+					<Route path="/kalender/form" element={<KalenderForm />} />
 				</Route>
 
 				{/* Protect the login route with the LoginPrivateRoute */}

@@ -15,42 +15,44 @@ import {
     Button,
 } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
+
 const CabangForm = () => {
     const { pk } = useParams();
     const { state } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const coordinates = JSON.parse(state?.item?.cordinate || '{}');
+
     const isEdit = pk && pk !== 'add';
 
     const formik = useFormik({
         initialValues: {
-            nama: state?.item?.nama,
-            no_telepon: state?.item?.no_telepon,
-            latitude: state?.item?.latitude,
-            longitude: state?.item?.longitude,
-            radius: 25,
-            senin_masuk: "08:00",
-            senin_keluar: "17:00",
-            selasa_masuk: "08:00",
-            selasa_keluar: "17:00",
-            rabu_masuk: "08:00",
-            rabu_keluar: "17:00",
-            kamis_masuk: "08:00",
-            kamis_keluar: "17:00",
-            jumat_masuk: "08:00",
-            jumat_keluar: "17:00",
-            sabtu_masuk: "00:00",
-            sabtu_keluar: "00:00",
-            minggu_masuk: "00:00",
-            minggu_keluar: "00:00",
+            nama: state?.item?.nama || '',
+            no_telepon: state?.item?.no_telepon || '',
+            latitude: coordinates.latitude || '',
+            longitude: coordinates.longitude || '',
+            radius: state?.item?.radius || 25,
+            senin_masuk: state?.item?.jadwal?.senin?.masuk || "08:00",
+            senin_keluar: state?.item?.jadwal?.senin?.keluar || "17:00",
+            selasa_masuk: state?.item?.jadwal?.selasa?.masuk || "08:00",
+            selasa_keluar: state?.item?.jadwal?.selasa?.keluar || "17:00",
+            rabu_masuk: state?.item?.jadwal?.rabu?.masuk || "08:00",
+            rabu_keluar: state?.item?.jadwal?.rabu?.keluar || "17:00",
+            kamis_masuk: state?.item?.jadwal?.kamis?.masuk || "08:00",
+            kamis_keluar: state?.item?.jadwal?.kamis?.keluar || "17:00",
+            jumat_masuk: state?.item?.jadwal?.jumat?.masuk || "08:00",
+            jumat_keluar: state?.item?.jadwal?.jumat?.keluar || "17:00",
+            sabtu_masuk: state?.item?.jadwal?.sabtu?.masuk || "00:00",
+            sabtu_keluar: state?.item?.jadwal?.sabtu?.keluar || "00:00",
+            minggu_masuk: state?.item?.jadwal?.minggu?.masuk || "00:00",
+            minggu_keluar: state?.item?.jadwal?.minggu?.keluar || "00:00",
         },
         validationSchema: Yup.object().shape({
             nama: Yup.string().required("Nama is required"),
             latitude: Yup.string().required("Latitude is required"),
             longitude: Yup.string().required("Longitude is required"),
             radius: Yup.number().required("Radius is required"),
-            no_telepon: Yup.string().required("No Telepon is required"),
             senin_masuk: Yup.string().required("Senin Masuk is required"),
             senin_keluar: Yup.string().required("Senin Keluar is required"),
             selasa_masuk: Yup.string().required("Selasa Masuk is required"),
@@ -71,31 +73,31 @@ const CabangForm = () => {
                 const jadwal = JSON.stringify({
                     senin: {
                         masuk: values.senin_masuk,
-                        keluar: values.senin_keluar,
+                        keluar: values.senin_keluar
                     },
                     selasa: {
                         masuk: values.selasa_masuk,
-                        keluar: values.selasa_keluar,
+                        keluar: values.selasa_keluar
                     },
                     rabu: {
                         masuk: values.rabu_masuk,
-                        keluar: values.rabu_keluar,
+                        keluar: values.rabu_keluar
                     },
                     kamis: {
                         masuk: values.kamis_masuk,
-                        keluar: values.kamis_keluar,
+                        keluar: values.kamis_keluar
                     },
                     jumat: {
                         masuk: values.jumat_masuk,
-                        keluar: values.jumat_keluar,
+                        keluar: values.jumat_keluar
                     },
                     sabtu: {
                         masuk: values.sabtu_masuk,
-                        keluar: values.sabtu_keluar,
+                        keluar: values.sabtu_keluar
                     },
                     minggu: {
                         masuk: values.minggu_masuk,
-                        keluar: values.minggu_keluar,
+                        keluar: values.minggu_keluar
                     },
                 });
 
@@ -147,7 +149,6 @@ const CabangForm = () => {
                             error={formik.touched.nama ? formik.errors.nama : ''}
                         />
                         <TextField
-                            required
                             label="No Telepon"
                             name="no_telepon"
                             value={formik.values.no_telepon}
@@ -207,7 +208,9 @@ const CabangForm = () => {
                                 />
                             </div>
                         ))}
-                        <Button type="submit">Submit</Button>
+                        <div className="mt-6 flex justify-end">
+                            <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+                        </div>
                     </form>
                 </div>
             </Container>

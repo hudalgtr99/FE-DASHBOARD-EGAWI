@@ -22,13 +22,13 @@ const CabangPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (deleteCabangResult) {
       fetchData();
     }
-  }, [deleteCabangResult, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [deleteCabangResult, dispatch]);
 
   const onAdd = () => {
     navigate("/cabang/form"); // Navigate to the add form
@@ -38,7 +38,7 @@ const CabangPage = () => {
     navigate(`/cabang/form/${item.pk}`, {
       state: {
         item,
-      }
+      },
     });
   };
 
@@ -48,25 +48,22 @@ const CabangPage = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-4">
-        <Container>
-          <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-            <div className="w-full sm:w-60">
-              <TextField placeholder="Search" />
-            </div>
-            <Button onClick={onAdd}>
-              <div className="flex items-center gap-2">
-                <FaPlus />Tambah Cabang
-              </div>
-            </Button>
+      <Container>
+        <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4 mb-4">
+          <div className="w-full sm:w-60">
+            <TextField placeholder="Search" />
           </div>
-        </Container>
+          <Button onClick={onAdd}>
+            <div className="flex items-center gap-2">
+              <FaPlus /> Tambah Cabang
+            </div>
+          </Button>
+        </div>
         <div className="grid grid-cols-6 gap-3">
-          {card.map((item, itemIdx) => (
-            <div key={itemIdx} className="col-span-full sm:col-span-3 lg:col-span-2">
+          {card.map((item) => (
+            <div key={item.pk} className="col-span-full sm:col-span-3 lg:col-span-2">
               <Card
-                onClick={() => onEdit(item)}
-                deleted
+                onEdit={() => onEdit(item)} // Update here
                 doDelete={() => doDelete(item.pk)}
                 data={item}
               >
@@ -75,7 +72,7 @@ const CabangPage = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </div>
   );
 };
