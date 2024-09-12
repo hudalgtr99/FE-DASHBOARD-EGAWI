@@ -71,7 +71,11 @@ const PegawaiPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/pegawai/form/${item.pk}`);
+    navigate(`/pegawai/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (item) => {

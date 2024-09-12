@@ -74,26 +74,28 @@ const KalenderForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.nama_event ? formik.errors.nama_event : ''}
             />
-            <TextField
-              required
-              type="date"
-              label="Tanggal Mulai"
-              name="tgl_mulai"
-              value={formik.values.tgl_mulai}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.tgl_mulai ? formik.errors.tgl_mulai : ''}
-            />
-            <TextField
-              required
-              type="date"
-              label="Tanggal Berakhir"
-              name="tgl_berakhir"
-              value={formik.values.tgl_berakhir}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.tgl_berakhir ? formik.errors.tgl_berakhir : ''}
-            />
+            <div className='flex gap-4'>
+              <TextField
+                required
+                type="date"
+                label="Tanggal Mulai"
+                name="tgl_mulai"
+                value={formik.values.tgl_mulai}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.tgl_mulai ? formik.errors.tgl_mulai : ''}
+              />
+              <TextField
+                required
+                type="date"
+                label="Tanggal Berakhir"
+                name="tgl_berakhir"
+                value={formik.values.tgl_berakhir}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.tgl_berakhir ? formik.errors.tgl_berakhir : ''}
+              />
+            </div>
             <Select
               required
               label="Type Event"

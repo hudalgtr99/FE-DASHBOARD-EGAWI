@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
@@ -10,7 +10,7 @@ import {
   TextArea,
   Select,
 } from '@/components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import {
@@ -22,103 +22,71 @@ import axiosAPI from "@/authentication/axiosApi";
 
 const Pribadi = () => {
   const { pk } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [cabangOptions, setCabangOptions] = useState([]);
   const [lokasiOptions, setLokasiOptions] = useState([]);
-  const { getPegawaiResult } = useSelector(state => state.kepegawaian);
-  const [initialValues, setInitialValues] = useState({
-    nama: "",
-    username: "",
-    email: "",
-    no_identitas: "",
-    jenis_kelamin: "",
-    no_telepon: "",
-    tempat_lahir: "",
-    tgl_lahir: "",
-    agama: "",
-    npwp: "",
-    alamat_ktp: "",
-    alamat_domisili: "",
-    cabang_id: "",
-    titik_lokasi: "",
-  });
-  const [loading, setLoading] = useState(true);
-
-  const validationSchema = Yup.object({
-    nama: Yup.string().required("Nama is required"),
-    username: Yup.string().required("Username is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    no_identitas: Yup.string().required("No Identitas is required"),
-    jenis_kelamin: Yup.string().required("Jenis Kelamin is required"),
-    no_telepon: Yup.string().required("No Telepon is required"),
-    tempat_lahir: Yup.string().required("Tempat Lahir is required"),
-    tgl_lahir: Yup.date().required("Tanggal Lahir is required"),
-    agama: Yup.string().required("Agama is required"),
-    npwp: Yup.string().required("NPWP is required"),
-    alamat_ktp: Yup.string().required("Alamat KTP is required"),
-    alamat_domisili: Yup.string().required("Alamat Domisili is required"),
-    cabang_id: Yup.string().required("Cabang is required"),
-    titik_lokasi: Yup.object().required("fsdf")
-  });
 
   const isEdit = pk && pk !== 'add';
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getcabang);
-        setCabangOptions(response.data.map((item) => ({
-          value: String(item.pk), // Convert pk to a string
-          label: item.nama,
-        })));
-        setLokasiOptions(response.data.map((item) => ({
-          value: String(item.pk), // Convert pk to a string
-          label: item.nama,
-        })));
-      } catch (error) {
-        console.error('Error fetching cabang options: ', error);
-      }
+      const response = await axiosAPI.get(API_URL_getcabang);
+      setCabangOptions(response.data.map((item) => ({
+        value: item.pk,
+        label: item.nama,
+      })));
+      setLokasiOptions(response.data.map((item) => ({
+        value: item.pk,
+        label: item.nama,
+      })));
     };
 
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (isEdit && getPegawaiResult?.results) {
-      const foundPegawai = getPegawaiResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundPegawai) {
-        setInitialValues({
-          nama: foundPegawai.nama || '',
-          username: foundPegawai.username || '',
-          email: foundPegawai.email || '',
-          no_identitas: foundPegawai.no_identitas || '',
-          jenis_kelamin: foundPegawai.jenis_kelamin || '',
-          no_telepon: foundPegawai.no_telepon || '',
-          tempat_lahir: foundPegawai.tempat_lahir || '',
-          tgl_lahir: foundPegawai.tgl_lahir || '',
-          agama: foundPegawai.agama || '',
-          npwp: foundPegawai.npwp || '',
-          alamat_ktp: foundPegawai.alamat_ktp || '',
-          alamat_domisili: foundPegawai.alamat_domisili || '',
-          cabang_id: foundPegawai.cabang_id || '',
-          titik_lokasi: foundPegawai.titik_lokasi || '',
-        });
-      }
-    }
-    setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getPegawaiResult]);
-
   const formik = useFormik({
-    initialValues,
-    enableReinitialize: true, // This ensures formik will update when initialValues change
-    validationSchema,
+    initialValues: {
+      nama: state?.item?.nama || '',
+      username: state?.item?.username || '',
+      email: state?.item?.email || '',
+      no_identitas: state?.item?.no_identitas || '',
+      jenis_kelamin: state?.item?.jenis_kelamin || '',
+      no_telepon: state?.item?.no_telepon || '',
+      tempat_lahir: state?.item?.tempat_lahir || '',
+      tgl_lahir: state?.item?.tgl_lahir || '',
+      agama: state?.item?.agama || '',
+      npwp: state?.item?.npwp || '',
+      alamat_ktp: state?.item?.alamat_ktp || '',
+      alamat_domisili: state?.item?.alamat_domisili || '',
+      cabang_id: state?.item?.cabang_id || '',
+      titik_lokasi: state?.item?.titik_lokasi || [], // Ensure this is an array
+    },
+    validationSchema: Yup.object().shape({
+      nama: Yup.string().required("Nama is required"),
+      username: Yup.string().required("Username is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      no_identitas: Yup.string().required("No Identitas is required"),
+      jenis_kelamin: Yup.string().required("Jenis Kelamin is required"),
+      no_telepon: Yup.string().required("No Telepon is required"),
+      tempat_lahir: Yup.string().required("Tempat Lahir is required"),
+      tgl_lahir: Yup.date().required("Tanggal Lahir is required"),
+      agama: Yup.string().required("Agama is required"),
+      npwp: Yup.string().required("NPWP is required"),
+      alamat_ktp: Yup.string().required("Alamat KTP is required"),
+      alamat_domisili: Yup.string().required("Alamat Domisili is required"),
+      cabang_id: Yup.string().required("Cabang is required"),
+      titik_lokasi: Yup.array().min(1, "At least one location must be selected").required("Titik Lokasi is required"),
+    }),
     onSubmit: async (values) => {
       try {
-        // Convert titik_lokasi to a JSON string
         const updatedValues = {
           ...values,
-          titik_lokasi: JSON.stringify([values.titik_lokasi]),
+          // Convert array of selected objects to array of values (pk)
+          titik_lokasi: Array.isArray(values.titik_lokasi)
+            ? JSON.stringify(values.titik_lokasi.map(option => option.value))
+            : JSON.stringify([]), // Ensure it's an empty array if undefined
         };
 
         if (isEdit) {
@@ -143,11 +111,6 @@ const Pribadi = () => {
     },
   });
 
-
-  if (loading) {
-    return <div>Loading...</div>; // Show loading indicator until data is ready
-  }
-
   return (
     <div>
       <Container>
@@ -162,144 +125,156 @@ const Pribadi = () => {
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
-            <TextField
-              required
-              label="Nama"
-              name="nama"
-              value={formik.values.nama}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.nama ? formik.errors.nama : ''}
-            />
-            <TextField
-              required
-              label="Username"
-              name="username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.username ? formik.errors.username : ''}
-            />
-            <TextField
-              required
-              label="Email"
-              name="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.email ? formik.errors.email : ''}
-            />
-            <TextField
-              required
-              label="No Identitas"
-              name="no_identitas"
-              value={formik.values.no_identitas}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.no_identitas ? formik.errors.no_identitas : ''}
-            />
-            <Select
-              required
-              label="Jenis Kelamin"
-              name="jenis_kelamin"
-              value={formik.values.jenis_kelamin ? { value: formik.values.jenis_kelamin, label: formik.values.jenis_kelamin } : null}
-              onChange={(option) => formik.setFieldValue('jenis_kelamin', option ? option.value : '')}
-              options={[
-                { value: 'Laki Laki', label: 'Laki Laki' },
-                { value: 'Perempuan', label: 'Perempuan' },
-              ]}
-              error={formik.touched.jenis_kelamin ? formik.errors.jenis_kelamin : ''}
-            />
-            <TextField
-              required
-              label="No Telepon"
-              name="no_telepon"
-              value={formik.values.no_telepon}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
-            />
-            <TextField
-              required
-              label="Tempat Lahir"
-              name="tempat_lahir"
-              value={formik.values.tempat_lahir}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.tempat_lahir ? formik.errors.tempat_lahir : ''}
-            />
-            <TextField
-              required
-              label="Tanggal Lahir"
-              name="tgl_lahir"
-              type="date"
-              value={formik.values.tgl_lahir}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.tgl_lahir ? formik.errors.tgl_lahir : ''}
-            />
-            <Select
-              required
-              label="Agama"
-              name="agama"
-              value={formik.values.agama ? { value: formik.values.agama, label: formik.values.agama } : null}
-              onChange={(option) => formik.setFieldValue('agama', option ? option.value : '')}
-              options={[
-                { label: "Islam", value: "Islam" },
-                { label: "Protestan", value: "Protestan" },
-                { label: "Katolik", value: "Katolik" },
-                { label: "Hindu", value: "Hindu" },
-                { label: "Buddha", value: "Buddha" },
-                { label: "Khonghucu", value: "Khonghucu" },
-              ]}
-              error={formik.touched.agama ? formik.errors.agama : ''}
-            />
-            <TextField
-              required
-              label="NPWP"
-              name="npwp"
-              value={formik.values.npwp}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.npwp ? formik.errors.npwp : ''}
-            />
-            <TextArea
-              required
-              label="Alamat KTP"
-              name="alamat_ktp"
-              value={formik.values.alamat_ktp}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.alamat_ktp ? formik.errors.alamat_ktp : ''}
-            />
-            <TextArea
-              required
-              label="Alamat Domisili"
-              name="alamat_domisili"
-              value={formik.values.alamat_domisili}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.alamat_domisili ? formik.errors.alamat_domisili : ''}
-            />
-            <Select
-              required
-              label="Cabang ID"
-              name="cabang_id"
-              value={cabangOptions.find(option => option.value === String(formik.values.cabang_id)) || null}
-              onChange={(option) => formik.setFieldValue('cabang_id', option ? option.value : '')}
-              options={cabangOptions}
-              error={formik.touched.cabang_id ? formik.errors.cabang_id : ''}
-            />
-            <Select
-              required
-              label="Titik Lokasi"
-              name="titik_lokasi"
-
-              value={formik.values.titik_lokasi}
-              onChange={(option) => formik.setFieldValue('titik_lokasi', option)}
-              options={lokasiOptions}
-              error={formik.touched.titik_lokasi ? formik.errors.titik_lokasi : ''}
-            />
+            <div className='flex gap-4'>
+              <TextField
+                required
+                label="Nama"
+                name="nama"
+                value={formik.values.nama}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.nama ? formik.errors.nama : ''}
+              />
+              <TextField
+                required
+                label="Username"
+                name="username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.username ? formik.errors.username : ''}
+              />
+              <TextField
+                required
+                label="Email"
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.email ? formik.errors.email : ''}
+              />
+            </div>
+            <div className='flex gap-4'>
+              <TextField
+                required
+                label="No Identitas"
+                name="no_identitas"
+                value={formik.values.no_identitas}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.no_identitas ? formik.errors.no_identitas : ''}
+              />
+              <Select
+                required
+                label="Jenis Kelamin"
+                name="jenis_kelamin"
+                value={formik.values.jenis_kelamin ? { value: formik.values.jenis_kelamin, label: formik.values.jenis_kelamin } : null}
+                onChange={(option) => formik.setFieldValue('jenis_kelamin', option ? option.value : '')}
+                options={[
+                  { value: 'Laki Laki', label: 'Laki Laki' },
+                  { value: 'Perempuan', label: 'Perempuan' },
+                ]}
+                error={formik.touched.jenis_kelamin ? formik.errors.jenis_kelamin : ''}
+              />
+              <TextField
+                required
+                label="No Telepon"
+                name="no_telepon"
+                value={formik.values.no_telepon}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
+              />
+            </div>
+            <div className='flex gap-4'>
+              <TextField
+                required
+                label="Tempat Lahir"
+                name="tempat_lahir"
+                value={formik.values.tempat_lahir}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.tempat_lahir ? formik.errors.tempat_lahir : ''}
+              />
+              <TextField
+                required
+                label="Tanggal Lahir"
+                name="tgl_lahir"
+                type="date"
+                value={formik.values.tgl_lahir}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.tgl_lahir ? formik.errors.tgl_lahir : ''}
+              />
+            </div>
+            <div className='flex gap-4'>
+              <Select
+                required
+                label="Agama"
+                name="agama"
+                value={formik.values.agama ? { value: formik.values.agama, label: formik.values.agama } : null}
+                onChange={(option) => formik.setFieldValue('agama', option ? option.value : '')}
+                options={[
+                  { label: "Islam", value: "Islam" },
+                  { label: "Protestan", value: "Protestan" },
+                  { label: "Katolik", value: "Katolik" },
+                  { label: "Hindu", value: "Hindu" },
+                  { label: "Buddha", value: "Buddha" },
+                  { label: "Khonghucu", value: "Khonghucu" },
+                ]}
+                error={formik.touched.agama ? formik.errors.agama : ''}
+              />
+              <TextField
+                required
+                label="NPWP"
+                name="npwp"
+                value={formik.values.npwp}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.npwp ? formik.errors.npwp : ''}
+              />
+            </div>
+            <div className='flex gap-4'>
+              <TextArea
+                required
+                label="Alamat KTP"
+                name="alamat_ktp"
+                value={formik.values.alamat_ktp}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.alamat_ktp ? formik.errors.alamat_ktp : ''}
+              />
+              <TextArea
+                required
+                label="Alamat Domisili"
+                name="alamat_domisili"
+                value={formik.values.alamat_domisili}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.alamat_domisili ? formik.errors.alamat_domisili : ''}
+              />
+            </div>
+            <div className='flex gap-4'>
+              <Select
+                required
+                label="Cabang ID"
+                name="cabang_id"
+                value={cabangOptions.find(option => option.value === formik.values.cabang_id) || null}
+                onChange={(option) => formik.setFieldValue('cabang_id', option ? option.value : '')}
+                options={cabangOptions}
+                error={formik.touched.cabang_id ? formik.errors.cabang_id : ''}
+              />
+              <Select
+                required
+                multi
+                label="Titik Lokasi"
+                name="titik_lokasi"
+                value={formik.values.titik_lokasi}
+                onChange={(options) => formik.setFieldValue('titik_lokasi', options)}
+                options={lokasiOptions}
+                error={formik.touched.titik_lokasi ? formik.errors.titik_lokasi : ''}
+              />
+            </div>
             <div className="mt-6 flex justify-end">
               <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
             </div>
@@ -308,6 +283,6 @@ const Pribadi = () => {
       </Container>
     </div>
   );
-}
+};
 
 export default Pribadi;

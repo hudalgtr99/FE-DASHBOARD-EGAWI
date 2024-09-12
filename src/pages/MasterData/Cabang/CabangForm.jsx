@@ -139,41 +139,45 @@ const CabangForm = () => {
                 </div>
                 <div>
                     <form onSubmit={formik.handleSubmit} className='space-y-6'>
-                        <TextField
-                            required
-                            label="Nama Cabang"
-                            name="nama"
-                            value={formik.values.nama}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.nama ? formik.errors.nama : ''}
-                        />
-                        <TextField
-                            label="No Telepon"
-                            name="no_telepon"
-                            value={formik.values.no_telepon}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
-                        />
-                        <TextField
-                            required
-                            label="Latitude"
-                            name="latitude"
-                            value={formik.values.latitude}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.latitude ? formik.errors.latitude : ''}
-                        />
-                        <TextField
-                            required
-                            label="Longitude"
-                            name="longitude"
-                            value={formik.values.longitude}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.longitude ? formik.errors.longitude : ''}
-                        />
+                        <div className="flex gap-4">
+                            <TextField
+                                required
+                                label="Nama Cabang"
+                                name="nama"
+                                value={formik.values.nama}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.nama ? formik.errors.nama : ''}
+                            />
+                            <TextField
+                                label="No Telepon"
+                                name="no_telepon"
+                                value={formik.values.no_telepon}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
+                            />
+                        </div>
+                        <div className="flex gap-4">
+                            <TextField
+                                required
+                                label="Latitude"
+                                name="latitude"
+                                value={formik.values.latitude}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.latitude ? formik.errors.latitude : ''}
+                            />
+                            <TextField
+                                required
+                                label="Longitude"
+                                name="longitude"
+                                value={formik.values.longitude}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.longitude ? formik.errors.longitude : ''}
+                            />
+                        </div>
                         <TextField
                             required
                             label="Radius"

@@ -86,24 +86,26 @@ const PangkatSubForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
-            <TextField
-              required
-              label="Grade"
-              name="grade"
-              value={formik.values.grade}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.grade ? formik.errors.grade : ''}
-            />
-            <TextField
-              required
-              label="Level"
-              name="level"
-              value={formik.values.level}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.level ? formik.errors.level : ''}
-            />
+            <div className='flex gap-4'>
+              <TextField
+                required
+                label="Grade"
+                name="grade"
+                value={formik.values.grade}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.grade ? formik.errors.grade : ''}
+              />
+              <TextField
+                required
+                label="Level"
+                name="level"
+                value={formik.values.level}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.level ? formik.errors.level : ''}
+              />
+            </div>
             <TextArea
               label="Keterangan"
               name="keterangan"
