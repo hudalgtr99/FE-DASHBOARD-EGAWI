@@ -67,7 +67,11 @@ const JabatanSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/jabatan/form/${item.pk}`);
+    navigate(`/jabatan/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (item) => {

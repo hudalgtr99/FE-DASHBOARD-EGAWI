@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
@@ -9,73 +9,46 @@ import {
   TextField,
   TextArea,
 } from '@/components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { jabatanReducers } from '@/reducers/strataReducers';
 import { API_URL_createjabatan, API_URL_edeljabatan } from '@/constants';
 
 const JabatanSubForm = () => {
   const { pk } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { getJabatanResult } = useSelector(state => state.strata);
-  const [initialValues, setInitialValues] = useState({
-    nama: '',
-    keterangan: '',
-  });
-  const [loading, setLoading] = useState(true);
-
-  const validationSchema = Yup.object().shape({
-    nama: Yup.string().required("Nama Jabatan is required"),
-    keterangan: Yup.string(),
-  });
 
   const isEdit = pk && pk !== 'add';
 
-  useEffect(() => {
-    if (isEdit && getJabatanResult?.results) {
-      const foundJabatan = getJabatanResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundJabatan) {
-        setInitialValues({
-          nama: foundJabatan.nama || '',
-          keterangan: foundJabatan.keterangan || '',
-        });
-      }
-    }
-    setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getJabatanResult]);
-
   const formik = useFormik({
-    initialValues,
-    enableReinitialize: true, // This ensures formik will update when initialValues change
-    validationSchema,
+    initialValues: {
+      nama: state?.item?.nama,
+      keterangan: state?.item?.keterangan,
+    },
+    validationSchema: Yup.object().shape({
+      nama: Yup.string().required("Nama Jabatan is required"),
+    }),
     onSubmit: async (values) => {
-      try {
-        if (isEdit) {
-          await updateData(
-            { dispatch, redux: jabatanReducers },
-            { pk: pk, ...values },
-            API_URL_edeljabatan,
-            'UPDATE_JABATAN'
-          );
-        } else {
-          await addData(
-            { dispatch, redux: jabatanReducers },
-            values,
-            API_URL_createjabatan,
-            'ADD_JABATAN'
-          );
-        }
-        navigate('/masterdata/strata');
-      } catch (error) {
-        console.error('Error in form submission: ', error);
+      if (isEdit) {
+        await updateData(
+          { dispatch, redux: jabatanReducers },
+          { pk: pk, ...values },
+          API_URL_edeljabatan,
+          'UPDATE_JABATAN'
+        );
+      } else {
+        await addData(
+          { dispatch, redux: jabatanReducers },
+          values,
+          API_URL_createjabatan,
+          'ADD_JABATAN'
+        );
       }
+      navigate('/masterdata/strata');
     },
   });
-
-  if (loading) {
-    return <div>Loading...</div>; // Show loading indicator until data is ready
-  }
 
   return (
     <div>
@@ -108,7 +81,9 @@ const JabatanSubForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.keterangan ? formik.errors.keterangan : ''}
             />
-            <Button type="submit">Submit</Button>
+            <div className="mt-6 flex justify-end">
+              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            </div>
           </form>
         </div>
       </Container>

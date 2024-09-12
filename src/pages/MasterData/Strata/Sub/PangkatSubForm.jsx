@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
@@ -9,56 +9,36 @@ import {
   TextField,
   TextArea,
 } from '@/components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { pangkatReducers } from '@/reducers/strataReducers';
 import { API_URL_createpangkat, API_URL_edelpangkat } from '@/constants';
 
 const PangkatSubForm = () => {
   const { pk } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { getPangkatResult } = useSelector(state => state.strata);
-  const [initialValues, setInitialValues] = useState({
-    nama: '',
-    grade: '',
-    level: '',
-    keterangan: '',
-  });
-  const [loading, setLoading] = useState(true);
-
-  const validationSchema = Yup.object({
-    nama: Yup.string().required('Nama Pangkat is required'),
-    grade: Yup.string().required('Grade is required'),
-    level: Yup.number()
-      .typeError('Level must be a number')
-      .required('Level is required')
-      .positive('Level must be a positive number')
-      .integer('Level must be an integer'),
-    keterangan: Yup.string(),
-  });
 
   const isEdit = pk && pk !== 'add';
 
-  useEffect(() => {
-    if (isEdit && getPangkatResult?.results) {
-      const foundPangkat = getPangkatResult.results.find(item => item.pk === parseInt(pk, 10));
-      if (foundPangkat) {
-        setInitialValues({
-          nama: foundPangkat.nama || '',
-          grade: foundPangkat.grade || '',
-          level: foundPangkat.level || '',
-          keterangan: foundPangkat.keterangan || '',
-        });
-      }
-    }
-    setLoading(false); // Data fetching complete
-  }, [isEdit, pk, getPangkatResult]);
-
   const formik = useFormik({
-    initialValues,
-    enableReinitialize: true, // This ensures formik will update when initialValues change
-    validationSchema,
+    initialValues: {
+      nama: state?.item?.nama,
+      grade: state?.item?.grade,
+      level: state?.item?.level,
+      keterangan: state?.item?.keterangan,
+    },
+    validationSchema: Yup.object({
+      nama: Yup.string().required('Nama Pangkat is required'),
+      grade: Yup.string().required('Grade is required'),
+      level: Yup.number()
+        .typeError('Level must be a number')
+        .required('Level is required')
+        .positive('Level must be a positive number')
+        .integer('Level must be an integer'),
+      keterangan: Yup.string(),
+    }),
     onSubmit: async (values) => {
       try {
         if (isEdit) {
@@ -82,10 +62,6 @@ const PangkatSubForm = () => {
       }
     },
   });
-
-  if (loading) {
-    return <div>Loading...</div>; // Show loading indicator until data is ready
-  }
 
   return (
     <div>
@@ -136,7 +112,9 @@ const PangkatSubForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.keterangan ? formik.errors.keterangan : ''}
             />
-            <Button type="submit">Submit</Button>
+            <div className="mt-6 flex justify-end">
+              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            </div>
           </form>
         </div>
       </Container>

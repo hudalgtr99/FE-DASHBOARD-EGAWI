@@ -300,7 +300,9 @@ const Pribadi = () => {
               options={lokasiOptions}
               error={formik.touched.titik_lokasi ? formik.errors.titik_lokasi : ''}
             />
-            <Button type="submit">Submit</Button>
+            <div className="mt-6 flex justify-end">
+              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            </div>
           </form>
         </div>
       </Container>

@@ -108,7 +108,9 @@ const DivisiSubForm = () => {
               options={departemenOptions}
               error={formik.touched.departemen ? formik.errors.departemen : ''}
             />
-            <Button type="submit">Submit</Button>
+            <div className="mt-6 flex justify-end">
+              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            </div>
           </form>
         </div>
       </Container>

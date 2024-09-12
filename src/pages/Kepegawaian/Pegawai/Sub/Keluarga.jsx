@@ -175,7 +175,9 @@ const Keluarga = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.no_telepon_emergency ? formik.errors.no_telepon_emergency : ''}
             />
-            <Button type="submit">Submit</Button>
+            <div className="mt-6 flex justify-end">
+              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            </div>
           </form>
         </div>
       </Container>

@@ -66,7 +66,11 @@ const PangkatSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/pangkat/form/${item.pk}`);
+    navigate(`/pangkat/form/${item.pk}`, {
+      state: {
+        item,
+      }
+    });
   };
 
   const doDelete = (item) => {

@@ -76,7 +76,9 @@ const DepartemenSubForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
-            <Button type="submit">Submit</Button>
+            <div className="mt-6 flex justify-end">
+              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            </div>
           </form>
         </div>
       </Container>
