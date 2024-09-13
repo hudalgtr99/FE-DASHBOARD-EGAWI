@@ -21,6 +21,7 @@ import {
   Tooltip,
 } from '@/components';
 import { debounce } from 'lodash'; // Import lodash debounce
+import { FaPlus } from 'react-icons/fa';
 
 const DivisiSub = () => {
   const {
@@ -163,7 +164,11 @@ const DivisiSub = () => {
               value={search}
             />
           </div>
-          <Button onClick={onAdd}>Tambah Divisi</Button>
+          <Button onClick={onAdd}>
+            <div className="flex items-center gap-2">
+              <FaPlus /> Tambah Divisi
+            </div>
+          </Button>
         </div>
         <Tables>
           <Tables.Head>

@@ -42,7 +42,7 @@ const KalenderPage = () => {
         ref={calendarRef}
         customButtons={{
           buttonAdd: {
-            text: "Tambah +",
+            text: "+ Tambah",
             click: () => navigate('/kalender/form'), // Use navigate for redirection
           },
           prev: {

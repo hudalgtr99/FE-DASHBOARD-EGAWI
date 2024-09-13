@@ -16,7 +16,7 @@ const Tabs = ({ tabs }) => {
                     >
                         <Link
                             to={`#${tab.linkTabs}`}
-                            className={`-mb-px flex items-center p-5 py-3 hover:border-b hover:border-purple-500 hover:text-purple-500 ${activeTab === tab.linkTabs
+                            className={`-mb-px flex font-medium items-center p-5 py-3 hover:border-b hover:border-purple-500 hover:text-purple-500 ${activeTab === tab.linkTabs
                                     ? "border-b border-purple-500 text-purple-500 outline-none"
                                     : ""
                                 }`}

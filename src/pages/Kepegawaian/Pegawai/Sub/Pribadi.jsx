@@ -83,10 +83,7 @@ const Pribadi = () => {
       try {
         const updatedValues = {
           ...values,
-          // Convert array of selected objects to array of values (pk)
-          titik_lokasi: Array.isArray(values.titik_lokasi)
-            ? JSON.stringify(values.titik_lokasi.map(option => option.value))
-            : JSON.stringify([]), // Ensure it's an empty array if undefined
+          titik_lokasi: JSON.stringify(values.titik_lokasi),
         };
 
         if (isEdit) {

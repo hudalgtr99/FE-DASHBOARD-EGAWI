@@ -3,19 +3,12 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
-import {
-  Button,
-  Container,
-  TextField,
-  Select,
-} from '@/components';
+import { Button, Container, TextField, Select, Tooltip } from '@/components';
 import { useDispatch } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
-import {
-  API_URL_createuser,
-  API_URL_edeluser,
-} from '@/constants';
+import { API_URL_createuser, API_URL_edeluser } from '@/constants';
+import { CiTrash } from 'react-icons/ci';
 
 const Keluarga = () => {
   const { pk } = useParams();
@@ -25,17 +18,19 @@ const Keluarga = () => {
 
   const isEdit = pk && pk !== 'add';
 
+  const initialData = state?.item || {
+    nama_ayah: '',
+    nama_ibu: '',
+    status_pernikahan: '',
+    nama_pasangan: '',
+    jumlah_anak: '',
+    nama_anak: [],
+    nama_kontak_emergency: '',
+    no_telepon_emergency: '',
+  };
+
   const formik = useFormik({
-    initialValues: {
-      nama_ayah: state?.item?.nama_ayah,
-      nama_ibu: state?.item?.nama_ibu,
-      status_pernikahan: state?.item?.status_pernikahan,
-      nama_pasangan: state?.item?.nama_pasangan,
-      jumlah_anak: state?.item?.jumlah_anak,
-      nama_anak: state?.item?.nama_anak,
-      nama_kontak_emergency: state?.item?.nama_kontak_emergency,
-      no_telepon_emergency: state?.item?.no_telepon_emergency,
-    },
+    initialValues: initialData,
     validationSchema: Yup.object().shape({
       nama_ayah: Yup.string().required('Nama Ayah is required'),
       nama_ibu: Yup.string().required('Nama Ibu is required'),
@@ -63,21 +58,37 @@ const Keluarga = () => {
     },
   });
 
+  const handleAddChild = () => {
+    formik.setFieldValue('nama_anak', [...formik.values.nama_anak, '']);
+  };
+
+  const handleRemoveChild = (index) => {
+    const updatedAnak = formik.values.nama_anak.filter((_, i) => i !== index);
+    formik.setFieldValue('nama_anak', updatedAnak);
+  };
+
+  const handleChangeChildName = (index, event) => {
+    const updatedAnak = formik.values.nama_anak.map((name, i) =>
+      i === index ? event.target.value : name
+    );
+    formik.setFieldValue('nama_anak', updatedAnak);
+  };
+
   return (
     <div>
       <Container>
-        <div className='flex items-center gap-2 mb-4'>
+        <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#7367f0] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/kepegawaian/pegawai")}
+            onClick={() => navigate('/kepegawaian/pegawai')}
           >
             <IoMdReturnLeft />
           </button>
           <h1>{isEdit ? 'Edit Data Keluarga' : 'Tambah Data Keluarga'}</h1>
         </div>
         <div>
-          <form onSubmit={formik.handleSubmit} className='space-y-6'>
-            <div className='flex gap-4'>
+          <form onSubmit={formik.handleSubmit} className="space-y-6">
+            <div className="flex gap-4">
               <TextField
                 required
                 label="Nama Ayah"
@@ -97,12 +108,16 @@ const Keluarga = () => {
                 error={formik.touched.nama_ibu ? formik.errors.nama_ibu : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className="flex gap-4">
               <Select
                 required
                 label="Status Pernikahan"
                 name="status_pernikahan"
-                value={formik.values.status_pernikahan ? { value: formik.values.status_pernikahan, label: formik.values.status_pernikahan } : null}
+                value={
+                  formik.values.status_pernikahan
+                    ? { value: formik.values.status_pernikahan, label: formik.values.status_pernikahan }
+                    : null
+                }
                 onChange={(option) => formik.setFieldValue('status_pernikahan', option ? option.value : '')}
                 options={[
                   { value: 'belum menikah', label: 'Belum Menikah' },
@@ -123,28 +138,49 @@ const Keluarga = () => {
                 />
               )}
             </div>
-            <div className='flex gap-4'>
-              <TextField
-                type="number" // Ensure input is treated as a number
-                label="Jumlah Anak"
-                name="jumlah_anak"
-                value={formik.values.jumlah_anak}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.jumlah_anak ? formik.errors.jumlah_anak : ''}
-              />
-              {Number(formik.values.jumlah_anak) > 0 && (
-                <TextField
-                  label="Nama Anak"
-                  name="nama_anak"
-                  value={formik.values.nama_anak}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.nama_anak ? formik.errors.nama_anak : ''}
-                />
-              )}
-            </div>
-            <div className='flex gap-4'>
+            <TextField
+              type="number"
+              label="Jumlah Anak"
+              name="jumlah_anak"
+              value={formik.values.jumlah_anak}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.jumlah_anak ? formik.errors.jumlah_anak : ''}
+            />
+            {Number(formik.values.jumlah_anak) > 0 && (
+              <div>
+                <label className="text-sm font-medium">Nama Anak</label>
+                {formik.values.nama_anak.map((name, index) => (
+                  <div key={index} className="flex items-center space-x-4 mb-2">
+                    <TextField
+                      label={`Anak Ke-${index + 1}`}
+                      name={`nama_anak_${index}`}
+                      value={name}
+                      onChange={(e) => handleChangeChildName(index, e)}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.nama_anak ? formik.errors.nama_anak?.[index] : ''}
+                    />
+                    <Tooltip tooltip="Hapus">
+                      <button
+                        type="button"
+                        className="text-red-500 mt-6 cursor-pointer"
+                        onClick={() => handleRemoveChild(index)}
+                      >
+                        <CiTrash />
+                      </button>
+                    </Tooltip>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  className="text-white font-medium block"
+                  onClick={handleAddChild}
+                >
+                  Tambah Data
+                </Button>
+              </div>
+            )}
+            <div className="flex gap-4">
               <TextField
                 required
                 label="Nama Kontak Darurat"

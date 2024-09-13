@@ -25,6 +25,7 @@ import {
 } from '@/components';
 import * as Yup from 'yup';
 import { debounce } from 'lodash'; // Import lodash debounce
+import { FaPlus } from 'react-icons/fa';
 
 const PangkatSub = () => {
   const {
@@ -175,7 +176,11 @@ const PangkatSub = () => {
               value={search}
             />
           </div>
-          <Button onClick={onAdd}>Tambah Pangkat</Button>
+          <Button onClick={onAdd}>
+            <div className="flex items-center gap-2">
+              <FaPlus /> Tambah Pangkat
+            </div>
+          </Button>
         </div>
         <Tables>
           <Tables.Head>

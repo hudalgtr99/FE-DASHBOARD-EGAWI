@@ -21,6 +21,7 @@ import {
   Tooltip,
 } from '@/components';
 import { debounce } from 'lodash'; // Import lodash debounce
+import { FaPlus } from 'react-icons/fa';
 
 const UnitSub = () => {
   const {
@@ -175,7 +176,11 @@ const UnitSub = () => {
               value={search}
             />
           </div>
-          <Button onClick={onAdd}>Tambah Unit</Button>
+          <Button onClick={onAdd}>
+            <div className="flex items-center gap-2">
+              <FaPlus /> Tambah Unit
+            </div>
+          </Button>
         </div>
         <Tables>
           <Tables.Head>
