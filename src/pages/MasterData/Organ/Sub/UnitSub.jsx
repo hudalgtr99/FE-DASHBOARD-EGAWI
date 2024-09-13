@@ -22,6 +22,7 @@ import {
 } from '@/components';
 import { debounce } from 'lodash'; // Import lodash debounce
 import { FaPlus } from 'react-icons/fa';
+import { CiSearch } from 'react-icons/ci';
 
 const UnitSub = () => {
   const {
@@ -174,6 +175,7 @@ const UnitSub = () => {
               onChange={doSearch}
               placeholder="Search"
               value={search}
+              icon={<CiSearch />}
             />
           </div>
           <Button onClick={onAdd}>

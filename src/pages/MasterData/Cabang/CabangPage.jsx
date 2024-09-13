@@ -7,6 +7,7 @@ import { deleteData } from "@/actions";
 import { API_URL_getcabang, API_URL_edelcabang } from "@/constants";
 import { FaPlus } from "react-icons/fa";
 import { Container, Button, TextField, Card } from "@/components";
+import { CiSearch } from "react-icons/ci";
 
 const CabangPage = () => {
   const { deleteCabangResult } = useSelector((state) => state.cabang);
@@ -51,7 +52,10 @@ const CabangPage = () => {
       <Container>
         <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4 mb-4">
           <div className="w-full sm:w-60">
-            <TextField placeholder="Search" />
+            <TextField
+              placeholder="Search"
+              icon={<CiSearch />}
+            />
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">

@@ -84,11 +84,11 @@ const Keluarga = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Data Keluarga' : 'Tambah Data Keluarga'}</h1>
+          <h1>Data Keluarga</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            <div className="flex gap-4">
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <TextField
                 required
                 label="Nama Ayah"
@@ -108,7 +108,7 @@ const Keluarga = () => {
                 error={formik.touched.nama_ibu ? formik.errors.nama_ibu : ''}
               />
             </div>
-            <div className="flex gap-4">
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <Select
                 required
                 label="Status Pernikahan"
@@ -180,7 +180,7 @@ const Keluarga = () => {
                 </Button>
               </div>
             )}
-            <div className="flex gap-4">
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <TextField
                 required
                 label="Nama Kontak Darurat"
@@ -201,7 +201,7 @@ const Keluarga = () => {
               />
             </div>
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button type="submit">Simpan</Button>
             </div>
           </form>
         </div>

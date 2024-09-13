@@ -26,6 +26,7 @@ import {
 import * as Yup from 'yup';
 import { debounce } from 'lodash'; // Import lodash debounce
 import { FaPlus } from 'react-icons/fa';
+import { CiSearch } from 'react-icons/ci';
 
 const JabatanSub = () => {
   const {
@@ -175,6 +176,7 @@ const JabatanSub = () => {
               onChange={doSearch}
               placeholder="Search"
               value={search}
+              icon={<CiSearch />}
             />
           </div>
           <Button onClick={onAdd}>

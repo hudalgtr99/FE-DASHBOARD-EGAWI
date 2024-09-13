@@ -122,7 +122,7 @@ const Pribadi = () => {
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextField
                 required
                 label="Nama"
@@ -151,7 +151,7 @@ const Pribadi = () => {
                 error={formik.touched.email ? formik.errors.email : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextField
                 required
                 label="No Identitas"
@@ -183,7 +183,7 @@ const Pribadi = () => {
                 error={formik.touched.no_telepon ? formik.errors.no_telepon : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextField
                 required
                 label="Tempat Lahir"
@@ -204,7 +204,7 @@ const Pribadi = () => {
                 error={formik.touched.tgl_lahir ? formik.errors.tgl_lahir : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <Select
                 required
                 label="Agama"
@@ -231,7 +231,7 @@ const Pribadi = () => {
                 error={formik.touched.npwp ? formik.errors.npwp : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextArea
                 required
                 label="Alamat KTP"
@@ -251,7 +251,7 @@ const Pribadi = () => {
                 error={formik.touched.alamat_domisili ? formik.errors.alamat_domisili : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <Select
                 required
                 label="Cabang ID"

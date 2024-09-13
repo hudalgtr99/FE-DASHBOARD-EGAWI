@@ -33,6 +33,7 @@ import { TbX } from "react-icons/tb";
  * error: React.ReactNode;
  * cleaveOptions: object;
  * clearable: boolean;
+ * icon: React.ReactNode;
  * }}
  *
  */
@@ -64,6 +65,7 @@ const TextField = ({
 	error = null,
 	cleaveOptions = null,
 	clearable = false,
+	icon = null, // New icon prop
 }) => {
 	const { themeColor, colorMode } = useContext(ThemeContext);
 
@@ -71,47 +73,40 @@ const TextField = ({
 	const [isFocus, setIsFocus] = useState(false);
 	const [isHover, setIsHover] = useState(false);
 
-	// Color
-	const textFieldColor =
-		{
-			primary: themeColor,
-			base: "#BABCBD",
-			success: "#4ED17E",
-			warning: "#EEC239",
-			danger: "#F26969",
-			info: "#629BF8",
-		}[color] || color;
+	// Color, Size, Rounded, Density (as per your existing logic)
+	const textFieldColor = {
+		primary: themeColor,
+		base: "#BABCBD",
+		success: "#4ED17E",
+		warning: "#EEC239",
+		danger: "#F26969",
+		info: "#629BF8",
+	}[color] || color;
 
-	// Size
-	const textFieldSize =
-		{
-			sm: 12,
-			md: 14,
-			lg: 16,
-			xl: 18,
-		}[size] || 14;
+	const textFieldSize = {
+		sm: 12,
+		md: 14,
+		lg: 16,
+		xl: 18,
+	}[size] || 14;
 
-	// Rounded
-	const textFieldRounded =
-		{
-			none: 0,
-			sm: 2,
-			base: 4,
-			md: 6,
-			lg: 8,
-			xl: 12,
-			"2xl": 16,
-			"3xl": 20,
-			"4xl": 24,
-		}[rounded] || rounded;
+	const textFieldRounded = {
+		none: 0,
+		sm: 2,
+		base: 4,
+		md: 6,
+		lg: 8,
+		xl: 12,
+		"2xl": 16,
+		"3xl": 20,
+		"4xl": 24,
+	}[rounded] || rounded;
 
-	// Density
-	const textFieldDensity =
-		{
-			tight: 8,
-			normal: 10,
-			loose: 12,
-		}[density] || 10;
+	const textFieldDensity = {
+		tight: 8,
+		normal: 10,
+		loose: 12,
+	}[density] || 10;
 
 	// Container Style Variant
 	let containerStyle = {};
@@ -259,13 +254,11 @@ const TextField = ({
 
 	return (
 		<div className="w-full">
-			{/* Label Basic */}
+			{/* Label */}
 			{!vaiants.includes(variant) && (
 				<label
 					htmlFor={id}
-					style={{
-						fontSize: textFieldSize,
-					}}
+					style={{ fontSize: textFieldSize }}
 					className={`mb-1 ${required && "required"}`}
 				>
 					{label}
@@ -283,29 +276,17 @@ const TextField = ({
 			>
 				{/* Prefix */}
 				{prefix && (
-					<div
-						className="absolute top-0 left-0 flex items-center justify-center px-3 h-full"
-						style={{ width: 50 }}
-					>
+					<div className="absolute top-0 left-0 flex items-center justify-center px-3 h-full" style={{ width: 50 }}>
 						{prefix}
 					</div>
 				)}
 
-				{/* Suffix */}
-				{suffix && (
-					<div
-						className="absolute top-0 right-0 flex items-center justify-center px-3 h-full"
-						style={{ width: 50 }}
-					>
-						{suffix}
+				{/* Icon */}
+				{icon && (
+					<div className="absolute left-52 flex items-center">
+						{icon}
 					</div>
 				)}
-
-				{/* Prepend */}
-				{prepend && <div className="text-sm">{prepend}</div>}
-
-				{/* Append */}
-				{append && <div className="text-sm">{append}</div>}
 
 				{/* Input */}
 				<input
@@ -323,6 +304,13 @@ const TextField = ({
 					style={inputStyle}
 					className={`w-full bg-transparent border-none outline-none placeholder:text-neutral-500 text-sm text-neutral-700 focus:placeholder-transparent ${isFocus && "focus:ring-0"} ${!disabled ? "cursor-pointer" : "cursor-not-allowed"}`}
 				/>
+
+				{/* Suffix */}
+				{suffix && (
+					<div className="absolute top-0 right-0 flex items-center justify-center px-3 h-full" style={{ width: 50 }}>
+						{suffix}
+					</div>
+				)}
 			</div>
 
 			{error && (

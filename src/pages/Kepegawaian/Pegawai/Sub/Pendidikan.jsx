@@ -101,7 +101,7 @@ const Pendidikan = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Data Pendidikan' : 'Tambah Data Pendidikan'}</h1>
+          <h1>Data Pendidikan</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -109,7 +109,7 @@ const Pendidikan = () => {
               <h3 className='font-medium'>Pendidikan Formal</h3>
               {formik.values.pendidikanFormal.map((edu, index) => (
                 <div key={index}>
-                  <div className='flex gap-4 mb-4'>
+                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
                     <TextField
                       label="Asal Sekolah"
                       name={`pendidikanFormal[${index}].asal_sekolah`}
@@ -149,25 +149,30 @@ const Pendidikan = () => {
                     <Tooltip tooltip="Hapus">
                       <button
                         type="button"
-                        className="text-red-500 mt-9 cursor-pointer"
+                        className="text-red-500 mt-9 cursor-pointer sm:block hidden"
                         onClick={() => removeFormalEducation(index)}
                       >
                         <CiTrash />
                       </button>
                     </Tooltip>
+
                   </div>
                 </div>
               ))}
-              <Button type="button" onClick={addFormalEducation}>
-                Tambah Data
-              </Button>
+              <div className='sm:block hidden'>
+                <Button type="button" onClick={addFormalEducation}>
+                  Tambah Data
+                </Button>
+              </div>
             </div>
+
+            <hr />
 
             <div>
               <h3 className='font-medium'>Pendidikan Non Formal</h3>
               {formik.values.pendidikanNonFormal.map((edu, index) => (
                 <div key={index}>
-                  <div className='flex gap-4 mb-3'>
+                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
                     <TextField
                       label="Nama Lembaga"
                       name={`pendidikanNonFormal[${index}].nama_lembaga`}
@@ -206,7 +211,7 @@ const Pendidikan = () => {
                     <Tooltip tooltip="Hapus">
                       <button
                         type="button"
-                        className="text-red-500 mt-9 cursor-pointer"
+                        className="text-red-500 mt-9 cursor-pointer sm:block hidden"
                         onClick={() => removeNonFormalEducation(index)}
                       >
                         <CiTrash />
@@ -215,13 +220,15 @@ const Pendidikan = () => {
                   </div>
                 </div>
               ))}
-              <Button type="button" onClick={addNonFormalEducation}>
-                Tambah Data
-              </Button>
+              <div className='sm:block hidden'>
+                <Button type="button" onClick={addNonFormalEducation}>
+                  Tambah Data
+                </Button>
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? 'Simpan' : 'Tambah'}</Button>
+              <Button type="submit">Simpan</Button>
             </div>
           </form>
         </div>

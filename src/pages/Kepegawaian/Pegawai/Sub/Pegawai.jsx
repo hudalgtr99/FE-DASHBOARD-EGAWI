@@ -10,17 +10,16 @@ import {
   Select,
 } from '@/components';
 import { useDispatch } from 'react-redux';
-import { addData, updateData } from '@/actions';
+import { updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import {
-  API_URL_createuser,
   API_URL_edeluser,
   API_URL_getmasterpegawai,
 } from '@/constants';
 import axiosAPI from "@/authentication/axiosApi";
 
 const Pegawai = () => {
-  const { pk } = useParams();
+  const { pk } = useParams(); // primary key of the employee (if editing)
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -29,8 +28,6 @@ const Pegawai = () => {
   const [departemenOptions, setDepartemenOptions] = useState([]);
   const [divisiOptions, setDivisiOptions] = useState([]);
   const [unitOptions, setUnitOptions] = useState([]);
-
-  const isEdit = pk && pk !== 'add';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,15 +66,17 @@ const Pegawai = () => {
     fetchData();
   }, []);
 
+  // Formik setup for form handling and validation
   const formik = useFormik({
     initialValues: {
-      id_pegawai: state?.item?.id_pegawai,
-      pangkat: state?.item?.pangkat,
-      jabatan: state?.item?.jabatan,
-      departemen: state?.item?.departemen,
-      divisi: state?.item?.divisi,
-      unit: state?.item?.unit,
-      tgl_bergabung: state?.item?.tgl_bergabung,
+      id_pegawai: state?.item?.id_pegawai || '',
+      pangkat: state?.item?.pangkat || '',
+      jabatan: state?.item?.jabatan || '',
+      departemen: state?.item?.departemen || '',
+      divisi: state?.item?.divisi || '',
+      unit: state?.item?.unit || '',
+      tgl_bergabung: state?.item?.tgl_bergabung || '',
+      tgl_resign: state?.item?.tgl_resign || '',
     },
     validationSchema: Yup.object().shape({
       id_pegawai: Yup.string().required("ID Pegawai is required"),
@@ -90,21 +89,15 @@ const Pegawai = () => {
     }),
     onSubmit: async (values) => {
       try {
-        if (isEdit) {
-          await updateData(
-            { dispatch, redux: pegawaiReducer },
-            { pk: pk, ...values },
-            API_URL_edeluser,
-            'UPDATE_PEGAWAI'
-          );
-        } else {
-          await addData(
-            { dispatch, redux: pegawaiReducer },
-            values,
-            API_URL_createuser,
-            'ADD_PEGAWAI'
-          );
-        }
+        await updateData(
+          { dispatch, redux: pegawaiReducer },
+          {
+            pk: pk, // Only send `pk` if it's an edit
+            ...values,
+          },
+          API_URL_edeluser, // Single API URL used for both add and update
+          'ADD_PEGAWAI' // Unified action for add/update
+        );
         navigate('/kepegawaian/pegawai');
       } catch (error) {
         console.error('Error in form submission: ', error);
@@ -122,11 +115,11 @@ const Pegawai = () => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? 'Edit Data Pegawai' : 'Tambah Data Pegawai'}</h1>
+          <h1>Data Pegawai</h1>
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className='space-y-6'>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextField
                 required
                 label="ID Pegawai"
@@ -146,7 +139,7 @@ const Pegawai = () => {
                 error={formik.touched.pangkat ? formik.errors.pangkat : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <Select
                 required
                 label="Jabatan"
@@ -166,7 +159,7 @@ const Pegawai = () => {
                 error={formik.touched.departemen ? formik.errors.departemen : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <Select
                 required
                 label="Divisi"
@@ -186,7 +179,7 @@ const Pegawai = () => {
                 error={formik.touched.unit ? formik.errors.unit : ''}
               />
             </div>
-            <div className='flex gap-4'>
+            <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextField
                 required
                 label="Tanggal Bergabung"
@@ -207,7 +200,7 @@ const Pegawai = () => {
               />
             </div>
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button type="submit">Simpan</Button>
             </div>
           </form>
         </div>

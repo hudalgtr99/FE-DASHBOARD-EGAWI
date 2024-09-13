@@ -58,6 +58,7 @@ const Router = () => {
 
 					{/* Pegawai */}
 					<Route path="/pegawai/form" element={<PegawaiForm />} />
+					<Route path="/pegawai/form/:pk" element={<PegawaiForm />} />
 
 					{/* Cabang */}
 					<Route path="/cabang/form" element={<CabangForm />} />
