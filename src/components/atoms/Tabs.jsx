@@ -5,6 +5,12 @@ const Tabs = ({ tabs }) => {
     // State to keep track of the active tab
     const [activeTab, setActiveTab] = useState(tabs.listTabs[0].linkTabs);
 
+    const handleTabClick = (tab) => {
+        if (!tab.disabled) {
+            setActiveTab(tab.linkTabs);
+        }
+    };
+
     return (
         <Fragment>
             <ul className="flex flex-wrap list-none border-b" role="tablist">
@@ -16,13 +22,19 @@ const Tabs = ({ tabs }) => {
                     >
                         <Link
                             to={`#${tab.linkTabs}`}
-                            className={`-mb-px flex font-medium items-center p-5 py-3 hover:border-b hover:border-purple-500 hover:text-purple-500 ${activeTab === tab.linkTabs
-                                    ? "border-b border-purple-500 text-purple-500 outline-none"
+                            className={`-mb-px flex font-medium items-center p-5 py-3 
+                ${tab.disabled
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "hover:border-b hover:border-blue-500 hover:text-blue-500"
+                                } 
+                ${activeTab === tab.linkTabs && !tab.disabled
+                                    ? "border-b border-blue-500 text-blue-500 outline-none"
                                     : ""
                                 }`}
-                            onClick={() => setActiveTab(tab.linkTabs)}
+                            onClick={() => handleTabClick(tab)}
                             role="tab"
                             aria-selected={activeTab === tab.linkTabs}
+                            aria-disabled={tab.disabled ? "true" : "false"}
                         >
                             {tab.nameTabs}
                         </Link>
@@ -33,9 +45,7 @@ const Tabs = ({ tabs }) => {
                 {tabs.listTabs.map((content, contentIdx) => (
                     <div
                         key={contentIdx}
-                        className={`transition-opacity duration-300 ease-in-out ${activeTab === content.linkTabs
-                                ? "block opacity-100"
-                                : "hidden opacity-0"
+                        className={`transition-opacity duration-300 ease-in-out ${activeTab === content.linkTabs ? "block opacity-100" : "hidden opacity-0"
                             }`}
                         id={content.linkTabs}
                         role="tabpanel"

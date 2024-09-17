@@ -12,14 +12,14 @@ import {
 
 export const menu = [
   {
-    menuIcon: icons.mdspacedashboard,
+    menuIcon: icons.lulayoutdashboard,
     menuName: "Dashboard",
     menuLink: "/",
     element: <Dashboard />,
     subMenu: [],
   },
   {
-    menuIcon: icons.hiofficebuilding,
+    menuIcon: icons.lubuilding,
     menuName: "Perusahaan",
     menuLink: "perusahaan",
 
@@ -29,7 +29,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.aifilldatabase,
+    menuIcon: icons.ludatabase,
     menuName: "Master Data",
     menuLink: "masterdata",
 
@@ -50,7 +50,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.hiusergroup,
+    menuIcon: icons.luusers,
     menuName: "Kepegawaian",
     menuLink: "kepegawaian",
 
@@ -62,7 +62,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.faclipboardlist,
+    menuIcon: icons.luclipboardlist,
     menuName: "Asesmen",
     menuLink: "asesmen",
 
@@ -74,7 +74,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.fiactivity,
+    menuIcon: icons.luactivity,
     menuName: "Kompetensi",
     menuLink: "kompetensi",
 
@@ -85,7 +85,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.fahandshake,
+    menuIcon: icons.luhearthandshake,
     menuName: "Kemitraan",
     menuLink: "kemitraan",
 
@@ -95,7 +95,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.iodocumenttext,
+    menuIcon: icons.lufiletext,
     menuName: "Dokumentasi",
     menuLink: "dokumentasi",
 
@@ -110,7 +110,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.aitwotoneapi,
+    menuIcon: icons.luunplug,
     menuName: "API",
     menuLink: "api",
     isSuperAdmin: true,
@@ -123,7 +123,7 @@ export const menu = [
     ],
   },
   {
-    menuIcon: icons.fausers,
+    menuIcon: icons.luusers2,
     menuName: "Akun",
     menuLink: "/akun",
     subMenu: [],

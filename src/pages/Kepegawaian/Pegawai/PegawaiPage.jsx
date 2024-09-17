@@ -10,14 +10,7 @@ import {
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import {
   API_URL_getdatapegawai,
-  API_URL_getmasterpegawai,
-  API_URL_createuser,
   API_URL_edeluser,
-  baseurl,
-  API_URL_getcabang,
-  // API_URL_getspesifikjabatan,
-  API_URL_getspesifikdivisi,
-  API_URL_getspesifikunit,
 } from '@/constants';
 import { icons } from "../../../../public/icons";
 import {
@@ -29,7 +22,6 @@ import {
   TextField,
   Tooltip,
 } from '@/components';
-import * as Yup from 'yup';
 import { debounce } from 'lodash'; // Import lodash debounce
 import { FaPlus } from 'react-icons/fa';
 import { CiSearch } from 'react-icons/ci';
@@ -37,10 +29,7 @@ import { CiSearch } from 'react-icons/ci';
 const PegawaiPage = () => {
   const {
     getPegawaiResult,
-    getPegawaiLoading,
-    getPegawaiError,
     addPegawaiResult,
-    addPegawaiLoading,
     deletePegawaiResult,
   } = useSelector((state) => state.kepegawaian);
   const dispatch = useDispatch();
@@ -73,17 +62,18 @@ const PegawaiPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/pegawai/form/${item.pk}`, {
+    navigate(`/pegawai/form/${item.datapribadi.user_id}`, {
       state: {
         item,
-      }
+      },
     });
   };
+
 
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: pegawaiReducer },
-      item.pk,
+      item.datapribadi.user_id,
       API_URL_edeluser,
       "DELETE_PEGAWAI"
     );
@@ -160,8 +150,8 @@ const PegawaiPage = () => {
     get,
   ]);
 
-  const dataWithIndex = addPegawaiResult.results
-    ? addPegawaiResult.results.map((item, index) => ({
+  const dataWithIndex = getPegawaiResult.results
+    ? getPegawaiResult.results.map((item, index) => ({
       ...item,
       index: pageActive * limit + index + 1,
     }))
@@ -189,27 +179,27 @@ const PegawaiPage = () => {
           <Tables.Head>
             <tr>
               <Tables.Header>No</Tables.Header>
-              <Tables.Header>ID Pegawai</Tables.Header>
+              {/* <Tables.Header>ID Pegawai</Tables.Header> */}
               <Tables.Header>Nama Pegawai</Tables.Header>
-              <Tables.Header>Pangkat</Tables.Header>
+              {/* <Tables.Header>Pangkat</Tables.Header>
               <Tables.Header>Jabatan</Tables.Header>
               <Tables.Header>Departemen</Tables.Header>
               <Tables.Header>Divisi</Tables.Header>
-              <Tables.Header>Unit</Tables.Header>
+              <Tables.Header>Unit</Tables.Header> */}
               <Tables.Header center>Actions</Tables.Header>
             </tr>
           </Tables.Head>
           <Tables.Body>
             {dataWithIndex.map((item) => (
-              <Tables.Row key={item.pk}>
+              <Tables.Row key={item.datapribadi.user_id}>
                 <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.datapegawai.id_pegawai}</Tables.Data>
+                {/* <Tables.Data>{item.datapegawai.id_pegawai}</Tables.Data> */}
                 <Tables.Data>{item.datapribadi.nama}</Tables.Data>
-                <Tables.Data>{item.datapegawai.pangkat.nama}</Tables.Data>
+                {/* <Tables.Data>{item.datapegawai.pangkat.nama}</Tables.Data>
                 <Tables.Data>{item.datapegawai.jabatan.nama}</Tables.Data>
                 <Tables.Data>{item.datapegawai.departemen.nama}</Tables.Data>
                 <Tables.Data>{item.datapegawai.divisi.nama}</Tables.Data>
-                <Tables.Data>{item.datapegawai.unit.nama}</Tables.Data>
+                <Tables.Data>{item.datapegawai.unit.nama}</Tables.Data> */}
                 <Tables.Data center>
                   <div className="flex items-center justify-center gap-2">
                     {actions.map((action) => (
@@ -232,7 +222,7 @@ const PegawaiPage = () => {
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
           <Pagination
-            totalCount={addPegawaiResult.count} // Total items count from the API result
+            totalCount={getPegawaiResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler

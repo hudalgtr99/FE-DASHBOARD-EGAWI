@@ -31,7 +31,7 @@ const Pribadi = () => {
   const isEdit = pk && pk !== 'add';
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async () => { 
       const response = await axiosAPI.get(API_URL_getcabang);
       setCabangOptions(response.data.map((item) => ({
         value: item.pk,
@@ -46,22 +46,24 @@ const Pribadi = () => {
     fetchData();
   }, []);
 
+  // console.log(state);
+
   const formik = useFormik({
     initialValues: {
-      nama: state?.item?.nama || '',
-      username: state?.item?.username || '',
-      email: state?.item?.email || '',
-      no_identitas: state?.item?.no_identitas || '',
-      jenis_kelamin: state?.item?.jenis_kelamin || '',
-      no_telepon: state?.item?.no_telepon || '',
-      tempat_lahir: state?.item?.tempat_lahir || '',
-      tgl_lahir: state?.item?.tgl_lahir || '',
-      agama: state?.item?.agama || '',
-      npwp: state?.item?.npwp || '',
-      alamat_ktp: state?.item?.alamat_ktp || '',
-      alamat_domisili: state?.item?.alamat_domisili || '',
-      cabang_id: state?.item?.cabang_id || '',
-      titik_lokasi: state?.item?.titik_lokasi || [], // Ensure this is an array
+      nama: state?.item?.datapribadi.nama || '',
+      username: state?.item?.datapribadi.username || '',
+      email: state?.item?.datapribadi.email || '',
+      no_identitas: state?.item?.datapribadi.no_identitas || '',
+      jenis_kelamin: state?.item?.datapribadi.jenis_kelamin || '',
+      no_telepon: state?.item?.datapribadi.no_telepon || '',
+      tempat_lahir: state?.item?.datapribadi.tempat_lahir || '',
+      tgl_lahir: state?.item?.datapribadi.tgl_lahir || '',
+      agama: state?.item?.datapribadi.agama || '',
+      npwp: state?.item?.datapribadi.npwp || '',
+      alamat_ktp: state?.item?.datapribadi.alamat_ktp || '',
+      alamat_domisili: state?.item?.datapribadi.alamat_domisili || '',
+      cabang_id: state?.item?.datapribadi.cabang.id || '',
+      titik_lokasi: state?.item?.datapribadi.titik_lokasi || [], // Ensure this is an array
     },
     validationSchema: Yup.object().shape({
       nama: Yup.string().required("Nama is required"),
@@ -113,7 +115,7 @@ const Pribadi = () => {
       <Container>
         <div className='flex items-center gap-2 mb-4'>
           <button
-            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#7367f0] text-white rounded-full shadow hover:shadow-lg transition-all"
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-blue-500 text-white rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => navigate("/kepegawaian/pegawai")}
           >
             <IoMdReturnLeft />

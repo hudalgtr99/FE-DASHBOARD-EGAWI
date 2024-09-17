@@ -96,7 +96,7 @@ const Pendidikan = () => {
       <Container>
         <div className="flex items-center gap-2 mb-4">
           <button
-            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#7367f0] text-white rounded-full shadow hover:shadow-lg transition-all"
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-blue-500 text-white rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => navigate('/kepegawaian/pegawai')}
           >
             <IoMdReturnLeft />
@@ -107,13 +107,13 @@ const Pendidikan = () => {
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div>
               <h3 className='font-medium'>Pendidikan Formal</h3>
-              {formik.values.pendidikanFormal.map((edu, index) => (
-                <div key={index}>
+              {/* {formik.values.pendidikanFormal.map((edu, index) => ( */}
+                {/* <div key={index}> */}
                   <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
                     <TextField
                       label="Asal Sekolah"
-                      name={`pendidikanFormal[${index}].asal_sekolah`}
-                      value={edu.asal_sekolah}
+                      // name={`pendidikanFormal[${index}].asal_sekolah`}
+                      // value={edu.asal_sekolah}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       error={
@@ -124,8 +124,8 @@ const Pendidikan = () => {
                     />
                     <TextField
                       label="Masa Waktu"
-                      name={`pendidikanFormal[${index}].masa_waktu`}
-                      value={edu.masa_waktu}
+                      // name={`pendidikanFormal[${index}].masa_waktu`}
+                      // value={edu.masa_waktu}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       error={
@@ -136,8 +136,8 @@ const Pendidikan = () => {
                     />
                     <TextField
                       label="Keterangan Pendidikan"
-                      name={`pendidikanFormal[${index}].keterangan_pendidikan`}
-                      value={edu.keterangan_pendidikan}
+                      // name={`pendidikanFormal[${index}].keterangan_pendidikan`}
+                      // value={edu.keterangan_pendidikan}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       error={
@@ -157,8 +157,8 @@ const Pendidikan = () => {
                     </Tooltip>
 
                   </div>
-                </div>
-              ))}
+                {/* </div> */}
+              {/* ))} */}
               <div className='sm:block hidden'>
                 <Button type="button" onClick={addFormalEducation}>
                   Tambah Data
@@ -170,13 +170,13 @@ const Pendidikan = () => {
 
             <div>
               <h3 className='font-medium'>Pendidikan Non Formal</h3>
-              {formik.values.pendidikanNonFormal.map((edu, index) => (
-                <div key={index}>
+              {/* {formik.values.pendidikanNonFormal.map((edu, index) => (
+                <div key={index}> */}
                   <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
                     <TextField
                       label="Nama Lembaga"
-                      name={`pendidikanNonFormal[${index}].nama_lembaga`}
-                      value={edu.nama_lembaga}
+                      // name={`pendidikanNonFormal[${index}].nama_lembaga`}
+                      // value={edu.nama_lembaga}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       error={
@@ -187,8 +187,8 @@ const Pendidikan = () => {
                     />
                     <TextField
                       label="Tahun Lulus"
-                      name={`pendidikanNonFormal[${index}].tahun_lulus`}
-                      value={edu.tahun_lulus}
+                      // name={`pendidikanNonFormal[${index}].tahun_lulus`}
+                      // value={edu.tahun_lulus}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       error={
@@ -200,13 +200,13 @@ const Pendidikan = () => {
                     <TextField
                       type="file"
                       label="Sertifikat"
-                      name={`pendidikanNonFormal[${index}].sertifikat`}
-                      onChange={(event) =>
-                        formik.setFieldValue(
-                          `pendidikanNonFormal[${index}].sertifikat`,
-                          event.currentTarget.files[0]
-                        )
-                      }
+                      // name={`pendidikanNonFormal[${index}].sertifikat`}
+                      // onChange={(event) =>
+                      //   formik.setFieldValue(
+                      //     `pendidikanNonFormal[${index}].sertifikat`,
+                      //     event.currentTarget.files[0]
+                      //   )
+                      // }
                     />
                     <Tooltip tooltip="Hapus">
                       <button
@@ -218,8 +218,8 @@ const Pendidikan = () => {
                       </button>
                     </Tooltip>
                   </div>
-                </div>
-              ))}
+                {/* </div>
+              ))} */}
               <div className='sm:block hidden'>
                 <Button type="button" onClick={addNonFormalEducation}>
                   Tambah Data

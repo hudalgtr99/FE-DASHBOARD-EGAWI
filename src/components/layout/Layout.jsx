@@ -47,7 +47,7 @@ const Layout = () => {
                     <Header open={open} setOpen={setOpen} />
                     <div
                         id="content-container"
-                        className="p-6 h-[92vh] max-[450px]:h-[94vh] overflow-y-auto bg-gradient-to-b from-orange-100 via-pink-100 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 custom-scroll"
+                        className="p-6 h-[92vh] max-[450px]:h-[94vh] overflow-y-auto bg-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 custom-scroll"
                     >
                         {/* <TransitionGroup>
                             <CSSTransition

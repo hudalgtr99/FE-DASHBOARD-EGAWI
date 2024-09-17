@@ -59,7 +59,7 @@ const Pagination = ({
 	// Color
 	const colorPagination =
 		{
-			primary: themeColor,
+			primary: "#3B82F6",
 			base: "#BABCBD",
 			success: "#4ED17E",
 			warning: "#EEC239",

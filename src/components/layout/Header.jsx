@@ -36,7 +36,7 @@ const Header = ({ open, setOpen }) => {
 
   return (
     <Fragment>
-      <div className="w-full flex py-2 justify-between bg-orange-100 backdrop-blur-sm dark:bg-gray-800 items-center px-3 drop-shadow-sm">
+      <div className="w-full flex py-2 justify-between bg-[#FFF] backdrop-blur-sm dark:bg-gray-800 items-center px-3 drop-shadow-sm">
         <div
           onClick={() => setOpen(!open)}
           className={`p-1 rounded-lg text-black dark:text-white text-xl flex items-center gap-2 cursor-pointer transition-all`}
@@ -47,7 +47,7 @@ const Header = ({ open, setOpen }) => {
               <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white md:block hidden">
                 QUEEN
               </span>
-              <div className="dark:bg-gray-700 p-1 rounded-full">
+              <div className="dark:bg-gray-700 bg-gray-100 hover:bg-gray-200 p-1 rounded-full">
                 {icons.himenualt2}
               </div>
             </div>
@@ -63,7 +63,7 @@ const Header = ({ open, setOpen }) => {
           {/* Color Mode Toggle Button */}
           <button
             onClick={toggleColorMode}
-            className="p-2 rounded-full bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           >
             {colorMode === "light" ? (
               <IoSunnyOutline className="text-yellow-500" />

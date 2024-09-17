@@ -29,6 +29,8 @@ const Pegawai = () => {
   const [divisiOptions, setDivisiOptions] = useState([]);
   const [unitOptions, setUnitOptions] = useState([]);
 
+  // console.log(state)
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axiosAPI.get(API_URL_getmasterpegawai);
@@ -110,7 +112,7 @@ const Pegawai = () => {
       <Container>
         <div className='flex items-center gap-2 mb-4'>
           <button
-            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#7367f0] text-white rounded-full shadow hover:shadow-lg transition-all"
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-blue-500 text-white rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => navigate("/kepegawaian/pegawai")}
           >
             <IoMdReturnLeft />
