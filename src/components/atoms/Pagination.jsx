@@ -28,7 +28,7 @@ const Pagination = ({
 	siblingCount = 1,
 	currentPage = 1,
 	pageSize = 10,
-	activeColor = "primary",
+	activeColor = "base",
 	rounded = "md",
 	variant = "flat",
 	size = "md",
@@ -59,7 +59,7 @@ const Pagination = ({
 	// Color
 	const colorPagination =
 		{
-			primary: "#3B82F6",
+			primary: "#BABCBD",
 			base: "#BABCBD",
 			success: "#4ED17E",
 			warning: "#EEC239",

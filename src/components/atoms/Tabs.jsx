@@ -13,7 +13,8 @@ const Tabs = ({ tabs }) => {
 
     return (
         <Fragment>
-            <ul className="flex flex-wrap list-none border-b" role="tablist">
+            {/* Tab headers */}
+            <ul className="flex flex-wrap list-none border-b border-gray-200 dark:border-gray-700" role="tablist">
                 {tabs.listTabs.map((tab, tabIdx) => (
                     <li
                         key={tabIdx}
@@ -23,13 +24,13 @@ const Tabs = ({ tabs }) => {
                         <Link
                             to={`#${tab.linkTabs}`}
                             className={`-mb-px flex font-medium items-center p-5 py-3 
-                ${tab.disabled
-                                    ? "text-gray-400 cursor-not-allowed"
-                                    : "hover:border-b hover:border-blue-500 hover:text-blue-500"
+                            ${tab.disabled
+                                    ? "text-gray-400 cursor-not-allowed dark:text-gray-500"
+                                    : "hover:border-b hover:border-gray-600 hover:text-gray-600 dark:hover:border-gray-600 dark:hover:text-gray-600"
                                 } 
-                ${activeTab === tab.linkTabs && !tab.disabled
-                                    ? "border-b border-blue-500 text-blue-500 outline-none"
-                                    : ""
+                            ${activeTab === tab.linkTabs && !tab.disabled
+                                    ? "border-b border-gray-600 text-gray-600 dark:border-gray-600 dark:text-gray-600 outline-none"
+                                    : "text-[#BABCBD] dark:text-gray-300"
                                 }`}
                             onClick={() => handleTabClick(tab)}
                             role="tab"
@@ -41,12 +42,13 @@ const Tabs = ({ tabs }) => {
                     </li>
                 ))}
             </ul>
+
+            {/* Tab content */}
             <div className="tab-content mt-4">
                 {tabs.listTabs.map((content, contentIdx) => (
                     <div
                         key={contentIdx}
-                        className={`transition-opacity duration-300 ease-in-out ${activeTab === content.linkTabs ? "block opacity-100" : "hidden opacity-0"
-                            }`}
+                        className={`transition-opacity duration-300 ease-in-out ${activeTab === content.linkTabs ? "block opacity-100" : "hidden opacity-0"}`}
                         id={content.linkTabs}
                         role="tabpanel"
                         aria-labelledby={`tab-${contentIdx}`}

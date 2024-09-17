@@ -50,7 +50,7 @@ const CabangPage = () => {
   return (
     <div>
       <Container>
-        <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center">
           <div className="w-full sm:w-60">
             <TextField
               placeholder="Search"
@@ -63,20 +63,21 @@ const CabangPage = () => {
             </div>
           </Button>
         </div>
-        <div className="grid grid-cols-6 gap-3">
-          {card.map((item) => (
-            <div key={item.pk} className="col-span-full sm:col-span-3 lg:col-span-2">
-              <Card
-                onEdit={() => onEdit(item)} // Update here
-                doDelete={() => doDelete(item.pk)}
-                data={item}
-              >
-                {item.nama} - {item.alamat}
-              </Card>
-            </div>
-          ))}
-        </div>
       </Container>
+      <div className="grid grid-cols-6 gap-3 mt-6">
+        {card.map((item) => (
+          <div key={item.pk} className="col-span-full sm:col-span-3 lg:col-span-2">
+            <Card
+              onEdit={() => onEdit(item)} // Update here
+              doDelete={() => doDelete(item.pk)}
+              data={item}
+            >
+              {item.nama} - {item.alamat}
+            </Card>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 };

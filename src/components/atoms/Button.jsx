@@ -27,7 +27,7 @@ import { Loading } from "..";
 const Button = ({
   type = "button",
   variant = "solid",
-  color = "primary",
+  color = "base",
   textcolor = "",
   size = "md",
   rounded = "md",

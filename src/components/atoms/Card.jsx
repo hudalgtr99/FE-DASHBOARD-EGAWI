@@ -23,7 +23,7 @@ import { Tooltip } from "@/components";
 
 const Card = ({
   variant = "solid",
-  color = "primary",
+  color = "white",
   rounded = "md",
   density = "normal",
   borderPosition = "bottom",
@@ -135,7 +135,7 @@ const Card = ({
       onMouseLeave={() => setIsHover(false)}
       className={`transition-[border,box-shadow] shadow hover:shadow-lg ${onClick ? "cursor-pointer" : ""} ${cardDensity} ${cardRounded}`}
     >
-      <div className="flex items-center">
+      <div className="flex items-center text-gray-900">
         <div>
           {children}
         </div>
@@ -143,7 +143,7 @@ const Card = ({
           <Tooltip tooltip="Edit">
             {onEdit && (
               <button
-                className="text-green-500 bg-white p-1 rounded-full"
+                className="text-green-500 p-1 rounded-full"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering onClick if Card is clickable
                   onEdit();
@@ -156,7 +156,7 @@ const Card = ({
           <Tooltip tooltip="Hapus">
             {doDelete && data && (
               <button
-                className="text-red-500 bg-white p-1 rounded-full"
+                className="text-red-500 p-1 rounded-full"
                 onClick={(e) => {
                   doDelete(data.pk);
                 }}

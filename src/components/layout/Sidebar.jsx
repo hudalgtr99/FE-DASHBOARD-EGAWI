@@ -52,17 +52,17 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-[#FFF] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-xl text-white transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-xl transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
           <div className="flex items-center gap-2">
             <img className="w-12" src="/assets/Logo.png" alt="logo" />
-            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline text-gray-900 dark:text-white">
+            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline text-white dark:text-white">
               QUEEN
             </span>
           </div>
-          <div onClick={() => setOpen(!open)} className="cursor-pointer text-gray-900 hover:bg-gray-100 dark:hover:text-white rounded-full p-2">
+          <div onClick={() => setOpen(!open)} className="cursor-pointer text-white hover:bg-white hover:text-gray-900 dark:text-white dark:hover:bg-gray-600 rounded-full p-2">
             <BsChevronDoubleLeft />
           </div>
         </div>
@@ -76,7 +76,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <NavLink key={menuIdx} to={menu.menuLink}>
                   {({ isActive }) => (
                     <div
-                      className={`${isActive ? "bg-gray-200 text-blue-700 dark:bg-gray-600 dark:text-white" : ""} px-3 py-2 rounded-lg mt-2 transition hover:bg-gray-100 text-gray-900 hover:text-blue-600 dark:hover:bg-gray-600 dark:hover:text-white`}
+                      className={`${isActive ? "bg-white text-gray-900 dark:bg-gray-600 dark:text-white" : "text-white"} px-3 py-2 rounded-lg mt-2 transition hover:bg-white dark:hover:bg-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white`}
                     >
                       <span className="flex items-center">
                         <span className="text-lg flex justify-center items-center">
@@ -96,7 +96,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <>
                   <DisclosureButton
                     onClick={() => navOpen(menu.menuLink)}
-                    className={`${navopen[menu.menuLink] ? "bg-gray-200 text-blue-700 shadow-md dark:bg-gray-600 dark:text-white" : ""} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-gray-100 text-gray-900 hover:text-blue-600 dark:hover:bg-gray-600 dark:hover:text-white`}
+                    className={`${navopen[menu.menuLink] ? "bg-white text-gray-900 dark:bg-gray-600 dark:text-white" : "text-white"} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white`}
                   >
                     <span className="flex">
                       <span className="text-lg flex justify-center items-center">
@@ -123,7 +123,7 @@ const Sidebar = ({ open, setOpen }) => {
                         <NavLink key={subMenuIdx} to={subMenu.subMenuLink}>
                           {({ isActive }) => (
                             <div
-                              className={`${isActive ? "text-blue-700 dark:bg-gray-600 dark:text-white" : ""} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-gray-100 hover:text-blue-600 dark:hover:bg-gray-600 dark:hover:text-white flex items-center gap-1 text-gray-900 font-medium`}
+                              className={`${isActive ? "text-gray-900 bg-white dark:bg-gray-600 dark:text-white" : "text-white"} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white dark:hover:bg-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 font-medium`}
                             >
                               <TiMinus /> {subMenu.subMenuName}
                             </div>
@@ -140,7 +140,7 @@ const Sidebar = ({ open, setOpen }) => {
 
         {/* Copyright */}
         {open && (
-          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center text-gray-900 justify-center dark:text-gray-400">
+          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center text-white dark:text-gray-400 justify-center">
             Copyright &copy; PT. Queen Network Nusantara
           </div>
         )}

@@ -73,7 +73,7 @@ const DonutChart = ({
 						series={chartConfig.series}
 						type="donut"
 						height={300}
-						className="text-black dark:text-white" // Ensure the chart text color adapts to dark mode
+						className="text-black" // Ensure the chart text color adapts to dark mode
 					/>
 				</div>
 			</Container>
