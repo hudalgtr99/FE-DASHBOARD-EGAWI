@@ -6,6 +6,8 @@ import OrganPage from "../pages/MasterData/Organ/OrganPage";
 import StrataPage from "../pages/MasterData/Strata/StrataPage";
 import CabangPage from "../pages/MasterData/Cabang/CabangPage";
 import PegawaiPage from "../pages/Kepegawaian/Pegawai/PegawaiPage";
+import CutiPage from "../pages/Asesmen/Cuti/CutiPage";
+import KinerjaPage from "../pages/Asesmen/Kinerja/KinerjaPage";
 
 export {
 	CabangPage,
@@ -16,4 +18,6 @@ export {
 	PengurusPage,
 	StrataPage,
 	TentangPage,
+	CutiPage,
+	KinerjaPage,
 };

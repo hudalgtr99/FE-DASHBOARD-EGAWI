@@ -74,7 +74,7 @@ const TableHead = ({ children, style, sticky = false }) => {
 			style={{
 				...style,
 			}}
-			className={`${sticky ? "sticky top-0 bg-white dark:bg-base-600 shadow-sm" : ""
+			className={`${sticky ? "sticky top-0 bg-white dark:bg-gray-600 shadow-sm" : ""
 				}`}
 		>
 			{children}
@@ -170,7 +170,7 @@ const TableHeader = ({ children, style, center = false }) => {
 			style={{
 				...style,
 			}}
-			className={`border-b dark:border-[#20282A] bg-gray-100 font-medium capitalize whitespace-nowrap tracking-wide px-2 sticky ${center ? "text-center" : "text-left"
+			className={`border-b dark:border-[#20282A] bg-gray-100 dark:bg-gray-500 font-medium capitalize whitespace-nowrap tracking-wide px-2 sticky ${center ? "text-center" : "text-left"
 				}`}
 		>
 			{children}

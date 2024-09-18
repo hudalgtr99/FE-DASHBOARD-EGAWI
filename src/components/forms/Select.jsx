@@ -238,7 +238,7 @@ const Select = ({
 							style={labelStyle}
 							className={`absolute pointer-events-none transition-[top,font,padding,margin] leading-none whitespace-nowrap ${(isFocus && variant === "outline") ||
 								(variant === "outline" && value)
-								? "bg-white/80 dark:bg-base-600/80 backdrop-blur px-1 -ml-1"
+								? "bg-white/80 dark:bg-gray-600/80 backdrop-blur px-1 -ml-1"
 								: ""
 								}`}
 						>

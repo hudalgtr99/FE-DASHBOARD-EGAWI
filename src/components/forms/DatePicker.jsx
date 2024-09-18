@@ -139,7 +139,7 @@ const DatePicker = ({
 				<div
 					ref={refs.setFloating}
 					style={floatingStyles}
-					className={`bg-white dark:bg-base-700 w-fit rounded-lg shadow-lg border border-base-50 dark:border-base-500 z-10 ${position}`}
+					className={`bg-white dark:bg-gray-700 w-fit rounded-lg shadow-lg border border-base-50 dark:border-base-500 z-10 ${position}`}
 				>
 					<DayPicker
 						className="m-0 p-4 text-sm"
@@ -164,7 +164,7 @@ const DatePicker = ({
 							},
 						}}
 						classNames={{
-							button: `rdp-button hover:!bg-base-75 dark:hover:!bg-base-500 ${mode !== "range" ? "rounded-lg" : ""
+							button: `rdp-button hover:!bg-gray-50 dark:hover:!bg-gray-500 ${mode !== "range" ? "rounded-lg" : ""
 								} ${mode === "single" ? "aria-selected:!pointer-events-none" : ""
 								}`,
 							day_selected: "rdp-day_selected ",

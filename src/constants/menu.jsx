@@ -8,6 +8,8 @@ import {
   PengurusPage,
   StrataPage,
   TentangPage,
+  CutiPage,
+  KinerjaPage,
 } from "@/pages";
 
 export const menu = [
@@ -67,9 +69,9 @@ export const menu = [
     menuLink: "asesmen",
 
     subMenu: [
-      { subMenuName: "Cuti", subMenuLink: "/asesmen/cuti" },
+      { subMenuName: "Cuti", subMenuLink: "/asesmen/cuti", element: <CutiPage /> },
       { subMenuName: "Kehadiran", subMenuLink: "/asesmen/kehadiran" },
-      { subMenuName: "Kinerja", subMenuLink: "/asesmen/kinerja" },
+      { subMenuName: "Kinerja", subMenuLink: "/asesmen/kinerja", element: <KinerjaPage /> },
       { subMenuName: "Karir", subMenuLink: "/asesmen/karir" },
     ],
   },

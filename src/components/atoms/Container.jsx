@@ -38,7 +38,7 @@ const Container = ({
 
 	return (
 		<div
-			className={`${containerRounded} ${containerDensity} ${containerVariant ? containerVariant : themeSkin === "default" ? "bg-white shadow-lg" : themeSkin} ${fill ? "h-full w-full" : ""} bg-white dark:bg-base-600`}
+			className={`${containerRounded} ${containerDensity} ${containerVariant ? containerVariant : themeSkin === "default" ? "bg-white shadow-lg" : themeSkin} ${fill ? "h-full w-full" : ""} bg-white dark:bg-gray-600`}
 		>
 			{title && icon && (
 				<div className="flex items-center gap-2">

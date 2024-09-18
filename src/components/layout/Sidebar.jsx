@@ -52,7 +52,7 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Sidebar */}
       <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-xl transition-all duration-150 ease-in-out`}
+        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-400 via-pink-400 to-purple-400 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-xl transition-all duration-150 ease-in-out`}
       >
         {/* Logo */}
         <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
@@ -140,7 +140,7 @@ const Sidebar = ({ open, setOpen }) => {
 
         {/* Copyright */}
         {open && (
-          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center text-white dark:text-gray-400 justify-center">
+          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center font-medium text-white dark:text-gray-400 justify-center">
             Copyright &copy; PT. Queen Network Nusantara
           </div>
         )}

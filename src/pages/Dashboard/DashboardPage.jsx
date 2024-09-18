@@ -184,7 +184,7 @@ const DashboardPage = () => {
                 {icons.fausercheck} Presensi Pegawai
               </div>
               <input
-                className="bg-white text-sm outline-none font-light"
+                className="bg-white dark:bg-gray-600 text-sm outline-none font-light"
                 type="date"
                 value={filterValue}
                 onChange={(e) => handleFilterDate(e.target.value)}

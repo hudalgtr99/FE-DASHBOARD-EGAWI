@@ -283,7 +283,7 @@ const TextField = ({
 
 				{/* Icon */}
 				{icon && (
-					<div className="absolute left-52 flex items-center">
+					<div className="absolute left-52 items-center sm:block hidden">
 						{icon}
 					</div>
 				)}
