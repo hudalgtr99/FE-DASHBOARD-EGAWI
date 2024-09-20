@@ -9,12 +9,25 @@ import { addData, updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import { API_URL_createuser, API_URL_edeluser } from '@/constants';
 import { CiTrash } from 'react-icons/ci';
+import Swal from 'sweetalert2';
 
 const Keluarga = () => {
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 1000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
 
   const isEdit = pk && pk !== 'add';
 
@@ -30,13 +43,17 @@ const Keluarga = () => {
   };
 
   const formik = useFormik({
-    initialValues: initialData,
+    initialValues: {
+      ...initialData,
+      nama_anak: Array.isArray(initialData.nama_anak) ? initialData.nama_anak : [], // Ensure nama_anak is always an array
+    },
     validationSchema: Yup.object().shape({
       nama_ayah: Yup.string().required('Nama Ayah is required'),
       nama_ibu: Yup.string().required('Nama Ibu is required'),
       status_pernikahan: Yup.string().required('Status Pernikahan is required'),
       nama_kontak_emergency: Yup.string().required('Nama Kontak is required'),
       no_telepon_emergency: Yup.string().required('Nomor Telepon is required'),
+      jumlah_anak: Yup.number().min(0, 'Jumlah Anak must be 0 or more').required('Jumlah Anak is required'),
     }),
     onSubmit: async (values) => {
       if (isEdit) {
@@ -59,7 +76,14 @@ const Keluarga = () => {
   });
 
   const handleAddChild = () => {
-    formik.setFieldValue('nama_anak', [...formik.values.nama_anak, '']);
+    if (formik.values.nama_anak.length < formik.values.jumlah_anak) {
+      formik.setFieldValue('nama_anak', [...formik.values.nama_anak, '']);
+    } else {
+      Toast.fire({
+        icon: "error",
+        title: "Jumlah anak sudah sesuai!"
+      });
+    }
   };
 
   const handleRemoveChild = (index) => {
@@ -150,7 +174,7 @@ const Keluarga = () => {
             {Number(formik.values.jumlah_anak) > 0 && (
               <div>
                 <label className="text-sm font-medium">Nama Anak</label>
-                {formik.values.nama_anak.map((name, index) => (
+                {(formik.values.nama_anak || []).map((name, index) => (
                   <div key={index} className="flex items-center space-x-4 mb-2">
                     <TextField
                       label={`Anak Ke-${index + 1}`}
@@ -171,6 +195,7 @@ const Keluarga = () => {
                     </Tooltip>
                   </div>
                 ))}
+
                 <Button
                   type="button"
                   className="text-white font-medium block"

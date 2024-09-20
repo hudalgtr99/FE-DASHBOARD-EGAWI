@@ -164,12 +164,13 @@ const TerimaSub = () => {
 
   const fetchData = useCallback(
     async (param = false) => {
-      // If date-month or limit is invalid, skip the API call
+      // Check if the date-month (filter) is valid and the limit is greater than 0
       if (!filter || filter.split("-").length !== 2 || limit <= 0) {
         console.error("Invalid filter or limit");
         return;
       }
 
+      // Fetch data only when the filter and limit are valid
       get(
         param
           ? param
@@ -195,8 +196,10 @@ const TerimaSub = () => {
   ]);
 
   useEffect(() => {
-    fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (filter && limit > 0) {
+      fetchData();
+    }
+  }, [filter, limit]);
   useEffect(() => {
     if (updatePengajuanResult) {
       const param =

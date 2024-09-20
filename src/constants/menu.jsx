@@ -10,6 +10,7 @@ import {
   TentangPage,
   CutiPage,
   KinerjaPage,
+  GajiPage,
 } from "@/pages";
 
 export const menu = [
@@ -45,7 +46,7 @@ export const menu = [
       },
       { subMenuName: "Strata", subMenuLink: "/masterdata/strata", element: <StrataPage /> },
       { subMenuName: "Organ", subMenuLink: "/masterdata/organ", element: <OrganPage /> },
-      { subMenuName: "Gaji", subMenuLink: "/masterdata/gaji" },
+      { subMenuName: "Gaji", subMenuLink: "/masterdata/gaji", element: <GajiPage /> },
       { subMenuName: "Tunjangan", subMenuLink: "/masterdata/tunjangan" },
       { subMenuName: "Potongan", subMenuLink: "/masterdata/potongan" },
       { subMenuName: "Kalender", subMenuLink: "/masterdata/kalender", element: <KalenderPage /> },

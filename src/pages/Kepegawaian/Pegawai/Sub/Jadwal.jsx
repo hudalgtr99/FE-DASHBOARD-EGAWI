@@ -3,17 +3,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { cabangReducer } from "@/reducers/cabangReducers";
-import { addData, updateData } from "@/actions";
-import {
-    API_URL_createcabang,
-    API_URL_edelcabang,
-} from "@/constants";
-import {
-    Container,
-    TextField,
-    Button,
-} from "@/components";
+import { updateData } from "@/actions"; // Ensure this path is correct
+import { API_URL_edeluser } from "@/constants";
+import { Container, TextField, Button } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
 
 const Jadwal = () => {
@@ -56,38 +48,18 @@ const Jadwal = () => {
             minggu_keluar: Yup.string().required("Minggu Keluar is required"),
         }),
         onSubmit: async (values) => {
-                const jadwal = JSON.stringify({
-                    senin: {
-                        masuk: values.senin_masuk,
-                        keluar: values.senin_keluar
+            // Dispatch the action directly
+            await dispatch(
+                updateData(
+                    {
+                        pk: pk, // Only send `pk` if it's an edit
+                        ...values,
                     },
-                    selasa: {
-                        masuk: values.selasa_masuk,
-                        keluar: values.selasa_keluar
-                    },
-                    rabu: {
-                        masuk: values.rabu_masuk,
-                        keluar: values.rabu_keluar
-                    },
-                    kamis: {
-                        masuk: values.kamis_masuk,
-                        keluar: values.kamis_keluar
-                    },
-                    jumat: {
-                        masuk: values.jumat_masuk,
-                        keluar: values.jumat_keluar
-                    },
-                    sabtu: {
-                        masuk: values.sabtu_masuk,
-                        keluar: values.sabtu_keluar
-                    },
-                    minggu: {
-                        masuk: values.minggu_masuk,
-                        keluar: values.minggu_keluar
-                    },
-                });
-
-                navigate('/kepegawaian/pegawai');
+                    API_URL_edeluser, // Single API URL used for both add and update
+                    'ADD_PEGAWAI' // Unified action for add/update
+                )
+            );
+            navigate('/kepegawaian/pegawai');
         },
     });
 

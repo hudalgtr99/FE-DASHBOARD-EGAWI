@@ -2,14 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  addData,
   deleteData,
   getData,
-  updateData,
 } from '@/actions';
 import { departemenReducers } from '@/reducers/organReducers';
 import {
-  API_URL_createdepartemen,
   API_URL_edeldepartemen,
   API_URL_getdepartemen,
 } from '@/constants';
@@ -23,7 +20,6 @@ import {
   TextField,
   Tooltip,
 } from '@/components';
-import * as Yup from 'yup';
 import { debounce } from 'lodash'; // Import lodash debounce
 import { FaPlus } from 'react-icons/fa';
 import { CiSearch } from 'react-icons/ci';
@@ -31,12 +27,9 @@ import { CiSearch } from 'react-icons/ci';
 const DepartemenSub = () => {
   const {
     getDepartemenResult,
-    getDepartemenLoading,
-    getDepartemenError,
     addDepartemenResult,
     addDivisiResult,
     addUnitResult,
-    addDepartemenLoading,
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,

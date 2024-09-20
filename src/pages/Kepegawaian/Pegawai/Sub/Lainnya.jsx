@@ -1,21 +1,18 @@
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useFormik, FieldArray, FormikProvider } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
 import {
   Button,
   Container,
   Tooltip,
-  TextField, // Assuming your custom TextField is imported here
+  TextField,
 } from '@/components';
 import { useDispatch } from 'react-redux';
 import { updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
-import {
-  API_URL_edeluser,
-} from '@/constants';
-import axiosAPI from "@/authentication/axiosApi";
+import { API_URL_edeluser } from '@/constants';
 import { CiTrash } from 'react-icons/ci';
 
 const Lainnya = () => {
@@ -26,30 +23,23 @@ const Lainnya = () => {
 
   const formik = useFormik({
     initialValues: {
-      data_lainnya: state?.item?.data_lainnya || [
-        {
-          name: 'data_lainnya',
-          type: 'file',
-          value: '',
-          data: null,
-          fullWidth: true,
-          link: '',
-        },
-      ],
+      data_lainnya: state?.item?.data_lainnya || [{ data: null }],
     },
     validationSchema: Yup.object().shape({
       data_lainnya: Yup.array().of(
         Yup.object().shape({
-          name: Yup.string().required("Name is required"),
-          type: Yup.string().required("Type is required"),
-          value: Yup.string(),
-          data: Yup.mixed().required("File is required"),
-          fullWidth: Yup.boolean(),
-          link: Yup.string(),
+          data: Yup.mixed()
+            .nullable() // Allow null values
+            .test(
+              "fileType",
+              "Only PDF files are allowed",
+              (value) => !value || (value && value.type === "application/pdf")
+            ),
         })
       ),
     }),
     onSubmit: async (values) => {
+      console.log("Submitted values: ", values); // Log the values to inspect
       try {
         await updateData(
           { dispatch, redux: pegawaiReducer },
@@ -67,10 +57,32 @@ const Lainnya = () => {
     },
   });
 
+  const handleAddFile = () => {
+    const newDataLainnya = [...formik.values.data_lainnya, { data: null }];
+    formik.setFieldValue('data_lainnya', newDataLainnya);
+  };
+
+  const handleRemoveFile = (index) => {
+    const updatedDataLainnya = formik.values.data_lainnya.filter((_, i) => i !== index);
+    formik.setFieldValue('data_lainnya', updatedDataLainnya);
+  };
+
+  const handleFileChange = (event, index) => {
+    const file = event.currentTarget.files[0];
+    console.log("Selected file: ", file); // Log the file to check if it's captured
+
+    const updatedDataLainnya = formik.values.data_lainnya.map((item, i) =>
+      i === index ? { data: file } : item
+    );
+
+    formik.setFieldValue('data_lainnya', updatedDataLainnya);
+  };
+
+
   return (
     <div>
       <Container>
-        <div className='flex items-center gap-2 mb-4'>
+        <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => navigate("/kepegawaian/pegawai")}
@@ -79,72 +91,48 @@ const Lainnya = () => {
           </button>
           <h1>Data Lainnya</h1>
         </div>
-        <FormikProvider value={formik}>
-          <form onSubmit={formik.handleSubmit} className='space-y-6'>
-            <FieldArray name="data_lainnya">
-              {({ push, remove }) => (
-                <>
-                  {formik.values.data_lainnya.map((item, index) => (
-                    <div key={index} className='flex'>
-                      <TextField
-                        type="file"
-                        label={`File Ke-${index + 1}`}
-                        name={`data_lainnya[${index}].data`}
-                        onChange={(event) => {
-                          formik.setFieldValue(
-                            `data_lainnya[${index}].data`,
-                            event.currentTarget.files[0]
-                          );
-                        }}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.data_lainnya?.[index]?.data &&
-                          formik.errors.data_lainnya?.[index]?.data
-                        }
-                        helperText={
-                          formik.touched.data_lainnya?.[index]?.data &&
-                            formik.errors.data_lainnya?.[index]?.data
-                            ? formik.errors.data_lainnya[index].data
-                            : null
-                        }
-                      />
-                      <Tooltip tooltip="Hapus">
-                        <button
-                          type="button"
-                          className="text-red-500 mt-9 pl-4 cursor-pointer sm:block hidden"
-                          onClick={() => remove(index)}
-                        >
-                          <CiTrash />
-                        </button>
-                      </Tooltip>
-                    </div>
-                  ))}
-                  <div className='sm:block hidden'>
-                    <Button
-                      type="button"
-                      onClick={() => push({
-                        name: 'data_lainnya',
-                        type: 'file',
-                        value: '',
-                        data: null,
-                        fullWidth: true,
-                        link: '',
-                      })}
-                    >
-                      Tambah Data
-                    </Button>
-                  </div>
-                </>
+        <form onSubmit={formik.handleSubmit} className="space-y-6">
+          {formik.values.data_lainnya.map((item, index) => (
+            <div key={index} className="flex items-center gap-4">
+              <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
+              <input
+                type="file"
+                id={`file-${index}`}
+                name={`data_lainnya[${index}].data`}
+                accept="application/pdf" // Restrict to PDF files
+                onChange={(event) => handleFileChange(event, index)} // Handle file change
+                onBlur={formik.handleBlur}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-700 file:bg-gray-200 file:border-0 file:text-sm file:font-semibold file:text-gray-600 hover:file:bg-gray-300"
+              />
+              {formik.touched.data_lainnya?.[index]?.data && formik.errors.data_lainnya?.[index]?.data && (
+                <span className="text-red-500">
+                  {formik.errors.data_lainnya[index].data}
+                </span>
               )}
-            </FieldArray>
-            <div className="mt-6 flex justify-end">
-              <Button type="submit">Simpan</Button>
+              <Tooltip tooltip="Hapus">
+                <button
+                  type="button"
+                  className="text-red-500 cursor-pointer sm:block hidden"
+                  onClick={() => handleRemoveFile(index)}
+                >
+                  <CiTrash />
+                </button>
+              </Tooltip>
             </div>
-          </form>
-        </FormikProvider>
+          ))}
+
+          <div>
+            <Button type="button" onClick={handleAddFile}>
+              Tambah Data
+            </Button>
+          </div>
+          <div className="mt-6 flex justify-end">
+            <Button type="submit">Simpan</Button>
+          </div>
+        </form>
       </Container>
     </div>
   );
-}
+};
 
 export default Lainnya;

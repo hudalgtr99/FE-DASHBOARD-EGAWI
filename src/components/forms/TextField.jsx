@@ -34,6 +34,7 @@ import { TbX } from "react-icons/tb";
  * cleaveOptions: object;
  * clearable: boolean;
  * icon: React.ReactNode;
+ * accept: string;
  * }}
  *
  */
@@ -65,7 +66,8 @@ const TextField = ({
 	error = null,
 	cleaveOptions = null,
 	clearable = false,
-	icon = null, // New icon prop
+	icon = null,
+	accept = null,
 }) => {
 	const { themeColor, colorMode } = useContext(ThemeContext);
 
@@ -301,6 +303,7 @@ const TextField = ({
 					readOnly={readOnly}
 					required={required}
 					placeholder={placeholder}
+					accept={accept}
 					style={inputStyle}
 					className={`w-full bg-transparent border-none outline-none placeholder:text-neutral-500 text-sm text-neutral-700 focus:placeholder-transparent ${isFocus && "focus:ring-0"} ${!disabled ? "cursor-pointer" : "cursor-not-allowed"}`}
 				/>
@@ -352,6 +355,7 @@ TextField.propTypes = {
 	error: PropTypes.node,
 	cleaveOptions: PropTypes.object,
 	clearable: PropTypes.bool,
+	accept: PropTypes.string,
 };
 
 export default TextField;

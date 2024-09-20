@@ -41,7 +41,7 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
           toast: true,
           position: "top-end",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
           timerProgressBar: true,
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
@@ -117,7 +117,7 @@ export const updateAkun = (dispatch, type, data, pk, url) => {
           toast: true,
           position: "top-end",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
           timerProgressBar: true,
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
@@ -193,7 +193,7 @@ export const loginUser = (dispatch, data) => {
           toast: true,
           position: "top-end",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
           timerProgressBar: true,
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;

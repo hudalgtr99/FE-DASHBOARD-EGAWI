@@ -18,11 +18,11 @@ const Pendidikan = () => {
 
   const isEdit = pk && pk !== 'add';
 
-  const initialData = state?.item || {
-    pendidikanFormal: [
+  const initialData = {
+    pendidikanFormal: state?.item?.pendidikanFormal || [
       { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
     ],
-    pendidikanNonFormal: [
+    pendidikanNonFormal: state?.item?.pendidikanNonFormal || [
       { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
     ],
   };
@@ -107,58 +107,65 @@ const Pendidikan = () => {
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div>
               <h3 className='font-medium'>Pendidikan Formal</h3>
-              {/* {formik.values.pendidikanFormal.map((edu, index) => ( */}
-                {/* <div key={index}> */}
-                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
-                    <TextField
-                      label="Asal Sekolah"
-                      // name={`pendidikanFormal[${index}].asal_sekolah`}
-                      // value={edu.asal_sekolah}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.pendidikanFormal?.[index]?.asal_sekolah
-                          ? formik.errors.pendidikanFormal?.[index]?.asal_sekolah
-                          : ''
-                      }
-                    />
-                    <TextField
-                      label="Masa Waktu"
-                      // name={`pendidikanFormal[${index}].masa_waktu`}
-                      // value={edu.masa_waktu}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.pendidikanFormal?.[index]?.masa_waktu
-                          ? formik.errors.pendidikanFormal?.[index]?.masa_waktu
-                          : ''
-                      }
-                    />
-                    <TextField
-                      label="Keterangan Pendidikan"
-                      // name={`pendidikanFormal[${index}].keterangan_pendidikan`}
-                      // value={edu.keterangan_pendidikan}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.pendidikanFormal?.[index]?.keterangan_pendidikan
-                          ? formik.errors.pendidikanFormal?.[index]?.keterangan_pendidikan
-                          : ''
-                      }
-                    />
-                    <Tooltip tooltip="Hapus">
-                      <button
-                        type="button"
-                        className="text-red-500 mt-9 cursor-pointer sm:block hidden"
-                        onClick={() => removeFormalEducation(index)}
-                      >
-                        <CiTrash />
-                      </button>
-                    </Tooltip>
+              {formik.values.pendidikanFormal?.length > 0 ? (
+                formik.values.pendidikanFormal.map((edu, index) => (
+                  <div key={index}>
+                    <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
+                      <TextField
+                        required
+                        label="Asal Sekolah"
+                        name={`pendidikanFormal[${index}].asal_sekolah`}
+                        value={edu.asal_sekolah}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.pendidikanFormal?.[index]?.asal_sekolah
+                            ? formik.errors.pendidikanFormal?.[index]?.asal_sekolah
+                            : ''
+                        }
+                      />
+                      <TextField
+                        required
+                        label="Masa Waktu"
+                        name={`pendidikanFormal[${index}].masa_waktu`}
+                        value={edu.masa_waktu}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.pendidikanFormal?.[index]?.masa_waktu
+                            ? formik.errors.pendidikanFormal?.[index]?.masa_waktu
+                            : ''
+                        }
+                      />
+                      <TextField
+                        required
+                        label="Keterangan Pendidikan"
+                        name={`pendidikanFormal[${index}].keterangan_pendidikan`}
+                        value={edu.keterangan_pendidikan}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.pendidikanFormal?.[index]?.keterangan_pendidikan
+                            ? formik.errors.pendidikanFormal?.[index]?.keterangan_pendidikan
+                            : ''
+                        }
+                      />
+                      <Tooltip tooltip="Hapus">
+                        <button
+                          type="button"
+                          className="text-red-500 mt-9 cursor-pointer sm:block hidden"
+                          onClick={() => removeFormalEducation(index)}
+                        >
+                          <CiTrash />
+                        </button>
+                      </Tooltip>
 
+                    </div>
                   </div>
-                {/* </div> */}
-              {/* ))} */}
+                ))
+              ) : (
+                <p>No Data Available.</p>
+              )}
               <div className='sm:block hidden'>
                 <Button type="button" onClick={addFormalEducation}>
                   Tambah Data
@@ -170,56 +177,62 @@ const Pendidikan = () => {
 
             <div>
               <h3 className='font-medium'>Pendidikan Non Formal</h3>
-              {/* {formik.values.pendidikanNonFormal.map((edu, index) => (
-                <div key={index}> */}
-                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
-                    <TextField
-                      label="Nama Lembaga"
-                      // name={`pendidikanNonFormal[${index}].nama_lembaga`}
-                      // value={edu.nama_lembaga}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.pendidikanNonFormal?.[index]?.nama_lembaga
-                          ? formik.errors.pendidikanNonFormal?.[index]?.nama_lembaga
-                          : ''
-                      }
-                    />
-                    <TextField
-                      label="Tahun Lulus"
-                      // name={`pendidikanNonFormal[${index}].tahun_lulus`}
-                      // value={edu.tahun_lulus}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.pendidikanNonFormal?.[index]?.tahun_lulus
-                          ? formik.errors.pendidikanNonFormal?.[index]?.tahun_lulus
-                          : ''
-                      }
-                    />
-                    <TextField
-                      type="file"
-                      label="Sertifikat"
-                      // name={`pendidikanNonFormal[${index}].sertifikat`}
-                      // onChange={(event) =>
-                      //   formik.setFieldValue(
-                      //     `pendidikanNonFormal[${index}].sertifikat`,
-                      //     event.currentTarget.files[0]
-                      //   )
-                      // }
-                    />
-                    <Tooltip tooltip="Hapus">
-                      <button
-                        type="button"
-                        className="text-red-500 mt-9 cursor-pointer sm:block hidden"
-                        onClick={() => removeNonFormalEducation(index)}
-                      >
-                        <CiTrash />
-                      </button>
-                    </Tooltip>
+              {formik.values.pendidikanNonFormal?.length > 0 ? (
+                formik.values.pendidikanNonFormal.map((edu, index) => (
+                  <div key={index}>
+                    <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
+                      <TextField
+                        required
+                        label="Nama Lembaga"
+                        name={`pendidikanNonFormal[${index}].nama_lembaga`}
+                        value={edu.nama_lembaga}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.pendidikanNonFormal?.[index]?.nama_lembaga
+                            ? formik.errors.pendidikanNonFormal?.[index]?.nama_lembaga
+                            : ''
+                        }
+                      />
+                      <TextField
+                        required
+                        label="Tahun Lulus"
+                        name={`pendidikanNonFormal[${index}].tahun_lulus`}
+                        value={edu.tahun_lulus}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.pendidikanNonFormal?.[index]?.tahun_lulus
+                            ? formik.errors.pendidikanNonFormal?.[index]?.tahun_lulus
+                            : ''
+                        }
+                      />
+                      <TextField
+                        type="file"
+                        label="Sertifikat"
+                        name={`pendidikanNonFormal[${index}].sertifikat`}
+                        onChange={(event) =>
+                          formik.setFieldValue(
+                            `pendidikanNonFormal[${index}].sertifikat`,
+                            event.currentTarget.files[0]
+                          )
+                        }
+                      />
+                      <Tooltip tooltip="Hapus">
+                        <button
+                          type="button"
+                          className="text-red-500 mt-9 cursor-pointer sm:block hidden"
+                          onClick={() => removeNonFormalEducation(index)}
+                        >
+                          <CiTrash />
+                        </button>
+                      </Tooltip>
+                    </div>
                   </div>
-                {/* </div>
-              ))} */}
+                ))
+              ) : (
+                <p>No Data Available.</p>
+              )}
               <div className='sm:block hidden'>
                 <Button type="button" onClick={addNonFormalEducation}>
                   Tambah Data
