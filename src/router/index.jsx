@@ -13,6 +13,7 @@ import PegawaiForm from "@/pages/Kepegawaian/Pegawai/PegawaiForm";
 import CabangForm from "@/pages/MasterData/Cabang/CabangForm";
 import KalenderForm from "@/pages/MasterData/Kalender/KalenderForm";
 import GajiForm from "@/pages/MasterData/Gaji/GajiForm";
+import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
 
 const Router = () => {
 	return (
@@ -70,6 +71,9 @@ const Router = () => {
 
 					{/* Gaji */}
 					<Route path="/gaji/form" element={<GajiForm />} />
+
+					{/* Kehadiran */}
+					<Route path="/asesmen/kehadiran/detail" element={<DetailKehadiran />} />
 				</Route>
 
 				{/* Protect the login route with the LoginPrivateRoute */}

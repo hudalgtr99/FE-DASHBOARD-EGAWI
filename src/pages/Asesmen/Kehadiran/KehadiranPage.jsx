@@ -70,6 +70,17 @@ const KehadiranPage = () => {
         });
     };
 
+    const handleFilterDate = (e) => {
+        const param =
+            search === ""
+                ? { param: "?date-month=" + e + "&limit=" + limit }
+                : {
+                    param: "?search=" + search + "&date-month=" + e + "&limit=" + limit,
+                };
+        setFilter(e);
+        get(param);
+    };
+
     const [actions] = useState([
         {
             name: "Detail",
@@ -105,6 +116,8 @@ const KehadiranPage = () => {
         index: pageActive * limit + index + 1,
     })) || [];
 
+    // console.log(dataWithIndex)
+
     return (
         <div>
             <Container>
@@ -115,6 +128,13 @@ const KehadiranPage = () => {
                             placeholder="Search"
                             value={search}
                             icon={<CiSearch />}
+                        />
+                    </div>
+                    <div className="w-full sm:w-60">
+                        <TextField
+                            onChange={handleFilterDate}
+                            type="date"
+                            value={filter}
                         />
                     </div>
                 </div>
@@ -135,7 +155,7 @@ const KehadiranPage = () => {
                     </Tables.Head>
                     <Tables.Body>
                         {dataWithIndex.map((item) => (
-                            <Tables.Row key={item.pk}> {/* Use a unique key for each row */}
+                            <Tables.Row key={item.id}>
                                 <Tables.Data>{item.index}</Tables.Data>
                                 <Tables.Data>{item.first_name}</Tables.Data>
                                 <Tables.Data>{item.jabatan}</Tables.Data>
@@ -147,12 +167,12 @@ const KehadiranPage = () => {
                                 <Tables.Data>{item.statistik.point}</Tables.Data>
                                 <Tables.Data center>
                                     <div className="flex items-center justify-center gap-2">
-                                        {actions.map((action, actionIndex) => (
-                                            <Tooltip key={`${item.pk}-${actionIndex}`} tooltip={action.name}>
+                                        {actions.map((action) => (
+                                            <Tooltip key={action.name} tooltip={action.name}>
                                                 <div
+                                                    key={action.name}
                                                     onClick={() => action.func(item)}
                                                     className={action.color}
-                                                    key={actionIndex} // Unique key for each action
                                                 >
                                                     {action.icon}
                                                 </div>
