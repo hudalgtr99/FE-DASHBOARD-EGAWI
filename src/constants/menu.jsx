@@ -11,6 +11,7 @@ import {
   CutiPage,
   KinerjaPage,
   GajiPage,
+  KehadiranPage,
 } from "@/pages";
 
 export const menu = [
@@ -71,7 +72,7 @@ export const menu = [
 
     subMenu: [
       { subMenuName: "Cuti", subMenuLink: "/asesmen/cuti", element: <CutiPage /> },
-      { subMenuName: "Kehadiran", subMenuLink: "/asesmen/kehadiran" },
+      { subMenuName: "Kehadiran", subMenuLink: "/asesmen/kehadiran", element: <KehadiranPage /> },
       { subMenuName: "Kinerja", subMenuLink: "/asesmen/kinerja", element: <KinerjaPage /> },
       { subMenuName: "Karir", subMenuLink: "/asesmen/karir" },
     ],

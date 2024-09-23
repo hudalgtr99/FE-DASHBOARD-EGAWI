@@ -9,6 +9,7 @@ import GajiPage from "../pages/MasterData/Gaji/GajiPage";
 import PegawaiPage from "../pages/Kepegawaian/Pegawai/PegawaiPage";
 import CutiPage from "../pages/Asesmen/Cuti/CutiPage";
 import KinerjaPage from "../pages/Asesmen/Kinerja/KinerjaPage";
+import KehadiranPage from "../pages/Asesmen/Kehadiran/KehadiranPage";
 
 export {
 	CabangPage,
@@ -22,4 +23,5 @@ export {
 	CutiPage,
 	KinerjaPage,
 	GajiPage,
+	KehadiranPage,
 };
