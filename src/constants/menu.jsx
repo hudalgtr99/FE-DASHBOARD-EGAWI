@@ -12,6 +12,9 @@ import {
   KinerjaPage,
   GajiPage,
   KehadiranPage,
+  AkunPage,
+  ApiPage,
+  CallbackPage,
 } from "@/pages";
 
 export const menu = [
@@ -119,10 +122,15 @@ export const menu = [
     menuLink: "api",
     isSuperAdmin: true,
     subMenu: [
-      { subMenuName: "Api", subMenuLink: "/api/api" },
+      {
+        subMenuName: "Api",
+        subMenuLink: "/api/api",
+        element: <ApiPage />
+      },
       {
         subMenuName: "Callback",
         subMenuLink: "/api/callback",
+        element: <CallbackPage />
       },
     ],
   },
@@ -130,6 +138,7 @@ export const menu = [
     menuIcon: icons.luusers2,
     menuName: "Akun",
     menuLink: "/akun",
+    element: <AkunPage />,
     subMenu: [],
   },
 ];

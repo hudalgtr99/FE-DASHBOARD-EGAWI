@@ -10,6 +10,9 @@ import PegawaiPage from "../pages/Kepegawaian/Pegawai/PegawaiPage";
 import CutiPage from "../pages/Asesmen/Cuti/CutiPage";
 import KinerjaPage from "../pages/Asesmen/Kinerja/KinerjaPage";
 import KehadiranPage from "../pages/Asesmen/Kehadiran/KehadiranPage";
+import AkunPage from "../pages/Akun/AkunPage";
+import ApiPage from "../pages/Api/Api/ApiPage";
+import CallbackPage from "../pages/Api/Callback/CallbackPage";
 
 export {
 	CabangPage,
@@ -24,4 +27,7 @@ export {
 	KinerjaPage,
 	GajiPage,
 	KehadiranPage,
+	AkunPage,
+	ApiPage,
+	CallbackPage,
 };
