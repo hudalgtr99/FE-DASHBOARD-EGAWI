@@ -14,6 +14,7 @@ import CabangForm from "@/pages/MasterData/Cabang/CabangForm";
 import KalenderForm from "@/pages/MasterData/Kalender/KalenderForm";
 import GajiForm from "@/pages/MasterData/Gaji/GajiForm";
 import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
+import ApiForm from "@/pages/Api/Api/ApiForm";
 
 const Router = () => {
 	return (
@@ -44,6 +45,7 @@ const Router = () => {
 							/>
 						)
 					))}
+
 					{/* Strata */}
 					<Route path="/pangkat/form" element={<PangkatSubForm />} />
 					<Route path="/pangkat/form/:pk" element={<PangkatSubForm />} />
@@ -74,6 +76,11 @@ const Router = () => {
 
 					{/* Kehadiran */}
 					<Route path="/asesmen/kehadiran/detail" element={<DetailKehadiran />} />
+
+					{/* Api */}
+					<Route path="/api/form" element={<ApiForm />} />
+					<Route path="/api/form/:pk" element={<ApiForm />} />
+
 				</Route>
 
 				{/* Protect the login route with the LoginPrivateRoute */}

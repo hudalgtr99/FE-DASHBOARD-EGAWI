@@ -3,20 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   addData,
-  convertJSON,
   deleteData,
   getData,
-  handleInputError,
-  updateData,
 } from '@/actions';
 import { apiReducer } from '@/reducers/apiReducers';
 import {
   API_URL_changekey,
-  API_URL_createapiclient,
   API_URL_edelapiclient,
-  API_URL_getapiaccess,
   API_URL_getapiclient,
-  API_URL_getcabang,
 } from '@/constants';
 import { icons } from "../../../../public/icons";
 import {
@@ -37,8 +31,6 @@ const ApiPage = () => {
     getApiResult,
     getApiLoading,
     getApiError,
-    addApiResult,
-    addApiLoading,
     deleteApiResult,
   } = useSelector((state) => state.api);
   const dispatch = useDispatch();
@@ -48,6 +40,7 @@ const ApiPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
+  const [detail, setDetail] = useState(null); // State to hold the detailed item
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -63,7 +56,7 @@ const ApiPage = () => {
     const { value } = e.target;
     setSearch(value);
     debouncedSearch(value);
-    setPageActive(0);
+    setPageActive(0); // Reset to page 0 when search changes
   };
 
   const onAdd = () => {
@@ -79,7 +72,7 @@ const ApiPage = () => {
   };
 
   const onDetail = (item) => {
-    setDetail(item);
+    setDetail(item); // Set the selected item for detail view
   };
 
   const onChangeKey = (item) => {
@@ -121,7 +114,7 @@ const ApiPage = () => {
       : { param: `?limit=${limit}&offset=${offset}` };
 
     get(param);
-    setPageActive(page - 1); // Set the active page
+    setPageActive(page - 1); // Set the active page (zero-indexed)
   };
 
   const handleSelect = (newLimit) => {
@@ -129,8 +122,8 @@ const ApiPage = () => {
       ? { param: `?search=${search}&limit=${newLimit}` }
       : { param: `?limit=${newLimit}` };
     get(param);
-    setLimit(newLimit);
-    setPageActive(0);
+    setLimit(newLimit); // Set the new limit
+    setPageActive(0); // Reset to the first page after changing the limit
   };
 
   const [actions] = useState([
@@ -170,7 +163,7 @@ const ApiPage = () => {
     }
   }, [deleteApiResult, limit, get]);
 
-  const dataWithIndex = getApiResult.results
+  const dataWithIndex = getApiResult?.results
     ? getApiResult.results.map((item, index) => ({
       ...item,
       index: pageActive * limit + index + 1,
@@ -208,37 +201,67 @@ const ApiPage = () => {
             </tr>
           </Tables.Head>
           <Tables.Body>
-            {dataWithIndex.map((item) => (
-              <Tables.Row key={item.id}>
-                <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.nama_client}</Tables.Data>
-                <Tables.Data>{item.keterangan}</Tables.Data>
-                <Tables.Data>{item.perusahaan}</Tables.Data>
-                <Tables.Data>{item.api}</Tables.Data>
-                <Tables.Data>{item.is_active}</Tables.Data>
-                <Tables.Data center>
-                  <div className="flex items-center justify-center gap-2">
-                    {actions.map((action) => (
-                      <Tooltip key={action.name} tooltip={action.name}>
-                        <div
-                          key={action.name}
-                          onClick={() => action.func(item)}
-                          className={action.color}
-                        >
-                          {action.icon}
-                        </div>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </Tables.Data>
-              </Tables.Row>
-            ))}
+            {getApiLoading ? (
+              <tr>
+                <td colSpan="7" className="text-center">Loading...</td>
+              </tr>
+            ) : getApiError ? (
+              <tr>
+                <td colSpan="7" className="text-center">Error loading data</td>
+              </tr>
+            ) : dataWithIndex.length ? (
+              dataWithIndex.map((item) => (
+                <Tables.Row key={item.id}>
+                  <Tables.Data>{item.index}</Tables.Data>
+                  <Tables.Data>{item.nama_client}</Tables.Data>
+                  <Tables.Data>{item.keterangan}</Tables.Data>
+                  <Tables.Data>{item.perusahaan}</Tables.Data>
+                  <Tables.Data>{item.api}</Tables.Data>
+                  <Tables.Data>{item.is_active ? "Yes" : "No"}</Tables.Data>
+                  <Tables.Data center>
+                    <div className="flex items-center justify-center gap-2">
+                      {actions.map((action) => (
+                        <Tooltip key={action.name} tooltip={action.name}>
+                          <div
+                            key={action.name}
+                            onClick={() => action.func(item)}
+                            className={action.color}
+                          >
+                            {action.icon}
+                          </div>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  </Tables.Data>
+                </Tables.Row>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">No data available</td>
+              </tr>
+            )}
           </Tables.Body>
         </Tables>
+
+        {/* Conditionally render the detailed view */}
+        {detail && (
+          <div className="mt-8 bg-gray-100 p-4 rounded-md shadow-md">
+            <h2 className="text-xl font-bold">Detail View</h2>
+            <p><strong>Nama Client:</strong> {detail.nama_client}</p>
+            <p><strong>Keterangan:</strong> {detail.keterangan}</p>
+            <p><strong>Perusahaan Access:</strong> {detail.perusahaan}</p>
+            <p><strong>API Access:</strong> {detail.api}</p>
+            <p><strong>Active:</strong> {detail.is_active ? "Yes" : "No"}</p>
+            <Button onClick={() => setDetail(null)} className="mt-4">
+              Close
+            </Button>
+          </div>
+        )}
+
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
           <Pagination
-            totalCount={getApiResult.count} // Total items count from the API result
+            totalCount={getApiResult?.count || 0} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler
