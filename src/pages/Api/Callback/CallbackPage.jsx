@@ -3,19 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   addData,
-  convertJSON,
   deleteData,
   getData,
-  handleInputError,
-  updateData,
 } from '@/actions';
 import { callbackReducer } from '@/reducers/apiReducers';
 import {
-  API_URL_createcallback,
   API_URL_edelcallback,
-  API_URL_getapiclientall,
   API_URL_getcallback,
-  API_URL_gettypecallback,
 } from '@/constants';
 import { icons } from "../../../../public/icons";
 import {
@@ -36,10 +30,10 @@ const CallbackPage = () => {
     getCallbackResult,
     getCallbackLoading,
     getCallbackError,
-    addCallbackResult,
-    addCallbackLoading,
     deleteCallbackResult,
+    addCallbackResult,
   } = useSelector((state) => state.api);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -50,10 +44,7 @@ const CallbackPage = () => {
 
   const debouncedSearch = useCallback(
     debounce((value) => {
-      const param = value
-        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-      get(param);
+      fetchData(value);
     }, 300),
     [limit, pageActive]
   );
@@ -71,9 +62,7 @@ const CallbackPage = () => {
 
   const onEdit = (item) => {
     navigate(`/callback/form/${item.id}`, {
-      state: {
-        item,
-      }
+      state: { item },
     });
   };
 
@@ -86,35 +75,28 @@ const CallbackPage = () => {
     );
   };
 
-  const get = useCallback(
-    async (param) => {
-      getData(
-        { dispatch, redux: callbackReducer },
-        param,
-        API_URL_getcallback,
-        "GET_CALLBACK"
-      );
-    },
-    [dispatch]
-  );
+  const fetchData = (searchValue = search) => {
+    const param = searchValue
+      ? { param: `?search=${searchValue}&limit=${limit}&offset=${pageActive * limit}` }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+
+    getData(
+      { dispatch, redux: callbackReducer },
+      param,
+      API_URL_getcallback,
+      "GET_CALLBACK"
+    );
+  };
 
   const handlePageClick = (page) => {
-    const offset = (page - 1) * limit; // Calculate the offset based on the page
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
-
-    get(param);
     setPageActive(page - 1); // Set the active page
+    fetchData();
   };
 
   const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
-    get(param);
     setLimit(newLimit);
     setPageActive(0);
+    fetchData();
   };
 
   const [actions] = useState([
@@ -135,19 +117,13 @@ const CallbackPage = () => {
   // useEffect
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [limit, pageActive]); // Fetch data when limit or page changes
 
   useEffect(() => {
-    if (addCallbackResult) {
-      fetchData();
+    if (addCallbackResult || deleteCallbackResult) {
+      fetchData(); // Refetch data on add/delete success
     }
-  }, [addCallbackResult, dispatch]);
-
-  useEffect(() => {
-    if (deleteCallbackResult) {
-      fetchData();
-    }
-  }, [deleteCallbackResult, dispatch]);
+  }, [addCallbackResult, deleteCallbackResult]);
 
   const dataWithIndex = getCallbackResult.results
     ? getCallbackResult.results.map((item, index) => ({
@@ -170,7 +146,7 @@ const CallbackPage = () => {
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
-              <FaPlus /> Tambah Callback
+              <FaPlus /> Tambah Data
             </div>
           </Button>
         </div>
@@ -186,44 +162,58 @@ const CallbackPage = () => {
             </tr>
           </Tables.Head>
           <Tables.Body>
-            {dataWithIndex.map((item) => (
-              <Tables.Row key={item.id}>
-                <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.key}</Tables.Data>
-                <Tables.Data>{item.url}</Tables.Data>
-                <Tables.Data>{item.type.type}</Tables.Data>
-                <Tables.Data>{item.api.nama_client}</Tables.Data>
-                <Tables.Data center>
-                  <div className="flex items-center justify-center gap-2">
-                    {actions.map((action) => (
-                      <Tooltip key={action.name} tooltip={action.name}>
-                        <div
-                          key={action.name}
-                          onClick={() => action.func(item)}
-                          className={action.color}
-                        >
-                          {action.icon}
-                        </div>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </Tables.Data>
-              </Tables.Row>
-            ))}
+            {getCallbackLoading ? (
+              <tr>
+                <td colSpan="7" className="text-center">Loading...</td>
+              </tr>
+            ) : getCallbackError ? (
+              <tr>
+                <td colSpan="7" className="text-center">Error loading data</td>
+              </tr>
+            ) : dataWithIndex.length ? (
+              dataWithIndex.map((item) => (
+                <Tables.Row key={item.id}>
+                  <Tables.Data>{item.index}</Tables.Data>
+                  <Tables.Data>{item.key}</Tables.Data>
+                  <Tables.Data>{item.url}</Tables.Data>
+                  <Tables.Data>{item.type.type}</Tables.Data>
+                  <Tables.Data>{item.api.nama_client}</Tables.Data>
+                  <Tables.Data center>
+                    <div className="flex items-center justify-center gap-2">
+                      {actions.map((action) => (
+                        <Tooltip key={action.name} tooltip={action.name}>
+                          <div
+                            key={action.name}
+                            onClick={() => action.func(item)}
+                            className={action.color}
+                          >
+                            {action.icon}
+                          </div>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  </Tables.Data>
+                </Tables.Row>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">No data available</td>
+              </tr>
+            )}
           </Tables.Body>
         </Tables>
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
           <Pagination
-            totalCount={getCallbackResult.count} // Total items count from the API result
-            pageSize={limit} // Items per page (limit)
-            currentPage={pageActive + 1} // Current page
-            onPageChange={handlePageClick} // Page change handler
-            siblingCount={1} // Number of sibling pages (adjust as needed)
-            activeColor="primary" // Optional: active page color
-            rounded="md" // Optional: rounded button style
-            variant="flat" // Optional: button variant
-            size="md" // Optional: button size
+            totalCount={getCallbackResult.count}
+            pageSize={limit}
+            currentPage={pageActive + 1}
+            onPageChange={handlePageClick}
+            siblingCount={1}
+            activeColor="primary"
+            rounded="md"
+            variant="flat"
+            size="md"
           />
         </div>
       </Container>

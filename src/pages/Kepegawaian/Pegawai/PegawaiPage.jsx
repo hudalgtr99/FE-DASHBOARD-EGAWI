@@ -69,7 +69,6 @@ const PegawaiPage = () => {
     });
   };
 
-
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: pegawaiReducer },
@@ -179,13 +178,13 @@ const PegawaiPage = () => {
           <Tables.Head>
             <tr>
               <Tables.Header>No</Tables.Header>
-              {/* <Tables.Header>ID Pegawai</Tables.Header> */}
+              <Tables.Header>ID Pegawai</Tables.Header>
               <Tables.Header>Nama Pegawai</Tables.Header>
-              {/* <Tables.Header>Pangkat</Tables.Header>
+              <Tables.Header>Pangkat</Tables.Header>
               <Tables.Header>Jabatan</Tables.Header>
               <Tables.Header>Departemen</Tables.Header>
               <Tables.Header>Divisi</Tables.Header>
-              <Tables.Header>Unit</Tables.Header> */}
+              <Tables.Header>Unit</Tables.Header>
               <Tables.Header center>Actions</Tables.Header>
             </tr>
           </Tables.Head>
@@ -193,13 +192,13 @@ const PegawaiPage = () => {
             {dataWithIndex.map((item) => (
               <Tables.Row key={item.datapribadi.user_id}>
                 <Tables.Data>{item.index}</Tables.Data>
-                {/* <Tables.Data>{item.datapegawai.id_pegawai}</Tables.Data> */}
-                <Tables.Data>{item.datapribadi.nama}</Tables.Data>
-                {/* <Tables.Data>{item.datapegawai.pangkat.nama}</Tables.Data>
-                <Tables.Data>{item.datapegawai.jabatan.nama}</Tables.Data>
-                <Tables.Data>{item.datapegawai.departemen.nama}</Tables.Data>
-                <Tables.Data>{item.datapegawai.divisi.nama}</Tables.Data>
-                <Tables.Data>{item.datapegawai.unit.nama}</Tables.Data> */}
+                <Tables.Data>{item.datapegawai?.id_pegawai || '-'}</Tables.Data>
+                <Tables.Data>{item.datapribadi?.nama || '-'}</Tables.Data>
+                <Tables.Data>{item.datapegawai?.pangkat?.nama || '-'}</Tables.Data>
+                <Tables.Data>{item.datapegawai?.jabatan?.nama || '-'}</Tables.Data>
+                <Tables.Data>{item.datapegawai?.departemen?.nama || '-'}</Tables.Data>
+                <Tables.Data>{item.datapegawai?.divisi?.nama || '-'}</Tables.Data>
+                <Tables.Data>{item.datapegawai?.unit?.nama || '-'}</Tables.Data>
                 <Tables.Data center>
                   <div className="flex items-center justify-center gap-2">
                     {actions.map((action) => (
@@ -218,6 +217,7 @@ const PegawaiPage = () => {
               </Tables.Row>
             ))}
           </Tables.Body>
+
         </Tables>
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />

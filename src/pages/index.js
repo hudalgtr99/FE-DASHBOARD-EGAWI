@@ -7,6 +7,7 @@ import StrataPage from "../pages/MasterData/Strata/StrataPage";
 import CabangPage from "../pages/MasterData/Cabang/CabangPage";
 import GajiPage from "../pages/MasterData/Gaji/GajiPage";
 import PegawaiPage from "../pages/Kepegawaian/Pegawai/PegawaiPage";
+import PenugasanPage from "../pages/Kepegawaian/Penugasan/PenugasanPage";
 import CutiPage from "../pages/Asesmen/Cuti/CutiPage";
 import KinerjaPage from "../pages/Asesmen/Kinerja/KinerjaPage";
 import KehadiranPage from "../pages/Asesmen/Kehadiran/KehadiranPage";
@@ -20,6 +21,7 @@ export {
 	KalenderPage,
 	OrganPage,
 	PegawaiPage,
+	PenugasanPage,
 	PengurusPage,
 	StrataPage,
 	TentangPage,

@@ -1,19 +1,20 @@
-import React, { Fragment, useState } from "react";
-
-// components
-import { Tabs } from "@/components";
-
-// sub
+import React, { Fragment, useState, useMemo } from "react";
+import { Tabs } from "@/components"; // Ensure this component handles accessibility
 import Pribadi from "./Sub/Pribadi";
 import Pegawai from "./Sub/Pegawai";
 import Keluarga from "./Sub/Keluarga";
 import Pendidikan from "./Sub/Pendidikan";
 import Lainnya from "./Sub/Lainnya";
 import Jadwal from "./Sub/Jadwal";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const PegawaiForm = () => {
-  const { pk } = useParams(); // get the PK from the URL
+  const { pk } = useParams();
+  const { state } = useLocation();
+
+  console.log(state)
+
+  const itemData = state?.item || {}; // Fallback to an empty object
 
   const [tabs] = useState({
     idTabs: "pegawaiTabs",
@@ -22,36 +23,36 @@ const PegawaiForm = () => {
       {
         nameTabs: "Pribadi",
         linkTabs: "formPribadi",
-        contentTabs: <Pribadi />,
+        contentTabs: <Pribadi data={itemData} />,
       },
       {
         nameTabs: "Pegawai",
         linkTabs: "formPegawai",
-        contentTabs: <Pegawai />,
+        contentTabs: <Pegawai data={itemData} />,
         disabled: !pk,
       },
       {
         nameTabs: "Keluarga",
         linkTabs: "formKeluarga",
-        contentTabs: <Keluarga />,
+        contentTabs: <Keluarga data={itemData} />,
         disabled: !pk,
       },
       {
         nameTabs: "Pendidikan",
         linkTabs: "formPendidikan",
-        contentTabs: <Pendidikan />,
+        contentTabs: <Pendidikan data={itemData} />,
         disabled: !pk,
       },
       {
         nameTabs: "Lainnya",
         linkTabs: "formLainnya",
-        contentTabs: <Lainnya />,
+        contentTabs: <Lainnya data={itemData} />,
         disabled: !pk,
       },
       {
         nameTabs: "Jadwal",
         linkTabs: "formJadwal",
-        contentTabs: <Jadwal />,
+        contentTabs: <Jadwal data={itemData} />,
         disabled: !pk,
       },
     ],

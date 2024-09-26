@@ -109,7 +109,7 @@ const ApiForm = () => {
                     >
                         <IoMdReturnLeft />
                     </button>
-                    <h1>{isEdit ? 'Edit Api' : 'Tambah Api'}</h1>
+                    <h1>{isEdit ? 'Edit Data' : 'Tambah Data'}</h1>
                 </div>
                 <div>
                     <form onSubmit={formik.handleSubmit} className='space-y-6'>

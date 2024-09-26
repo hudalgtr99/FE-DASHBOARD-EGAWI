@@ -15,6 +15,7 @@ import KalenderForm from "@/pages/MasterData/Kalender/KalenderForm";
 import GajiForm from "@/pages/MasterData/Gaji/GajiForm";
 import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
 import ApiForm from "@/pages/Api/Api/ApiForm";
+import CallbackForm from "@/pages/Api/Callback/CallbackForm";
 
 const Router = () => {
 	return (
@@ -80,6 +81,10 @@ const Router = () => {
 					{/* Api */}
 					<Route path="/api/form" element={<ApiForm />} />
 					<Route path="/api/form/:pk" element={<ApiForm />} />
+
+					{/* Callback */}
+					<Route path="/callback/form" element={<CallbackForm />} />
+					<Route path="/callback/form/:pk" element={<CallbackForm />} />
 
 				</Route>
 

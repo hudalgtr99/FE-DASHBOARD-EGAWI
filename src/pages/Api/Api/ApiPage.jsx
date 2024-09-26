@@ -184,7 +184,7 @@ const ApiPage = () => {
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
-              <FaPlus /> Tambah Api
+              <FaPlus /> Tambah Data
             </div>
           </Button>
         </div>

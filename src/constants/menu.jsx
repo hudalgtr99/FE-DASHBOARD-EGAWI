@@ -15,6 +15,7 @@ import {
   AkunPage,
   ApiPage,
   CallbackPage,
+  PenugasanPage,
 } from "@/pages";
 
 export const menu = [
@@ -64,7 +65,7 @@ export const menu = [
     subMenu: [
       { subMenuName: "Pegawai", subMenuLink: "/kepegawaian/pegawai", element: <PegawaiPage /> },
       { subMenuName: "Payroll", subMenuLink: "/kepegawaian/payroll" },
-      { subMenuName: "Penugasan", subMenuLink: "/kepegawaian/penugasan" },
+      { subMenuName: "Penugasan", subMenuLink: "/kepegawaian/penugasan" , element: <PenugasanPage /> },
       { subMenuName: "Rekrutmen", subMenuLink: "/kepegawaian/rekrutmen" },
     ],
   },
