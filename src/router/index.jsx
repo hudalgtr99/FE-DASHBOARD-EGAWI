@@ -16,6 +16,7 @@ import GajiForm from "@/pages/MasterData/Gaji/GajiForm";
 import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
 import ApiForm from "@/pages/Api/Api/ApiForm";
 import CallbackForm from "@/pages/Api/Callback/CallbackForm";
+import PenugasanForm from "@/pages/Kepegawaian/Penugasan/PenugasanForm";
 
 const Router = () => {
 	return (
@@ -85,6 +86,10 @@ const Router = () => {
 					{/* Callback */}
 					<Route path="/callback/form" element={<CallbackForm />} />
 					<Route path="/callback/form/:pk" element={<CallbackForm />} />
+
+					{/* Penugasan */}
+					<Route path="/penugasan/form" element={<PenugasanForm />} />
+					<Route path="/penugasan/form/:pk" element={<PenugasanForm />} />
 
 				</Route>
 

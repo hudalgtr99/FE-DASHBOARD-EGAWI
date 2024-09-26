@@ -10,12 +10,9 @@ import {
 } from '@/actions';
 import { penugasanReducer } from '@/reducers/penugasanReducers';
 import {
-  API_URL_createtugas,
   API_URL_edeltugas,
-  API_URL_getpegawai,
-  API_URL_getriwayattugas,
   API_URL_gettugas,
-  baseurl,
+  API_URL_getriwayattugas,
 } from '@/constants';
 import { icons } from "../../../../public/icons";
 import {
@@ -27,36 +24,34 @@ import {
   TextField,
   Tooltip,
 } from '@/components';
-import { debounce } from 'lodash'; // Import lodash debounce
+import { debounce } from 'lodash';
 import { FaPlus } from 'react-icons/fa';
 import { CiSearch } from 'react-icons/ci';
+import axiosAPI from "@/authentication/axiosApi";
 
 const PenugasanPage = () => {
-  const {
-    getTugasResult,
-    getTugasLoading,
-    getTugasError,
-    addTugasResult,
-    addTugasLoading,
-    deleteTugasResult,
-  } = useSelector((state) => state.tugas);
+  const { getTugasResult, addTugasResult, deleteTugasResult } = useSelector((state) => state.tugas);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // States & Variables
+  // States
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
+  const [detail, setDetail] = useState({});
 
+  // Debounce search function
   const debouncedSearch = useCallback(
-    debounce((value) => {
-      const param = value
-        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-      get(param);
-    }, 300),
-    [limit, pageActive]
+    debounce((value) => fetchTugas(value), 300),
+    [limit]
   );
+
+  const fetchTugas = (searchValue = "") => {
+    const param = searchValue
+      ? { param: `?search=${searchValue}&limit=${limit}&offset=${pageActive * limit}` }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+    getData({ dispatch, redux: penugasanReducer }, param, API_URL_gettugas, "GET_TUGAS");
+  };
 
   const doSearch = (e) => {
     const { value } = e.target;
@@ -70,54 +65,32 @@ const PenugasanPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/penugasan/form/${item.pk}`, {
-      state: {
-        item,
-      }
-    });
+    navigate(`/penugasan/form/${item.pk}`, { state: { item } });
   };
+
+  const doDetail = useCallback(async (detail) => {
+    try {
+      const res = await axiosAPI.post(API_URL_getriwayattugas, {
+        tugas_id: detail.id,
+      });
+      setDetail(detail);
+      // Handle the fetched data here (e.g., show it in a new page or component)
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const doDelete = (item) => {
-    deleteData(
-      { dispatch, redux: penugasanReducer },
-      item.pk,
-      API_URL_edeltugas,
-      "DELETE_TUGAS"
-    );
-  };
-
-  const get = useCallback(
-    async (param) => {
-      getData(
-        { dispatch, redux: penugasanReducer },
-        param,
-        API_URL_gettugas,
-        "GET_TUGAS"
-      );
-    },
-    [dispatch]
-  );
-
-  const handlePageClick = (page) => {
-    const offset = (page - 1) * limit; // Calculate the offset based on the page
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
-
-    get(param);
-    setPageActive(page - 1); // Set the active page
-  };
-
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
-    get(param);
-    setLimit(newLimit);
-    setPageActive(0);
+    deleteData({ dispatch, redux: penugasanReducer }, item.pk, API_URL_edeltugas, "DELETE_TUGAS");
   };
 
   const [actions] = useState([
+    {
+      name: "Detail",
+      icon: icons.aifilleye,
+      color: "text-blue-500",
+      func: doDetail,
+    },
     {
       name: "Edit",
       icon: icons.bspencil,
@@ -132,38 +105,25 @@ const PenugasanPage = () => {
     },
   ]);
 
-  useEffect(() => {
-    const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
-    get(param);
-  }, [limit, pageActive, get]);
+  const handlePageClick = (page) => {
+    setPageActive(page - 1);
+  };
+
+  const handleSelect = (newLimit) => {
+    setLimit(newLimit);
+    setPageActive(0);
+    fetchTugas(search);
+  };
 
   useEffect(() => {
-    if (
-      getTugasResult ||
-      getTugasLoading ||
-      getTugasError ||
-      addTugasResult ||
-      addTugasLoading ||
-      deleteTugasResult
-    ) {
-      const offset = pageActive * limit;
-      const param = search
-        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-        : { param: `?limit=${limit}&offset=${offset}` };
-      get(param);
+    fetchTugas(search);
+  }, [limit, pageActive, search]);
+
+  useEffect(() => {
+    if (addTugasResult || deleteTugasResult) {
+      fetchTugas(search); // Refetch the data after add/delete
     }
-  }, [
-    getTugasResult,
-    getTugasLoading,
-    getTugasError,
-    addTugasResult,
-    addTugasLoading,
-    deleteTugasResult,
-    search,
-    limit,
-    pageActive,
-    get,
-  ]);
+  }, [addTugasResult, deleteTugasResult, search]);
 
   const dataWithIndex = getTugasResult.results
     ? getTugasResult.results.map((item, index) => ({
@@ -194,11 +154,12 @@ const PenugasanPage = () => {
           <Tables.Head>
             <tr>
               <Tables.Header>No</Tables.Header>
-              <Tables.Header>Judul Tugas</Tables.Header>
-              <Tables.Header>Pengirim Tugas</Tables.Header>
+              <Tables.Header>Judul</Tables.Header>
+              <Tables.Header>Pengirim</Tables.Header>
+              <Tables.Header>Penerima</Tables.Header>
               <Tables.Header>Prioritas</Tables.Header>
-              <Tables.Header>Tanggal Mulai</Tables.Header>
-              <Tables.Header>Tanggal Selesai</Tables.Header>
+              <Tables.Header>Mulai</Tables.Header>
+              <Tables.Header>Selesai</Tables.Header>
               <Tables.Header>Status</Tables.Header>
               <Tables.Header center>Actions</Tables.Header>
             </tr>
@@ -219,7 +180,6 @@ const PenugasanPage = () => {
                     {actions.map((action) => (
                       <Tooltip key={action.name} tooltip={action.name}>
                         <div
-                          key={action.name}
                           onClick={() => action.func(item)}
                           className={action.color}
                         >
@@ -236,15 +196,15 @@ const PenugasanPage = () => {
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
           <Pagination
-            totalCount={getTugasResult.count} // Total items count from the API result
-            pageSize={limit} // Items per page (limit)
-            currentPage={pageActive + 1} // Current page
-            onPageChange={handlePageClick} // Page change handler
-            siblingCount={1} // Number of sibling pages (adjust as needed)
-            activeColor="primary" // Optional: active page color
-            rounded="md" // Optional: rounded button style
-            variant="flat" // Optional: button variant
-            size="md" // Optional: button size
+            totalCount={getTugasResult.count}
+            pageSize={limit}
+            currentPage={pageActive + 1}
+            onPageChange={handlePageClick}
+            siblingCount={1}
+            activeColor="primary"
+            rounded="md"
+            variant="flat"
+            size="md"
           />
         </div>
       </Container>
