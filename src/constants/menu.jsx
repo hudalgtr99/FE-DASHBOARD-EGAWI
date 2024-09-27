@@ -16,6 +16,11 @@ import {
   ApiPage,
   CallbackPage,
   PenugasanPage,
+  PayrollPage,
+  RekerutmenPage,
+  BaganPage,
+  PotonganPage,
+  TunjanganPage,
 } from "@/pages";
 
 export const menu = [
@@ -42,7 +47,7 @@ export const menu = [
     menuLink: "masterdata",
 
     subMenu: [
-      { subMenuName: "Bagan", subMenuLink: "/masterdata/bagan" },
+      { subMenuName: "Bagan", subMenuLink: "/masterdata/bagan", element: <BaganPage /> },
       {
         subMenuName: "Cabang",
         subMenuLink: "/masterdata/cabang",
@@ -52,8 +57,8 @@ export const menu = [
       { subMenuName: "Strata", subMenuLink: "/masterdata/strata", element: <StrataPage /> },
       { subMenuName: "Organ", subMenuLink: "/masterdata/organ", element: <OrganPage /> },
       { subMenuName: "Gaji", subMenuLink: "/masterdata/gaji", element: <GajiPage /> },
-      { subMenuName: "Tunjangan", subMenuLink: "/masterdata/tunjangan" },
-      { subMenuName: "Potongan", subMenuLink: "/masterdata/potongan" },
+      { subMenuName: "Tunjangan", subMenuLink: "/masterdata/tunjangan", element: <TunjanganPage /> },
+      { subMenuName: "Potongan", subMenuLink: "/masterdata/potongan", element: <PotonganPage /> },
       { subMenuName: "Kalender", subMenuLink: "/masterdata/kalender", element: <KalenderPage /> },
     ],
   },
@@ -64,9 +69,9 @@ export const menu = [
 
     subMenu: [
       { subMenuName: "Pegawai", subMenuLink: "/kepegawaian/pegawai", element: <PegawaiPage /> },
-      { subMenuName: "Payroll", subMenuLink: "/kepegawaian/payroll" },
-      { subMenuName: "Penugasan", subMenuLink: "/kepegawaian/penugasan" , element: <PenugasanPage /> },
-      { subMenuName: "Rekrutmen", subMenuLink: "/kepegawaian/rekrutmen" },
+      { subMenuName: "Payroll", subMenuLink: "/kepegawaian/payroll", element: <PayrollPage /> },
+      { subMenuName: "Penugasan", subMenuLink: "/kepegawaian/penugasan", element: <PenugasanPage /> },
+      { subMenuName: "Rekrutmen", subMenuLink: "/kepegawaian/rekrutmen", element: <RekerutmenPage /> },
     ],
   },
   {

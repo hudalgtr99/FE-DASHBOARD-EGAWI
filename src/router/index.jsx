@@ -17,6 +17,8 @@ import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
 import ApiForm from "@/pages/Api/Api/ApiForm";
 import CallbackForm from "@/pages/Api/Callback/CallbackForm";
 import PenugasanForm from "@/pages/Kepegawaian/Penugasan/PenugasanForm";
+import TunjanganForm from "@/pages/MasterData/Tunjangan/TunjanganForm";
+import PotonganForm from "@/pages/MasterData/Potongan/PotonganForm";
 
 const Router = () => {
 	return (
@@ -90,6 +92,12 @@ const Router = () => {
 					{/* Penugasan */}
 					<Route path="/penugasan/form" element={<PenugasanForm />} />
 					<Route path="/penugasan/form/:id" element={<PenugasanForm />} />
+
+					{/* Tunjangan */}
+					<Route path="/tunjangan/form" element={<TunjanganForm />} />
+
+					{/* Potongan */}
+					<Route path="/potongan/form" element={<PotonganForm />} />
 
 				</Route>
 

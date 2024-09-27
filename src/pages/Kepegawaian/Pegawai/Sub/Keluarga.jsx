@@ -31,12 +31,12 @@ const Keluarga = () => {
 
   const isEdit = pk && pk !== 'add';
 
-  const initialData = state?.item || {
+  const initialData = state?.item?.datakeluarga || {
     nama_ayah: '',
     nama_ibu: '',
     status_pernikahan: '',
     nama_pasangan: '',
-    jumlah_anak: '',
+    anak: '',
     nama_anak: [],
     nama_kontak_emergency: '',
     no_telepon_emergency: '',
@@ -53,7 +53,7 @@ const Keluarga = () => {
       status_pernikahan: Yup.string().required('Status Pernikahan is required'),
       nama_kontak_emergency: Yup.string().required('Nama Kontak is required'),
       no_telepon_emergency: Yup.string().required('Nomor Telepon is required'),
-      jumlah_anak: Yup.number().min(0, 'Jumlah Anak must be 0 or more').required('Jumlah Anak is required'),
+      anak: Yup.number().min(0, 'Jumlah Anak must be 0 or more').required('Jumlah Anak is required'),
     }),
     onSubmit: async (values) => {
       if (isEdit) {
@@ -76,7 +76,7 @@ const Keluarga = () => {
   });
 
   const handleAddChild = () => {
-    if (formik.values.nama_anak.length < formik.values.jumlah_anak) {
+    if (formik.values.nama_anak.length < formik.values.anak) {
       formik.setFieldValue('nama_anak', [...formik.values.nama_anak, '']);
     } else {
       Toast.fire({
@@ -165,13 +165,13 @@ const Keluarga = () => {
             <TextField
               type="number"
               label="Jumlah Anak"
-              name="jumlah_anak"
-              value={formik.values.jumlah_anak}
+              name="anak"
+              value={formik.values.anak}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.jumlah_anak ? formik.errors.jumlah_anak : ''}
+              error={formik.touched.anak ? formik.errors.anak : ''}
             />
-            {Number(formik.values.jumlah_anak) > 0 && (
+            {Number(formik.values.anak) > 0 && (
               <div>
                 <label className="text-sm font-medium">Nama Anak</label>
                 {(formik.values.nama_anak || []).map((name, index) => (

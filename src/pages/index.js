@@ -3,6 +3,9 @@ import TentangPage from "../pages/Perusahaan/Tentang/TentangPage";
 import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage";
 import KalenderPage from "../pages/MasterData/Kalender/KalenderPage";
 import OrganPage from "../pages/MasterData/Organ/OrganPage";
+import BaganPage from "../pages/MasterData/Bagan/BaganPage";
+import PotonganPage from "../pages/MasterData/Potongan/PotonganPage";
+import TunjanganPage from "../pages/MasterData/Tunjangan/TunjanganPage";
 import StrataPage from "../pages/MasterData/Strata/StrataPage";
 import CabangPage from "../pages/MasterData/Cabang/CabangPage";
 import GajiPage from "../pages/MasterData/Gaji/GajiPage";
@@ -14,12 +17,17 @@ import KehadiranPage from "../pages/Asesmen/Kehadiran/KehadiranPage";
 import AkunPage from "../pages/Akun/AkunPage";
 import ApiPage from "../pages/Api/Api/ApiPage";
 import CallbackPage from "../pages/Api/Callback/CallbackPage";
+import PayrollPage from "../pages/Kepegawaian/Payroll/PayrollPage";
+import RekerutmenPage from "../pages/Kepegawaian/Rekrutmen/RekerutmenPage";
 
 export {
 	CabangPage,
 	Dashboard,
 	KalenderPage,
 	OrganPage,
+	BaganPage,
+	PotonganPage,
+	TunjanganPage,
 	PegawaiPage,
 	PenugasanPage,
 	PengurusPage,
@@ -32,4 +40,6 @@ export {
 	AkunPage,
 	ApiPage,
 	CallbackPage,
+	PayrollPage,
+	RekerutmenPage,
 };

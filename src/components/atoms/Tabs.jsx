@@ -48,7 +48,8 @@ const Tabs = ({ tabs }) => {
                 {tabs.listTabs.map((content, contentIdx) => (
                     <div
                         key={contentIdx}
-                        className={`transition-opacity duration-300 ease-in-out ${activeTab === content.linkTabs ? "block opacity-100" : "hidden opacity-0"}`}
+                        className={`tab-pane transition-all duration-500 ease-in-out transform 
+                        ${activeTab === content.linkTabs ? "block fade-in-slide-up" : "hidden fade-out-slide-down"}`}
                         id={content.linkTabs}
                         role="tabpanel"
                         aria-labelledby={`tab-${contentIdx}`}

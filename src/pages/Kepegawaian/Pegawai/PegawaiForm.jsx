@@ -14,8 +14,6 @@ const PegawaiForm = () => {
 
   console.log(state)
 
-  const itemData = state?.item || {}; // Fallback to an empty object
-
   const [tabs] = useState({
     idTabs: "pegawaiTabs",
     idContents: "pegawaiTabs-Content",
@@ -23,36 +21,36 @@ const PegawaiForm = () => {
       {
         nameTabs: "Pribadi",
         linkTabs: "formPribadi",
-        contentTabs: <Pribadi data={itemData} />,
+        contentTabs: <Pribadi />,
       },
       {
         nameTabs: "Pegawai",
         linkTabs: "formPegawai",
-        contentTabs: <Pegawai data={itemData} />,
+        contentTabs: <Pegawai />,
         disabled: !pk,
       },
       {
         nameTabs: "Keluarga",
         linkTabs: "formKeluarga",
-        contentTabs: <Keluarga data={itemData} />,
+        contentTabs: <Keluarga />,
         disabled: !pk,
       },
       {
         nameTabs: "Pendidikan",
         linkTabs: "formPendidikan",
-        contentTabs: <Pendidikan data={itemData} />,
+        contentTabs: <Pendidikan />,
         disabled: !pk,
       },
       {
         nameTabs: "Lainnya",
         linkTabs: "formLainnya",
-        contentTabs: <Lainnya data={itemData} />,
+        contentTabs: <Lainnya />,
         disabled: !pk,
       },
       {
         nameTabs: "Jadwal",
         linkTabs: "formJadwal",
-        contentTabs: <Jadwal data={itemData} />,
+        contentTabs: <Jadwal />,
         disabled: !pk,
       },
     ],

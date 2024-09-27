@@ -195,8 +195,16 @@ const PenugasanPage = () => {
                   ))}
                 </Tables.Data>
                 <Tables.Data>{item.prioritas}</Tables.Data>
-                <Tables.Data>{moment(item.start_date).format("D MMMM YYYY")}</Tables.Data>
-                <Tables.Data>{moment(item.end_date).format("D MMMM YYYY")}</Tables.Data>
+                <Tables.Data>
+                  <div className='whitespace-nowrap'>
+                    {moment(item.start_date).format("D MMMM YYYY")}
+                  </div>
+                </Tables.Data>
+                <Tables.Data>
+                  <div className='whitespace-nowrap'>
+                    {moment(item.end_date).format("D MMMM YYYY")}
+                  </div>
+                </Tables.Data>
                 <Tables.Data>
                   {statuses.map((status) =>
                     status.value === item.status ? (
