@@ -28,6 +28,7 @@ import { debounce } from 'lodash';
 import { FaPlus } from 'react-icons/fa';
 import { CiSearch } from 'react-icons/ci';
 import axiosAPI from "@/authentication/axiosApi";
+import moment from 'moment';
 
 const PenugasanPage = () => {
   const { getTugasResult, addTugasResult, deleteTugasResult } = useSelector((state) => state.tugas);
@@ -83,6 +84,14 @@ const PenugasanPage = () => {
   const doDelete = (item) => {
     deleteData({ dispatch, redux: penugasanReducer }, item.pk, API_URL_edeltugas, "DELETE_TUGAS");
   };
+
+  const statuses = [
+    { label: "Menunggu Persetujuan", value: 0, color: "bg-amber-500" },
+    { label: "Proses", value: 1, color: "bg-blue-500" },
+    { label: "Meminta Ulasan", value: 2, color: "bg-amber-500" },
+    { label: "Selesai", value: 3, color: "bg-green-500" },
+    { label: "Ditolak", value: 4, color: "bg-red-500" },
+  ];
 
   const [actions] = useState([
     {
@@ -166,15 +175,29 @@ const PenugasanPage = () => {
           </Tables.Head>
           <Tables.Body>
             {dataWithIndex.map((item) => (
-              <Tables.Row key={item.pk}>
+              <Tables.Row key={item.index}>
                 <Tables.Data>{item.index}</Tables.Data>
                 <Tables.Data>{item.judul}</Tables.Data>
                 <Tables.Data>{item.pengirim.nama}</Tables.Data>
-                <Tables.Data>{item.penerima}</Tables.Data>
+                <Tables.Data>
+                  {item.penerima.map((p, idx) => (
+                    <span key={p.id}>
+                      {p.nama}{idx < item.penerima.length - 1 ? ', ' : ''}
+                    </span>
+                  ))}
+                </Tables.Data>
                 <Tables.Data>{item.prioritas}</Tables.Data>
-                <Tables.Data>{item.start_date}</Tables.Data>
-                <Tables.Data>{item.end_date}</Tables.Data>
-                <Tables.Data>{item.status}</Tables.Data>
+                <Tables.Data>{moment(item.start_date).format("D MMMM YYYY")}</Tables.Data>
+                <Tables.Data>{moment(item.end_date).format("D MMMM YYYY")}</Tables.Data>
+                <Tables.Data>
+                  {statuses.map((status) =>
+                    status.value === item.status ? (
+                      <span key={status.value} className={`${status.color} text-white px-2 py-1 rounded whitespace-nowrap`}>
+                        {status.label}
+                      </span>
+                    ) : null
+                  )}
+                </Tables.Data>
                 <Tables.Data center>
                   <div className="flex items-center justify-center gap-2">
                     {actions.map((action) => (

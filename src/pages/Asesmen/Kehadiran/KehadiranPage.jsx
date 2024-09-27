@@ -158,7 +158,7 @@ const KehadiranPage = () => {
                             <Tables.Row key={item.id}>
                                 <Tables.Data>{item.index}</Tables.Data>
                                 <Tables.Data>{item.first_name}</Tables.Data>
-                                <Tables.Data>{item.jabatan}</Tables.Data>
+                                <Tables.Data>{item.jabatan || "-"}</Tables.Data>
                                 <Tables.Data>{item.statistik.hadir}</Tables.Data>
                                 <Tables.Data>{item.statistik.cuti}</Tables.Data>
                                 <Tables.Data>{item.statistik.alfa}</Tables.Data>

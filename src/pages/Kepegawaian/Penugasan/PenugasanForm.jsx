@@ -38,7 +38,7 @@ const PenugasanForm = () => {
                     label: item.nama,
                 })));
             } catch (error) {
-                console.error('Error fetching departemen options: ', error);
+                console.error('Error fetching pegawai options: ', error);
             }
         };
 
@@ -50,8 +50,8 @@ const PenugasanForm = () => {
             judul: state?.item?.judul || '',
             prioritas: state?.item?.prioritas || '',
             deskripsi: state?.item?.deskripsi || '',
-            penerima: state?.item?.penerima || '',
-            file_pendukung: state?.item?.file_pendukung || '', // Initialize as null if no file is provided
+            penerima: state?.item?.penerima || [],
+            file_pendukung: null, // Initialize as null for file input
             start_date: state?.item?.start_date || '',
             end_date: state?.item?.end_date || '',
         },
@@ -59,13 +59,13 @@ const PenugasanForm = () => {
             judul: Yup.string().required("Judul is required"),
             prioritas: Yup.string().required("Prioritas is required"),
             deskripsi: Yup.string().required("Deskripsi is required"),
-            penerima: Yup.string().required("Penerima is required"),
+            penerima: Yup.array().min(1, "Penerima is required"),
             start_date: Yup.date().required("Tanggal Mulai is required"),
             end_date: Yup.date().required("Tanggal Selesai is required")
                 .min(Yup.ref('start_date'), "Tanggal Selesai must be after Tanggal Mulai"),
         }),
         onSubmit: async (values) => {
-            console.log("Form Values: ", values); // Log the values being submitted
+            console.log("Form Values: ", values);
             try {
                 const formData = new FormData();
                 // Append each value to formData
@@ -75,11 +75,12 @@ const PenugasanForm = () => {
 
                 // Append the authenticated user's ID
                 formData.append("pengirim", isAuthenticated().user_id);
+                formData.append("penerima", JSON.stringify(values.penerima)); // Ensure penerima is passed correctly
 
                 if (isEdit) {
                     await updateFormData(
                         { dispatch, redux: penugasanReducer },
-                        { pk: pk, ...formData },
+                        { pk: pk, formData },
                         API_URL_edeltugas,
                         'UPDATE_TUGAS'
                     );
@@ -94,7 +95,7 @@ const PenugasanForm = () => {
                 navigate('/kepegawaian/penugasan');
             } catch (error) {
                 console.error('Error in form submission: ', error);
-                alert('An error occurred: ' + error.message); // Show error message
+                alert('An error occurred: ' + error.message);
             }
         }
     });
@@ -144,19 +145,21 @@ const PenugasanForm = () => {
                 />
                 <Select
                     required
+                    multi
                     label="Penerima"
                     name="penerima"
-                    value={pegawaiOptions.find(option => option.value === formik.values.penerima) || null}
-                    onChange={(option) => formik.setFieldValue('penerima', option ? option.value : '')}
+                    value={formik.values.penerima}
+                    onChange={(options) => formik.setFieldValue('penerima', options)}
                     options={pegawaiOptions}
-                    error={formik.touched.penerima ? formik.errors.penerima : ''}
+                    error={formik.touched.penerima && formik.errors.penerima}
                 />
                 <TextField
                     label="File Pendukung"
                     name="file_pendukung"
                     type="file"
-                    value={formik.values.file_pendukung}
-                    onChange={formik.handleChange}
+                    onChange={(event) => {
+                        formik.setFieldValue("file_pendukung", event.currentTarget.files[0]);
+                    }}
                     onBlur={formik.handleBlur}
                     error={formik.touched.file_pendukung && formik.errors.file_pendukung}
                 />
