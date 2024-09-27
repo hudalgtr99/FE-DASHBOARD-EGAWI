@@ -21,13 +21,15 @@ import axiosAPI from "@/authentication/axiosApi";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 
 const PenugasanForm = () => {
-    const { pk } = useParams();
+    const { id } = useParams();
     const { state } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [pegawaiOptions, setPegawaiOptions] = useState([]);
 
-    const isEdit = pk && pk !== 'add';
+    console.log(state)
+
+    const isEdit = id && id !== 'add';
 
     useEffect(() => {
         const fetchData = async () => {
@@ -70,17 +72,21 @@ const PenugasanForm = () => {
                 const formData = new FormData();
                 // Append each value to formData
                 Object.keys(values).forEach(key => {
-                    formData.append(key, values[key]);
+                    // If the key is 'penerima', append only the IDs
+                    if (key === 'penerima') {
+                        formData.append(key, JSON.stringify(values.penerima.map(option => option.value))); // Extract IDs
+                    } else {
+                        formData.append(key, values[key]);
+                    }
                 });
 
                 // Append the authenticated user's ID
                 formData.append("pengirim", isAuthenticated().user_id);
-                formData.append("penerima", JSON.stringify(values.penerima)); // Ensure penerima is passed correctly
 
                 if (isEdit) {
                     await updateFormData(
                         { dispatch, redux: penugasanReducer },
-                        { pk: pk, formData },
+                        { id: id, formData },
                         API_URL_edeltugas,
                         'UPDATE_TUGAS'
                     );
@@ -98,6 +104,7 @@ const PenugasanForm = () => {
                 alert('An error occurred: ' + error.message);
             }
         }
+
     });
 
     return (
@@ -149,7 +156,7 @@ const PenugasanForm = () => {
                     label="Penerima"
                     name="penerima"
                     value={formik.values.penerima}
-                    onChange={(options) => formik.setFieldValue('penerima', options)}
+                    onChange={(options) => formik.setFieldValue('penerima', options)} // Store the array of selected options
                     options={pegawaiOptions}
                     error={formik.touched.penerima && formik.errors.penerima}
                 />

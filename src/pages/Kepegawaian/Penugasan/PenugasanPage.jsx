@@ -66,7 +66,13 @@ const PenugasanPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/penugasan/form/${item.pk}`, { state: { item } });
+    navigate(`/penugasan/form/${item.id}`,
+      {
+        state: {
+          item
+        }
+      }
+    );
   };
 
   const doDetail = useCallback(async (detail) => {
@@ -82,7 +88,11 @@ const PenugasanPage = () => {
   }, []);
 
   const doDelete = (item) => {
-    deleteData({ dispatch, redux: penugasanReducer }, item.pk, API_URL_edeltugas, "DELETE_TUGAS");
+    deleteData({ dispatch, redux: penugasanReducer },
+      item.id,
+      API_URL_edeltugas,
+      "DELETE_TUGAS"
+    );
   };
 
   const statuses = [
