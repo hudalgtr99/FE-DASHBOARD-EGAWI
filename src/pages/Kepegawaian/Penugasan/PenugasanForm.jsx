@@ -47,7 +47,7 @@ const PenugasanForm = () => {
             judul: state?.item?.judul || '',
             prioritas: state?.item?.prioritas || '',
             deskripsi: state?.item?.deskripsi || '',
-            penerima: state?.item?.penerima ? JSON.parse(state.item.penerima) : [],
+            penerima: state?.item?.penerima || [],
             file_pendukung: null,
             start_date: state?.item?.start_date ? formatISO(parseISO(state.item.start_date), { representation: 'date' }) : '',
             end_date: state?.item?.end_date ? formatISO(parseISO(state.item.end_date), { representation: 'date' }) : '',
