@@ -12,13 +12,14 @@ import {
 } from '@/components';
 import { useDispatch } from 'react-redux';
 import {
-    addFormData,
-    updateFormData,
+    addData,
+    updateData,
 } from '@/actions';
 import { penugasanReducer } from '@/reducers/penugasanReducers';
 import { API_URL_createtugas, API_URL_edeltugas, API_URL_getpegawai } from '@/constants';
 import axiosAPI from "@/authentication/axiosApi";
 import { isAuthenticated } from "@/authentication/authenticationApi";
+import { formatISO, parseISO } from 'date-fns';
 
 const PenugasanForm = () => {
     const { id } = useParams();
@@ -27,21 +28,15 @@ const PenugasanForm = () => {
     const dispatch = useDispatch();
     const [pegawaiOptions, setPegawaiOptions] = useState([]);
 
-    console.log(state)
-
     const isEdit = id && id !== 'add';
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axiosAPI.get(`${API_URL_getpegawai}?nama=`);
-                setPegawaiOptions(response.data.map((item) => ({
-                    value: item.id,
-                    label: item.nama,
-                })));
-            } catch (error) {
-                console.error('Error fetching pegawai options: ', error);
-            }
+            const response = await axiosAPI.get(`${API_URL_getpegawai}?nama=`);
+            setPegawaiOptions(response.data.map((item) => ({
+                value: item.id,
+                label: item.nama,
+            })));
         };
 
         fetchData();
@@ -52,10 +47,10 @@ const PenugasanForm = () => {
             judul: state?.item?.judul || '',
             prioritas: state?.item?.prioritas || '',
             deskripsi: state?.item?.deskripsi || '',
-            penerima: state?.item?.penerima || [],
-            file_pendukung: null, // Initialize as null for file input
-            start_date: state?.item?.start_date || '',
-            end_date: state?.item?.end_date || '',
+            penerima: state?.item?.penerima ? JSON.parse(state.item.penerima) : [],
+            file_pendukung: null,
+            start_date: state?.item?.start_date ? formatISO(parseISO(state.item.start_date), { representation: 'date' }) : '',
+            end_date: state?.item?.end_date ? formatISO(parseISO(state.item.end_date), { representation: 'date' }) : '',
         },
         validationSchema: Yup.object().shape({
             judul: Yup.string().required("Judul is required"),
@@ -67,44 +62,35 @@ const PenugasanForm = () => {
                 .min(Yup.ref('start_date'), "Tanggal Selesai must be after Tanggal Mulai"),
         }),
         onSubmit: async (values) => {
-            console.log("Form Values: ", values);
-            try {
-                const formData = new FormData();
-                // Append each value to formData
-                Object.keys(values).forEach(key => {
-                    // If the key is 'penerima', append only the IDs
-                    if (key === 'penerima') {
-                        formData.append(key, JSON.stringify(values.penerima.map(option => option.value))); // Extract IDs
-                    } else {
-                        formData.append(key, values[key]);
-                    }
-                });
+            const payload = {
+                ...values,
+                penerima: JSON.stringify(values.penerima.map(option => option.value)),
+                pengirim: isAuthenticated().user_id,
+            };
 
-                // Append the authenticated user's ID
-                formData.append("pengirim", isAuthenticated().user_id);
+            console.log("Submitting Payload:", payload); // Log the payload here
 
-                if (isEdit) {
-                    await updateFormData(
+            if (isEdit) {
+                if (id) {
+                    await updateData(
                         { dispatch, redux: penugasanReducer },
-                        { id: id, formData },
+                        { pk: id, data: payload },  // Change from formData to data
                         API_URL_edeltugas,
                         'UPDATE_TUGAS'
                     );
                 } else {
-                    await addFormData(
-                        { dispatch, redux: penugasanReducer },
-                        formData,
-                        API_URL_createtugas,
-                        'ADD_TUGAS'
-                    );
+                    console.error("ID is undefined for updating the task.");
                 }
-                navigate('/kepegawaian/penugasan');
-            } catch (error) {
-                console.error('Error in form submission: ', error);
-                alert('An error occurred: ' + error.message);
+            } else {
+                await addData(
+                    { dispatch, redux: penugasanReducer },
+                    payload,  // Change from formData to payload
+                    API_URL_createtugas,
+                    'ADD_TUGAS'
+                );
             }
+            navigate('/kepegawaian/penugasan');
         }
-
     });
 
     return (
@@ -156,7 +142,7 @@ const PenugasanForm = () => {
                     label="Penerima"
                     name="penerima"
                     value={formik.values.penerima}
-                    onChange={(options) => formik.setFieldValue('penerima', options)} // Store the array of selected options
+                    onChange={(options) => formik.setFieldValue('penerima', options)}
                     options={pegawaiOptions}
                     error={formik.touched.penerima && formik.errors.penerima}
                 />

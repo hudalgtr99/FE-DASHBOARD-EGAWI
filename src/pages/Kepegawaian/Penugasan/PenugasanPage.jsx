@@ -66,13 +66,11 @@ const PenugasanPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/penugasan/form/${item.id}`,
-      {
-        state: {
-          item
-        }
-      }
-    );
+    navigate(`/penugasan/form/${item.id}`, {
+      state: {
+        item,
+      },
+    });
   };
 
   const doDetail = useCallback(async (detail) => {

@@ -89,7 +89,7 @@ const Router = () => {
 
 					{/* Penugasan */}
 					<Route path="/penugasan/form" element={<PenugasanForm />} />
-					<Route path="/penugasan/form/:pk" element={<PenugasanForm />} />
+					<Route path="/penugasan/form/:id" element={<PenugasanForm />} />
 
 				</Route>
 
