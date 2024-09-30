@@ -92,6 +92,18 @@ const Header = ({ open, setOpen }) => {
                   <div className="text-[10px]">Admin</div>
                 </div>
                 <div className="flex flex-col">
+                  <Link
+                    to="/profile"
+                    className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all"
+                  >
+                    Edit Profil
+                  </Link>
+                  <Link
+                    to="/profile/password"
+                    className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all"
+                  >
+                    Ubah Password
+                  </Link>
                   <button
                     onClick={onLogout}
                     className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all">

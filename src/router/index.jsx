@@ -19,6 +19,8 @@ import CallbackForm from "@/pages/Api/Callback/CallbackForm";
 import PenugasanForm from "@/pages/Kepegawaian/Penugasan/PenugasanForm";
 import TunjanganForm from "@/pages/MasterData/Tunjangan/TunjanganForm";
 import PotonganForm from "@/pages/MasterData/Potongan/PotonganForm";
+import ProfilePage from "@/pages/Profile/ProfilePage";
+import UbahPasswordPage from "@/pages/UbahPassword/UbahPasswordPage";
 
 const Router = () => {
 	return (
@@ -98,6 +100,10 @@ const Router = () => {
 
 					{/* Potongan */}
 					<Route path="/potongan/form" element={<PotonganForm />} />
+
+					{/* Profile */}
+					<Route path="/profile" element={<ProfilePage />} />
+					<Route path="/profile/password" element={<UbahPasswordPage />} />
 
 				</Route>
 

@@ -71,14 +71,14 @@ const Pegawai = () => {
   // Formik setup for form handling and validation
   const formik = useFormik({
     initialValues: {
-      id_pegawai: state?.item?.datapegawai.id_pegawai || '',
-      pangkat: state?.item?.datapegawai.pangkat.id || '',
-      jabatan: state?.item?.datapegawai.jabatan.id || '',
-      departemen: state?.item?.datapegawai.departemen.id || '',
-      divisi: state?.item?.datapegawai.divisi.id || '',
-      unit: state?.item?.datapegawai.unit.id || '',
-      tgl_bergabung: state?.item?.datapegawai.tgl_bergabung || '',
-      tgl_resign: state?.item?.datapegawai.tgl_resign || '',
+      id_pegawai: state?.item?.datapegawai?.id_pegawai || '',
+      pangkat: state?.item?.datapegawai?.pangkat.id || '',
+      jabatan: state?.item?.datapegawai?.jabatan.id || '',
+      departemen: state?.item?.datapegawai?.departemen.id || '',
+      divisi: state?.item?.datapegawai?.divisi.id || '',
+      unit: state?.item?.datapegawai?.unit.id || '',
+      tgl_bergabung: state?.item?.datapegawai?.tgl_bergabung || '',
+      tgl_resign: state?.item?.datapegawai?.tgl_resign || '',
     },
     validationSchema: Yup.object().shape({
       id_pegawai: Yup.string().required("ID Pegawai is required"),

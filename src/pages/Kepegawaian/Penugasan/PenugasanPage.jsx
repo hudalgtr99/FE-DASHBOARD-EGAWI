@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {
-  addFormData,
-  deleteData,
-  getData,
-  handleInputError,
-  updateFormData,
-} from '@/actions';
-import { penugasanReducer } from '@/reducers/penugasanReducers';
+import { getData, deleteData } from '@/actions';
 import {
   API_URL_edeltugas,
   API_URL_gettugas,
@@ -22,16 +15,22 @@ import {
   Tables,
   Limit,
   TextField,
-  Tooltip,
+  Tooltip
 } from '@/components';
+import { penugasanReducer } from '@/reducers/penugasanReducers';
 import { debounce } from 'lodash';
 import { FaPlus } from 'react-icons/fa';
 import { CiSearch } from 'react-icons/ci';
+import PenugasanDetail from './PenugasanDetail'; // Import the modal component
 import axiosAPI from "@/authentication/axiosApi";
 import moment from 'moment';
 
 const PenugasanPage = () => {
-  const { getTugasResult, addTugasResult, deleteTugasResult } = useSelector((state) => state.tugas);
+  const {
+    getTugasResult,
+    addTugasResult,
+    deleteTugasResult
+  } = useSelector((state) => state.tugas);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,7 +38,8 @@ const PenugasanPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [detail, setDetail] = useState({});
+  const [detail, setDetail] = useState(null); // Modal detail data
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
 
   // Debounce search function
   const debouncedSearch = useCallback(
@@ -78,10 +78,10 @@ const PenugasanPage = () => {
       const res = await axiosAPI.post(API_URL_getriwayattugas, {
         tugas_id: detail.id,
       });
-      setDetail(detail);
-      // Handle the fetched data here (e.g., show it in a new page or component)
+      setDetail(detail); // Set the detail data for the modal
+      setIsModalOpen(true); // Open the modal
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
@@ -100,6 +100,12 @@ const PenugasanPage = () => {
     { label: "Selesai", value: 3, color: "bg-green-500" },
     { label: "Ditolak", value: 4, color: "bg-red-500" },
   ];
+
+  const prioritases = [
+    { value: "1", label: "Tinggi", color: "bg-red-500" },
+    { value: "2", label: "Sedang", color: "bg-green-500" },
+    { value: "3", label: "Rendah", color: "bg-blue-500" },
+];
 
   const [actions] = useState([
     {
@@ -194,7 +200,15 @@ const PenugasanPage = () => {
                     </span>
                   ))}
                 </Tables.Data>
-                <Tables.Data>{item.prioritas}</Tables.Data>
+                <Tables.Data>
+                {prioritases.map((prioritas) =>
+                    prioritas.value === item.prioritas ? (
+                      <span key={prioritas.value} className={`${prioritas.color} text-white px-2 py-1 rounded whitespace-nowrap`}>
+                        {prioritas.label}
+                      </span>
+                    ) : null
+                  )}
+                </Tables.Data>
                 <Tables.Data>
                   <div className='whitespace-nowrap'>
                     {moment(item.start_date).format("D MMMM YYYY")}
@@ -232,6 +246,7 @@ const PenugasanPage = () => {
             ))}
           </Tables.Body>
         </Tables>
+
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
           <Pagination
@@ -247,6 +262,13 @@ const PenugasanPage = () => {
           />
         </div>
       </Container>
+
+      {/* Penugasan Detail Modal */}
+      <PenugasanDetail
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        detail={detail}
+      />
     </div>
   );
 };
