@@ -67,12 +67,18 @@ const PengaturanAkunSub = () => {
   useEffect(() => {
     if (addUserResult) {
       const updatedAuth = isAuthenticated();
-      formik.setValues({
-        username: updatedAuth.username || "",
-        email: updatedAuth.email || "",
-      });
+      const newUsername = updatedAuth.username || "";
+      const newEmail = updatedAuth.email || "";
+
+      // Check if the new values differ from current values
+      if (formik.values.username !== newUsername || formik.values.email !== newEmail) {
+        formik.setValues({
+          username: newUsername,
+          email: newEmail,
+        });
+      }
     }
-  }, [addUserResult, formik]); // Add dependencies to prevent re-running on every render
+  }, [addUserResult]); // Only depend on addUserResult
 
   return (
     <div>

@@ -50,7 +50,7 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
         });
         Toast.fire({
           icon: "success",
-          title: "Signed in successfully"
+          title: "Profile changed successfully!"
         });
       }
       dispatch(
@@ -126,7 +126,7 @@ export const updateAkun = (dispatch, type, data, pk, url) => {
         });
         Toast.fire({
           icon: "success",
-          title: "Signed in successfully"
+          title: "Account changed successfully!"
         });
       }
       dispatch(
@@ -202,7 +202,7 @@ export const loginUser = (dispatch, data) => {
         });
         Toast.fire({
           icon: "success",
-          title: "Signed in successfully"
+          title: "Signed in successfully!"
         });
       }
       dispatch(
