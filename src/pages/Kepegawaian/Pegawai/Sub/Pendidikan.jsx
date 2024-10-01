@@ -18,10 +18,10 @@ const Pendidikan = () => {
 
   const initialData = {
     user_id: state?.item?.datapribadi.user_id || '',
-    pendidikanFormal: state?.item?.pendidikanFormal || [
+    formal: state?.item?.formal || [
       { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
     ],
-    pendidikanNonFormal: state?.item?.pendidikanNonFormal || [
+    non_formal: state?.item?.non_formal || [
       { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
     ],
   };
@@ -29,14 +29,14 @@ const Pendidikan = () => {
   const formik = useFormik({
     initialValues: initialData,
     validationSchema: Yup.object().shape({
-      pendidikanFormal: Yup.array().of(
+      formal: Yup.array().of(
         Yup.object().shape({
           asal_sekolah: Yup.string().required('Asal Sekolah is required'),
           masa_waktu: Yup.string().required('Masa Waktu is required'),
           keterangan_pendidikan: Yup.string().required('Keterangan is required'),
         })
       ),
-      pendidikanNonFormal: Yup.array().of(
+      non_formal: Yup.array().of(
         Yup.object().shape({
           nama_lembaga: Yup.string().required('Nama Lembaga is required'),
           tahun_lulus: Yup.string().required('Tahun Lulus is required'),
@@ -45,25 +45,25 @@ const Pendidikan = () => {
       ),
     }),
     onSubmit: async (values) => {
-      // Ensure the correct structure for API submission
-      const updatedValues = {
-        user_id: values.user_id,
-        pendidikan_formal: values.pendidikanFormal, // Check if API expects 'pendidikan_formal'
-        non_formal: values.pendidikanNonFormal, // Mapping 'pendidikanNonFormal' to 'non_formal'
-      };
-
-      // API expects a valid JSON object
       try {
+        // Prepare the data for the API
+        const payload = {
+          pk: "datapendidikan",
+          user_id: values.user_id,
+          formal: JSON.stringify(values.formal), // Serialize formal education array
+          non_formal: JSON.stringify(values.non_formal), // Serialize non-formal education array
+        };
+
+        // Call the updateData function with the prepared payload
         await updateData(
           { dispatch, redux: pegawaiReducer },
-          {
-            pk: "datapendidikan",
-            ...updatedValues,  // Properly formatted data object
-          },
+          payload,
           API_URL_edeluser,
           'UPDATE_PEGAWAI',
           "datapendidikan"
         );
+
+        // Navigate back after a successful update
         navigate('/kepegawaian/pegawai');
       } catch (error) {
         console.error('Error submitting form:', error);
@@ -71,29 +71,28 @@ const Pendidikan = () => {
     },
   });
 
-
   const addFormalEducation = () => {
-    formik.setFieldValue('pendidikanFormal', [
-      ...formik.values.pendidikanFormal,
+    formik.setFieldValue('formal', [
+      ...formik.values.formal,
       { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
     ]);
   };
 
   const addNonFormalEducation = () => {
-    formik.setFieldValue('pendidikanNonFormal', [
-      ...formik.values.pendidikanNonFormal,
+    formik.setFieldValue('non_formal', [
+      ...formik.values.non_formal,
       { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
     ]);
   };
 
   const removeFormalEducation = (index) => {
-    const newEducation = formik.values.pendidikanFormal.filter((_, i) => i !== index);
-    formik.setFieldValue('pendidikanFormal', newEducation);
+    const newEducation = formik.values.formal.filter((_, i) => i !== index);
+    formik.setFieldValue('formal', newEducation);
   };
 
   const removeNonFormalEducation = (index) => {
-    const newEducation = formik.values.pendidikanNonFormal.filter((_, i) => i !== index);
-    formik.setFieldValue('pendidikanNonFormal', newEducation);
+    const newEducation = formik.values.non_formal.filter((_, i) => i !== index);
+    formik.setFieldValue('non_formal', newEducation);
   };
 
   return (
@@ -112,46 +111,46 @@ const Pendidikan = () => {
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div>
               <h3 className='font-medium'>Pendidikan Formal</h3>
-              {formik.values.pendidikanFormal?.length > 0 ? (
-                formik.values.pendidikanFormal.map((edu, index) => (
+              {formik.values.formal?.length > 0 ? (
+                formik.values.formal.map((edu, index) => (
                   <div key={index}>
                     <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
                       <TextField
                         required
                         label="Asal Sekolah"
-                        name={`pendidikanFormal[${index}].asal_sekolah`}
+                        name={`formal[${index}].asal_sekolah`}
                         value={edu.asal_sekolah}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.pendidikanFormal?.[index]?.asal_sekolah
-                            ? formik.errors.pendidikanFormal?.[index]?.asal_sekolah
+                          formik.touched.formal?.[index]?.asal_sekolah
+                            ? formik.errors.formal?.[index]?.asal_sekolah
                             : ''
                         }
                       />
                       <TextField
                         required
                         label="Masa Waktu"
-                        name={`pendidikanFormal[${index}].masa_waktu`}
+                        name={`formal[${index}].masa_waktu`}
                         value={edu.masa_waktu}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.pendidikanFormal?.[index]?.masa_waktu
-                            ? formik.errors.pendidikanFormal?.[index]?.masa_waktu
+                          formik.touched.formal?.[index]?.masa_waktu
+                            ? formik.errors.formal?.[index]?.masa_waktu
                             : ''
                         }
                       />
                       <TextField
                         required
                         label="Keterangan Pendidikan"
-                        name={`pendidikanFormal[${index}].keterangan_pendidikan`}
+                        name={`formal[${index}].keterangan_pendidikan`}
                         value={edu.keterangan_pendidikan}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.pendidikanFormal?.[index]?.keterangan_pendidikan
-                            ? formik.errors.pendidikanFormal?.[index]?.keterangan_pendidikan
+                          formik.touched.formal?.[index]?.keterangan_pendidikan
+                            ? formik.errors.formal?.[index]?.keterangan_pendidikan
                             : ''
                         }
                       />
@@ -181,43 +180,43 @@ const Pendidikan = () => {
 
             <div>
               <h3 className='font-medium'>Pendidikan Non Formal</h3>
-              {formik.values.pendidikanNonFormal?.length > 0 ? (
-                formik.values.pendidikanNonFormal.map((edu, index) => (
+              {formik.values.non_formal?.length > 0 ? (
+                formik.values.non_formal.map((edu, index) => (
                   <div key={index}>
                     <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
                       <TextField
                         required
                         label="Nama Lembaga"
-                        name={`pendidikanNonFormal[${index}].nama_lembaga`}
+                        name={`non_formal[${index}].nama_lembaga`}
                         value={edu.nama_lembaga}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.pendidikanNonFormal?.[index]?.nama_lembaga
-                            ? formik.errors.pendidikanNonFormal?.[index]?.nama_lembaga
+                          formik.touched.non_formal?.[index]?.nama_lembaga
+                            ? formik.errors.non_formal?.[index]?.nama_lembaga
                             : ''
                         }
                       />
                       <TextField
                         required
                         label="Tahun Lulus"
-                        name={`pendidikanNonFormal[${index}].tahun_lulus`}
+                        name={`non_formal[${index}].tahun_lulus`}
                         value={edu.tahun_lulus}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
-                          formik.touched.pendidikanNonFormal?.[index]?.tahun_lulus
-                            ? formik.errors.pendidikanNonFormal?.[index]?.tahun_lulus
+                          formik.touched.non_formal?.[index]?.tahun_lulus
+                            ? formik.errors.non_formal?.[index]?.tahun_lulus
                             : ''
                         }
                       />
                       <TextField
                         type="file"
                         label="Sertifikat"
-                        name={`pendidikanNonFormal[${index}].sertifikat`}
+                        name={`non_formal[${index}].sertifikat`}
                         onChange={(event) =>
                           formik.setFieldValue(
-                            `pendidikanNonFormal[${index}].sertifikat`,
+                            `non_formal[${index}].sertifikat`,
                             event.currentTarget.files[0]
                           )
                         }

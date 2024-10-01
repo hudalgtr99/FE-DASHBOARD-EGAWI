@@ -23,10 +23,11 @@ const Lainnya = () => {
 
   const formik = useFormik({
     initialValues: {
-      data_lainnya: state?.item?.data_lainnya || [{ data: null }],
+      user_id: state?.item?.datapribadi.user_id || '',
+      lainnya: state?.item?.lainnya || [{ data: null }],
     },
     validationSchema: Yup.object().shape({
-      data_lainnya: Yup.array().of(
+      lainnya: Yup.array().of(
         Yup.object().shape({
           data: Yup.mixed()
             .nullable() // Allow null values
@@ -44,7 +45,7 @@ const Lainnya = () => {
         await updateData(
           { dispatch, redux: pegawaiReducer },
           {
-            pk: pk, // Only send `pk` if it's an edit
+            pk: "datalainnya", // Only send `pk` if it's an edit
             ...values,
           },
           API_URL_edeluser, // Single API URL used for both add and update
@@ -58,24 +59,24 @@ const Lainnya = () => {
   });
 
   const handleAddFile = () => {
-    const newDataLainnya = [...formik.values.data_lainnya, { data: null }];
-    formik.setFieldValue('data_lainnya', newDataLainnya);
+    const newDataLainnya = [...formik.values.lainnya, { data: null }];
+    formik.setFieldValue('lainnya', newDataLainnya);
   };
 
   const handleRemoveFile = (index) => {
-    const updatedDataLainnya = formik.values.data_lainnya.filter((_, i) => i !== index);
-    formik.setFieldValue('data_lainnya', updatedDataLainnya);
+    const updatedDataLainnya = formik.values.lainnya.filter((_, i) => i !== index);
+    formik.setFieldValue('lainnya', updatedDataLainnya);
   };
 
   const handleFileChange = (event, index) => {
     const file = event.currentTarget.files[0];
     console.log("Selected file: ", file); // Log the file to check if it's captured
 
-    const updatedDataLainnya = formik.values.data_lainnya.map((item, i) =>
+    const updatedDataLainnya = formik.values.lainnya.map((item, i) =>
       i === index ? { data: file } : item
     );
 
-    formik.setFieldValue('data_lainnya', updatedDataLainnya);
+    formik.setFieldValue('lainnya', updatedDataLainnya);
   };
 
 
@@ -92,21 +93,21 @@ const Lainnya = () => {
           <h1>Data Lainnya</h1>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          {formik.values.data_lainnya.map((item, index) => (
+          {formik.values.lainnya.map((item, index) => (
             <div key={index} className="flex items-center gap-4">
               <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
               <input
                 type="file"
                 id={`file-${index}`}
-                name={`data_lainnya[${index}].data`}
+                name={`lainnya[${index}].data`}
                 accept="application/pdf" // Restrict to PDF files
                 onChange={(event) => handleFileChange(event, index)} // Handle file change
                 onBlur={formik.handleBlur}
                 className="w-full border border-gray-300 rounded-md p-2 text-gray-700 file:bg-gray-200 file:border-0 file:text-sm file:font-semibold file:text-gray-600 hover:file:bg-gray-300"
               />
-              {formik.touched.data_lainnya?.[index]?.data && formik.errors.data_lainnya?.[index]?.data && (
+              {formik.touched.lainnya?.[index]?.data && formik.errors.lainnya?.[index]?.data && (
                 <span className="text-red-500">
-                  {formik.errors.data_lainnya[index].data}
+                  {formik.errors.lainnya[index].data}
                 </span>
               )}
               <Tooltip tooltip="Hapus">
