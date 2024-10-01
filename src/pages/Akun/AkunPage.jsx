@@ -4,11 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import {
   deleteData,
   getData,
+  updateData,
 } from '@/actions';
 import { userReducer } from '@/reducers/authReducers';
 import {
   API_URL_edeluser,
   API_URL_getdataakun,
+  API_URL_changeactive,
+  API_URL_changeoutofarea,
 } from '@/constants';
 import { icons } from "../../../public/icons";
 import {
@@ -62,13 +65,10 @@ const AkunPage = () => {
     });
   };
 
-  const onChange = (data) => {
-    setInputsPassword(
-      inputsPassword.map((item, index) => ({
-        ...item,
-        value: index === 0 ? data.datapribadi.user_id : "",
-      }))
-    );
+  const onChange = (item) => {
+    navigate(`/akun/changepassword`, {
+      state: { item }, // Pass the selected item (user data) to the new page
+    });
   };
 
   const doDelete = (item) => {
@@ -111,26 +111,29 @@ const AkunPage = () => {
     setPageActive(0);
   };
 
-  const [actions] = useState([
-    {
-      name: "Edit",
-      icon: icons.fiedit,
-      color: "text-blue-500",
-      func: onEdit,
-    },
-    {
-      name: "ChangePassword",
-      icon: icons.fakey,
-      color: "text-yellow-500",
-      func: onChange,
-    },
-    {
-      name: "Delete",
-      icon: icons.rideletebin6line,
-      color: "text-red-500",
-      func: doDelete,
-    },
-  ]);
+  const handleSwitch = (e, item, index) => {
+    if (index === 6) {
+      updateData(
+        { dispatch, redux: userReducer },
+        {
+          pk: item.datapribadi.user_id,
+          is_staff: e.target.checked,
+        },
+        API_URL_changeactive,
+        "ADD_AKUN"
+      );
+    } else if (index === 7) {
+      updateData(
+        { dispatch, redux: userReducer },
+        {
+          pk: item.datapribadi.user_id,
+          out_of_area: e.target.checked,
+        },
+        API_URL_changeoutofarea,
+        "ADD_AKUN"
+      );
+    }
+  };
 
   useEffect(() => {
     const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
@@ -163,6 +166,27 @@ const AkunPage = () => {
       index: pageActive * limit + index + 1,
     }))
     : [];
+
+  const [actions] = useState([
+    {
+      name: "Edit",
+      icon: icons.fiedit,
+      color: "text-blue-500",
+      func: onEdit,
+    },
+    {
+      name: "Change Password",
+      icon: icons.fakey,
+      color: "text-yellow-500",
+      func: onChange,
+    },
+    {
+      name: "Delete",
+      icon: icons.rideletebin6line,
+      color: "text-red-500",
+      func: doDelete,
+    },
+  ]);
 
   return (
     <div>
@@ -202,8 +226,26 @@ const AkunPage = () => {
                 <Tables.Data>{item.datapegawai?.jabatan?.nama || '-'}</Tables.Data>
                 <Tables.Data>{item.datapribadi.email}</Tables.Data>
                 <Tables.Data>{item.datapribadi.no_telepon}</Tables.Data>
-                <Tables.Data>{item.datapribadi?.is_staff || '-'}</Tables.Data>
-                <Tables.Data>{item.datapribadi?.out_of_area || '-'}</Tables.Data>
+                <Tables.Data>
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={item.datapribadi?.is_staff}
+                      onChange={(e) => handleSwitch(e, item, 6)} // Pass index 6 for is_staff
+                      className="toggle-switch"
+                    />
+                  </label>
+                </Tables.Data>
+                <Tables.Data>
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={item.datapribadi?.out_of_area}
+                      onChange={(e) => handleSwitch(e, item, 7)} // Pass index 7 for out_of_area
+                      className="toggle-switch"
+                    />
+                  </label>
+                </Tables.Data>
                 <Tables.Data center>
                   <div className="flex items-center justify-center gap-2">
                     {actions.map((action) => (

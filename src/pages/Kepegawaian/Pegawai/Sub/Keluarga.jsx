@@ -44,6 +44,7 @@ const Keluarga = () => {
 
   const formik = useFormik({
     initialValues: {
+      user_id: state?.item?.datapribadi.user_id || '',
       ...initialData,
       nama_anak: Array.isArray(initialData.nama_anak) ? initialData.nama_anak : [], // Ensure nama_anak is always an array
     },
@@ -59,7 +60,7 @@ const Keluarga = () => {
       if (isEdit) {
         await updateData(
           { dispatch, redux: pegawaiReducer },
-          { pk: pk, ...values },
+          { pk: "datakeluarga", ...values },
           API_URL_edeluser,
           'UPDATE_PEGAWAI'
         );

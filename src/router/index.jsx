@@ -14,6 +14,7 @@ import CabangForm from "@/pages/MasterData/Cabang/CabangForm";
 import KalenderForm from "@/pages/MasterData/Kalender/KalenderForm";
 import GajiForm from "@/pages/MasterData/Gaji/GajiForm";
 import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
+import ExportKehadiran from "@/pages/Asesmen/Kehadiran/ExportKehadiran";
 import ApiForm from "@/pages/Api/Api/ApiForm";
 import CallbackForm from "@/pages/Api/Callback/CallbackForm";
 import PenugasanForm from "@/pages/Kepegawaian/Penugasan/PenugasanForm";
@@ -21,6 +22,12 @@ import TunjanganForm from "@/pages/MasterData/Tunjangan/TunjanganForm";
 import PotonganForm from "@/pages/MasterData/Potongan/PotonganForm";
 import ProfilePage from "@/pages/Profile/ProfilePage";
 import UbahPasswordPage from "@/pages/UbahPassword/UbahPasswordPage";
+import AkunPassword from "@/pages/Akun/AkunPassword";
+import EditProfilePribadiPage from "@/pages/Profile/Sub/EditProfilePribadiPage";
+import EditProfilePegawaiPage from "@/pages/Profile/Sub/EditProfilePegawaiPage";
+import EditProfileKeluargaPage from "@/pages/Profile/Sub/EditProfileKeluargaPage";
+import EditProfilePendidikanPage from "@/pages/Profile/Sub/EditProfilePendidikanPage";
+import EditProfileLainnyaPage from "@/pages/Profile/Sub/EditProfileLainnyaPage";
 
 const Router = () => {
 	return (
@@ -82,6 +89,7 @@ const Router = () => {
 
 					{/* Kehadiran */}
 					<Route path="/asesmen/kehadiran/detail" element={<DetailKehadiran />} />
+					<Route path="/asesmen/kehadiran/export" element={<ExportKehadiran />} />
 
 					{/* Api */}
 					<Route path="/api/form" element={<ApiForm />} />
@@ -104,6 +112,12 @@ const Router = () => {
 					{/* Profile */}
 					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/profile/password" element={<UbahPasswordPage />} />
+					<Route path="/profile/pribadi" element={<EditProfilePribadiPage />} />
+					<Route path="/profile/pegawai" element={<EditProfilePegawaiPage />} />
+					<Route path="/profile/keluarga" element={<EditProfileKeluargaPage />} />
+					<Route path="/profile/pendidikan" element={<EditProfilePendidikanPage />} />
+					<Route path="/profile/lainnya" element={<EditProfileLainnyaPage />} />
+					<Route path="/akun/changepassword" element={<AkunPassword />} />
 
 				</Route>
 

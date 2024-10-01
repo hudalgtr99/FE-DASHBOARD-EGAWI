@@ -70,6 +70,12 @@ const KehadiranPage = () => {
         });
     };
 
+    const onExport = (item) => {
+        navigate("/asesmen/kehadiran/export", {
+            state: { user_id: item.id, date: item.date },
+        });
+    };
+
     const handleFilterDate = (e) => {
         const param =
             search === ""
@@ -130,12 +136,19 @@ const KehadiranPage = () => {
                             icon={<CiSearch />}
                         />
                     </div>
-                    <div className="w-full sm:w-60">
+                    <div className='flex gap-4'>
                         <TextField
-                            onChange={handleFilterDate}
-                            type="date"
+                            type="month"
                             value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
                         />
+                        <button
+                            className="px-3 py-2 flex items-center rounded-lg bg-[#f3f4f6] text-xs"
+                            onClick={onExport}
+                        >
+                            <span>{icons.fafileexport}</span>
+                            <div className="ml-2">Export</div>
+                        </button>
                     </div>
                 </div>
                 <Tables>

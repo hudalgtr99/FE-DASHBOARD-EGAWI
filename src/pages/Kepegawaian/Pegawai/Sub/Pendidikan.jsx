@@ -19,6 +19,7 @@ const Pendidikan = () => {
   const isEdit = pk && pk !== 'add';
 
   const initialData = {
+    user_id: state?.item?.datapribadi.user_id || '',
     pendidikanFormal: state?.item?.pendidikanFormal || [
       { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
     ],
@@ -51,7 +52,8 @@ const Pendidikan = () => {
           { dispatch, redux: pegawaiReducer },
           { pk: pk, ...values },
           API_URL_edeluser,
-          'UPDATE_PEGAWAI'
+          'UPDATE_PEGAWAI',
+          "datapendidikan"
         );
       } else {
         await addData(

@@ -31,7 +31,7 @@ const Pribadi = () => {
   const isEdit = pk && pk !== 'add';
 
   useEffect(() => {
-    const fetchData = async () => { 
+    const fetchData = async () => {
       const response = await axiosAPI.get(API_URL_getcabang);
       setCabangOptions(response.data.map((item) => ({
         value: item.pk,
@@ -50,6 +50,7 @@ const Pribadi = () => {
 
   const formik = useFormik({
     initialValues: {
+      user_id: state?.item?.datapribadi.user_id || '',
       nama: state?.item?.datapribadi.nama || '',
       username: state?.item?.datapribadi.username || '',
       email: state?.item?.datapribadi.email || '',
@@ -91,7 +92,7 @@ const Pribadi = () => {
         if (isEdit) {
           await updateData(
             { dispatch, redux: pegawaiReducer },
-            { pk: pk, ...updatedValues },
+            { pk: "datapribadi", ...updatedValues },
             API_URL_edeluser,
             'UPDATE_PEGAWAI'
           );

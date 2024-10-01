@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup"; // Optional: for validation
@@ -14,10 +14,15 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { updateData } from "@/actions";
 import { API_URL_changepassword } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
+import { icons } from "../../../public/icons";
 
 const UbahPasswordPage = () => {
-  const { addUserResult, addUserLoading } = useSelector((state) => state.auth);
+  const { addUserLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  const [visibleOldPassword, setVisibleOldPassword] = useState(false);
+  const [visibleNewPassword, setVisibleNewPassword] = useState(false);
+  const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
 
   // Formik setup
   const formik = useFormik({
@@ -34,7 +39,6 @@ const UbahPasswordPage = () => {
         .oneOf([Yup.ref('password_baru'), null], "Passwords must match"),
     }),
     onSubmit: (values) => {
-      // Call the updateData function on form submit
       updateData(
         { dispatch, redux: userReducer },
         {
@@ -44,8 +48,8 @@ const UbahPasswordPage = () => {
         },
         API_URL_changepassword,
         "ADD_USER"
-      ).then(() => {
-        if (addUserResult) {
+      )
+        .then(() => {
           formik.resetForm(); // Reset form if update was successful
           Swal.fire({
             icon: "success",
@@ -53,17 +57,16 @@ const UbahPasswordPage = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-        }
-      });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Error changing password!",
+            text: error.message,
+          });
+        });
     },
   });
-
-  useEffect(() => {
-    if (addUserResult) {
-      formik.resetForm(); // Reset form upon successful submission
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addUserResult, dispatch]);
 
   return (
     <div>
@@ -72,36 +75,57 @@ const UbahPasswordPage = () => {
           <h1>Ubah Password</h1>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <TextField
-            required
-            label="Password Saat Ini"
-            name="password"
-            type="password" // Ensure this is a password field
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.password ? formik.errors.password : ''}
-          />
-          <TextField
-            required
-            label="Password Baru"
-            name="password_baru"
-            type="password" // Ensure this is a password field
-            value={formik.values.password_baru}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.password_baru ? formik.errors.password_baru : ''}
-          />
-          <TextField
-            required
-            label="Konfirmasi Password Baru"
-            name="konfirmasi_password_baru"
-            type="password" // Ensure this is a password field
-            value={formik.values.konfirmasi_password_baru}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.konfirmasi_password_baru ? formik.errors.konfirmasi_password_baru : ''}
-          />
+          <div className="relative">
+            <TextField
+              required
+              label="Password Saat Ini"
+              name="password"
+              type={visibleOldPassword ? "text" : "password"}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            <div
+              className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
+              onClick={() => setVisibleOldPassword(!visibleOldPassword)}
+            >
+              {visibleOldPassword ? icons.aifilleyeinvisible : icons.aifilleye}
+            </div>
+          </div>
+          <div className="relative">
+            <TextField
+              required
+              label="Password Baru"
+              name="password_baru"
+              type={visibleNewPassword ? "text" : "password"}
+              value={formik.values.password_baru}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            <div
+              className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
+              onClick={() => setVisibleNewPassword(!visibleNewPassword)}
+            >
+              {visibleNewPassword ? icons.aifilleyeinvisible : icons.aifilleye}
+            </div>
+          </div>
+          <div className="relative">
+            <TextField
+              required
+              label="Konfirmasi Password Baru"
+              name="konfirmasi_password_baru"
+              type={visibleConfirmPassword ? "text" : "password"}
+              value={formik.values.konfirmasi_password_baru}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            <div
+              className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
+              onClick={() => setVisibleConfirmPassword(!visibleConfirmPassword)}
+            >
+              {visibleConfirmPassword ? icons.aifilleyeinvisible : icons.aifilleye}
+            </div>
+          </div>
           <div className="mt-6 flex justify-end">
             <Button type="submit" loading={addUserLoading}>Simpan</Button>
           </div>
