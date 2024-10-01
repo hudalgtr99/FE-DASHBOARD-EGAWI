@@ -5,9 +5,9 @@ import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, Tooltip } from '@/components';
 import { useDispatch } from 'react-redux';
-import { addData, updateData } from '@/actions';
+import { updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
-import { API_URL_createuser, API_URL_edeluser } from '@/constants';
+import { API_URL_edeluser } from '@/constants';
 import { CiTrash } from 'react-icons/ci';
 
 const Pendidikan = () => {
@@ -15,8 +15,6 @@ const Pendidikan = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const isEdit = pk && pk !== 'add';
 
   const initialData = {
     user_id: state?.item?.datapribadi.user_id || '',
@@ -47,25 +45,32 @@ const Pendidikan = () => {
       ),
     }),
     onSubmit: async (values) => {
-      if (isEdit) {
+      // Ensure the correct structure for API submission
+      const updatedValues = {
+        user_id: values.user_id,
+        pendidikan_formal: values.pendidikanFormal, // Check if API expects 'pendidikan_formal'
+        non_formal: values.pendidikanNonFormal, // Mapping 'pendidikanNonFormal' to 'non_formal'
+      };
+
+      // API expects a valid JSON object
+      try {
         await updateData(
           { dispatch, redux: pegawaiReducer },
-          { pk: pk, ...values },
+          {
+            pk: "datapendidikan",
+            ...updatedValues,  // Properly formatted data object
+          },
           API_URL_edeluser,
           'UPDATE_PEGAWAI',
           "datapendidikan"
         );
-      } else {
-        await addData(
-          { dispatch, redux: pegawaiReducer },
-          values,
-          API_URL_createuser,
-          'ADD_PEGAWAI'
-        );
+        navigate('/kepegawaian/pegawai');
+      } catch (error) {
+        console.error('Error submitting form:', error);
       }
-      navigate('/kepegawaian/pegawai');
     },
   });
+
 
   const addFormalEducation = () => {
     formik.setFieldValue('pendidikanFormal', [
@@ -81,13 +86,11 @@ const Pendidikan = () => {
     ]);
   };
 
-  // New function to remove formal education
   const removeFormalEducation = (index) => {
     const newEducation = formik.values.pendidikanFormal.filter((_, i) => i !== index);
     formik.setFieldValue('pendidikanFormal', newEducation);
   };
 
-  // New function to remove non-formal education
   const removeNonFormalEducation = (index) => {
     const newEducation = formik.values.pendidikanNonFormal.filter((_, i) => i !== index);
     formik.setFieldValue('pendidikanNonFormal', newEducation);
@@ -161,7 +164,6 @@ const Pendidikan = () => {
                           <CiTrash />
                         </button>
                       </Tooltip>
-
                     </div>
                   </div>
                 ))
