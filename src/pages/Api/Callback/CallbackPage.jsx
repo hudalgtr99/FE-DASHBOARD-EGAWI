@@ -197,7 +197,7 @@ const CallbackPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">No data available</td>
+                <td colSpan="7" className="text-center">No Data Available</td>
               </tr>
             )}
           </Tables.Body>

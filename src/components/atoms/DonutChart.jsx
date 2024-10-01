@@ -28,7 +28,7 @@ const DonutChart = ({
 				show: false,
 			},
 			noData: {
-				text: "No Data",
+				text: "No Data Available",
 				align: "center",
 				verticalAlign: "middle",
 				offsetX: 0,

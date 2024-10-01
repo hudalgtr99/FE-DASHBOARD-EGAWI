@@ -15,6 +15,7 @@ import KalenderForm from "@/pages/MasterData/Kalender/KalenderForm";
 import GajiForm from "@/pages/MasterData/Gaji/GajiForm";
 import DetailKehadiran from "@/pages/Asesmen/Kehadiran/DetailKehadiran";
 import ExportKehadiran from "@/pages/Asesmen/Kehadiran/ExportKehadiran";
+import EditKehadiran from "@/pages/Asesmen/Kehadiran/EditKehadiran";
 import ApiForm from "@/pages/Api/Api/ApiForm";
 import CallbackForm from "@/pages/Api/Callback/CallbackForm";
 import PenugasanForm from "@/pages/Kepegawaian/Penugasan/PenugasanForm";
@@ -90,6 +91,7 @@ const Router = () => {
 					{/* Kehadiran */}
 					<Route path="/asesmen/kehadiran/detail" element={<DetailKehadiran />} />
 					<Route path="/asesmen/kehadiran/export" element={<ExportKehadiran />} />
+					<Route path="/asesmen/kehadiran/edit" element={<EditKehadiran />} />
 
 					{/* Api */}
 					<Route path="/api/form" element={<ApiForm />} />

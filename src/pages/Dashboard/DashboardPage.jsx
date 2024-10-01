@@ -178,7 +178,7 @@ const DashboardPage = () => {
                   ))
                   : (
                     <tr>
-                      <td colSpan="4" className="text-center">No data available</td>
+                      <td colSpan="4" className="text-center">No Data Available</td>
                     </tr>
                   )}
               </Tables.Body>
@@ -241,7 +241,7 @@ const DashboardPage = () => {
                   ))
                   : (
                     <tr>
-                      <td colSpan="4" className="text-center">No data available</td>
+                      <td colSpan="4" className="text-center">No Data Available</td>
                     </tr>
                   )}
               </Tables.Body>
