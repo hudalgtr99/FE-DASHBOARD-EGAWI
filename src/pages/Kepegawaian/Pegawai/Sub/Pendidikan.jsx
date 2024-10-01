@@ -11,17 +11,20 @@ import { API_URL_edeluser } from '@/constants';
 import { CiTrash } from 'react-icons/ci';
 
 const Pendidikan = () => {
-  const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // Parse the formal and non_formal fields
+  const formalData = JSON.parse(state?.item?.datapendidikan.formal || '[]');
+  const nonFormalData = JSON.parse(state?.item?.datapendidikan.non_formal || '[]');
+
   const initialData = {
     user_id: state?.item?.datapribadi.user_id || '',
-    formal: state?.item?.formal || [
+    formal: formalData.length > 0 ? formalData : [
       { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
     ],
-    non_formal: state?.item?.non_formal || [
+    non_formal: nonFormalData.length > 0 ? nonFormalData : [
       { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
     ],
   };

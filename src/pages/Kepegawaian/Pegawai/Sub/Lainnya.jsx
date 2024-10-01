@@ -16,7 +16,6 @@ import { API_URL_edeluser } from '@/constants';
 import { CiTrash } from 'react-icons/ci';
 
 const Lainnya = () => {
-  const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,7 +23,7 @@ const Lainnya = () => {
   const formik = useFormik({
     initialValues: {
       user_id: state?.item?.datapribadi.user_id || '',
-      lainnya: state?.item?.lainnya || [{ data: null }],
+      lainnya: state?.item?.lainnya || [], // Ensure this is initialized as an array
     },
     validationSchema: Yup.object().shape({
       lainnya: Yup.array().of(
@@ -42,12 +41,17 @@ const Lainnya = () => {
     onSubmit: async (values) => {
       console.log("Submitted values: ", values); // Log the values to inspect
       try {
+        const payload = {
+          pk: "datalainnya", // Only send `pk` if it's an edit
+          user_id: values.user_id,
+          lainnya: JSON.stringify(values.lainnya),  // Ensure it's an array
+        };
+
+        console.log("Payload being sent to API: ", payload); // Log the payload to check structure
+
         await updateData(
           { dispatch, redux: pegawaiReducer },
-          {
-            pk: "datalainnya", // Only send `pk` if it's an edit
-            ...values,
-          },
+          payload,
           API_URL_edeluser, // Single API URL used for both add and update
           'ADD_PEGAWAI' // Unified action for add/update
         );
@@ -79,7 +83,6 @@ const Lainnya = () => {
     formik.setFieldValue('lainnya', updatedDataLainnya);
   };
 
-
   return (
     <div>
       <Container>
@@ -93,7 +96,7 @@ const Lainnya = () => {
           <h1>Data Lainnya</h1>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          {formik.values.lainnya.map((item, index) => (
+          {Array.isArray(formik.values.lainnya) && formik.values.lainnya.map((item, index) => (
             <div key={index} className="flex items-center gap-4">
               <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
               <input
