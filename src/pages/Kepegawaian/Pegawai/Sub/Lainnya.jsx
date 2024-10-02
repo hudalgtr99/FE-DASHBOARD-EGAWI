@@ -18,7 +18,7 @@ const Lainnya = () => {
   const formik = useFormik({
     initialValues: {
       user_id: state?.item?.datapribadi.user_id || '',
-      data_lainnya: state?.item?.datalainnya?.data_lainnya || [{ data: null }], // Ensure it's an array with an initial object
+      data_lainnya: state?.item?.datalainnya?.data_lainnya || [{ data: null, link: '' }],
     },
     validationSchema: Yup.object().shape({
       data_lainnya: Yup.array().of(
@@ -30,24 +30,43 @@ const Lainnya = () => {
               "Only PDF files are allowed",
               (value) => !value || (value && value.type === "application/pdf")
             ),
+          link: Yup.string().nullable(),
         })
       ),
     }),
     onSubmit: async (values) => {
       console.log("Submitting Values: ", values); // Log the values
       try {
+        const formData = new FormData();
+        formData.append("user_id", values.user_id);
+
+        // Append files to FormData under 'datalainnya'
+        values.data_lainnya.forEach((item) => {
+          if (item.data) {
+            formData.append(`datalainnya`, item.data); // Append files under the 'datalainnya' key
+          }
+        });
+
+        // Prepare the 'lainnya' data
+        const lainnyaData = values.data_lainnya.map(item => ({
+          lainnya: item.data ? "" : item.link ? item.link : null,
+        }));
+
+        // Append the 'lainnya' JSON data
+        formData.append("lainnya", JSON.stringify(lainnyaData));
+
         const payload = {
           pk: "datalainnya",
           user_id: values.user_id,
-          data_lainnya: JSON.stringify(values.data_lainnya),
+          datalainnya: formData, // Sending FormData
         };
 
         await updateData(
           { dispatch, redux: pegawaiReducer },
           payload,
           API_URL_edeluser,
-          'ADD_PEGAWAI',
-          'datalainnya'
+          "ADD_PEGAWAI",
+          "datalainnya"
         );
 
         navigate('/kepegawaian/pegawai'); // Navigate after successful submission
@@ -59,7 +78,7 @@ const Lainnya = () => {
 
   // Handle adding a new file input
   const handleAddFile = () => {
-    const newDataLainnya = [...formik.values.data_lainnya, { data: null }];
+    const newDataLainnya = [...formik.values.data_lainnya, { data: null, link: '' }];
     formik.setFieldValue('data_lainnya', newDataLainnya);
   };
 
@@ -75,7 +94,7 @@ const Lainnya = () => {
     console.log("Selected file: ", file); // Debugging file selection
 
     const updatedDataLainnya = formik.values.data_lainnya.map((item, i) =>
-      i === index ? { data: file } : item
+      i === index ? { ...item, data: file } : item
     );
 
     formik.setFieldValue('data_lainnya', updatedDataLainnya);

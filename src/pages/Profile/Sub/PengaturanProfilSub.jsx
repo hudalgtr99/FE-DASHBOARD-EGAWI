@@ -113,7 +113,10 @@ const PengaturanProfilSub = () => {
         <div className='flex justify-between'>
           <div className='font-semibold mb-4'>Data Pegawai</div>
           <div className='text-green-500'>
-            <Link to={'/profile/pegawai'}>
+            <Link
+              to={'/profile/pegawai'}
+              state={{ data: datapegawai }}
+            >
               <BsPencil />
             </Link>
           </div>
@@ -154,7 +157,10 @@ const PengaturanProfilSub = () => {
         <div className='flex justify-between'>
           <div className='font-semibold mb-4'>Data Keluarga</div>
           <div className='text-green-500'>
-            <Link to={'/profile/keluarga'}>
+            <Link
+              to={'/profile/keluarga'}
+              state={{ data: datakeluarga }}
+            >
               <BsPencil />
             </Link>
           </div>
@@ -195,7 +201,10 @@ const PengaturanProfilSub = () => {
         <div className='flex justify-between'>
           <div className='font-semibold mb-4'>Data Pendidikan</div>
           <div className='text-green-500'>
-            <Link to={'/profile/pendidikan'}>
+            <Link
+              to={'/profile/pendidikan'}
+              state={{ data: datapendidikan }}
+            >
               <BsPencil />
             </Link>
           </div>
@@ -245,7 +254,10 @@ const PengaturanProfilSub = () => {
         <div className='flex justify-between'>
           <div className='font-semibold mb-4'>Data Lainnya</div>
           <div className='text-green-500'>
-            <Link to={'/profile/lainnya'}>
+            <Link
+              to={'/profile/lainnya'}
+              state={{ data: datalainnya }}
+            >
               <BsPencil />
             </Link>
           </div>
