@@ -76,14 +76,11 @@ const KehadiranPage = () => {
         });
     };
 
-    const handleFilterDate = (e) => {
-        const param =
-            search === ""
-                ? { param: "?date-month=" + e + "&limit=" + limit }
-                : {
-                    param: "?search=" + search + "&date-month=" + e + "&limit=" + limit,
-                };
-        setFilter(e);
+    const handleFilterDate = (newFilter) => {
+        const param = search === ""
+            ? { param: "?date-month=" + newFilter + "&limit=" + limit }
+            : { param: "?search=" + search + "&date-month=" + newFilter + "&limit=" + limit };
+        setFilter(newFilter);
         get(param);
     };
 
@@ -140,7 +137,7 @@ const KehadiranPage = () => {
                         <TextField
                             type="month"
                             value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
+                            onChange={(e) => handleFilterDate(e.target.value)}
                         />
                         <button
                             className="px-3 py-2 flex items-center rounded-lg bg-[#f3f4f6] text-xs"

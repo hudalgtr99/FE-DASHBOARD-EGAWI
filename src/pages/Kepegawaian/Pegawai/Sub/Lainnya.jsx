@@ -18,10 +18,10 @@ const Lainnya = () => {
   const formik = useFormik({
     initialValues: {
       user_id: state?.item?.datapribadi.user_id || '',
-      data_lainnya: state?.item?.datalainnya?.data_lainnya || [{ data: null, link: '' }],
+      lainnya: state?.item?.datalainnya?.lainnya || [{ data: null, link: '' }],
     },
     validationSchema: Yup.object().shape({
-      data_lainnya: Yup.array().of(
+      lainnya: Yup.array().of(
         Yup.object().shape({
           data: Yup.mixed()
             .nullable()
@@ -41,14 +41,14 @@ const Lainnya = () => {
         formData.append("user_id", values.user_id);
 
         // Append files to FormData under 'datalainnya'
-        values.data_lainnya.forEach((item) => {
+        values.lainnya.forEach((item) => {
           if (item.data) {
             formData.append(`datalainnya`, item.data); // Append files under the 'datalainnya' key
           }
         });
 
         // Prepare the 'lainnya' data
-        const lainnyaData = values.data_lainnya.map(item => ({
+        const lainnyaData = values.lainnya.map(item => ({
           lainnya: item.data ? "" : item.link ? item.link : null,
         }));
 
@@ -78,14 +78,14 @@ const Lainnya = () => {
 
   // Handle adding a new file input
   const handleAddFile = () => {
-    const newDataLainnya = [...formik.values.data_lainnya, { data: null, link: '' }];
-    formik.setFieldValue('data_lainnya', newDataLainnya);
+    const newLainnya = [...formik.values.lainnya, { data: null, link: '' }];
+    formik.setFieldValue('lainnya', newLainnya);
   };
 
   // Handle removing a file input
   const handleRemoveFile = (index) => {
-    const updatedDataLainnya = formik.values.data_lainnya.filter((_, i) => i !== index);
-    formik.setFieldValue('data_lainnya', updatedDataLainnya);
+    const updatedLainnya = formik.values.lainnya.filter((_, i) => i !== index);
+    formik.setFieldValue('lainnya', updatedLainnya);
   };
 
   // Handle file input change
@@ -93,11 +93,11 @@ const Lainnya = () => {
     const file = event.currentTarget.files[0]; // Correctly access the file
     console.log("Selected file: ", file); // Debugging file selection
 
-    const updatedDataLainnya = formik.values.data_lainnya.map((item, i) =>
+    const updatedLainnya = formik.values.lainnya.map((item, i) =>
       i === index ? { ...item, data: file } : item
     );
 
-    formik.setFieldValue('data_lainnya', updatedDataLainnya);
+    formik.setFieldValue('lainnya', updatedLainnya);
   };
 
   return (
@@ -116,13 +116,13 @@ const Lainnya = () => {
           <div className='flex justify-between'>
             <h3 className='font-medium'>Data lainnya</h3>
             <div className='flex gap-2 items-center cursor-pointer'>
-              {formik.values.data_lainnya.length > 0 && (
+              {formik.values.lainnya.length > 0 && (
                 <div>
-                  {formik.values.data_lainnya.length > 1 && (
+                  {formik.values.lainnya.length > 1 && (
                     <button
                       type="button"
                       className='bg-gray-200 p-1 rounded-lg'
-                      onClick={() => handleRemoveFile(formik.values.data_lainnya.length - 1)}
+                      onClick={() => handleRemoveFile(formik.values.lainnya.length - 1)}
                     >
                       <FaTimes />
                     </button>
@@ -136,13 +136,13 @@ const Lainnya = () => {
               </div>
             </div>
           </div>
-          {formik.values.data_lainnya.map((item, index) => (
+          {formik.values.lainnya.map((item, index) => (
             <div key={index} className="flex items-center gap-4">
               <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
               <input
                 type="file"
                 id={`file-${index}`}
-                name={`data_lainnya[${index}].data`}
+                name={`lainnya[${index}].data`}
                 accept="application/pdf" // Restrict to PDF files
                 onChange={handleFileChange(index)} // Use a closure to pass the index
                 onBlur={formik.handleBlur}
@@ -153,9 +153,9 @@ const Lainnya = () => {
                       file:bg-blue-500 file:text-white 
                       hover:file:bg-blue-600"
               />
-              {formik.touched.data_lainnya?.[index]?.data && formik.errors.data_lainnya?.[index]?.data && (
+              {formik.touched.lainnya?.[index]?.data && formik.errors.lainnya?.[index]?.data && (
                 <span className="text-red-500">
-                  {formik.errors.data_lainnya[index].data}
+                  {formik.errors.lainnya[index].data}
                 </span>
               )}
             </div>

@@ -1,6 +1,7 @@
 const localhost = `http://127.0.0.1:8000`;
 const apiURL = `/api`;
 
+// export const baseurl = `https://api.kepegawaian.qnn.co.id`;
 export const baseurl = `${localhost}${apiURL}`;
 export const API_URL_signin = `${baseurl}/signin/`;
 export const API_URL_getakun = `${baseurl}/getakun/`;

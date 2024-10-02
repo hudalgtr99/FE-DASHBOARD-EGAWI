@@ -60,32 +60,11 @@ const TolakSub = () => {
     });
   };
 
-  const handleFilterDate = (e) => {
-    const dateValue = e.target.value;
-
-    // Check if the date is valid and in the format YYYY-MM
-    const isValidDate = dateValue && dateValue.split("-").length === 2;
-
-    if (!isValidDate) {
-      console.error("Invalid date format. Expected YYYY-MM.");
-      return;
-    }
-
-    const param =
-      search === ""
-        ? { param: "?date-month=" + dateValue + "&status=1&limit=" + limit }
-        : {
-          param:
-            "?search=" +
-            search +
-            "&date-month=" +
-            dateValue +
-            "&status=1&limit=" +
-            limit,
-        };
-
-    setFilter(dateValue);
-    setPageActive(0);
+  const handleFilterDate = (newFilter) => {
+    const param = search === ""
+      ? { param: "?date-month=" + newFilter + "&limit=" + limit }
+      : { param: "?search=" + search + "&date-month=" + newFilter + "&limit=" + limit };
+    setFilter(newFilter);
     get(param);
   };
 
@@ -249,9 +228,9 @@ const TolakSub = () => {
           </div>
           <div className="w-full sm:w-60">
             <TextField
-              onChange={handleFilterDate}
-              type="date"
+              type="month"
               value={filter}
+              onChange={(e) => handleFilterDate(e.target.value)}
             />
           </div>
         </div>
