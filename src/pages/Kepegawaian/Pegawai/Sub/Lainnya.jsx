@@ -18,17 +18,13 @@ const Lainnya = () => {
   const formik = useFormik({
     initialValues: {
       user_id: state?.item?.datapribadi.user_id || '',
-      lainnya: state?.item?.lainnya || [], // Initialized as an array
+      data_lainnya: state?.item?.datalainnya?.data_lainnya || [{ data: null }], // Ensure it's an array with an initial object
     },
     validationSchema: Yup.object().shape({
-      user_id: Yup.number()
-        .required("User ID is required")
-        .positive("User ID must be a positive number")
-        .integer("User ID must be an integer"),
-      lainnya: Yup.array().of(
+      data_lainnya: Yup.array().of(
         Yup.object().shape({
           data: Yup.mixed()
-            .nullable() // Allow null values
+            .nullable()
             .test(
               "fileType",
               "Only PDF files are allowed",
@@ -38,27 +34,22 @@ const Lainnya = () => {
       ),
     }),
     onSubmit: async (values) => {
-      if (!values.user_id) {
-        console.error('User ID is invalid or missing.');
-        return; // Prevent submission if user_id is invalid
-      }
-
-      const payload = {
-        pk: "datalainnya", // Primary key for the API
-        user_id: values.user_id,
-        lainnya: JSON.stringify(values.lainnya), // Convert array to JSON string
-      };
-
-      console.log("Payload being sent to API: ", payload); // Debugging payload
-
+      console.log("Submitting Values: ", values); // Log the values
       try {
+        const payload = {
+          pk: "datalainnya",
+          user_id: values.user_id,
+          data_lainnya: JSON.stringify(values.data_lainnya),
+        };
+
         await updateData(
           { dispatch, redux: pegawaiReducer },
           payload,
-          API_URL_edeluser, // Single API URL for both add and update
-          'ADD_PEGAWAI', // Unified action for add/update
+          API_URL_edeluser,
+          'ADD_PEGAWAI',
           'datalainnya'
         );
+
         navigate('/kepegawaian/pegawai'); // Navigate after successful submission
       } catch (error) {
         console.error('Error in form submission: ', error);
@@ -68,26 +59,26 @@ const Lainnya = () => {
 
   // Handle adding a new file input
   const handleAddFile = () => {
-    const newDataLainnya = [...formik.values.lainnya, { data: null }];
-    formik.setFieldValue('lainnya', newDataLainnya);
+    const newDataLainnya = [...formik.values.data_lainnya, { data: null }];
+    formik.setFieldValue('data_lainnya', newDataLainnya);
   };
 
   // Handle removing a file input
   const handleRemoveFile = (index) => {
-    const updatedDataLainnya = formik.values.lainnya.filter((_, i) => i !== index);
-    formik.setFieldValue('lainnya', updatedDataLainnya);
+    const updatedDataLainnya = formik.values.data_lainnya.filter((_, i) => i !== index);
+    formik.setFieldValue('data_lainnya', updatedDataLainnya);
   };
 
   // Handle file input change
-  const handleFileChange = (event, index) => {
-    const file = event.currentTarget.files[0];
+  const handleFileChange = (index) => (event) => {
+    const file = event.currentTarget.files[0]; // Correctly access the file
     console.log("Selected file: ", file); // Debugging file selection
 
-    const updatedDataLainnya = formik.values.lainnya.map((item, i) =>
+    const updatedDataLainnya = formik.values.data_lainnya.map((item, i) =>
       i === index ? { data: file } : item
     );
 
-    formik.setFieldValue('lainnya', updatedDataLainnya);
+    formik.setFieldValue('data_lainnya', updatedDataLainnya);
   };
 
   return (
@@ -106,13 +97,13 @@ const Lainnya = () => {
           <div className='flex justify-between'>
             <h3 className='font-medium'>Pendidikan lainnya</h3>
             <div className='flex gap-2 items-center cursor-pointer'>
-              {formik.values.lainnya.length > 0 && (
+              {formik.values.data_lainnya.length > 0 && (
                 <div>
-                  {formik.values.lainnya.length > 1 && (
+                  {formik.values.data_lainnya.length > 1 && (
                     <button
                       type="button"
                       className='bg-gray-200 p-1 rounded-lg'
-                      onClick={() => handleRemoveFile(formik.values.lainnya.length - 1)}
+                      onClick={() => handleRemoveFile(formik.values.data_lainnya.length - 1)}
                     >
                       <FaTimes />
                     </button>
@@ -126,24 +117,15 @@ const Lainnya = () => {
               </div>
             </div>
           </div>
-          <div className="hidden">
-            <input
-              type="text"
-              name="user_id"
-              value={formik.values.user_id || ''}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-          </div>
-          {formik.values.lainnya.map((item, index) => (
+          {formik.values.data_lainnya.map((item, index) => (
             <div key={index} className="flex items-center gap-4">
               <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
               <input
                 type="file"
                 id={`file-${index}`}
-                name={`lainnya[${index}].data`}
+                name={`data_lainnya[${index}].data`}
                 accept="application/pdf" // Restrict to PDF files
-                onChange={(event) => handleFileChange(event, index)}
+                onChange={handleFileChange(index)} // Use a closure to pass the index
                 onBlur={formik.handleBlur}
                 className="block w-full border p-2 rounded-lg text-sm text-gray-500 
                       file:mr-4 file:py-2 file:px-4 
@@ -152,9 +134,9 @@ const Lainnya = () => {
                       file:bg-blue-500 file:text-white 
                       hover:file:bg-blue-600"
               />
-              {formik.touched.lainnya?.[index]?.data && formik.errors.lainnya?.[index]?.data && (
+              {formik.touched.data_lainnya?.[index]?.data && formik.errors.data_lainnya?.[index]?.data && (
                 <span className="text-red-500">
-                  {formik.errors.lainnya[index].data}
+                  {formik.errors.data_lainnya[index].data}
                 </span>
               )}
             </div>
