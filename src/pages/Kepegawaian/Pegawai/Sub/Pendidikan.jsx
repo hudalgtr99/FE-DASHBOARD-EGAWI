@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import { API_URL_edeluser } from '@/constants';
-import { CiTrash } from 'react-icons/ci';
+import { FaTimes, FaPlus } from "react-icons/fa";
 
 const Pendidikan = () => {
   const { state } = useLocation();
@@ -113,7 +113,35 @@ const Pendidikan = () => {
         <div>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div>
-              <h3 className='font-medium'>Pendidikan Formal</h3>
+              <div className='flex justify-between'>
+                <h3 className='font-medium'>Pendidikan Formal</h3>
+                <div className='flex gap-2 items-center cursor-pointer'>
+                  {formik.values.formal.map((edu, index) => (
+                    <div>
+                      <div key={index}>
+                        <Tooltip tooltip="Hapus">
+                          {formik.values.formal.length > 1 && (
+                            <button
+                              type="button"
+                              className='bg-gray-200 p-1 rounded-lg'
+                              onClick={() => removeFormalEducation(index)}
+                            >
+                              <FaTimes />
+                            </button>
+                          )}
+                        </Tooltip>
+                      </div>
+                    </div>
+                  ))}
+                  <div>
+                    <Tooltip tooltip="Tambah">
+                      <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addFormalEducation}>
+                        <FaPlus />
+                      </button>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
               {formik.values.formal?.length > 0 ? (
                 formik.values.formal.map((edu, index) => (
                   <div key={index}>
@@ -157,32 +185,46 @@ const Pendidikan = () => {
                             : ''
                         }
                       />
-                      <Tooltip tooltip="Hapus">
-                        <button
-                          type="button"
-                          className="text-red-500 mt-9 cursor-pointer sm:block hidden"
-                          onClick={() => removeFormalEducation(index)}
-                        >
-                          <CiTrash />
-                        </button>
-                      </Tooltip>
                     </div>
                   </div>
                 ))
               ) : (
-                <p>No Data Available.</p>
+                <p>No Data Available</p>
               )}
-              <div className='sm:block hidden'>
-                <Button type="button" onClick={addFormalEducation}>
-                  Tambah Data
-                </Button>
-              </div>
             </div>
 
             <hr />
 
             <div>
-              <h3 className='font-medium'>Pendidikan Non Formal</h3>
+              <div className='flex justify-between'>
+                <h3 className='font-medium'>Pendidikan Non Formal</h3>
+                <div className='flex gap-2 items-center cursor-pointer'>
+                  {formik.values.non_formal.map((edu, index) => (
+                    <div>
+                      <div key={index}>
+                        <Tooltip tooltip="Hapus">
+                          {formik.values.non_formal.length > 1 && (
+                            <button
+                              type="button"
+                              className='bg-gray-200 p-1 rounded-lg'
+                              onClick={() => removeNonFormalEducation(index)}
+                            >
+                              <FaTimes />
+                            </button>
+                          )}
+                        </Tooltip>
+                      </div>
+                    </div>
+                  ))}
+                  <div>
+                    <Tooltip tooltip="Tambah">
+                      <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addNonFormalEducation}>
+                        <FaPlus />
+                      </button>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
               {formik.values.non_formal?.length > 0 ? (
                 formik.values.non_formal.map((edu, index) => (
                   <div key={index}>
@@ -224,26 +266,12 @@ const Pendidikan = () => {
                           )
                         }
                       />
-                      <Tooltip tooltip="Hapus">
-                        <button
-                          type="button"
-                          className="text-red-500 mt-9 cursor-pointer sm:block hidden"
-                          onClick={() => removeNonFormalEducation(index)}
-                        >
-                          <CiTrash />
-                        </button>
-                      </Tooltip>
                     </div>
                   </div>
                 ))
               ) : (
-                <p>No Data Available.</p>
+                <p>No Data Available</p>
               )}
-              <div className='sm:block hidden'>
-                <Button type="button" onClick={addNonFormalEducation}>
-                  Tambah Data
-                </Button>
-              </div>
             </div>
 
             <div className="mt-6 flex justify-end">
