@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, Tooltip } from '@/components';
+import { Button, Container, TextField } from '@/components';
 import { useDispatch } from 'react-redux';
 import { updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
@@ -116,81 +116,71 @@ const Pendidikan = () => {
               <div className='flex justify-between'>
                 <h3 className='font-medium'>Pendidikan Formal</h3>
                 <div className='flex gap-2 items-center cursor-pointer'>
-                  {formik.values.formal.map((edu, index) => (
+                  {formik.values.formal.length > 0 && (
                     <div>
-                      <div key={index}>
-                        <Tooltip tooltip="Hapus">
-                          {formik.values.formal.length > 1 && (
-                            <button
-                              type="button"
-                              className='bg-gray-200 p-1 rounded-lg'
-                              onClick={() => removeFormalEducation(index)}
-                            >
-                              <FaTimes />
-                            </button>
-                          )}
-                        </Tooltip>
-                      </div>
+                      {formik.values.formal.length > 1 && (
+                        <button
+                          type="button"
+                          className='bg-gray-200 p-1 rounded-lg'
+                          onClick={() => removeFormalEducation(formik.values.formal.length - 1)}
+                        >
+                          <FaTimes />
+                        </button>
+                      )}
                     </div>
-                  ))}
+                  )}
                   <div>
-                    <Tooltip tooltip="Tambah">
-                      <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addFormalEducation}>
-                        <FaPlus />
-                      </button>
-                    </Tooltip>
+                    <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addFormalEducation}>
+                      <FaPlus />
+                    </button>
                   </div>
                 </div>
               </div>
-              {formik.values.formal?.length > 0 ? (
-                formik.values.formal.map((edu, index) => (
-                  <div key={index}>
-                    <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
-                      <TextField
-                        required
-                        label="Asal Sekolah"
-                        name={`formal[${index}].asal_sekolah`}
-                        value={edu.asal_sekolah}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.formal?.[index]?.asal_sekolah
-                            ? formik.errors.formal?.[index]?.asal_sekolah
-                            : ''
-                        }
-                      />
-                      <TextField
-                        required
-                        label="Masa Waktu"
-                        name={`formal[${index}].masa_waktu`}
-                        value={edu.masa_waktu}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.formal?.[index]?.masa_waktu
-                            ? formik.errors.formal?.[index]?.masa_waktu
-                            : ''
-                        }
-                      />
-                      <TextField
-                        required
-                        label="Keterangan Pendidikan"
-                        name={`formal[${index}].keterangan_pendidikan`}
-                        value={edu.keterangan_pendidikan}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.formal?.[index]?.keterangan_pendidikan
-                            ? formik.errors.formal?.[index]?.keterangan_pendidikan
-                            : ''
-                        }
-                      />
-                    </div>
+              {formik.values.formal.map((edu, index) => (
+                <div key={index}>
+                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
+                    <TextField
+                      required
+                      label="Asal Sekolah"
+                      name={`formal[${index}].asal_sekolah`}
+                      value={edu.asal_sekolah}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.formal?.[index]?.asal_sekolah
+                          ? formik.errors.formal?.[index]?.asal_sekolah
+                          : ''
+                      }
+                    />
+                    <TextField
+                      required
+                      label="Masa Waktu"
+                      name={`formal[${index}].masa_waktu`}
+                      value={edu.masa_waktu}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.formal?.[index]?.masa_waktu
+                          ? formik.errors.formal?.[index]?.masa_waktu
+                          : ''
+                      }
+                    />
+                    <TextField
+                      required
+                      label="Keterangan Pendidikan"
+                      name={`formal[${index}].keterangan_pendidikan`}
+                      value={edu.keterangan_pendidikan}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.formal?.[index]?.keterangan_pendidikan
+                          ? formik.errors.formal?.[index]?.keterangan_pendidikan
+                          : ''
+                      }
+                    />
                   </div>
-                ))
-              ) : (
-                <p>No Data Available</p>
-              )}
+                </div>
+              ))}
             </div>
 
             <hr />
@@ -199,79 +189,69 @@ const Pendidikan = () => {
               <div className='flex justify-between'>
                 <h3 className='font-medium'>Pendidikan Non Formal</h3>
                 <div className='flex gap-2 items-center cursor-pointer'>
-                  {formik.values.non_formal.map((edu, index) => (
+                  {formik.values.non_formal.length > 0 && (
                     <div>
-                      <div key={index}>
-                        <Tooltip tooltip="Hapus">
-                          {formik.values.non_formal.length > 1 && (
-                            <button
-                              type="button"
-                              className='bg-gray-200 p-1 rounded-lg'
-                              onClick={() => removeNonFormalEducation(index)}
-                            >
-                              <FaTimes />
-                            </button>
-                          )}
-                        </Tooltip>
-                      </div>
+                      {formik.values.non_formal.length > 1 && (
+                        <button
+                          type="button"
+                          className='bg-gray-200 p-1 rounded-lg'
+                          onClick={() => removeNonFormalEducation(formik.values.non_formal.length - 1)}
+                        >
+                          <FaTimes />
+                        </button>
+                      )}
                     </div>
-                  ))}
+                  )}
                   <div>
-                    <Tooltip tooltip="Tambah">
-                      <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addNonFormalEducation}>
-                        <FaPlus />
-                      </button>
-                    </Tooltip>
+                    <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addNonFormalEducation}>
+                      <FaPlus />
+                    </button>
                   </div>
                 </div>
               </div>
-              {formik.values.non_formal?.length > 0 ? (
-                formik.values.non_formal.map((edu, index) => (
-                  <div key={index}>
-                    <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
-                      <TextField
-                        required
-                        label="Nama Lembaga"
-                        name={`non_formal[${index}].nama_lembaga`}
-                        value={edu.nama_lembaga}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.non_formal?.[index]?.nama_lembaga
-                            ? formik.errors.non_formal?.[index]?.nama_lembaga
-                            : ''
-                        }
-                      />
-                      <TextField
-                        required
-                        label="Tahun Lulus"
-                        name={`non_formal[${index}].tahun_lulus`}
-                        value={edu.tahun_lulus}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.non_formal?.[index]?.tahun_lulus
-                            ? formik.errors.non_formal?.[index]?.tahun_lulus
-                            : ''
-                        }
-                      />
-                      <TextField
-                        type="file"
-                        label="Sertifikat"
-                        name={`non_formal[${index}].sertifikat`}
-                        onChange={(event) =>
-                          formik.setFieldValue(
-                            `non_formal[${index}].sertifikat`,
-                            event.currentTarget.files[0]
-                          )
-                        }
-                      />
-                    </div>
+              {formik.values.non_formal.map((edu, index) => (
+                <div key={index}>
+                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
+                    <TextField
+                      required
+                      label="Nama Lembaga"
+                      name={`non_formal[${index}].nama_lembaga`}
+                      value={edu.nama_lembaga}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.non_formal?.[index]?.nama_lembaga
+                          ? formik.errors.non_formal?.[index]?.nama_lembaga
+                          : ''
+                      }
+                    />
+                    <TextField
+                      required
+                      label="Tahun Lulus"
+                      name={`non_formal[${index}].tahun_lulus`}
+                      value={edu.tahun_lulus}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.non_formal?.[index]?.tahun_lulus
+                          ? formik.errors.non_formal?.[index]?.tahun_lulus
+                          : ''
+                      }
+                    />
+                    <TextField
+                      type="file"
+                      label="Sertifikat"
+                      name={`non_formal[${index}].sertifikat`}
+                      onChange={(event) =>
+                        formik.setFieldValue(
+                          `non_formal[${index}].sertifikat`,
+                          event.currentTarget.files[0]
+                        )
+                      }
+                    />
                   </div>
-                ))
-              ) : (
-                <p>No Data Available</p>
-              )}
+                </div>
+              ))}
             </div>
 
             <div className="mt-6 flex justify-end">

@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import { API_URL_edeluser } from '@/constants';
-import { CiTrash } from 'react-icons/ci';
+import { FaTimes, FaPlus } from "react-icons/fa";
 
 const Lainnya = () => {
   const { state } = useLocation();
@@ -52,7 +52,8 @@ const Lainnya = () => {
           { dispatch, redux: pegawaiReducer },
           payload,
           API_URL_edeluser, // Single API URL used for both add and update
-          'ADD_PEGAWAI' // Unified action for add/update
+          'ADD_PEGAWAI', // Unified action for add/update
+          'datalainnya'
         );
         navigate('/kepegawaian/pegawai');
       } catch (error) {
@@ -105,22 +106,25 @@ const Lainnya = () => {
                 accept="application/pdf" // Restrict to PDF files
                 onChange={(event) => handleFileChange(event, index)} // Handle file change
                 onBlur={formik.handleBlur}
-                className="w-full border border-gray-300 rounded-md p-2 text-gray-700 file:bg-gray-200 file:border-0 file:text-sm file:font-semibold file:text-gray-600 hover:file:bg-gray-300"
+                className="block w-full text-sm text-gray-500 
+                      file:mr-4 file:py-2 file:px-4 
+                      file:rounded-full file:border-0 
+                      file:text-sm file:font-semibold 
+                      file:bg-blue-500 file:text-white 
+                      hover:file:bg-blue-600"
               />
               {formik.touched.lainnya?.[index]?.data && formik.errors.lainnya?.[index]?.data && (
                 <span className="text-red-500">
                   {formik.errors.lainnya[index].data}
                 </span>
               )}
-              <Tooltip tooltip="Hapus">
-                <button
-                  type="button"
-                  className="text-red-500 cursor-pointer sm:block hidden"
-                  onClick={() => handleRemoveFile(index)}
-                >
-                  <CiTrash />
-                </button>
-              </Tooltip>
+              <button
+                type="button"
+                className="text-red-500 cursor-pointer sm:block hidden"
+                onClick={() => handleRemoveFile(index)}
+              >
+                <FaTimes />
+              </button>
             </div>
           ))}
 

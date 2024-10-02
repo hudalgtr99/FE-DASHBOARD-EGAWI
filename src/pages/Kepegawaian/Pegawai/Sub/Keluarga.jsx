@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import { API_URL_createuser, API_URL_edeluser } from '@/constants';
-import { CiTrash } from 'react-icons/ci';
+import { FaTimes, FaPlus } from "react-icons/fa";
 import Swal from 'sweetalert2';
 
 const Keluarga = () => {
@@ -174,36 +174,43 @@ const Keluarga = () => {
             />
             {Number(formik.values.anak) > 0 && (
               <div>
-                <label className="text-sm font-medium">Nama Anak</label>
-                {(formik.values.nama_anak || []).map((name, index) => (
-                  <div key={index} className="flex items-center space-x-4 mb-2">
-                    <TextField
-                      label={`Anak Ke-${index + 1}`}
-                      name={`nama_anak_${index}`}
-                      value={name}
-                      onChange={(e) => handleChangeChildName(index, e)}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.nama_anak ? formik.errors.nama_anak?.[index] : ''}
-                    />
-                    <Tooltip tooltip="Hapus">
-                      <button
-                        type="button"
-                        className="text-red-500 mt-6 cursor-pointer"
-                        onClick={() => handleRemoveChild(index)}
-                      >
-                        <CiTrash />
+                <div className='flex justify-between'>
+                  <label className="text-sm font-medium">Nama Anak</label>
+                  <div className='flex gap-2 items-center cursor-pointer'>
+                    {formik.values.nama_anak.length > 0 && (
+                      <div>
+                        {formik.values.nama_anak.length > 1 && (
+                          <button
+                            type="button"
+                            className='bg-gray-200 p-1 rounded-lg'
+                            onClick={() => handleRemoveChild(formik.values.nama_anak.length - 1)}
+                          >
+                            <FaTimes />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                    <div>
+                      <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={handleAddChild}>
+                        <FaPlus />
                       </button>
-                    </Tooltip>
+                    </div>
                   </div>
-                ))}
-
-                <Button
-                  type="button"
-                  className="text-white font-medium block"
-                  onClick={handleAddChild}
-                >
-                  Tambah Data
-                </Button>
+                </div>
+                <div>
+                  {formik.values.nama_anak.map((name, index) => (
+                    <div key={index} className="flex items-center space-x-4 mb-2">
+                      <TextField
+                        label={`Anak Ke-${index + 1}`}
+                        name={`nama_anak_${index}`}
+                        value={name}
+                        onChange={(e) => handleChangeChildName(index, e)}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.nama_anak ? formik.errors.nama_anak?.[index] : ''}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
