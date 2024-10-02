@@ -131,7 +131,7 @@ const EditProfilePribadiPage = () => {
           </button>
           <h1>Edit Data Pribadi</h1>
         </div>
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
+        <form onSubmit={formik.handleSubmit} className="sm:grid sm:grid-cols-2 sm:gap-4 max-[640px]:space-y-4">
           <TextField
             required
             label="Nama"

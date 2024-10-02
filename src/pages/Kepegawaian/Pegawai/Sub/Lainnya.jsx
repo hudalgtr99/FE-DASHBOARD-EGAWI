@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
@@ -7,7 +7,6 @@ import {
   Button,
   Container,
   Tooltip,
-  TextField,
 } from '@/components';
 import { useDispatch } from 'react-redux';
 import { updateData } from '@/actions';

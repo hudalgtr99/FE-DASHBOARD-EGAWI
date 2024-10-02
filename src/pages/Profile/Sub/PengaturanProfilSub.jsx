@@ -36,6 +36,9 @@ const PengaturanProfilSub = () => {
     datalainnya,
   } = data;
 
+  const formalEducation = JSON.parse(datapendidikan?.formal || '[]');
+  const nonFormalEducation = JSON.parse(datapendidikan?.non_formal || '[]');
+
   return (
     <div className='space-y-4'>
       <Container>
@@ -51,56 +54,56 @@ const PengaturanProfilSub = () => {
           </div>
         </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div className='flex'>
-            <span>Nama:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Nama:</span>
             <span className='ml-2'>{datapribadi.nama}</span>
           </div>
-          <div className='flex'>
-            <span>Username:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Username:</span>
             <span className='ml-2'>{datapribadi.username}</span>
           </div>
-          <div className='flex'>
-            <span>Email:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Email:</span>
             <span className='ml-2'>{datapribadi.email}</span>
           </div>
-          <div className='flex'>
-            <span>Jenis Kelamin:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Jenis Kelamin:</span>
             <span className='ml-2'>{datapribadi.jenis_kelamin}</span>
           </div>
-          <div className='flex'>
-            <span>No Identitas:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>No Identitas:</span>
             <span className='ml-2'>{datapribadi.no_identitas}</span>
           </div>
-          <div className='flex'>
-            <span>NPWP:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>NPWP:</span>
             <span className='ml-2'>{datapribadi.npwp}</span>
           </div>
-          <div className='flex'>
-            <span>Agama:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Agama:</span>
             <span className='ml-2'>{datapribadi.agama}</span>
           </div>
-          <div className='flex'>
-            <span>Alamat KTP:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Alamat KTP:</span>
             <span className='ml-2'>{datapribadi.alamat_ktp}</span>
           </div>
-          <div className='flex'>
-            <span>Alamat Domisili:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Alamat Domisili:</span>
             <span className='ml-2'>{datapribadi.alamat_domisili}</span>
           </div>
-          <div className='flex'>
-            <span>No Telepon:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>No Telepon:</span>
             <span className='ml-2'>{datapribadi.no_telepon}</span>
           </div>
-          <div className='flex'>
-            <span>Tempat Lahir:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Tempat Lahir:</span>
             <span className='ml-2'>{datapribadi.tempat_lahir}</span>
           </div>
-          <div className='flex'>
-            <span>Tanggal Lahir:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Tanggal Lahir:</span>
             <span className='ml-2'>{new Date(datapribadi.tgl_lahir).toLocaleDateString()}</span>
           </div>
-          <div className='flex'>
-            <span>Cabang:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Cabang:</span>
             <span className='ml-2'>{datapribadi.cabang?.nama}</span>
           </div>
         </div>
@@ -116,33 +119,33 @@ const PengaturanProfilSub = () => {
           </div>
         </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div className='flex'>
-            <span>Pangkat:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Pangkat:</span>
             <span className='ml-2'>{datapegawai?.pangkat?.nama || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Jabatan:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Jabatan:</span>
             <span className='ml-2'>{datapegawai?.jabatan?.nama || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Departemen:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Departemen:</span>
             <span className='ml-2'>{datapegawai?.departemen?.nama || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Divisi:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Divisi:</span>
             <span className='ml-2'>{datapegawai?.divisi?.nama || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Unit:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Unit:</span>
             <span className='ml-2'>{datapegawai?.unit?.nama || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Tanggal Bergabung:</span>
-            <span className='ml-2'>{datapegawai?.tgl_bergabung || '-'}</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Tanggal Bergabung:</span>
+            <span className='ml-2'>{new Date(datapegawai?.tgl_bergabung).toLocaleDateString() || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Tanggal Resign:</span>
-            <span className='ml-2'>{datapegawai?.tgl_resign || '-'}</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Tanggal Resign:</span>
+            <span className='ml-2'>{new Date(datapegawai?.tgl_resign).toLocaleDateString() || '-'}</span>
           </div>
         </div>
       </Container>
@@ -157,32 +160,32 @@ const PengaturanProfilSub = () => {
           </div>
         </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div className='flex'>
-            <span>Nama Ayah:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Nama Ayah:</span>
             <span className='ml-2'>{datakeluarga?.nama_ayah || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Nama Ibu:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Nama Ibu:</span>
             <span className='ml-2'>{datakeluarga?.nama_ibu || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Status Pernikahan:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Status Pernikahan:</span>
             <span className='ml-2'>{datakeluarga?.status_pernikahan || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Nama Pasangan:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Nama Pasangan:</span>
             <span className='ml-2'>{datakeluarga?.nama_pasangan || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Jumlah Anak:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Jumlah Anak:</span>
             <span className='ml-2'>{datakeluarga?.anak || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Nama Kontak Darurat:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Nama Kontak Darurat:</span>
             <span className='ml-2'>{datakeluarga?.nama_kontak_emergency || '-'}</span>
           </div>
-          <div className='flex'>
-            <span>Nomor Kontak Darurat:</span>
+          <div className='flex bg-gray-100 p-2 rounded-lg'>
+            <span className='font-medium'>Nomor Kontak Darurat:</span>
             <span className='ml-2'>{datakeluarga?.no_telepon_emergency || '-'}</span>
           </div>
         </div>
@@ -197,36 +200,44 @@ const PengaturanProfilSub = () => {
             </Link>
           </div>
         </div>
-        <div className='font-semibold mb-4'>Pendidikan Formal</div>
-        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4'>
-          <div className='flex'>
-            <span>Asal Sekolah:</span>
-            <span className='ml-2'>{datapendidikan?.asal_sekolah || '-'}</span>
-          </div>
-          <div className='flex'>
-            <span>Masa Waktu:</span>
-            <span className='ml-2'>{datapendidikan?.masa_waktu || '-'}</span>
-          </div>
-          <div className='flex'>
-            <span>Keterangan Pendidikan:</span>
-            <span className='ml-2'>{datapendidikan?.keterangan_pendidikan || '-'}</span>
-          </div>
+        <div className="font-semibold mb-4">Pendidikan Formal</div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          {formalEducation.map((item, index) => (
+            <React.Fragment key={index}>
+              <div className="flex bg-gray-100 p-2 rounded-lg">
+                <span className="font-medium">Asal Sekolah:</span>
+                <span className="ml-2">{item.asal_sekolah || '-'}</span>
+              </div>
+              <div className="flex bg-gray-100 p-2 rounded-lg">
+                <span className="font-medium">Masa Waktu:</span>
+                <span className="ml-2">{item.masa_waktu || '-'}</span>
+              </div>
+              <div className="flex bg-gray-100 p-2 rounded-lg">
+                <span className="font-medium">Keterangan Pendidikan:</span>
+                <span className="ml-2">{item.keterangan_pendidikan || '-'}</span>
+              </div>
+            </React.Fragment>
+          ))}
         </div>
 
-        <div className='font-semibold mb-4'>Pendidikan Non Formal</div>
-        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
-          <div className='flex'>
-            <span>Asal Lembaga:</span>
-            <span className='ml-2'>{datapendidikan?.nama_lembaga || '-'}</span>
-          </div>
-          <div className='flex'>
-            <span>Tahun Lulus:</span>
-            <span className='ml-2'>{datapendidikan?.tahun_lulus || '-'}</span>
-          </div>
-          <div className='flex'>
-            <span>Sertifikat:</span>
-            <span className='ml-2'>{datapendidikan?.sertifikat || '-'}</span>
-          </div>
+        <div className="font-semibold mb-4">Pendidikan Non Formal</div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {nonFormalEducation.map((item, index) => (
+            <React.Fragment key={index}>
+              <div className="flex bg-gray-100 p-2 rounded-lg">
+                <span className="font-medium">Asal Lembaga:</span>
+                <span className="ml-2">{item.nama_lembaga || '-'}</span>
+              </div>
+              <div className="flex bg-gray-100 p-2 rounded-lg">
+                <span className="font-medium">Tahun Lulus:</span>
+                <span className="ml-2">{item.tahun_lulus || '-'}</span>
+              </div>
+              <div className="flex bg-gray-100 p-2 rounded-lg">
+                <span className="font-medium">Sertifikat:</span>
+                <span className="ml-2">{item.sertifikat || '-'}</span>
+              </div>
+            </React.Fragment>
+          ))}
         </div>
       </Container>
 
@@ -239,8 +250,8 @@ const PengaturanProfilSub = () => {
             </Link>
           </div>
         </div>
-        <div className='flex'>
-          <span>Input data lainnya:</span>
+        <div className='flex bg-gray-100 p-2 rounded-lg'>
+          <span className='font-medium'>Input data lainnya:</span>
           <span className='ml-2'>{datalainnya?.data_lainnya || '-'}</span>
         </div>
       </Container>

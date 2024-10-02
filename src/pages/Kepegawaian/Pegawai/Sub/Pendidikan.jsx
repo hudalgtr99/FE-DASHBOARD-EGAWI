@@ -16,8 +16,8 @@ const Pendidikan = () => {
   const dispatch = useDispatch();
 
   // Parse the formal and non_formal fields
-  const formalData = JSON.parse(state?.item?.datapendidikan.formal || '[]');
-  const nonFormalData = JSON.parse(state?.item?.datapendidikan.non_formal || '[]');
+  const formalData = JSON.parse(state?.item?.datapendidikan?.formal || '[]');
+  const nonFormalData = JSON.parse(state?.item?.datapendidikan?.non_formal || '[]');
 
   const initialData = {
     user_id: state?.item?.datapribadi.user_id || '',

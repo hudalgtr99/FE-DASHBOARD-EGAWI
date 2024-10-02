@@ -32,16 +32,12 @@ const EditKehadiran = () => {
         longitude: values.longitude,
       };
 
-      const formData = new FormData();
-      formData.append("waktu", values.tanggal);
-      formData.append("tipe_absen", values.tipe_absen);
-      formData.append("lokasi", JSON.stringify(locationNow));
-      formData.append("image", values.gambar);
-
-      // Log formData entries
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
+      const formData = {
+        waktu: values.tanggal,
+        tipe_absen: values.tipe_absen,
+        lokasi: JSON.stringify(locationNow),
+        image: values.gambar, // This is the base64 encoded string
+      };
 
       updateFormData(
         { dispatch, redux: userReducer },
@@ -57,7 +53,7 @@ const EditKehadiran = () => {
   const handleFileChange = (e) => {
     const file = e.currentTarget.files[0];
     if (file) {
-      console.log("Uploaded file type:", file.type); // Log the file type
+      console.log("Uploaded file type:", file.type); 
       const reader = new FileReader();
       reader.onloadend = () => {
         formik.setFieldValue('gambar', reader.result);
