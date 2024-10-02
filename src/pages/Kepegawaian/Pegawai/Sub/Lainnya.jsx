@@ -114,7 +114,7 @@ const Lainnya = () => {
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div className='flex justify-between'>
-            <h3 className='font-medium'>Pendidikan lainnya</h3>
+            <h3 className='font-medium'>Data lainnya</h3>
             <div className='flex gap-2 items-center cursor-pointer'>
               {formik.values.data_lainnya.length > 0 && (
                 <div>

@@ -147,70 +147,72 @@ const EditProfilePegawaiPage = () => {
           </button>
           <h1>Edit Data Pegawai</h1>
         </div>
-        <form onSubmit={formik.handleSubmit} className="sm:grid sm:grid-cols-2 sm:gap-4 max-[640px]:space-y-4">
-          <Select
-            required
-            label="Pangkat"
-            name="pangkat_id"
-            value={pangkatOptions.find(option => option.value === formik.values.pangkat_id) || null}
-            onChange={(option) => formik.setFieldValue('pangkat_id', option ? option.value : '')}
-            options={pangkatOptions}
-            error={formik.touched.pangkat_id ? formik.errors.pangkat_id : ''}
-          />
-          <Select
-            required
-            label="Jabatan"
-            name="jabatan_id"
-            value={jabatanOptions.find(option => option.value === formik.values.jabatan_id) || null}
-            onChange={(option) => formik.setFieldValue('jabatan_id', option ? option.value : '')}
-            options={jabatanOptions}
-            error={formik.touched.jabatan_id ? formik.errors.jabatan_id : ''}
-          />
-          <Select
-            required
-            label="Departemen"
-            name="departemen_id"
-            value={departemenOptions.find(option => option.value === formik.values.departemen_id) || null}
-            onChange={(option) => formik.setFieldValue('departemen_id', option ? option.value : '')}
-            options={departemenOptions}
-            error={formik.touched.departemen_id ? formik.errors.departemen_id : ''}
-          />
-          <Select
-            required
-            label="Divisi"
-            name="divisi_id"
-            value={divisiOptions.find(option => option.value === formik.values.divisi_id) || null}
-            onChange={(option) => formik.setFieldValue('divisi_id', option ? option.value : '')}
-            options={divisiOptions}
-            error={formik.touched.divisi_id ? formik.errors.divisi_id : ''}
-          />
-          <Select
-            required
-            label="Unit"
-            name="unit_id"
-            value={unitOptions.find(option => option.value === formik.values.unit_id) || null}
-            onChange={(option) => formik.setFieldValue('unit_id', option ? option.value : '')}
-            options={unitOptions}
-            error={formik.touched.unit_id ? formik.errors.unit_id : ''}
-          />
-          <TextField
-            required
-            label="Tanggal Bergabung"
-            name="tgl_bergabung"
-            type="date"
-            value={formik.values.tgl_bergabung}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.tgl_bergabung ? formik.errors.tgl_bergabung : ''}
-          />
-          <TextField
-            label="Tanggal Resign"
-            name="tgl_resign"
-            type="date"
-            value={formik.values.tgl_resign}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+        <form onSubmit={formik.handleSubmit} >
+          <div className="sm:grid sm:grid-cols-2 sm:gap-4 max-[640px]:space-y-4">
+            <Select
+              required
+              label="Pangkat"
+              name="pangkat_id"
+              value={pangkatOptions.find(option => option.value === formik.values.pangkat_id) || null}
+              onChange={(option) => formik.setFieldValue('pangkat_id', option ? option.value : '')}
+              options={pangkatOptions}
+              error={formik.touched.pangkat_id ? formik.errors.pangkat_id : ''}
+            />
+            <Select
+              required
+              label="Jabatan"
+              name="jabatan_id"
+              value={jabatanOptions.find(option => option.value === formik.values.jabatan_id) || null}
+              onChange={(option) => formik.setFieldValue('jabatan_id', option ? option.value : '')}
+              options={jabatanOptions}
+              error={formik.touched.jabatan_id ? formik.errors.jabatan_id : ''}
+            />
+            <Select
+              required
+              label="Departemen"
+              name="departemen_id"
+              value={departemenOptions.find(option => option.value === formik.values.departemen_id) || null}
+              onChange={(option) => formik.setFieldValue('departemen_id', option ? option.value : '')}
+              options={departemenOptions}
+              error={formik.touched.departemen_id ? formik.errors.departemen_id : ''}
+            />
+            <Select
+              required
+              label="Divisi"
+              name="divisi_id"
+              value={divisiOptions.find(option => option.value === formik.values.divisi_id) || null}
+              onChange={(option) => formik.setFieldValue('divisi_id', option ? option.value : '')}
+              options={divisiOptions}
+              error={formik.touched.divisi_id ? formik.errors.divisi_id : ''}
+            />
+            <Select
+              required
+              label="Unit"
+              name="unit_id"
+              value={unitOptions.find(option => option.value === formik.values.unit_id) || null}
+              onChange={(option) => formik.setFieldValue('unit_id', option ? option.value : '')}
+              options={unitOptions}
+              error={formik.touched.unit_id ? formik.errors.unit_id : ''}
+            />
+            <TextField
+              required
+              label="Tanggal Bergabung"
+              name="tgl_bergabung"
+              type="date"
+              value={formik.values.tgl_bergabung}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.tgl_bergabung ? formik.errors.tgl_bergabung : ''}
+            />
+            <TextField
+              label="Tanggal Resign"
+              name="tgl_resign"
+              type="date"
+              value={formik.values.tgl_resign}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
           <div className="mt-6 flex justify-end">
             <Button type="submit" loading={addPegawaiLoading}>
               Simpan
