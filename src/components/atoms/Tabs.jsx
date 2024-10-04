@@ -44,15 +44,14 @@ const Tabs = ({ tabs }) => {
             </ul>
 
             {/* Tab content */}
-            <div className="tab-content mt-4">
+            <div className="mt-4">
                 {tabs.listTabs.map((content, contentIdx) => (
                     <div
                         key={contentIdx}
-                        className={`tab-pane transition-all duration-500 ease-in-out transform 
+                        className={`transition-all duration-500 ease-in-out transform 
                         ${activeTab === content.linkTabs ? "block fade-in-slide-up" : "hidden fade-out-slide-down"}`}
                         id={content.linkTabs}
                         role="tabpanel"
-                        aria-labelledby={`tab-${contentIdx}`}
                     >
                         {content.contentTabs}
                     </div>

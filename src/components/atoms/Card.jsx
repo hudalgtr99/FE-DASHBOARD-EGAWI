@@ -143,7 +143,7 @@ const Card = ({
           <Tooltip tooltip="Edit">
             {onEdit && (
               <button
-                className="text-green-500 p-1 rounded-full"
+                className="text-green-500 p-2 mx-2 rounded-full bg-gray-100"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering onClick if Card is clickable
                   onEdit();
@@ -156,7 +156,7 @@ const Card = ({
           <Tooltip tooltip="Hapus">
             {doDelete && data && (
               <button
-                className="text-red-500 p-1 rounded-full"
+                className="text-red-500 p-2 mx-2 rounded-full bg-gray-100"
                 onClick={(e) => {
                   doDelete(data.pk);
                 }}

@@ -142,7 +142,7 @@ const TableRow = ({ children, style, expandable = null }) => {
 							style={{
 								height: isExpanded ? `${ref.current.scrollHeight}px` : "0px",
 							}}
-							className={`overflow-hidden transition-[height] duration-300 ease-in-out ${isExpanded ? "border-b dark:border-base-500" : ""
+							className={`overflow-hidden transition-[height] duration-300 ease-in-out ${isExpanded ? "border-b dark:border-gray-500" : ""
 								}`}
 						>
 							{expandable}
@@ -170,7 +170,7 @@ const TableHeader = ({ children, style, center = false }) => {
 			style={{
 				...style,
 			}}
-			className={`border-b dark:border-[#20282A] bg-gray-100 dark:bg-gray-500 font-medium capitalize whitespace-nowrap tracking-wide px-2 sticky ${center ? "text-center" : "text-left"
+			className={`border-b dark:border-[#20282A] bg-gray-100 dark:bg-gray-500 font-medium capitalize whitespace-nowrap tracking-wide px-2 ${center ? "text-center" : "text-left"
 				}`}
 		>
 			{children}
@@ -201,7 +201,7 @@ const TableData = ({
 				...style,
 			}}
 			colSpan={colspan}
-			className={`border-b dark:border-base-500 px-2 ${center ? "text-center" : "text-left"
+			className={`border-b dark:border-gray-500 px-2 ${center ? "text-center" : "text-left"
 				}`}
 		>
 			{children}

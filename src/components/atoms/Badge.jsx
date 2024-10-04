@@ -96,7 +96,7 @@ const Badge = ({
             <div
                 ref={refs.setFloating}
                 style={{ ...floatingStyles, ...style }}
-                className={`absolute z-10 border-2 flex items-center justify-center border-white dark:border-base-600 rounded-full ${hidden ? "hidden" : ""
+                className={`absolute z-10 border-2 flex items-center justify-center border-white dark:border-gray-600 rounded-full ${hidden ? "hidden" : ""
                     } ${badgeRounded} ${badgeSize}  ${className}`}
             >
                 {value}

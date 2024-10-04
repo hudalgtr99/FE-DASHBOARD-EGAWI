@@ -139,7 +139,7 @@ const DatePicker = ({
 				<div
 					ref={refs.setFloating}
 					style={floatingStyles}
-					className={`bg-white dark:bg-gray-700 w-fit rounded-lg shadow-lg border border-base-50 dark:border-base-500 z-10 ${position}`}
+					className={`bg-white dark:bg-gray-700 w-fit rounded-lg shadow-lg border border-base-50 dark:border-gray-500 z-10 ${position}`}
 				>
 					<DayPicker
 						className="m-0 p-4 text-sm"

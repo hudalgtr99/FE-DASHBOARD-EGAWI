@@ -76,9 +76,6 @@ const Pribadi = () => {
       tempat_lahir: Yup.string().required("Tempat Lahir is required"),
       tgl_lahir: Yup.date().required("Tanggal Lahir is required"),
       agama: Yup.string().required("Agama is required"),
-      npwp: Yup.string().required("NPWP is required"),
-      alamat_ktp: Yup.string().required("Alamat KTP is required"),
-      alamat_domisili: Yup.string().required("Alamat Domisili is required"),
       cabang_id: Yup.string().required("Cabang is required"),
       titik_lokasi: Yup.array().min(1, "At least one location must be selected").required("Titik Lokasi is required"),
     }),
@@ -225,7 +222,6 @@ const Pribadi = () => {
                 error={formik.touched.agama ? formik.errors.agama : ''}
               />
               <TextField
-                required
                 label="NPWP"
                 name="npwp"
                 value={formik.values.npwp}
@@ -236,7 +232,6 @@ const Pribadi = () => {
             </div>
             <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4'>
               <TextArea
-                required
                 label="Alamat KTP"
                 name="alamat_ktp"
                 value={formik.values.alamat_ktp}
@@ -245,7 +240,6 @@ const Pribadi = () => {
                 error={formik.touched.alamat_ktp ? formik.errors.alamat_ktp : ''}
               />
               <TextArea
-                required
                 label="Alamat Domisili"
                 name="alamat_domisili"
                 value={formik.values.alamat_domisili}
