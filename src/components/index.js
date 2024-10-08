@@ -22,6 +22,7 @@ import Popover from "./atoms/Popover";
 import TextArea from "./forms/TextArea";
 import TextField from "./forms/TextField";
 import DatePicker from "./forms/DatePicker";
+import Slip from "./molecules/Slip";
 
 export {
 	Avatar,
@@ -48,4 +49,5 @@ export {
 	TextArea,
 	TextField,
 	DatePicker,
+	Slip,
 };

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@dabeng/react-orgchart": "^1.0.3",
+    "@develoka/angka-terbilang-js": "^1.4.2",
     "@floating-ui/react": "^0.26.23",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
@@ -47,6 +48,7 @@
     "react-select": "^5.8.0",
     "react-spinners": "^0.14.1",
     "react-text-truncate": "^0.19.0",
+    "react-to-print": "^3.0.1",
     "react-transition-group": "^4.4.5",
     "sweetalert2": "^11.12.4",
     "use-ripple-hook": "^1.0.24",

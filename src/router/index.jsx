@@ -29,6 +29,7 @@ import EditProfilePegawaiPage from "@/pages/Profile/Sub/EditProfilePegawaiPage";
 import EditProfileKeluargaPage from "@/pages/Profile/Sub/EditProfileKeluargaPage";
 import EditProfilePendidikanPage from "@/pages/Profile/Sub/EditProfilePendidikanPage";
 import EditProfileLainnyaPage from "@/pages/Profile/Sub/EditProfileLainnyaPage";
+import SlipGaji from "@/pages/MasterData/Gaji/SlipGaji";
 
 const Router = () => {
 	return (
@@ -87,6 +88,7 @@ const Router = () => {
 
 					{/* Gaji */}
 					<Route path="/gaji/form" element={<GajiForm />} />
+					<Route path="/gaji/slip" element={<SlipGaji />} />
 
 					{/* Kehadiran */}
 					<Route path="/asesmen/kehadiran/detail" element={<DetailKehadiran />} />
