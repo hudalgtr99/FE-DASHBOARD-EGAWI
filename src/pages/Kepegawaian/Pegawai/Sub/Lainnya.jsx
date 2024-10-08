@@ -37,28 +37,10 @@ const Lainnya = () => {
     onSubmit: async (values) => {
       console.log("Submitting Values: ", values); // Log the values
       try {
-        const formData = new FormData();
-        formData.append("user_id", values.user_id);
-
-        // Append files to FormData under 'datalainnya'
-        values.lainnya.forEach((item) => {
-          if (item.data) {
-            formData.append(`datalainnya`, item.data); // Append files under the 'datalainnya' key
-          }
-        });
-
-        // Prepare the 'lainnya' data
-        const lainnyaData = values.lainnya.map(item => ({
-          lainnya: item.data ? "" : item.link ? item.link : null,
-        }));
-
-        // Append the 'lainnya' JSON data
-        formData.append("lainnya", JSON.stringify(lainnyaData));
-
         const payload = {
           pk: "datalainnya",
           user_id: values.user_id,
-          datalainnya: formData, // Sending FormData
+          lainnya: JSON.stringify(values.lainnya), // Sending FormData
         };
 
         await updateData(
@@ -134,8 +116,8 @@ const Lainnya = () => {
             </div>
           </div>
           {formik.values.lainnya.map((item, index) => (
-            <div key={index} className="flex items-center gap-4">
-              <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
+            <div key={index} className="items-center gap-4">
+              <label htmlFor={`file-${index}`} className="block">{`File Ke-${index + 1}`}</label>
               <input
                 type="file"
                 id={`file-${index}`}
@@ -154,6 +136,16 @@ const Lainnya = () => {
                 <span className="text-red-500">
                   {formik.errors.lainnya[index].data}
                 </span>
+              )}
+              {item.data && (
+                <a
+                  href={URL.createObjectURL(item.data)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500"
+                >
+                  Preview File
+                </a>
               )}
             </div>
           ))}
