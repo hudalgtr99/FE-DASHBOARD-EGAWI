@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container } from '@/components';
 import { useDispatch } from 'react-redux';
-import { updateData } from '@/actions';
+import { updateFormData } from '@/actions';
 import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
 import { API_URL_edeluser } from '@/constants';
 import { FaTimes, FaPlus } from "react-icons/fa";
@@ -18,43 +18,41 @@ const Lainnya = () => {
   const formik = useFormik({
     initialValues: {
       user_id: state?.item?.datapribadi.user_id || '',
-      lainnya: state?.item?.datalainnya?.lainnya || [{ data: null, link: '' }],
+      lainnya: state?.item?.datalainnya?.lainnya || [],
+      datalainnya: state?.item?.datalainnya?.datalainnya || [],
     },
     validationSchema: Yup.object().shape({
       lainnya: Yup.array().of(
         Yup.object().shape({
-          data: Yup.mixed()
-            .nullable()
-            .test(
-              "fileType",
-              "Only PDF files are allowed",
-              (value) => !value || (value && value.type === "application/pdf")
-            ),
-          link: Yup.string().nullable(),
+          link: Yup.string().url('Invalid URL').nullable(),
+          data: Yup.mixed().required('A file or link is required'),
         })
-      ),
+      ).required('At least one item is required'),
     }),
     onSubmit: async (values) => {
       console.log("Submitting Values: ", values); // Log the values
-      try {
-        const payload = {
-          pk: "datalainnya",
-          user_id: values.user_id,
-          lainnya: JSON.stringify(values.lainnya), // Sending FormData
-        };
+      const formData = new FormData();
+      formData.append("user_id", values.user_id);
 
-        await updateData(
-          { dispatch, redux: pegawaiReducer },
-          payload,
-          API_URL_edeluser,
-          "ADD_PEGAWAI",
-          "datalainnya"
-        );
+      // Map your 'lainnya' structure to JSON string
+      formData.append("lainnya", JSON.stringify(values.lainnya.map(item => ({
+        lainnya: item.data ? "" : item.link ? item.link : null,
+      }))));
 
-        navigate('/kepegawaian/pegawai'); // Navigate after successful submission
-      } catch (error) {
-        console.error('Error in form submission: ', error);
-      }
+      // Append 'datalainnya' to FormData
+      values.lainnya.forEach(item => {
+        formData.append("datalainnya", item.data ? item.data : item.link);
+      });
+
+      await updateFormData(
+        { dispatch, redux: pegawaiReducer },
+        formData,
+        API_URL_edeluser,
+        "ADD_PEGAWAI",
+        "datalainnya"
+      );
+
+      navigate('/kepegawaian/pegawai'); // Navigate after successful submission
     },
   });
 
