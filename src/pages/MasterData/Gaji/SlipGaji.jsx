@@ -3,23 +3,20 @@ import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 
 const SlipGaji = () => {
-    const [selectedTemplate, setSelectedTemplate] = useState({
-        value: 1,
-        label: "Slip Gaji Karyawan",
-    });
     const ref = useRef();
     const handlePrint = useReactToPrint({
         content: () => ref.current,
-        documentTitle: selectedTemplate.label,
+        documentTitle: "Slip Gaji Karyawan", // Set the document title directly
     });
+
     const [slip] = useState({
         id: 1,
         pegawai: {
             id: 47,
-            name: "Ayu Fitriani",
-            address: "Jl. Pulau Legundi gg family no 56",
-            tgl_masuk: "1 Januari 2020",
-            periode_gaji: "5 Desember 2023",
+            name: "Ayu Fitriani (PG-001)",
+            address: "Desain Grafis / Staff",
+            tgl_masuk: "16 Januari 2020",
+            periode_gaji: "10 Desember 2024",
         },
         date: "20 November 2023",
         pendapatan: [
@@ -60,10 +57,9 @@ const SlipGaji = () => {
             </div>
             <div className="shadow-lg rounded-lg bg-white dark:bg-base-600 overflow-hidden">
                 <Slip
-                    type={selectedTemplate.value}
+                    ref={ref}
                     data={slip}
                     company={company}
-                    ref={ref}
                 />
             </div>
         </div>

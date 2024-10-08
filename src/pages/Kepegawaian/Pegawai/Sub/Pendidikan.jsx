@@ -16,8 +16,8 @@ const Pendidikan = () => {
   const dispatch = useDispatch();
 
   // Parse the formal and non_formal fields
-  const formalData = JSON.parse(state?.item?.datapendidikan?.formal || '[]');
-  const nonFormalData = JSON.parse(state?.item?.datapendidikan?.non_formal || '[]');
+  const formalData = JSON.parse(state?.item?.datapendidikan.formal || '[]');
+  const nonFormalData = JSON.parse(state?.item?.datapendidikan.non_formal || '[]');
 
   const initialData = {
     user_id: state?.item?.datapribadi.user_id || '',
@@ -25,7 +25,7 @@ const Pendidikan = () => {
       { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
     ],
     non_formal: nonFormalData.length > 0 ? nonFormalData : [
-      { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
+      { nama_lembaga: '', tahun_lulus: '', sertifikat: '' },
     ],
   };
 
@@ -241,6 +241,7 @@ const Pendidikan = () => {
                     <TextField
                       type="file"
                       label="Sertifikat"
+                      accept="application/pdf"
                       name={`non_formal[${index}].sertifikat`}
                       onChange={(event) =>
                         formik.setFieldValue(

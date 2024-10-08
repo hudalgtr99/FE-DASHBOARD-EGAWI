@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 /**
  *
  * @param {{
- * type: 1 | 2 | 3;
  * data: object;
  * company: object;
  * logo: any;
@@ -123,22 +122,12 @@ const Slip = forwardRef(({ logo, data, company }, ref) => {
 			</div>
 		</div>
 	);
-
-	return null;
 });
 
 Slip.propTypes = {
-	type: PropTypes.oneOf([1, 2, 3]),
 	data: PropTypes.object,
 	company: PropTypes.object,
 	logo: PropTypes.any,
-};
-
-Slip.defaultProps = {
-	type: 1,
-	data: {},
-	company: {},
-	logo: "LOGO",
 };
 
 export default Slip;

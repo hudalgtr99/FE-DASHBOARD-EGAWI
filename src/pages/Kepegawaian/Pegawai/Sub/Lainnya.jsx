@@ -113,27 +113,24 @@ const Lainnya = () => {
           <h1>Data Lainnya</h1>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className='flex justify-between'>
-            <h3 className='font-medium'>Data lainnya</h3>
-            <div className='flex gap-2 items-center cursor-pointer'>
-              {formik.values.lainnya.length > 0 && (
-                <div>
-                  {formik.values.lainnya.length > 1 && (
-                    <button
-                      type="button"
-                      className='bg-gray-200 p-1 rounded-lg'
-                      onClick={() => handleRemoveFile(formik.values.lainnya.length - 1)}
-                    >
-                      <FaTimes />
-                    </button>
-                  )}
-                </div>
-              )}
+          <div className='flex gap-2 justify-end items-center cursor-pointer'>
+            {formik.values.lainnya.length > 0 && (
               <div>
-                <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={handleAddFile}>
-                  <FaPlus />
-                </button>
+                {formik.values.lainnya.length > 1 && (
+                  <button
+                    type="button"
+                    className='bg-gray-200 p-1 rounded-lg'
+                    onClick={() => handleRemoveFile(formik.values.lainnya.length - 1)}
+                  >
+                    <FaTimes />
+                  </button>
+                )}
               </div>
+            )}
+            <div>
+              <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={handleAddFile}>
+                <FaPlus />
+              </button>
             </div>
           </div>
           {formik.values.lainnya.map((item, index) => (

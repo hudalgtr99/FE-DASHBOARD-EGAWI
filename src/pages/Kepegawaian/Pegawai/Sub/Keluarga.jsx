@@ -163,16 +163,18 @@ const Keluarga = () => {
                 />
               )}
             </div>
-            <TextField
-              type="number"
-              label="Jumlah Anak"
-              name="anak"
-              value={formik.values.anak}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.anak ? formik.errors.anak : ''}
-            />
-            {Number(formik.values.anak) > 0 && (
+            {formik.values.status_pernikahan != 'belum menikah' && (
+              <TextField
+                type="number"
+                label="Jumlah Anak"
+                name="anak"
+                value={formik.values.anak}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.anak ? formik.errors.anak : ''}
+              />
+            )}
+            {Number(formik.values.anak) > 0 && formik.values.status_pernikahan != 'belum menikah' && (
               <div>
                 <div className='flex justify-between'>
                   <label className="text-sm font-medium">Nama Anak</label>
