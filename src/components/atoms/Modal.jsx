@@ -33,6 +33,7 @@ const Modal = ({
 
 	const contentRef = useRef();
 
+<<<<<<< HEAD
 	const onBackDropClick = () => {
 		if (!persistent) {
 			setShow(false);
@@ -131,6 +132,29 @@ const Modal = ({
 			</Transition.Child>
 		</Transition>
 	);
+=======
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 dark:bg-opacity-75">
+      <div
+        ref={modalRef}
+        className="bg-white border-2 border-black rounded-lg pb-6 mx-2 w-full max-w-[600px] max-h-[600px] overflow-y-auto hidden-scroll dark:bg-gray-900 dark:text-white"
+      >
+        <div className="flex bg-gray-100 px-6 py-4 rounded-t-lg justify-between items-center mb-4 dark:bg-gray-800 dark:text-white">
+          <h2 className="text-xl font-bold">{title}</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+          >
+            <FaTimes />
+          </button>
+        </div>
+        <div className="relative px-6">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+>>>>>>> eada576d240605ae594c340d36868ed04828c3d8
 };
 
 Modal.propTypes = {
