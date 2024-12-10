@@ -7,10 +7,12 @@ import potonganReducers from "./potonganReducers";
 import authReducers from "./authReducers";
 import kepegawaianReducers from "./kepegawaianReducers";
 import asesmenReducers from "./asesmenReducers";
-import cabangReducers from "./cabangReducers";
+import perusahaanReducers from "./perusahaanReducers";
 import kalenderReducers from "./kalenderReducers";
 import tugasReducers from "./penugasanReducers";
 import apiReducers from "./apiReducers";
+import lokasiAbsen from "./lokasiAbsenReducers";
+import jamKerja from "./jamKerjaReducers";
 
 export default configureStore({
   reducer: {
@@ -23,8 +25,10 @@ export default configureStore({
     auth: authReducers,
     kepegawaian: kepegawaianReducers,
     asesmen: asesmenReducers,
-    cabang: cabangReducers,
+    perusahaan: perusahaanReducers,
     kalender: kalenderReducers,
     tugas: tugasReducers,
+    absen: lokasiAbsen,
+    jam_kerja: jamKerja,
   },
 });

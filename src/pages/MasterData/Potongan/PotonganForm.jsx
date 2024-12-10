@@ -75,7 +75,7 @@ const PotonganForm = () => {
                             placeholder="Enter Nama Potongan"
                             value={formik.values.nama}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            onBlur={(e) => formik.handleBlur}
                             error={formik.touched.nama && formik.errors.nama}
                         />
                         <TextField
@@ -85,7 +85,7 @@ const PotonganForm = () => {
                             placeholder="Enter Nominal"
                             value={formik.values.nominal}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            onBlur={(e) => formik.handleBlur}
                             error={formik.touched.nominal && formik.errors.nominal}
                         />
                         <div className="mt-6 flex justify-end">

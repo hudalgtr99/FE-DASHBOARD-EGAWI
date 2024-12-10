@@ -1,39 +1,46 @@
-import React, { Fragment, useState } from "react";
-
-// components
-import { Tabs } from "@/components";
-
-// sub
+import React, { Fragment, useEffect, useState } from "react";
+import { TabsOld } from "@/components"; // Ensure this component handles accessibility
 import TerimaSub from "./Sub/TerimaSub";
 import TolakSub from "./Sub/TolakSub";
-import ValidasiIzinSub from "./Sub/ValidasiIzinSub";
+import ValidasiIzinSub from "./Sub/ValidasiSub";
 
 const CutiPage = () => {
-  const [tabs] = useState({
-    idTabs: "cutiTabs",
-    idContents: "cutiTabs-Content",
-    listTabs: [
-      {
-        nameTabs: "Validasi Cuti",
-        linkTabs: "cutiValidasiIzin",
-        contentTabs: <ValidasiIzinSub />,
-      },
-      {
-        nameTabs: "Cuti Diterima",
-        linkTabs: "cutiTerima",
-        contentTabs: <TerimaSub />,
-      },
-      {
-        nameTabs: "Cuti Ditolak",
-        linkTabs: "cutiTolak",
-        contentTabs: <TolakSub />,
-      },
-    ],
-  });
+  const tabNames = ["Validasi Cuti", "Cuti Diterima", "Cuti Ditolak"];
+  const tabContents = [
+    <ValidasiIzinSub />,
+    <TerimaSub />,
+    <TolakSub />,
+  ];
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  // Effect to update active tab based on URL hash
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash && tabNames.includes(hash)) {
+      setActiveTab(tabNames.indexOf(hash));
+    }
+  }, [tabNames]);
+
+  // Handle tab change
+  const handleTabChange = (index) => {
+    window.location.hash = tabNames[index]; // Update the hash in the URL
+    setActiveTab(index); // Set the active tab
+  };
 
   return (
     <Fragment>
-      <Tabs tabs={tabs} />
+      <TabsOld
+        tab={tabNames}
+        defaultindex={activeTab}
+        onTabChange={handleTabChange}
+      >
+        {tabContents.map((content, index) => (
+          <div key={index} style={{ display: index === activeTab ? "block" : "none" }}>
+            {content}
+          </div>
+        ))}
+      </TabsOld>
     </Fragment>
   );
 };

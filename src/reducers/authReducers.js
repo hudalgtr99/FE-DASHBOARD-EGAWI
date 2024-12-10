@@ -21,6 +21,10 @@ export const authReducers = createSlice({
     addAkunResult: false,
     addAkunLoading: false,
     deleteAkunResult: false,
+    // Added Absensi state
+    getDataAbsensiResult: false,
+    getDataAbsensiLoading: false,
+    getDataAbsensiError: false,
   },
   reducers: {
     authReducer: (state, action) => {
@@ -86,6 +90,14 @@ export const authReducers = createSlice({
             ...state,
             addProfileResult: payload.data,
             addProfileLoading: payload.loading,
+          };
+        // Added Absensi cases
+        case "GET_ABSENSI":
+          return {
+            ...state,
+            getDataAbsensiResult: payload.data,
+            getDataAbsensiLoading: payload.loading,
+            getDataAbsensiError: payload.errorMessage,
           };
         default:
           return state;

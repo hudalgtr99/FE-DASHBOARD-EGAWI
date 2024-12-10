@@ -1,31 +1,44 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 import { Container } from "@/components";
 import { isAuthenticated } from "@/authentication/authenticationApi";
-import axiosAPI from "@/authentication/axiosApi";
-import { API_URL_getakun } from "@/constants";
-import { BsPencil } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { fetchUserDetails } from "@/constants/user";
+import { jwtDecode } from "jwt-decode";
+import { FileInput, TextField } from "../../../components";
+import { BsPencil } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const PengaturanProfilSub = () => {
-  const [data, setData] = useState(null); // State to store fetched data
+  const [data, setData] = useState(null);
+  const [auth, setAuth] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await axiosAPI.get(
-        `${API_URL_getakun}${isAuthenticated().user_id}`
-      );
-      setData(response.data[0]); // Assuming the response is an array, get the first object
-    } catch (error) {
-      console.error('Error fetching data:', error);
+  useEffect(() => {
+    const token = isAuthenticated();
+    if (token) {
+      setAuth(jwtDecode(token));
     }
   }, []);
+
+  const fetchData = useCallback(async () => {
+    if (auth?.user_id) {
+      try {
+        setLoading(true);
+        const response = await fetchUserDetails();
+        setData(response);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [auth]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  if (!data) {
-    return <div>Loading...</div>; // Loading state
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   const {
@@ -34,241 +47,231 @@ const PengaturanProfilSub = () => {
     datakeluarga,
     datapendidikan,
     datalainnya,
-  } = data;
+  } = data || {};
 
-  const formalEducation = JSON.parse(datapendidikan?.formal || '[]');
-  const nonFormalEducation = JSON.parse(datapendidikan?.non_formal || '[]');
+  const formalEducation = JSON.parse(datapendidikan?.formal || "[]");
+  const nonFormalEducation = JSON.parse(datapendidikan?.non_formal || "[]");
+  const datalainnyaNew = JSON.parse(datalainnya?.data || "[]");
 
   return (
-    <div className='space-y-4'>
+    <div className="flex flex-col gap-4 lg:w-full px-4">
       <Container>
-        <div className='flex justify-between'>
-          <div className='font-semibold mb-4'>Data Pribadi</div>
-          <div className='text-green-500'>
-            <Link
-              to="/profile/pribadi"
-              state={{ data: datapribadi }}  // Pass "state" directly
-            >
-              <BsPencil />
-            </Link>
-          </div>
-        </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Nama:</span>
-            <span className='ml-2'>{datapribadi.nama}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Username:</span>
-            <span className='ml-2'>{datapribadi.username}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Email:</span>
-            <span className='ml-2'>{datapribadi.email}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Jenis Kelamin:</span>
-            <span className='ml-2'>{datapribadi.jenis_kelamin}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>No Identitas:</span>
-            <span className='ml-2'>{datapribadi.no_identitas}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>NPWP:</span>
-            <span className='ml-2'>{datapribadi.npwp}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Agama:</span>
-            <span className='ml-2'>{datapribadi.agama}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Alamat KTP:</span>
-            <span className='ml-2'>{datapribadi.alamat_ktp}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Alamat Domisili:</span>
-            <span className='ml-2'>{datapribadi.alamat_domisili}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>No Telepon:</span>
-            <span className='ml-2'>{datapribadi.no_telepon}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Tempat Lahir:</span>
-            <span className='ml-2'>{datapribadi.tempat_lahir}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Tanggal Lahir:</span>
-            <span className='ml-2'>{new Date(datapribadi.tgl_lahir).toLocaleDateString()}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Cabang:</span>
-            <span className='ml-2'>{datapribadi.cabang?.nama}</span>
-          </div>
-        </div>
+        <InputWrapper title="Data Pribadi">
+          <InputProfile title="Nama">{datapribadi?.nama || "-"}</InputProfile>
+          <InputProfile title="Email">{datapribadi?.email || "-"}</InputProfile>
+          <InputProfile title="Jenis Kelamin">
+            {datapribadi?.jenis_kelamin || "-"}
+          </InputProfile>
+          <InputProfile title="No Identitas">
+            {datapribadi?.no_identitas || "-"}
+          </InputProfile>
+          <InputProfile title="NPWP">{datapribadi?.npwp || "-"}</InputProfile>
+          <InputProfile title="Agama">{datapribadi?.agama || "-"}</InputProfile>
+          <InputProfile title="Alamat KTP">
+            {datapribadi?.alamat_ktp || "-"}
+          </InputProfile>
+          <InputProfile title="Alamat Domisili">
+            {datapribadi?.alamat_domisili || "-"}
+          </InputProfile>
+          <InputProfile title="No Telepon">
+            {datapribadi?.no_telepon || "-"}
+          </InputProfile>
+          <InputProfile title="Tempat Lahir">
+            {datapribadi?.tempat_lahir || "-"}
+          </InputProfile>
+          <InputProfile title="Tanggal Lahir">
+            {datapribadi?.tgl_lahir
+              ? new Date(datapribadi.tgl_lahir).toLocaleDateString()
+              : "-"}
+          </InputProfile>
+          <InputProfile title="Perusahaan">
+            {datapribadi?.perusahaan?.nama || "-"}
+          </InputProfile>
+        </InputWrapper>
       </Container>
 
+      {/* Data Pegawai Section */}
       <Container>
-        <div className='flex justify-between'>
-          <div className='font-semibold mb-4'>Data Pegawai</div>
-          <div className='text-green-500'>
-            <Link
-              to={'/profile/pegawai'}
-              state={{ data: datapegawai }}
-            >
-              <BsPencil />
-            </Link>
-          </div>
-        </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Pangkat:</span>
-            <span className='ml-2'>{datapegawai?.pangkat?.nama || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Jabatan:</span>
-            <span className='ml-2'>{datapegawai?.jabatan?.nama || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Departemen:</span>
-            <span className='ml-2'>{datapegawai?.departemen?.nama || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Divisi:</span>
-            <span className='ml-2'>{datapegawai?.divisi?.nama || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Unit:</span>
-            <span className='ml-2'>{datapegawai?.unit?.nama || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Tanggal Bergabung:</span>
-            <span className='ml-2'>{new Date(datapegawai?.tgl_bergabung).toLocaleDateString() || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Tanggal Resign:</span>
-            <span className='ml-2'>{new Date(datapegawai?.tgl_resign).toLocaleDateString() || '-'}</span>
-          </div>
-        </div>
+        <InputWrapper title="Data Pegawai" onTab={"1"}>
+          <InputProfile title="Jabatan">
+            {datapegawai?.jabatan?.nama || "-"}
+          </InputProfile>
+          <InputProfile title="Departemen">
+            {datapegawai?.departemen?.nama || "-"}
+          </InputProfile>
+          <InputProfile title="Divisi">
+            {datapegawai?.divisi?.nama || "-"}
+          </InputProfile>
+          <InputProfile title="Unit">
+            {datapegawai?.unit?.nama || "-"}
+          </InputProfile>
+          <InputProfile title="Tanggal Bergabung">
+            {datapegawai?.tgl_bergabung
+              ? new Date(datapegawai.tgl_bergabung).toLocaleDateString()
+              : "-"}
+          </InputProfile>
+          <InputProfile title="Tanggal Resign">
+            {datapegawai?.tgl_resign
+              ? new Date(datapegawai.tgl_resign).toLocaleDateString()
+              : "-"}
+          </InputProfile>
+        </InputWrapper>
       </Container>
 
+      {/* Data Keluarga Section */}
       <Container>
-        <div className='flex justify-between'>
-          <div className='font-semibold mb-4'>Data Keluarga</div>
-          <div className='text-green-500'>
-            <Link
-              to={'/profile/keluarga'}
-              state={{ data: datakeluarga }}
-            >
-              <BsPencil />
-            </Link>
-          </div>
-        </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Nama Ayah:</span>
-            <span className='ml-2'>{datakeluarga?.nama_ayah || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Nama Ibu:</span>
-            <span className='ml-2'>{datakeluarga?.nama_ibu || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Status Pernikahan:</span>
-            <span className='ml-2'>{datakeluarga?.status_pernikahan || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Nama Pasangan:</span>
-            <span className='ml-2'>{datakeluarga?.nama_pasangan || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Jumlah Anak:</span>
-            <span className='ml-2'>{datakeluarga?.anak || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Nama Kontak Darurat:</span>
-            <span className='ml-2'>{datakeluarga?.nama_kontak_emergency || '-'}</span>
-          </div>
-          <div className='flex bg-gray-100 p-2 rounded-lg'>
-            <span className='font-medium'>Nomor Kontak Darurat:</span>
-            <span className='ml-2'>{datakeluarga?.no_telepon_emergency || '-'}</span>
-          </div>
-        </div>
+        <InputWrapper title="Data Keluarga" onTab={"2"}>
+          <InputProfile title="Nama Ayah">
+            {datakeluarga?.nama_ayah || "-"}
+          </InputProfile>
+          <InputProfile title="Nama Ibu">
+            {datakeluarga?.nama_ibu || "-"}
+          </InputProfile>
+          <InputProfile title="Status Pernikahan">
+            {datakeluarga?.status_pernikahan || "-"}
+          </InputProfile>
+          <InputProfile title="Nama Pasangan">
+            {datakeluarga?.nama_pasangan || "-"}
+          </InputProfile>
+          <InputProfile title="Jumlah Anak">
+            {datakeluarga?.anak || "-"}
+          </InputProfile>
+          <InputProfile title="Nama Kontak Darurat">
+            {datakeluarga?.nama_kontak_emergency || "-"}
+          </InputProfile>
+          <InputProfile title="Nomor Kontak Darurat">
+            {datakeluarga?.no_telepon_emergency || "-"}
+          </InputProfile>
+        </InputWrapper>
       </Container>
 
+      {/* Pendidikan Formal Section */}
       <Container>
-        <div className='flex justify-between'>
-          <div className='font-semibold mb-4'>Data Pendidikan</div>
-          <div className='text-green-500'>
-            <Link
-              to={'/profile/pendidikan'}
-              state={{ data: datapendidikan }}
-            >
-              <BsPencil />
-            </Link>
-          </div>
-        </div>
-        <div className="font-semibold mb-4">Pendidikan Formal</div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-          {formalEducation.map((item, index) => (
-            <React.Fragment key={index}>
-              <div className="flex bg-gray-100 p-2 rounded-lg">
-                <span className="font-medium">Asal Sekolah:</span>
-                <span className="ml-2">{item.asal_sekolah || '-'}</span>
+        <InputWrapper title="Pendidikan Formal" onTab={"3"}>
+          {formalEducation && formalEducation.length > 0 ? (
+            formalEducation.map((item, index) => (
+              <div key={index} className="flex flex-col gap-4">
+                <InputProfile title="Asal Sekolah">
+                  {item.asal_sekolah || "-"}
+                </InputProfile>
+                <InputProfile title="Masa Waktu">
+                  {item.masa_waktu || "-"}
+                </InputProfile>
+                <InputProfile title="Keterangan Pendidikan">
+                  {item.keterangan_pendidikan || "-"}
+                </InputProfile>
               </div>
-              <div className="flex bg-gray-100 p-2 rounded-lg">
-                <span className="font-medium">Masa Waktu:</span>
-                <span className="ml-2">{item.masa_waktu || '-'}</span>
-              </div>
-              <div className="flex bg-gray-100 p-2 rounded-lg">
-                <span className="font-medium">Keterangan Pendidikan:</span>
-                <span className="ml-2">{item.keterangan_pendidikan || '-'}</span>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-
-        <div className="font-semibold mb-4">Pendidikan Non Formal</div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {nonFormalEducation.map((item, index) => (
-            <React.Fragment key={index}>
-              <div className="flex bg-gray-100 p-2 rounded-lg">
-                <span className="font-medium">Asal Lembaga:</span>
-                <span className="ml-2">{item.nama_lembaga || '-'}</span>
-              </div>
-              <div className="flex bg-gray-100 p-2 rounded-lg">
-                <span className="font-medium">Tahun Lulus:</span>
-                <span className="ml-2">{item.tahun_lulus || '-'}</span>
-              </div>
-              <div className="flex bg-gray-100 p-2 rounded-lg">
-                <span className="font-medium">Sertifikat:</span>
-                <span className="ml-2">{item.sertifikat || '-'}</span>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
+            ))
+          ) : (
+            <p className="text-start">Tidak ada data</p>
+          )}
+        </InputWrapper>
       </Container>
 
+      {/* Pendidikan Non-Formal Section */}
       <Container>
-        <div className='flex justify-between'>
-          <div className='font-semibold mb-4'>Data Lainnya</div>
-          <div className='text-green-500'>
-            <Link
-              to={'/profile/lainnya'}
-              state={{ data: datalainnya }}
-            >
-              <BsPencil />
-            </Link>
-          </div>
-        </div>
-        <div className='flex bg-gray-100 p-2 rounded-lg'>
-          <span className='font-medium'>Input data lainnya:</span>
-          <span className='ml-2'>{datalainnya?.data_lainnya || '-'}</span>
-        </div>
+        <InputWrapper title="Pendidikan Non-Formal" onTab={"3"}>
+          {nonFormalEducation && nonFormalEducation.length > 0 ? (
+            nonFormalEducation.map((item, index) => (
+              <div key={index} className="flex flex-col gap-4">
+                <InputProfile title={`Asal Lembaga ke ${index + 1}`}>
+                  {item.nama_lembaga || "-"}
+                </InputProfile>
+                <InputProfile title={`Tahun Lulus ke ${index + 1}`}>
+                  {item.tahun_lulus || "-"}
+                </InputProfile>
+                <div className="flex items-center w-full gap-2">
+                  <p className="w-[40%] md:w-3/6 text-left capitalize text-sm">
+                    Sertifikat ke {index + 1}
+                  </p>
+                  <FileInput
+                    height={100}
+                    accept={{ "image/jpeg": [], "image/png": [] }}
+                    disabled={true}
+                    maxFiles={1}
+                    minSize={0}
+                    maxSize={2097152} // 2 MB
+                    multiple={false}
+                    value={[item.sertifikat] || "-"}
+                  />
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-start">Tidak ada data</p>
+          )}
+        </InputWrapper>
+      </Container>
+
+      {/* datalainnya Section */}
+      <Container>
+        <InputWrapper title="Data lainnya" onTab={"4"}>
+          {datalainnyaNew && datalainnyaNew.length > 0 ? (
+            datalainnyaNew.map((item, index) => (
+              <div key={index} className="flex flex-col gap-4">
+                <div className="flex items-center w-full gap-2">
+                  <p className="w-[40%] md:w-3/6 text-left capitalize text-sm">
+                    Data ke {index + 1}
+                  </p>
+                  <FileInput
+                    height={100}
+                    accept={{ "image/jpeg": [], "image/png": [] }}
+                    disabled={true}
+                    maxFiles={1}
+                    minSize={0}
+                    maxSize={2097152} // 2 MB
+                    multiple={false}
+                    value={[item.data] || "-"}
+                  />
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-start">Tidak ada data</p>
+          )}
+        </InputWrapper>
       </Container>
     </div>
   );
+
+  function InputWrapper({ children, title, onTab = null }) {
+    return (
+      <>
+        <div className="flex flex-row justify-between items-center">
+          <p className="text-base font-semibold">{title}</p>
+          {data?.groups[0]?.name !== "Super Admin" && (
+            <Link
+              to="/kepegawaian/pegawai/form"
+              state={{ activeTab: onTab }}
+              onClick={() => {
+                localStorage.setItem("editUserData", JSON.stringify(data));
+              }}
+            >
+              <BsPencil className="text-green-500" />
+            </Link>
+          )}
+        </div>
+        <div className="flex flex-col gap-4 justify-between w-full">
+          {children}
+        </div>
+      </>
+    );
+  }
+
+  function InputProfile({ children, title }) {
+    return (
+      <div className="flex items-center w-full gap-2">
+        <p className="w-[40%] md:w-3/6 text-left capitalize text-sm">{title}</p>
+        <TextField
+          required
+          name={children}
+          value={`${children || ""}`}
+          onBlur={(e) => formik.handleBlur}
+          disabled
+        />
+      </div>
+    );
+  }
 };
 
 export default PengaturanProfilSub;

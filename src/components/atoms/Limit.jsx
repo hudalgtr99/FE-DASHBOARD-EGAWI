@@ -1,4 +1,4 @@
-import { Select } from "..";
+import { Select } from "@/components";
 import PropTypes from "prop-types";
 
 /**
@@ -6,28 +6,27 @@ import PropTypes from "prop-types";
  * @param {{
  * limit: number;
  * setLimit: React.Dispatch<React.SetStateAction<number>>;
- * onChange?: (value: number) => void;
+ * onChange: (value: number) => void;
  *  }}
  *
  */
 
 const Limit = ({ limit = 10, setLimit, onChange }) => {
 	const options = [
-		{ value: "10", label: "10" },
-		{ value: "25", label: "25" },
-		{ value: "50", label: "50" },
-		{ value: "100", label: "100" },
+		{ value: 10, label: "10" },
+		{ value: 25, label: "25" },
+		{ value: 50, label: "50" },
+		{ value: 100, label: "100" },
 	];
 
 	return (
 		<div className="w-20">
 			<Select
 				options={options}
-				value={options.find((item) => item.value === String(limit))}
+				value={options.filter((item) => item.value === limit)}
 				onChange={({ value }) => {
-					const numericValue = Number(value);
-					setLimit(numericValue);
-					onChange && onChange(numericValue);
+					setLimit(value);
+					onChange && onChange(value);
 				}}
 			/>
 		</div>

@@ -270,7 +270,7 @@ const TerimaSub = () => {
                         <Tooltip key={action.name} tooltip={action.name}>
                           <div
                             onClick={() => action.func(item)}
-                            className={action.color}
+                            className={`${action.color} cursor-pointer`}
                           >
                             {action.icon}
                           </div>
@@ -291,7 +291,7 @@ const TerimaSub = () => {
         </Tables>
         <div className="flex justify-between items-center mt-4">
           <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
-          <Pagination
+          {/* <Pagination
             totalCount={getIzinValidasiResult.count}
             pageSize={limit}
             currentPage={pageActive + 1}
@@ -301,7 +301,7 @@ const TerimaSub = () => {
             rounded="md"
             variant="flat"
             size="md"
-          />
+          /> */}
         </div>
       </Container>
     </div>

@@ -1,7 +1,7 @@
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { Button, Container, TextField, Select } from "@/components";
 import { updateData, handleInputError } from "@/actions";
-import { API_URL_edeluser, API_URL_getcabang } from "@/constants";
+import { API_URL_edeluser, API_URL_getperusahaan } from "@/constants";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -19,12 +19,12 @@ const EditProfilePribadiPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const [cabangOptions, setCabangOptions] = useState([]);
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axiosAPI.get(API_URL_getcabang);
-      setCabangOptions(response.data.map((item) => ({
+      const response = await axiosAPI.get(API_URL_getperusahaan);
+      setperusahaanOptions(response.data.map((item) => ({
         value: item.pk,
         label: item.nama,
       })));
@@ -68,7 +68,7 @@ const EditProfilePribadiPage = () => {
       npwp: initialData.npwp || "",
       alamat_ktp: initialData.alamat_ktp || "",
       alamat_domisili: initialData.alamat_domisili || "",
-      cabang_id: initialData.cabang.id || "",
+      perusahaan_id: initialData.perusahaan.id || "",
     },
     validationSchema: Yup.object({
       nama: Yup.string().required("Nama is required"),
@@ -83,7 +83,7 @@ const EditProfilePribadiPage = () => {
       npwp: Yup.string().required("NPWP is required"),
       alamat_ktp: Yup.string().required("Alamat KTP is required"),
       alamat_domisili: Yup.string().required("Alamat Domisili is required"),
-      cabang_id: Yup.string().required("Cabang is required"),
+      perusahaan_id: Yup.string().required("perusahaan is required"),
     }),
     onSubmit: (values) => {
       const newInput = handleInputError(values);
@@ -139,7 +139,7 @@ const EditProfilePribadiPage = () => {
               name="nama"
               value={formik.values.nama}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.nama && formik.errors.nama}
             />
             <TextField
@@ -148,7 +148,7 @@ const EditProfilePribadiPage = () => {
               name="username"
               value={formik.values.username}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.username && formik.errors.username}
             />
             <TextField
@@ -157,7 +157,7 @@ const EditProfilePribadiPage = () => {
               name="email"
               value={formik.values.email}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.email && formik.errors.email}
             />
             <TextField
@@ -166,7 +166,7 @@ const EditProfilePribadiPage = () => {
               name="no_identitas"
               value={formik.values.no_identitas}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.no_identitas && formik.errors.no_identitas}
             />
             <Select
@@ -187,7 +187,7 @@ const EditProfilePribadiPage = () => {
               name="no_telepon"
               value={formik.values.no_telepon}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.no_telepon && formik.errors.no_telepon}
             />
             <TextField
@@ -196,7 +196,7 @@ const EditProfilePribadiPage = () => {
               name="tempat_lahir"
               value={formik.values.tempat_lahir}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.tempat_lahir && formik.errors.tempat_lahir}
             />
             <TextField
@@ -206,7 +206,7 @@ const EditProfilePribadiPage = () => {
               type="date"
               value={formik.values.tgl_lahir}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.tgl_lahir && formik.errors.tgl_lahir}
             />
             <Select
@@ -231,7 +231,7 @@ const EditProfilePribadiPage = () => {
               name="npwp"
               value={formik.values.npwp}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.npwp && formik.errors.npwp}
             />
             <TextField
@@ -240,7 +240,7 @@ const EditProfilePribadiPage = () => {
               name="alamat_ktp"
               value={formik.values.alamat_ktp}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.alamat_ktp && formik.errors.alamat_ktp}
             />
             <TextField
@@ -249,17 +249,17 @@ const EditProfilePribadiPage = () => {
               name="alamat_domisili"
               value={formik.values.alamat_domisili}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.alamat_domisili && formik.errors.alamat_domisili}
             />
             <Select
               required
-              label="Cabang ID"
-              name="cabang_id"
-              value={cabangOptions.find(option => option.value === formik.values.cabang_id) || null}
-              onChange={(option) => formik.setFieldValue('cabang_id', option ? option.value : '')}
-              options={cabangOptions}
-              error={formik.touched.cabang_id && formik.errors.cabang_id}
+              label="perusahaan ID"
+              name="perusahaan_id"
+              value={perusahaanOptions.find(option => option.value === formik.values.perusahaan_id) || null}
+              onChange={(option) => formik.setFieldValue('perusahaan_id', option ? option.value : '')}
+              options={perusahaanOptions}
+              error={formik.touched.perusahaan_id && formik.errors.perusahaan_id}
             />
           </div>
           <div className="mt-6 flex justify-end">

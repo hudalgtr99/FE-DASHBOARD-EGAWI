@@ -1,36 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { getData, deleteData } from '@/actions';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getData, deleteData } from "@/actions";
 import {
   API_URL_edeltugas,
   API_URL_gettugas,
-  API_URL_getriwayattugas,
-} from '@/constants';
+} from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Limit,
   TextField,
-  Tooltip
-} from '@/components';
-import { penugasanReducer } from '@/reducers/penugasanReducers';
-import { debounce } from 'lodash';
-import { FaPlus } from 'react-icons/fa';
-import { CiSearch } from 'react-icons/ci';
-import PenugasanDetail from './PenugasanDetail'; // Import the modal component
-import axiosAPI from "@/authentication/axiosApi";
-import moment from 'moment';
+  Tooltip,
+  PulseLoading,
+} from "@/components";
+import { penugasanReducer } from "@/reducers/penugasanReducers";
+import { debounce } from "lodash";
+import { FaPlus } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
+import moment from "moment";
+
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
 
 const PenugasanPage = () => {
-  const {
-    getTugasResult,
-    addTugasResult,
-    deleteTugasResult
-  } = useSelector((state) => state.tugas);
+  const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =
+    useSelector((state) => state.tugas);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -38,8 +35,16 @@ const PenugasanPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [detail, setDetail] = useState(null); // Modal detail data
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [loading, setLoading] = useState(true);
+
+  const [jwt, setJwt] = useState({}); // Initialize jwt variable
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
 
   // Debounce search function
   const debouncedSearch = useCallback(
@@ -48,10 +53,22 @@ const PenugasanPage = () => {
   );
 
   const fetchTugas = (searchValue = "") => {
+    setLoading(true);
     const param = searchValue
-      ? { param: `?search=${searchValue}&limit=${limit}&offset=${pageActive * limit}` }
+      ? {
+          param: `?search=${searchValue}&limit=${limit}&offset=${
+            pageActive * limit
+          }`,
+        }
       : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-    getData({ dispatch, redux: penugasanReducer }, param, API_URL_gettugas, "GET_TUGAS");
+    getData(
+      { dispatch, redux: penugasanReducer },
+      param,
+      API_URL_gettugas,
+      "GET_TUGAS"
+    );
+
+    setLoading(false);
   };
 
   const doSearch = (e) => {
@@ -62,32 +79,28 @@ const PenugasanPage = () => {
   };
 
   const onAdd = () => {
-    navigate('/penugasan/form');
+    navigate("/kepegawaian/penugasan/form");
   };
 
   const onEdit = (item) => {
-    navigate(`/penugasan/form/${item.id}`, {
+    item = {
+      ...item,
+      perusahaan: item?.perusahaan?.id
+    }
+    navigate(`/kepegawaian/penugasan/form/${item?.id}`, {
       state: {
         item,
       },
     });
   };
-
-  const doDetail = useCallback(async (detail) => {
-    try {
-      const res = await axiosAPI.post(API_URL_getriwayattugas, {
-        tugas_id: detail.id,
-      });
-      setDetail(detail); // Set the detail data for the modal
-      setIsModalOpen(true); // Open the modal
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const doDetail = (item) => {
+    navigate(`/kepegawaian/penugasan/detail/${item?.id}`);
+  };
 
   const doDelete = (item) => {
-    deleteData({ dispatch, redux: penugasanReducer },
-      item.id,
+    deleteData(
+      { dispatch, redux: penugasanReducer },
+      item?.id,
       API_URL_edeltugas,
       "DELETE_TUGAS"
     );
@@ -105,7 +118,7 @@ const PenugasanPage = () => {
     { value: "1", label: "Tinggi", color: "bg-red-500" },
     { value: "2", label: "Sedang", color: "bg-green-500" },
     { value: "3", label: "Rendah", color: "bg-blue-500" },
-];
+  ];
 
   const [actions] = useState([
     {
@@ -150,9 +163,9 @@ const PenugasanPage = () => {
 
   const dataWithIndex = getTugasResult.results
     ? getTugasResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
     : [];
 
   return (
@@ -169,86 +182,111 @@ const PenugasanPage = () => {
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
-              <FaPlus /> Tambah Data
+              <FaPlus /> Tambah Tugas
             </div>
           </Button>
         </div>
-        <Tables>
-          <Tables.Head>
-            <tr>
-              <Tables.Header>No</Tables.Header>
-              <Tables.Header>Judul</Tables.Header>
-              <Tables.Header>Pengirim</Tables.Header>
-              <Tables.Header>Penerima</Tables.Header>
-              <Tables.Header>Prioritas</Tables.Header>
-              <Tables.Header>Mulai</Tables.Header>
-              <Tables.Header>Selesai</Tables.Header>
-              <Tables.Header>Status</Tables.Header>
-              <Tables.Header center>Actions</Tables.Header>
-            </tr>
-          </Tables.Head>
-          <Tables.Body>
-            {dataWithIndex.map((item) => (
-              <Tables.Row key={item.index}>
-                <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.judul}</Tables.Data>
-                <Tables.Data>{item.pengirim.nama}</Tables.Data>
-                <Tables.Data>
-                  {item.penerima.map((p, idx) => (
-                    <span key={p.id}>
-                      {p.nama}{idx < item.penerima.length - 1 ? ', ' : ''}
-                    </span>
-                  ))}
-                </Tables.Data>
-                <Tables.Data>
-                {prioritases.map((prioritas) =>
-                    prioritas.value === item.prioritas ? (
-                      <span key={prioritas.value} className={`${prioritas.color} text-white px-2 py-1 rounded whitespace-nowrap`}>
-                        {prioritas.label}
-                      </span>
-                    ) : null
-                  )}
-                </Tables.Data>
-                <Tables.Data>
-                  <div className='whitespace-nowrap'>
-                    {moment(item.start_date).format("D MMMM YYYY")}
-                  </div>
-                </Tables.Data>
-                <Tables.Data>
-                  <div className='whitespace-nowrap'>
-                    {moment(item.end_date).format("D MMMM YYYY")}
-                  </div>
-                </Tables.Data>
-                <Tables.Data>
-                  {statuses.map((status) =>
-                    status.value === item.status ? (
-                      <span key={status.value} className={`${status.color} text-white px-2 py-1 rounded whitespace-nowrap`}>
-                        {status.label}
-                      </span>
-                    ) : null
-                  )}
-                </Tables.Data>
-                <Tables.Data center>
-                  <div className="flex items-center justify-center gap-2">
-                    {actions.map((action) => (
-                      <Tooltip key={action.name} tooltip={action.name}>
-                        <div
-                          onClick={() => action.func(item)}
-                          className={action.color}
-                        >
-                          {action.icon}
-                        </div>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </Tables.Data>
-              </Tables.Row>
-            ))}
-          </Tables.Body>
-        </Tables>
-
-        <div className="flex justify-between items-center mt-4">
-          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
+        {getTugasLoading ? ( // Show loading indicator if loading is true
+          <div className="flex justify-center py-4">
+            <PulseLoading />
+          </div>
+        ) : (
+          <Tables>
+            <Tables.Head>
+              <tr>
+                <Tables.Header>No</Tables.Header>
+                {!jwt.perusahaan && (
+                  <Tables.Header>Nama perusahaan</Tables.Header>
+                )}
+                <Tables.Header>Judul</Tables.Header>
+                <Tables.Header>Pengirim</Tables.Header>
+                <Tables.Header>Penerima</Tables.Header>
+                <Tables.Header>Prioritas</Tables.Header>
+                <Tables.Header>Mulai</Tables.Header>
+                <Tables.Header>Selesai</Tables.Header>
+                <Tables.Header>Status</Tables.Header>
+                <Tables.Header center>Actions</Tables.Header>
+              </tr>
+            </Tables.Head>
+            <Tables.Body>
+              {dataWithIndex.length > 0 ? (
+                dataWithIndex.map((item) => (
+                  <Tables.Row key={item?.index}>
+                    <Tables.Data>{item?.index}</Tables.Data>
+                    {!jwt.perusahaan && (
+                      <Tables.Data>{item?.perusahaan.nama}</Tables.Data>
+                    )}
+                    <Tables.Data>{item?.judul}</Tables.Data>
+                    <Tables.Data>{item?.pengirim.nama}</Tables.Data>
+                    <Tables.Data>
+                      {item?.penerima.map((p, idx) => (
+                        <span key={p.id}>
+                          {p.nama}
+                          {idx < item?.penerima.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                    </Tables.Data>
+                    <Tables.Data>
+                      {prioritases.map((prioritas) =>
+                        prioritas.value === item?.prioritas ? (
+                          <span
+                            key={prioritas.value}
+                            className={`${prioritas.color} text-white px-2 py-1 rounded whitespace-nowrap`}
+                          >
+                            {prioritas.label}
+                          </span>
+                        ) : null
+                      )}
+                    </Tables.Data>
+                    <Tables.Data>
+                      <div className="whitespace-nowrap">
+                        {moment(item?.start_date).format("D MMMM YYYY")}
+                      </div>
+                    </Tables.Data>
+                    <Tables.Data>
+                      <div className="whitespace-nowrap">
+                        {moment(item?.end_date).format("D MMMM YYYY")}
+                      </div>
+                    </Tables.Data>
+                    <Tables.Data>
+                      {statuses.map((status) =>
+                        status.value === item?.status ? (
+                          <span
+                            key={status.value}
+                            className={`${status.color} text-white px-2 py-1 rounded whitespace-nowrap`}
+                          >
+                            {status.label}
+                          </span>
+                        ) : null
+                      )}
+                    </Tables.Data>
+                    <Tables.Data center>
+                      <div className="flex items-center justify-center gap-2">
+                        {actions.map((action) => (
+                          <Tooltip key={action.name} tooltip={action.name}>
+                            <div
+                              onClick={() => action.func(item)}
+                              className={`${action.color} cursor-pointer`}
+                            >
+                              {action.icon}
+                            </div>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </Tables.Data>
+                  </Tables.Row>
+                ))
+              ) : (
+                <Tables.Row>
+                  <td colSpan="9" className="text-center">
+                    Tidak ada data yang tersedia
+                  </td>
+                </Tables.Row>
+              )}
+            </Tables.Body>
+          </Tables>
+        )}
+        <div className="flex justify-end items-center mt-4">
           <Pagination
             totalCount={getTugasResult.count}
             pageSize={limit}
@@ -262,13 +300,6 @@ const PenugasanPage = () => {
           />
         </div>
       </Container>
-
-      {/* Penugasan Detail Modal */}
-      <PenugasanDetail
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        detail={detail}
-      />
     </div>
   );
 };

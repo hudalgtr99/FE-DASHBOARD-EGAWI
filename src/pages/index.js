@@ -1,13 +1,17 @@
 import Dashboard from "../pages/Dashboard/DashboardPage";
+import Kemitraan from "../pages/Kemitraan/KemitraanPage";
+import Dokumentasi from "../pages/Dokumentasi/DokumentasiPage";
 import TentangPage from "../pages/Perusahaan/Tentang/TentangPage";
 import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage";
-import KalenderPage from "../pages/MasterData/Kalender/KalenderPage";
-import OrganPage from "../pages/MasterData/Organ/OrganPage";
-import BaganPage from "../pages/MasterData/Bagan/BaganPage";
+import KalenderPage from "../pages/Kalender/KalenderPage";
+import OrganPage from "./MasterData/Organization/OrganizationPage";
+// import perusahaanPage from "./MasterData/Perusahaan/perusahaanPage";
+import LokasiAbsen from "../pages/MasterData/LokasiAbsen/LokasiAbsenPage";
+import JamKerja from "../pages/MasterData/JamKerja/JamKerjaCard";
 import PotonganPage from "../pages/MasterData/Potongan/PotonganPage";
 import TunjanganPage from "../pages/MasterData/Tunjangan/TunjanganPage";
-import StrataPage from "../pages/MasterData/Strata/StrataPage";
-import CabangPage from "../pages/MasterData/Cabang/CabangPage";
+import JabatanPage from "../pages/MasterData/Jabatan/JabatanPage";
+import PerusahaanPage from "./MasterData/Perusahaan/PerusahaanPage";
 import GajiPage from "../pages/MasterData/Gaji/GajiPage";
 import PegawaiPage from "../pages/Kepegawaian/Pegawai/PegawaiPage";
 import PenugasanPage from "../pages/Kepegawaian/Penugasan/PenugasanPage";
@@ -21,17 +25,16 @@ import PayrollPage from "../pages/Kepegawaian/Payroll/PayrollPage";
 import RekerutmenPage from "../pages/Kepegawaian/Rekrutmen/RekerutmenPage";
 
 export {
-	CabangPage,
+	PerusahaanPage,
 	Dashboard,
 	KalenderPage,
 	OrganPage,
-	BaganPage,
 	PotonganPage,
 	TunjanganPage,
 	PegawaiPage,
 	PenugasanPage,
 	PengurusPage,
-	StrataPage,
+	JabatanPage,
 	TentangPage,
 	CutiPage,
 	KinerjaPage,
@@ -42,4 +45,8 @@ export {
 	CallbackPage,
 	PayrollPage,
 	RekerutmenPage,
+	LokasiAbsen,
+	JamKerja,
+	Kemitraan,
+	Dokumentasi,
 };

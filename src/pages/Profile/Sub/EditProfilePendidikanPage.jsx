@@ -176,7 +176,7 @@ const EditProfilePendidikanPage = () => {
                     name={`formal[${index}].asal_sekolah`}
                     value={edu.asal_sekolah}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => formik.handleBlur}
                     error={
                       formik.touched.formal?.[index]?.asal_sekolah
                         ? formik.errors.formal?.[index]?.asal_sekolah
@@ -189,7 +189,7 @@ const EditProfilePendidikanPage = () => {
                     name={`formal[${index}].masa_waktu`}
                     value={edu.masa_waktu}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => formik.handleBlur}
                     error={
                       formik.touched.formal?.[index]?.masa_waktu
                         ? formik.errors.formal?.[index]?.masa_waktu
@@ -202,7 +202,7 @@ const EditProfilePendidikanPage = () => {
                     name={`formal[${index}].keterangan_pendidikan`}
                     value={edu.keterangan_pendidikan}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => formik.handleBlur}
                     error={
                       formik.touched.formal?.[index]?.keterangan_pendidikan
                         ? formik.errors.formal?.[index]?.keterangan_pendidikan
@@ -249,7 +249,7 @@ const EditProfilePendidikanPage = () => {
                     name={`non_formal[${index}].nama_lembaga`}
                     value={edu.nama_lembaga}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => formik.handleBlur}
                     error={
                       formik.touched.non_formal?.[index]?.nama_lembaga
                         ? formik.errors.non_formal?.[index]?.nama_lembaga
@@ -262,7 +262,7 @@ const EditProfilePendidikanPage = () => {
                     name={`non_formal[${index}].tahun_lulus`}
                     value={edu.tahun_lulus}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={(e) => formik.handleBlur}
                     error={
                       formik.touched.non_formal?.[index]?.tahun_lulus
                         ? formik.errors.non_formal?.[index]?.tahun_lulus

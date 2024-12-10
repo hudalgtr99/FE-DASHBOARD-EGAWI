@@ -16,7 +16,7 @@ import { apiReducer } from '@/reducers/apiReducers';
 import {
     API_URL_createapiclient,
     API_URL_edelapiclient,
-    API_URL_getcabang,
+    API_URL_getperusahaan,
     API_URL_getapiaccess,
 } from '@/constants';
 import axiosAPI from "@/authentication/axiosApi";
@@ -32,18 +32,21 @@ const ApiForm = () => {
     const isEdit = id && id !== 'add';
 
     useEffect(() => {
-        getCabang();
+        getperusahaan();
         getApiAccess();
     }, []);
 
-    const getCabang = async () => {
-        const response = await axiosAPI.get(API_URL_getcabang);
-        setperusahaanOptions(
-            response.data.map((item) => ({
-                value: item.pk,
-                label: item.nama,
-            }))
-        );
+    const getperusahaan = async () => {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }));
+        setperusahaanOptions(options);
+
+        if (options.length === 1) {
+          formik.setFieldValue("perusahaan", options[0].value);
+        }
     };
 
     const getApiAccess = async () => {
@@ -119,7 +122,7 @@ const ApiForm = () => {
                             name="nama_client"
                             value={formik.values.nama_client}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            onBlur={(e) => formik.handleBlur}
                             error={formik.touched.nama_client ? formik.errors.nama_client : ''}
                         />
                         <TextArea
@@ -128,7 +131,7 @@ const ApiForm = () => {
                             name="keterangan"
                             value={formik.values.keterangan}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            onBlur={(e) => formik.handleBlur}
                             error={formik.touched.keterangan ? formik.errors.keterangan : ''}
                         />
                         <Select

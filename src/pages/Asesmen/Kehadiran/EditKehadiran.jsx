@@ -83,7 +83,7 @@ const EditKehadiran = () => {
           type="date"
           value={formik.values.tanggal}
           onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          onBlur={(e) => formik.handleBlur}
           error={formik.touched.tanggal ? formik.errors.tanggal : ''}
         />
         <Select
@@ -104,7 +104,7 @@ const EditKehadiran = () => {
           name="latitude"
           value={formik.values.latitude}
           onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          onBlur={(e) => formik.handleBlur}
           error={formik.touched.latitude ? formik.errors.latitude : ''}
         />
         <TextField
@@ -113,7 +113,7 @@ const EditKehadiran = () => {
           name="longitude"
           value={formik.values.longitude}
           onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          onBlur={(e) => formik.handleBlur}
           error={formik.touched.longitude ? formik.errors.longitude : ''}
         />
         <div>

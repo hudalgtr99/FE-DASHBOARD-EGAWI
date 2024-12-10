@@ -1,12 +1,24 @@
 // plugins
 import axios from "axios";
-import Swal from "sweetalert2";
-
+import { toast } from "react-toastify";
 // functions
 import { authReducer, userReducer } from "../reducers/authReducers";
 import { API_URL_signin } from "../constants";
 import { logout, setNewHeaders } from "../authentication/authenticationApi";
 import axiosAPI from "../authentication/axiosApi";
+import Swal from "sweetalert2";
+
+export const showToast = (type, message) => {
+  toast[type](message, {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
 
 export const updateProfile = (dispatch, data, url, type, pk) => {
   dispatch(
@@ -27,31 +39,9 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
   })
     .then((response) => {
       if (response.data.status === 201) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-        });
+        showToast("error", response.data.messages);
       } else {
-        setNewHeaders(response.data);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Profile changed successfully!"
-        });
+        showToast("success", "Foto profil berhasil diperbarui!");
       }
       dispatch(
         userReducer({
@@ -64,14 +54,7 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
       );
     })
     .catch((error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        customClass: {
-          container: "z-[99999]",
-        },
-        text: error,
-      });
+      showToast("error", error.response.data.messages);
       dispatch(
         userReducer({
           type: type,
@@ -103,31 +86,9 @@ export const updateAkun = (dispatch, type, data, pk, url) => {
   })
     .then((response) => {
       if (response.data.status === 201) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-        });
+        showToast("error", response.data.messages);
       } else {
-        setNewHeaders(response.data);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Account changed successfully!"
-        });
+        showToast("success", "Profile berhasil diperbarui!");
       }
       dispatch(
         userReducer({
@@ -178,33 +139,9 @@ export const loginUser = (dispatch, data) => {
     data: data,
   })
     .then((response) => {
-      if (response.data.status === 201) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-        });
-      } else {
-        setNewHeaders(response.data);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Signed in successfully!"
-        });
-      }
+      setNewHeaders(response.data);
+      showToast("success", "Login in successfully!");
+
       dispatch(
         authReducer({
           type: "LOGIN_USER",
@@ -216,14 +153,7 @@ export const loginUser = (dispatch, data) => {
       );
     })
     .catch((error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        customClass: {
-          container: "z-[99999]",
-        },
-        text: error.response.data.messages,
-      });
+      showToast("error", error.response.data.detail);
       dispatch(
         authReducer({
           type: "LOGIN_USER",
@@ -237,22 +167,29 @@ export const loginUser = (dispatch, data) => {
 };
 
 export const logoutUser = (dispatch) => {
-  logout();
-  dispatch(
-    authReducer({
-      type: "LOGOUT_USER",
-      payload: {
-        data: "LOGOUT SUKSES",
-      },
-    })
-  );
-  dispatch(
-    authReducer({
-      type: "LOGIN_USER",
-      payload: {
-        loading: false,
-        data: false,
-      },
-    })
-  );
+  try {
+    logout();
+    showToast("success", "Logout successfully!");
+
+    dispatch(
+      authReducer({
+        type: "LOGOUT_USER",
+        payload: {
+          data: "LOGOUT SUKSES",
+        },
+      })
+    );
+  } catch (error) {
+    showToast("error", "Logout failed! Please try again.");
+  } finally {
+    dispatch(
+      authReducer({
+        type: "LOGIN_USER",
+        payload: {
+          loading: false,
+          data: false,
+        },
+      })
+    );
+  }
 };

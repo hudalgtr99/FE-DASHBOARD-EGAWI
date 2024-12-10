@@ -6,14 +6,16 @@ import { BeatLoader } from "react-spinners";
 /**
  *
  * @param {{
- * size?: number;
- * loading?: boolean;
- * color?: "primary" | "base" | "success" | "warning" | "danger" | "info";
+ * size: number;
+ * loading: boolean;
+ * color: "primary" | "base" | "success" | "warning" | "danger" | "info";
  * }}
  *
  */
 
-const Loading = ({ size = 20, loading = false, color = "primary" }) => {
+const Loading = ({ size = 20,
+	loading = false,
+	color = "primary", }) => {
 	const { themeColor } = useContext(ThemeContext);
 
 	const loadColor =

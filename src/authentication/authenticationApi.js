@@ -2,33 +2,36 @@ import Cookies from "js-cookie";
 import { decrypted } from "@/actions";
 
 export function setNewHeaders(response) {
-  Cookies.set("token", response.token, { expires: 3 });
-  Cookies.set("user", response.access, { expires: 3 });
+  Cookies.set("srehfre", response.refresh, { expires: 3 });
+  Cookies.set("casnet", response.access, { expires: 3 });
 }
-
+  
 // eslint-disable-next-line
 export const logout = () => {
   localStorage.clear();
-  Cookies.remove("token");
-  Cookies.remove("user");
+  Cookies.remove("srehfre");
+  Cookies.remove("casnet");
   window.location.href = "/login";
-  // TODO: invalidate token on backend
 };
 
 export const isAuthenticated = () => {
-  const token = Cookies.get("user");
-  if (token == null) {
-    return token;
+  const casnet = Cookies.get("casnet");
+  if (casnet == null) {
+    return casnet;
   } else {
-    var decoded = decrypted(token);
+    var decoded = decrypted(casnet);
   }
+  // console.log(decoded)
   return decoded;
 };
 
 export function getToken() {
-  const token = Cookies.get("token");
-  if (token == null) {
-    return token;
+  const casnet = Cookies.get("casnet");
+  let decoded;
+  if (casnet == null) {
+    return casnet;
   }
-  return token;
+  decoded = decrypted(casnet);
+  return decoded
 }
+

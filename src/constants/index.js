@@ -24,6 +24,10 @@ export const API_URL_changeoutofarea = `${baseurl}/changeoutofarea/`;
 export const API_URL_getmasterpegawai = `${baseurl}/getmasterpegawai/`;
 export const API_URL_getdatadashboard = `${baseurl}/getdatadashboard/`;
 
+// === user ===
+export const API_URL_getdetailuser = `${baseurl}/getdetailuser/`;
+// === end user ===
+
 // === kehadiran ===
 export const API_URL_exportexcelkehadiran = `${baseurl}/exportexcelkehadiran/`;
 export const API_URL_getdatakehadiran = `${baseurl}/getdatakehadiran/`;
@@ -97,16 +101,20 @@ export const API_URL_createpotongan = `${baseurl}/createpotongan/`;
 export const API_URL_edelpotongan = `${baseurl}/edelpotongan/`;
 // === end potongan ===
 
-// === cabang ===
-export const API_URL_getcabang = `${baseurl}/getcabang/`;
-export const API_URL_createcabang = `${baseurl}/createcabang/`;
-export const API_URL_edelcabang = `${baseurl}/edelcabang/`;
-// === end cabang ===
+// === perusahaan ===
+export const API_URL_getperusahaan = `${baseurl}/getperusahaan/`;
+export const API_URL_getperusahaan_withPaginations = `${baseurl}/getperusahaanwithpaginations/`;
+export const API_URL_createperusahaan = `${baseurl}/createperusahaan/`;
+export const API_URL_edelperusahaan = `${baseurl}/edelperusahaan/`;
+// === end perusahaan ===
 
-// === cabang ===
+// === perusahaan ===
 export const API_URL_getkalender = `${baseurl}/getkalender/`;
+export const API_URL_getkalender_all = `${baseurl}/getkalender/all/`;
 export const API_URL_createkalender = `${baseurl}/createkalender/`;
-// === end cabang ===
+export const API_URL_edelkalender = `${baseurl}/edelkalender/`;
+export const API_URL_updateprofileperusahaan = `${baseurl}/perusahaan/`;
+// === end perusahaan ===
 
 // === api ===
 export const API_URL_createapiclient = `${baseurl}/createapiclient/`;
@@ -121,3 +129,37 @@ export const API_URL_createcallback = `${baseurl}/createcallback/`;
 export const API_URL_edelcallback = `${baseurl}/edelcallback/`;
 export const API_URL_createtugasclient = `${baseurl}/createtugasclient/`;
 // === end api ===
+
+// lokasi absen
+export const API_URL_getlokasiabsenwithpaginations = `${baseurl}/getlokasiabsen/`;
+export const API_URL_getlokasiabsen = `${baseurl}/getlokasiabsen/all/`;
+export const API_URL_createLokasiAbsen = `${baseurl}/createlokasiabsen/`;
+export const API_URL_edellokasi = `${baseurl}/edellokasiabsen/`;
+
+// end lokasi absen
+// lokasi absen
+export const API_URL_getjamkerja = `${baseurl}/getjamkerja/`;
+export const API_URL_editjamkerja = `${baseurl}/editjamkerja/`;
+// end lokasi absen
+
+// grup 
+export const API_URL_getroles = `${baseurl}/roles/`;
+// end group
+
+// template surat tugas
+export const API_URL_gettemplatesurattugas = `${baseurl}/gettemplatesurattugas/`;
+export const API_URL_getalltemplatesurattugas = `${baseurl}/gettemplatesurattugas/all/`;
+export const API_URL_createtemplatesurattugas = `${baseurl}/createtemplatetugas/`;
+export const API_URL_edeltemplatesurattugas = `${baseurl}/edeltemplatetugas/`;
+// end template surat tugas
+
+// surat tugas
+export const API_URL_getsurattugas = `${baseurl}/getsurattugas`;
+export const API_URL_getjumlahsurattugas = `${baseurl}/getjumlahsurattugas`;
+export const API_URL_createsurattugas = `${baseurl}/createsurattugas/`;
+export const API_URL_edelsurattugas = `${baseurl}/edelsurattugas/`;
+// end surat tugas
+
+// start import data pribadi pegawai
+export const API_URL_importdatapribadipegawai = `${baseurl}/importdatapribadipegawai/`;
+// end import data pribadi pegawai

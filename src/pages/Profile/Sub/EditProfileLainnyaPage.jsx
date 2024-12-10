@@ -182,7 +182,7 @@ const EditProfileLainnyaPage = () => {
                 name={`data_lainnya[${index}].data`}
                 accept="application/pdf" // Restrict to PDF files
                 onChange={handleFileChange(index)} // Use a closure to pass the index
-                onBlur={formik.handleBlur}
+                onBlur={(e) => formik.handleBlur}
                 className="block w-full border p-2 rounded-lg text-sm text-gray-500 
                       file:mr-4 file:py-2 file:px-4 
                       file:rounded-full file:border-0 

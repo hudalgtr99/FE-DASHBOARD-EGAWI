@@ -1,54 +1,87 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 // components
-import {
-  Button,
-  Container,
-  TextField,
-} from "@/components";
+import { Button, Container, TextField } from "@/components";
 
 // functions
 import { updateAkun, updateProfile } from "@/actions/auth";
 import { isAuthenticated } from "@/authentication/authenticationApi";
-import {
-  API_URL_updateakun,
-  API_URL_updateprofile,
-} from "@/constants";
+import { API_URL_updateakun, API_URL_updateprofile } from "@/constants";
+import { fetchUserDetails } from "@/constants/user";
+import { Avatar, PulseLoading } from "../../../components";
+import { TbPhotoPlus } from "react-icons/tb";
+import {jwtDecode} from "jwt-decode";
 
 const PengaturanAkunSub = () => {
   const { addUserResult, addUserLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [imagePreview, setImagePreview] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState([]);
+  const [isFormikInitialized, setIsFormikInitialized] = useState(false); // Untuk memastikan formik tidak diinisialisasi sebelum data
 
-  // Get initial values directly from isAuthenticated
   const auth = isAuthenticated();
+  const jwt = jwtDecode(auth);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const userData = await fetchUserDetails();
+      // localStorage.setItem("userEditData", userData)
+      setUser(userData.datapribadi);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const formik = useFormik({
     initialValues: {
-      username: auth.username || "",
-      email: auth.email || "",
+      photo: "",
+      nama: "",
+      email: "",
     },
     validationSchema: Yup.object().shape({
-      username: Yup.string().required("Username is required"),
-      email: Yup.string().email("Invalid email").required("Email is required"),
+      nama: Yup.string().required("Nama wajib diisi"),
+      email: Yup.string().email("Invalid email").required("Email wajib diisi"),
     }),
     onSubmit: (values) => {
+      console.log("values", values)
       const formData = new FormData();
-      formData.append("username", values.username);
+      formData.append("nama", values.nama);
       formData.append("email", values.email);
-      updateAkun(
-        dispatch,
-        "ADD_USER",
-        formData,
-        auth.user_id,
-        API_URL_updateakun
-      );
+      try {
+        updateAkun(
+          dispatch,
+          "ADD_USER",
+          formData,
+          jwt.user_id,
+          API_URL_updateakun
+        );
+      } catch (error) {
+        console.error("Error updating account:", error);
+      }
     },
-    enableReinitialize: true,
   });
+
+  useEffect(() => {
+    if (!loading && user && !isFormikInitialized) {
+      formik.setValues({
+        photo: user.photo || "",
+        nama: user.nama || "",
+        email: user.email || "",
+      });
+      setIsFormikInitialized(true);
+    }
+  }, [loading, user, isFormikInitialized, formik]);
 
   const handleImageUpload = (file) => {
     const formData = new FormData();
@@ -58,41 +91,38 @@ const PengaturanAkunSub = () => {
       formData,
       API_URL_updateprofile,
       "UPDATE_PROFILE",
-      auth.user_id
+      jwt.user_id
     );
-    setImagePreview(URL.createObjectURL(file));
+    formik.setFieldValue("photo", URL.createObjectURL(file));
   };
 
-  // Update form values manually after a successful update
-  useEffect(() => {
-    if (addUserResult) {
-      const updatedAuth = isAuthenticated();
-      const newUsername = updatedAuth.username || "";
-      const newEmail = updatedAuth.email || "";
-
-      // Check if the new values differ from current values
-      if (formik.values.username !== newUsername || formik.values.email !== newEmail) {
-        formik.setValues({
-          username: newUsername,
-          email: newEmail,
-        });
-      }
-    }
-  }, [addUserResult]); // Only depend on addUserResult
+  if (loading || !isFormikInitialized) {
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <PulseLoading />
+      </div>
+    );
+  }
 
   return (
     <div>
       <Container>
         <div className="w-full flex justify-center my-4">
           <div className="w-28 h-28 relative">
-            <img
-              className="object-cover w-full h-full rounded-full border-2 border-grey-300"
-              src={imagePreview ? imagePreview : "/assets/default.jpg"}
-              alt="imgPreview"
-            />
+            {formik.values.photo ? (
+              <img
+                className="object-cover w-full h-full rounded-full border-2 border-grey-300 dark:border-base-200"
+                src={formik.values.photo}
+                alt="imgPreview"
+              />
+            ) : (
+              <Avatar className="w-28 h-28 text-xl" color="primary">
+                {formik.values.nama.substring(0, 2).toUpperCase()}
+              </Avatar>
+            )}
             <div className="absolute right-0 bottom-0">
-              <div className="h-8 w-8 rounded-full relative">
-                <img src={"/assets/imgPreview.png"} alt="" />
+              <div className="h-8 w-8 rounded-full relative bg-white dark:bg-base-600 flex items-center justify-center">
+                <TbPhotoPlus className="text-xl cursor-pointer" />
                 <input
                   className="form-control absolute top-0 left-0 h-full w-full rounded-full opacity-0 cursor-pointer"
                   type="file"
@@ -106,12 +136,12 @@ const PengaturanAkunSub = () => {
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <TextField
             required
-            label="Username"
-            name="username"
-            value={formik.values.username}
+            label="Nama"
+            name="nama"
+            value={formik.values.nama}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.username ? formik.errors.username : ''}
+            error={formik.touched.nama ? formik.errors.nama : ""}
           />
           <TextField
             required
@@ -121,10 +151,12 @@ const PengaturanAkunSub = () => {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.email ? formik.errors.email : ''}
+            error={formik.touched.email ? formik.errors.email : ""}
           />
           <div className="mt-6 flex justify-end">
-            <Button type="submit" loading={addUserLoading}>Simpan</Button>
+            <Button type="submit" loading={addUserLoading}>
+              Simpan
+            </Button>
           </div>
         </form>
       </Container>

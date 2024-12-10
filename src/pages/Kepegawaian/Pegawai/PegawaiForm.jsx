@@ -1,66 +1,43 @@
-import React, { Fragment, useState, useMemo } from "react";
-import { Tabs } from "@/components"; // Ensure this component handles accessibility
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 import Pribadi from "./Sub/Pribadi";
 import Pegawai from "./Sub/Pegawai";
 import Keluarga from "./Sub/Keluarga";
 import Pendidikan from "./Sub/Pendidikan";
 import Lainnya from "./Sub/Lainnya";
-import Jadwal from "./Sub/Jadwal";
-import { useLocation, useParams } from "react-router-dom";
+import { Tabs } from '../../../components';
 
-const PegawaiForm = () => {
-  const { pk } = useParams();
-  const { state } = useLocation();
+const tabComponents = [
+  { key: '0', label: 'Pribadi', Component: Pribadi },
+  { key: '1', label: 'Pegawai', Component: Pegawai },
+  { key: '2', label: 'Keluarga', Component: Keluarga },
+  { key: '3', label: 'Pendidikan', Component: Pendidikan },
+  { key: '4', label: 'Lainnya', Component: Lainnya },
+];
 
-  console.log(state)
+const FormComponent = () => {
+  const {state} = useLocation(); // Use useLocation to access the current location
+  const initialTab = `${state?.activeTab || '0'}`; // Set default tab to '0' if no state
 
-  const [tabs] = useState({
-    idTabs: "pegawaiTabs",
-    idContents: "pegawaiTabs-Content",
-    listTabs: [
-      {
-        nameTabs: "Pribadi",
-        linkTabs: "formPribadi",
-        contentTabs: <Pribadi />,
-      },
-      {
-        nameTabs: "Pegawai",
-        linkTabs: "formPegawai",
-        contentTabs: <Pegawai />,
-        disabled: !pk,
-      },
-      {
-        nameTabs: "Keluarga",
-        linkTabs: "formKeluarga",
-        contentTabs: <Keluarga />,
-        disabled: !pk,
-      },
-      {
-        nameTabs: "Pendidikan",
-        linkTabs: "formPendidikan",
-        contentTabs: <Pendidikan />,
-        disabled: !pk,
-      },
-      {
-        nameTabs: "Lainnya",
-        linkTabs: "formLainnya",
-        contentTabs: <Lainnya />,
-        disabled: !pk,
-      },
-      {
-        nameTabs: "Jadwal",
-        linkTabs: "formJadwal",
-        contentTabs: <Jadwal />,
-        disabled: !pk,
-      },
-    ],
-  });
+  const [activeTab, setActiveTab] = useState(initialTab); // Initialize active tab
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
 
   return (
-    <Fragment>
-      <Tabs tabs={tabs} />
-    </Fragment>
+    <div className='flex flex-col gap-4'>
+      <Tabs
+        activeTab={activeTab} 
+        tabComponents={tabComponents} 
+        onTabChange={handleTabChange} 
+      />
+      
+      {tabComponents.map(({ key, Component }) => (
+        activeTab === key && <Component key={key} onLanjut={() => handleTabChange('1')} onTabChange={handleTabChange} />
+      ))}
+    </div>
   );
 };
 
-export default PegawaiForm;
+export default FormComponent;

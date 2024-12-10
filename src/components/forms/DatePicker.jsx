@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useContext, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { TextField } from "..";
+import { TextField } from "@/components";
 import {
 	autoUpdate,
 	flip,
@@ -64,8 +64,8 @@ const DatePicker = ({
 	note = null,
 	error = null,
 	mode = "single",
-	fromYear = 2015,
-	toYear = moment().year() + 2,
+	fromYear = null,
+	toYear = null,
 	value = null,
 	setValue = null,
 	onChange = null,
@@ -74,6 +74,9 @@ const DatePicker = ({
 	position = "relative",
 }) => {
 	const { themeColor, colorMode } = useContext(ThemeContext);
+	const year = moment().year();
+	const fromyear = fromYear || 2015;
+	const toyear = toYear || year + 2;
 
 	const [open, setOpen] = useState(false);
 
@@ -120,13 +123,13 @@ const DatePicker = ({
 					value={
 						mode === "range"
 							? `${moment(value?.from).format("DD/MM/YYYY")} - ${moment(
-								value?.to
-							).format("DD/MM/YYYY")}`
+									value?.to
+							  ).format("DD/MM/YYYY")}`
 							: mode === "multiple"
-								? value?.map((v) => moment(v).format("DD/MM/YYYY")).join(", ")
-								: value
-									? moment(value).format("DD/MM/YYYY")
-									: ""
+							? value?.map((v) => moment(v).format("DD/MM/YYYY")).join(", ")
+							: value
+							? moment(value).format("DD/MM/YYYY")
+							: ""
 					}
 					onClick={() => setOpen(!open)}
 					setValue={setValue}
@@ -139,7 +142,7 @@ const DatePicker = ({
 				<div
 					ref={refs.setFloating}
 					style={floatingStyles}
-					className={`bg-white dark:bg-gray-700 w-fit rounded-lg shadow-lg border border-base-50 dark:border-gray-500 z-10 ${position}`}
+					className={`bg-white dark:bg-base-700 w-fit rounded-lg shadow-lg border border-base-50 dark:border-base-500 z-10 ${position}`}
 				>
 					<DayPicker
 						className="m-0 p-4 text-sm"
@@ -164,15 +167,17 @@ const DatePicker = ({
 							},
 						}}
 						classNames={{
-							button: `rdp-button hover:!bg-gray-50 dark:hover:!bg-gray-500 ${mode !== "range" ? "rounded-lg" : ""
-								} ${mode === "single" ? "aria-selected:!pointer-events-none" : ""
-								}`,
+							button: `rdp-button hover:!bg-base-75 dark:hover:!bg-base-500 ${
+								mode !== "range" ? "rounded-lg" : ""
+							} ${
+								mode === "single" ? "aria-selected:!pointer-events-none" : ""
+							}`,
 							day_selected: "rdp-day_selected ",
 						}}
 						mode={mode}
 						captionLayout="dropdown-buttons"
-						fromYear={fromYear}
-						toYear={toYear}
+						fromYear={fromyear}
+						toYear={toyear}
 						showOutsideDays
 					/>
 				</div>
@@ -238,5 +243,6 @@ DatePicker.propTypes = {
 	]),
 	position: PropTypes.oneOf(["relative", "fixed", "absolute", "sticky"]),
 };
+
 
 export default DatePicker;

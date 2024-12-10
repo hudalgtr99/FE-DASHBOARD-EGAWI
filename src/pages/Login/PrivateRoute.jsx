@@ -6,12 +6,10 @@ const PrivateRoute = ({ children }) => {
   const location = useLocation();
   const isAuth = isAuthenticated();
 
-  // If the user is authenticated (has a valid token) and tries to access the login page
   if (isAuth && location.pathname === "/login") {
-    return <Navigate to="/" replace />; // Redirect to home or dashboard
+    return <Navigate to="/" replace />; 
   }
 
-  // If the user is not authenticated and tries to access a protected route
   if (!isAuth && location.pathname !== "/login") {
     return <Navigate to="/login" replace />;
   }

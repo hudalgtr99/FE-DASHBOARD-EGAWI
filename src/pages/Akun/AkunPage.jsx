@@ -1,18 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {
-  deleteData,
-  getData,
-  updateData,
-} from '@/actions';
-import { userReducer } from '@/reducers/authReducers';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { deleteData, getData, updateData } from "@/actions";
+import { userReducer } from "@/reducers/authReducers";
 import {
   API_URL_edeluser,
   API_URL_getdataakun,
   API_URL_changeactive,
   API_URL_changeoutofarea,
-} from '@/constants';
+} from "@/constants";
 import { icons } from "../../../public/icons";
 import {
   Button,
@@ -22,16 +18,15 @@ import {
   Limit,
   TextField,
   Tooltip,
-} from '@/components';
-import { debounce } from 'lodash'; // Import lodash debounce
-import { CiSearch } from 'react-icons/ci';
+  PulseLoading,
+} from "@/components";
+import { debounce } from "lodash"; // Import lodash debounce
+import { CiSearch } from "react-icons/ci";
 
 const AkunPage = () => {
-  const {
-    getDataAkunResult,
-    addAkunResult,
-    deleteAkunResult,
-  } = useSelector((state) => state.auth);
+  const { getDataAkunResult, addAkunResult, deleteAkunResult, getDataAkunLoading } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,11 +34,16 @@ const AkunPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = value
-        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        ? {
+            param: `?search=${value}&limit=${limit}&offset=${
+              pageActive * limit
+            }`,
+          }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
     }, 300),
@@ -58,17 +58,13 @@ const AkunPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/pegawai/form/${item.datapribadi.user_id}`, {
-      state: {
-        item,
-      },
-    });
+    // Store the item in localStorage
+    localStorage.setItem("editUserData", JSON.stringify(item));
+    navigate(`/kepegawaian/pegawai/form/${item.datapribadi.user_id}`);
   };
 
   const onChange = (item) => {
-    navigate(`/akun/changepassword`, {
-      state: { item }, // Pass the selected item (user data) to the new page
-    });
+    navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.user_id}`);
   };
 
   const doDelete = (item) => {
@@ -82,12 +78,13 @@ const AkunPage = () => {
 
   const get = useCallback(
     async (param) => {
-      getData(
+      await getData(
         { dispatch, redux: userReducer },
         param,
         API_URL_getdataakun,
         "GET_AKUN"
       );
+      setLoading(false);
     },
     [dispatch]
   );
@@ -136,35 +133,27 @@ const AkunPage = () => {
   };
 
   useEffect(() => {
-    const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
+    const param = {
+      param: "?limit=" + limit + "&offset=" + pageActive * limit,
+    };
     get(param);
   }, [limit, pageActive, get]);
 
   useEffect(() => {
-    if (
-      addAkunResult ||
-      deleteAkunResult
-    ) {
+    if (addAkunResult || deleteAkunResult) {
       const offset = pageActive * limit;
       const param = search
         ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
         : { param: `?limit=${limit}&offset=${offset}` };
       get(param);
     }
-  }, [
-    addAkunResult,
-    deleteAkunResult,
-    search,
-    limit,
-    pageActive,
-    get,
-  ]);
+  }, [addAkunResult, deleteAkunResult, search, limit, pageActive, get]);
 
   const dataWithIndex = getDataAkunResult.results
     ? getDataAkunResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
     : [];
 
   const [actions] = useState([
@@ -188,6 +177,8 @@ const AkunPage = () => {
     },
   ]);
 
+  // console.log(JSON.stringify(dataWithIndex))
+
   return (
     <div>
       <Container>
@@ -201,72 +192,89 @@ const AkunPage = () => {
             />
           </div>
         </div>
-        <Tables>
-          <Tables.Head>
-            <tr>
-              <Tables.Header>No</Tables.Header>
-              <Tables.Header>ID</Tables.Header>
-              <Tables.Header>Nama Pegawai</Tables.Header>
-              <Tables.Header>Username</Tables.Header>
-              <Tables.Header>Jabatan</Tables.Header>
-              <Tables.Header>Email</Tables.Header>
-              <Tables.Header>Nomor Telepon</Tables.Header>
-              <Tables.Header>Active</Tables.Header>
-              <Tables.Header>Out of Area</Tables.Header>
-              <Tables.Header center>Actions</Tables.Header>
-            </tr>
-          </Tables.Head>
-          <Tables.Body>
-            {dataWithIndex.map((item) => (
-              <Tables.Row key={item.datapribadi.user_id}>
-                <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.datapribadi.user_id}</Tables.Data>
-                <Tables.Data>{item.datapribadi.nama}</Tables.Data>
-                <Tables.Data>{item.datapribadi.username}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.jabatan?.nama || '-'}</Tables.Data>
-                <Tables.Data>{item.datapribadi.email}</Tables.Data>
-                <Tables.Data>{item.datapribadi.no_telepon}</Tables.Data>
-                <Tables.Data>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={item.datapribadi?.is_staff}
-                      onChange={(e) => handleSwitch(e, item, 6)} // Pass index 6 for is_staff
-                      className="toggle-switch"
-                    />
-                  </label>
-                </Tables.Data>
-                <Tables.Data>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={item.datapribadi?.out_of_area}
-                      onChange={(e) => handleSwitch(e, item, 7)} // Pass index 7 for out_of_area
-                      className="toggle-switch"
-                    />
-                  </label>
-                </Tables.Data>
-                <Tables.Data center>
-                  <div className="flex items-center justify-center gap-2">
-                    {actions.map((action) => (
-                      <Tooltip key={action.name} tooltip={action.name}>
-                        <div
-                          key={action.name}
-                          onClick={() => action.func(item)}
-                          className={action.color}
-                        >
-                          {action.icon}
-                        </div>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </Tables.Data>
-              </Tables.Row>
-            ))}
-          </Tables.Body>
-        </Tables>
-        <div className="flex justify-between items-center mt-4">
-          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
+        {getDataAkunLoading ? (
+          <div className="flex justify-center items-center">
+            <PulseLoading />
+          </div>
+        ) : (
+          <Tables>
+            <Tables.Head>
+              <tr>
+                <Tables.Header>No</Tables.Header>
+                <Tables.Header>Nama Perusahaan</Tables.Header>
+                {/* <Tables.Header>Id pegawai</Tables.Header> */}
+                <Tables.Header>Nama Pribadi</Tables.Header>
+                <Tables.Header>Jabatan</Tables.Header>
+                <Tables.Header>Email</Tables.Header>
+                <Tables.Header>Nomor Telepon</Tables.Header>
+                <Tables.Header>Active</Tables.Header>
+                <Tables.Header>Out of Area</Tables.Header>
+                <Tables.Header center>Actions</Tables.Header>
+              </tr>
+            </Tables.Head>
+            <Tables.Body>
+              {dataWithIndex.length > 0 ? (
+                dataWithIndex.map((item) => (
+                  <Tables.Row key={item.datapribadi.user_id}>
+                    <Tables.Data>{item.index}</Tables.Data>
+                    <Tables.Data>
+                      {item.datapribadi.perusahaan.nama}
+                    </Tables.Data>
+                    {/* <Tables.Data>{item.datapegawai?.id_pegawai || "belum ada"}</Tables.Data> */}
+                    <Tables.Data>{item.datapribadi.nama}</Tables.Data>
+                    <Tables.Data>
+                      {item.datapegawai?.jabatan?.nama || "-"}
+                    </Tables.Data>
+                    <Tables.Data>{item.datapribadi.email}</Tables.Data>
+                    <Tables.Data>{item.datapribadi.no_telepon}</Tables.Data>
+                    <Tables.Data>
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.datapribadi?.is_staff}
+                          onChange={(e) => handleSwitch(e, item, 6)} // Pass index 6 for is_staff
+                          className="toggle-switch"
+                        />
+                      </label>
+                    </Tables.Data>
+                    <Tables.Data>
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.datapribadi?.out_of_area}
+                          onChange={(e) => handleSwitch(e, item, 7)} // Pass index 7 for out_of_area
+                          className="toggle-switch"
+                        />
+                      </label>
+                    </Tables.Data>
+                    <Tables.Data center>
+                      <div className="flex items-center justify-center gap-2">
+                        {actions.map((action) => (
+                          <Tooltip key={action.name} tooltip={action.name}>
+                            <div
+                              key={action.name}
+                              onClick={() => action.func(item)}
+                              className={`${action.color} cursor-pointer`}
+                            >
+                              {action.icon}
+                            </div>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </Tables.Data>
+                  </Tables.Row>
+                ))
+              ) : (
+                <Tables.Row>
+                  <td colSpan="9" className="text-center">
+                    Tidak ada data yang tersedia
+                  </td>
+                </Tables.Row>
+              )}
+            </Tables.Body>
+          </Tables>
+        )}
+        <div className="flex justify-end items-center mt-4">
           <Pagination
             totalCount={getDataAkunResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)

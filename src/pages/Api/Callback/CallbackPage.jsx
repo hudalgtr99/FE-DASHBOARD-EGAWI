@@ -185,7 +185,7 @@ const CallbackPage = () => {
                           <div
                             key={action.name}
                             onClick={() => action.func(item)}
-                            className={action.color}
+                            className={`${action.color} cursor-pointer`}
                           >
                             {action.icon}
                           </div>
@@ -197,7 +197,7 @@ const CallbackPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">No Data Available</td>
+                <td colSpan="7" className="text-center">Tidak ada data yang tersedia</td>
               </tr>
             )}
           </Tables.Body>

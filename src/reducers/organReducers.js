@@ -25,6 +25,31 @@ export const organReducers = createSlice({
     deleteUnitResult: false,
   },
   reducers: {
+    // departemenReducers: (state, action) => {
+    //   const { type, payload } = action.payload;
+    //   switch (type) {
+    //     case "GET_DEPARTEMEN":
+    //       return {
+    //         ...state,
+    //         getDepartemenResult: payload.data,
+    //         getDepartemenLoading: payload.loading,
+    //         getDepartemenError: payload.errorMessage,
+    //       };
+    //     case "ADD_DEPARTEMEN":
+    //       return {
+    //         ...state,
+    //         addDepartemenResult: payload.data,
+    //         addDepartemenLoading: payload.loading,
+    //       };
+    //     case "DELETE_DEPARTEMEN":
+    //       return {
+    //         ...state,
+    //         deleteDivisiResult: payload.data,
+    //       };
+    //     default:
+    //       return state;
+    //   }
+    // },
     departemenReducers: (state, action) => {
       const { type, payload } = action.payload;
       switch (type) {
@@ -44,7 +69,7 @@ export const organReducers = createSlice({
         case "DELETE_DEPARTEMEN":
           return {
             ...state,
-            deleteDepartemenResult: payload.data,
+            deleteDivisiResult: payload.data,
           };
         default:
           return state;

@@ -200,7 +200,7 @@ const TunjanganPage = () => {
                         <div
                           key={action.name}
                           onClick={() => action.func(item)}
-                          className={action.color}
+                          className={`${action.color} cursor-pointer`}
                         >
                           {action.icon}
                         </div>

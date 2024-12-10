@@ -9,6 +9,9 @@ const LoginPrivateRoute = ({ children }) => {
     if (isAuth) {
         return <Navigate to="/" replace />;
     }
+    // else{
+    //     return <Navigate to="/login" replace />;
+    // }
 
     // If the user is not authenticated, render the login page
     return children;

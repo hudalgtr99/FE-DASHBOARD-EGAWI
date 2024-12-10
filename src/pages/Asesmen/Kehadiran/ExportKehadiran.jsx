@@ -71,7 +71,7 @@ const ExportKehadiran = () => {
             type="date"
             value={formik.values.start_date}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            onBlur={(e) => formik.handleBlur}
             error={formik.touched.start_date ? formik.errors.start_date : ''}
           />
           <TextField
@@ -81,7 +81,7 @@ const ExportKehadiran = () => {
             type="date"
             value={formik.values.end_date}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            onBlur={(e) => formik.handleBlur}
             error={formik.touched.end_date ? formik.errors.end_date : ''}
           />
           <div className="mt-6 flex justify-end">

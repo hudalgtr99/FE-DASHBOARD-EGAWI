@@ -123,7 +123,7 @@ const Jadwal = () => {
                                     type="time"
                                     value={formik.values[`${day}_masuk`]}
                                     onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                    onBlur={(e) => formik.handleBlur}
                                     error={formik.touched[`${day}_masuk`] ? formik.errors[`${day}_masuk`] : ''}
                                 />
                                 <TextField
@@ -133,7 +133,7 @@ const Jadwal = () => {
                                     type="time"
                                     value={formik.values[`${day}_keluar`]}
                                     onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                    onBlur={(e) => formik.handleBlur}
                                     error={formik.touched[`${day}_keluar`] ? formik.errors[`${day}_keluar`] : ''}
                                 />
                             </div>

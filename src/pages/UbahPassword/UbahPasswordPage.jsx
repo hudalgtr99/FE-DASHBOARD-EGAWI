@@ -16,6 +16,7 @@ import { API_URL_changepassword } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
 import { icons } from "../../../public/icons";
 
+
 const UbahPasswordPage = () => {
   const { addUserLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -27,16 +28,14 @@ const UbahPasswordPage = () => {
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      password: "",
       password_baru: "",
       konfirmasi_password_baru: "",
     },
     validationSchema: Yup.object({
-      password: Yup.string().required("Password Saat Ini is required"),
-      password_baru: Yup.string().required("Password Baru is required"),
+      password_baru: Yup.string().required("Password wajib diisi"),
       konfirmasi_password_baru: Yup.string()
-        .required("Konfirmasi Password Baru is required")
-        .oneOf([Yup.ref('password_baru'), null], "Passwords must match"),
+        .required("Konfirmasi Password wajib diisi")
+        .oneOf([Yup.ref('password_baru'), null], "Password tidak cocok"),
     }),
     onSubmit: (values) => {
       updateData(
@@ -76,15 +75,6 @@ const UbahPasswordPage = () => {
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div className="relative">
-            <TextField
-              required
-              label="Password Saat Ini"
-              name="password"
-              type={visibleOldPassword ? "text" : "password"}
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
             <div
               className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
               onClick={() => setVisibleOldPassword(!visibleOldPassword)}
@@ -100,7 +90,7 @@ const UbahPasswordPage = () => {
               type={visibleNewPassword ? "text" : "password"}
               value={formik.values.password_baru}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
             />
             <div
               className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
@@ -117,7 +107,7 @@ const UbahPasswordPage = () => {
               type={visibleConfirmPassword ? "text" : "password"}
               value={formik.values.konfirmasi_password_baru}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
             />
             <div
               className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"

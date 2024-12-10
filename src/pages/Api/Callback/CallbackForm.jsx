@@ -112,7 +112,7 @@ const CallbackForm = () => {
                             name="key"
                             value={formik.values.key}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            onBlur={(e) => formik.handleBlur}
                             error={formik.touched.key ? formik.errors.key : ''}
                         />
                         <TextField
@@ -121,7 +121,7 @@ const CallbackForm = () => {
                             name="url"
                             value={formik.values.url}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+                            onBlur={(e) => formik.handleBlur}
                             error={formik.touched.url ? formik.errors.url : ''}
                         />
                         <Select

@@ -1,27 +1,52 @@
-import React, { Fragment, useContext, useEffect } from "react";
-import { icons } from "../../../public/icons";
-import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
-import { Link, useLocation } from "react-router-dom";
-import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
 import { ThemeContext } from "@/context/ThemeContext";
-import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { HiOutlineMenu } from "react-icons/hi";
+import { TbBell, TbBuilding, TbLogout, TbMail, TbUser } from "react-icons/tb";
+import {
+  Avatar,
+  Badge,
+  Button,
+  ButtonDarkMode,
+  ButtonRipple,
+  List,
+  Popover,
+  Tooltip,
+} from "@/components";
+import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "@/actions/auth";
 import { authReducer } from "@/reducers/authReducers";
+import { fetchUserDetails } from "@/constants/user";
+import { Link } from "react-router-dom";
 
-const Header = ({ open, setOpen }) => {
+const Header = ({ setSideOpen }) => {
+  const { themeSkin, navbarType, colorMode, themeColor } =
+    useContext(ThemeContext);
+
   const { logoutUserResult } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const location = useLocation();
-  const arrLocation = location.pathname.split("/");
-  const title = capitalizeFirstLetter(arrLocation[arrLocation.length - 1]);
+  const [user, setUser] = useState([]);
+  const [loading, setLoading] = useState(true); // State untuk loading
 
-  const { colorMode, setColorMode } = useContext(ThemeContext);
+  const fetchData = useCallback(async () => {
+    setLoading(true); // Set loading menjadi true sebelum mengambil data
+    try {
+      const userData = await fetchUserDetails();
+      setUser(userData?.datapribadi);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } finally {
+      setLoading(false); // Set loading menjadi false setelah pengambilan data
+    }
+  }, []);
 
-  // Function to toggle color mode
-  const toggleColorMode = () => {
-    setColorMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const [dataNotif, setDataNotif] = useState([
+    // Data notifikasi
+  ]);
 
   const onLogout = (e) => {
     e.preventDefault();
@@ -35,87 +60,217 @@ const Header = ({ open, setOpen }) => {
   }, [logoutUserResult, dispatch]);
 
   return (
-    <Fragment>
-      <div className="w-full flex py-2 justify-between bg-[#FFF] backdrop-blur-sm dark:bg-gray-800 items-center px-3 drop-shadow-sm">
-        <div
-          onClick={() => setOpen(!open)}
-          className={`p-1 rounded-lg text-black dark:text-white text-xl flex items-center gap-2 cursor-pointer transition-all`}
-        >
-          {!open && (
-            <div className="flex items-center gap-2">
-              <img className="w-8 ml-[5px]" src="/assets/Logo.png" alt="logo" />
-              <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white md:block hidden">
-                QUEEN
-              </span>
-              <div className="dark:bg-gray-700 bg-gray-100 hover:bg-gray-200 p-1 rounded-full">
-                {icons.himenualt2}
-              </div>
-            </div>
-          )}
-          {/* {open &&
-            <div className="font-medium dark:text-white">
-              {title ? title : "Dashboard"}
-            </div>
-          } */}
+    <header
+      className={`bg-base-50/30 dark:bg-neutral-900/10 backdrop-blur-sm h-20 px-6 pt-4 pb-0 top-0 w-full z-30 relative ${navbarType}`}
+    >
+      <div
+        className={`w-full h-full flex justify-between items-center px-6 bg-white/80 dark:bg-base-600/80 backdrop-blur-sm rounded-md ${
+          themeSkin === "default" ? "shadow-lg" : themeSkin
+        }`}
+      >
+        <div>
+          <div
+            onClick={() => setSideOpen(true)}
+            className="cursor-pointer block lg:hidden"
+          >
+            <HiOutlineMenu className="text-2xl" />
+          </div>
         </div>
 
-        <div className="flex items-center space-x-4">
-          {/* Color Mode Toggle Button */}
-          <button
-            onClick={toggleColorMode}
-            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          >
-            {colorMode === "light" ? (
-              <IoSunnyOutline className="text-yellow-500" />
-            ) : (
-              <IoMoonOutline className="text-blue-500" />
-            )}
-          </button>
-
-          <Popover as={"div"} className="flex relative">
-            <PopoverButton>
-              <div className="w-10 h-10 rounded-full cursor-pointer overflow-hidden">
-                <img className="object-cover h-full w-full" src={"https://picsum.photos/200"} alt="user" />
-              </div>
-            </PopoverButton>
-            <Transition
-              enter="transition duration-100 ease-out"
-              enterFrom="transform scale-95 opacity-0"
-              enterTo="transform scale-100 opacity-100"
-              leave="transition duration-75 ease-out"
-              leaveFrom="transform scale-100 opacity-100"
-              leaveTo="transform scale-95 opacity-0"
+        <div className="flex items-center gap-4">
+          <div className="flex items-center">
+            {/* Dark Mode */}
+            <Tooltip
+              tooltip={colorMode === "light" ? "Dark Mode" : "Light Mode"}
+              delay={500}
             >
-              <PopoverPanel className="absolute w-max min-w-[170px] z-[99999] flex flex-col right-3 top-14 rounded-lg shadow-lg bg-white dark:bg-gray-800 pt-3 pb-1 px-1 text-black dark:text-white">
-                <div className="px-2 pb-2">
-                  <div className="text-xs font-medium">M. Aldi Kurniawan</div>
-                  <div className="text-[10px]">Admin</div>
-                </div>
-                <div className="flex flex-col">
-                  <Link
-                    to="/profile"
-                    className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all"
+              <ButtonDarkMode />
+            </Tooltip>
+
+            {/* Notification */}
+            <Popover
+              placement="bottom-end"
+              spacing={20}
+              rounded="md"
+              button={
+                <ButtonRipple className="p-2 rounded-full transition-[background] hover:bg-neutral-200 dark:hover:bg-base-500">
+                  <Badge
+                    hidden
+                    size="xl"
+                    placement="top-end"
+                    skidding={8}
+                    color="success"
                   >
-                    Edit Profil
-                  </Link>
-                  <Link
-                    to="/profile/password"
-                    className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all"
-                  >
-                    Ubah Password
-                  </Link>
-                  <button
-                    onClick={onLogout}
-                    className="text-xs py-2 px-2 rounded-lg text-left hover:bg-[#eceff4] dark:hover:bg-gray-700 hover:text-black dark:hover:text-white transition-all">
-                    Keluar
-                  </button>
+                    <div className="text-2xl">
+                      <TbBell />
+                    </div>
+                  </Badge>
+                </ButtonRipple>
+              }
+            >
+              <div className="text-sm min-w-[360px]">
+                <div>
+                  <div className="py-2 px-4 border-b dark:border-base-500 flex items-center justify-between">
+                    <div className="font-semibold">Notifications</div>
+                    <ButtonRipple className="p-2 rounded-full transition-[background] hover:bg-neutral-200 dark:hover:bg-base-500">
+                      <Badge
+                        size="xs"
+                        placement="right-start"
+                        skidding={-2}
+                        spacing={-8}
+                        color="success"
+                      >
+                        <TbMail className="text-lg" />
+                      </Badge>
+                    </ButtonRipple>
+                  </div>
+                  <div>
+                    {dataNotif.length > 0 ? (
+                      <div>
+                        <div className="max-h-[236px] overflow-y-auto custom-scroll">
+                          {dataNotif.map((item, itemIdx) => (
+                            <div
+                              key={itemIdx}
+                              className="p-4 py-3 hover:bg-base-50 dark:hover:bg-base-700 border-b dark:border-base-500 cursor-pointer flex items-start gap-2"
+                            >
+                              <div className="flex-1">
+                                <div className="text-sm font-medium leading-none mb-1">
+                                  {item.title}
+                                </div>
+                                <div className="text-xs text-base-100 dark:text-base-400">
+                                  {item.description}
+                                </div>
+                                <div className="text-[10px] text-base-100 dark:text-base-400">
+                                  {moment(
+                                    item.date,
+                                    "YYYY-MM-DDTHH:mm:ss"
+                                  ).fromNow()}
+                                </div>
+                              </div>
+                              <div>
+                                <div
+                                  style={{
+                                    backgroundColor: themeColor,
+                                  }}
+                                  className="w-2 h-2 rounded-full mt-1"
+                                ></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-2 text-center border-t dark:border-base-500">
+                          <Button variant="text" color="primary" block>
+                            View All
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 py-10 w-full h-full flex items-center justify-center">
+                        No Notification
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </PopoverPanel>
-            </Transition>
+              </div>
+            </Popover>
+          </div>
+
+          {/* Profile */}
+          <Popover
+            placement="bottom-end"
+            spacing={20}
+            rounded="md"
+            button={
+              <ButtonRipple className="rounded-full">
+                <Badge size="sm" placement="right-end" color="success">
+                  {user?.photo ? (
+                    <Avatar color="primary" className="object-cover">
+                      {loading ? (
+                        ""
+                      ) : (
+                        <img
+                          src={user?.photo}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </Avatar>
+                  ) : (
+                    <Avatar color="primary">
+                      {loading
+                        ? ""
+                        : user.nama.substring(0, 2).toUpperCase()}
+                    </Avatar>
+                  )}
+                </Badge>
+              </ButtonRipple>
+            }
+          >
+            <div className="text-sm w-full md:min-w-[260px]">
+              <div className="p-4 border-b dark:border-base-500">
+                {loading ? (
+                  <div className="text-center">Loading user details...</div> // Tampilkan loading
+                ) : (
+                  <Link to="/profile" className="flex gap-2 items-center">
+                    <div className="w-fit">
+                    {user?.photo ? (
+                    <Avatar color="primary" className="object-cover">
+                      {loading ? (
+                        ""
+                      ) : (
+                        <img
+                          src={user?.photo}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </Avatar>
+                  ) : (
+                    <Avatar color="primary">
+                      {loading
+                        ? ""
+                        : user.nama.substring(0, 2).toUpperCase()}
+                    </Avatar>
+                  )}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold whitespace-nowrap">
+                        {user.nama}
+                      </div>
+                      <div className="text-xs">{user.nama}</div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+              <div className="p-2 font-medium border-b dark:border-base-500">
+                <Link to={"/profile"}>
+                  <List prefix={<TbUser />} density="loose">
+                    {user?.groups?.name}
+                  </List>
+                </Link>
+              </div>
+              {user.perusahaan && (
+                <div className="p-2 font-medium border-b dark:border-base-500">
+                  <List prefix={<TbBuilding />} density="loose">
+                    {user.perusahaan.nama}
+                  </List>
+                </div>
+              )}
+              <div className="p-2 font-medium">
+                <List
+                  onClick={onLogout}
+                  color="danger"
+                  prefix={<TbLogout />}
+                  density="loose"
+                >
+                  Logout
+                </List>
+              </div>
+            </div>
           </Popover>
         </div>
       </div>
-    </Fragment>
+    </header>
   );
 };
 

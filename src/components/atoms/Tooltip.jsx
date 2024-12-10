@@ -81,8 +81,9 @@ const Tooltip = ({
 				leaveTo="transform scale-95 opacity-0"
 			>
 				<div
-					className={`absolute bg-gray-900 text-white dark:bg-white dark:text-gray-900 text-sm px-3 py-1.5 rounded-md shadow-lg whitespace-nowrap text-center ${fill ? "min-w-full" : "w-fit"
-						}`}
+					className={`absolute bg-white text-base-300 dark:bg-base-500 dark:text-base-200 text-sm px-3 py-1.5 rounded-md shadow-lg whitespace-nowrap text-center ${
+						fill ? "min-w-full" : "w-fit"
+					}`}
 					ref={refs.setFloating}
 					style={floatingStyles}
 					{...getFloatingProps()}
@@ -118,3 +119,27 @@ Tooltip.propTypes = {
 };
 
 export default Tooltip;
+
+
+Tooltip.propTypes = {
+	tooltip: PropTypes.node,
+	placement: PropTypes.oneOf([
+		"top",
+		"top-start",
+		"top-end",
+		"right",
+		"right-start",
+		"right-end",
+		"bottom",
+		"bottom-start",
+		"bottom-end",
+		"left",
+		"left-start",
+		"left-end",
+	]),
+	spacing: PropTypes.number,
+	fill: PropTypes.bool,
+	delay: PropTypes.number,
+	position: PropTypes.oneOf(["relative", "fixed", "absolute", "sticky"]),
+	children: PropTypes.node,
+};

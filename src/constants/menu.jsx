@@ -1,12 +1,12 @@
 import { icons } from "../../public/icons";
 import {
-  CabangPage,
+  PerusahaanPage,
   Dashboard,
   KalenderPage,
   OrganPage,
   PegawaiPage,
   PengurusPage,
-  StrataPage,
+  JabatanPage,
   TentangPage,
   CutiPage,
   KinerjaPage,
@@ -18,133 +18,235 @@ import {
   PenugasanPage,
   PayrollPage,
   RekerutmenPage,
-  BaganPage,
   PotonganPage,
   TunjanganPage,
+  LokasiAbsen,
+  JamKerja,
+  Kemitraan,
+  Dokumentasi,
 } from "@/pages";
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
+import SuratPenugasanSlug from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
+import ImportPegawai from "../pages/Kepegawaian/ImportPegawai/ImportPegawaiPage";
+
+let jwt = null; // Initialize jwt variable
+
+if (isAuthenticated()) {
+  const token = isAuthenticated();
+  jwt = jwtDecode(token);
+}
 
 export const menu = [
   {
-    menuIcon: icons.lulayoutdashboard,
-    menuName: "Dashboard",
+    icon: icons.lulayoutdashboard,
     menuLink: "/",
+    name: "dashboard",
+    title: "Dashboard",
     element: <Dashboard />,
-    subMenu: [],
+    sub: [],
   },
   {
-    menuIcon: icons.lubuilding,
-    menuName: "Perusahaan",
-    menuLink: "perusahaan",
-
-    subMenu: [
-      { subMenuName: "Tentang", subMenuLink: "/perusahaan/tentang", element: <TentangPage /> },
-      { subMenuName: "Pengurus", subMenuLink: "/perusahaan/pengurus", element: <PengurusPage /> },
-    ],
-  },
-  {
-    menuIcon: icons.ludatabase,
-    menuName: "Master Data",
+    icon: icons.ludatabase,
     menuLink: "masterdata",
-
-    subMenu: [
-      { subMenuName: "Bagan", subMenuLink: "/masterdata/bagan", element: <BaganPage /> },
+    name: "masterdata",
+    title: "Masterdata",
+    element: null, // Change to null if there's no component to render
+    sub: [
       {
-        subMenuName: "Cabang",
-        subMenuLink: "/masterdata/cabang",
-        element: <CabangPage />,
+        menuLink: "masterdata/data-perusahaan",
+        name: "data perusahaan",
+        title: "Data perusahaan",
+        element: <PerusahaanPage />,
+        sub: [],
+      },
+      {
+        menuLink: "masterdata/lokasi-absen",
+        name: "lokasi absen",
+        title: "Lokasi absen",
+        element: <LokasiAbsen />,
         isSuperAdmin: true,
+        sub: [],
       },
-      { subMenuName: "Strata", subMenuLink: "/masterdata/strata", element: <StrataPage /> },
-      { subMenuName: "Organ", subMenuLink: "/masterdata/organ", element: <OrganPage /> },
-      { subMenuName: "Gaji", subMenuLink: "/masterdata/gaji", element: <GajiPage /> },
-      { subMenuName: "Tunjangan", subMenuLink: "/masterdata/tunjangan", element: <TunjanganPage /> },
-      { subMenuName: "Potongan", subMenuLink: "/masterdata/potongan", element: <PotonganPage /> },
-      { subMenuName: "Kalender", subMenuLink: "/masterdata/kalender", element: <KalenderPage /> },
+      {
+        menuLink: "masterdata/jabatan",
+        name: "jabatan",
+        title: "Jabatan",
+        element: <JabatanPage />,
+        sub: [],
+      },
+      {
+        menuLink: "masterdata/organization",
+        name: "organization",
+        title: "Organization",
+        element: <OrganPage />,
+        sub: [],
+      },
+      {
+        menuLink: "masterdata/jam-kerja",
+        name: "jam kerja",
+        title: "Jam kerja",
+        element: <JamKerja />,
+        sub: [],
+      },
+      ...(jwt && jwt.level === "Super Admin"
+        ? [
+            {
+              menuLink: "/masterdata/master-template",
+              name: "master template",
+              title: "Master Template",
+              element: <MasterTemplate />,
+              sub: [],
+            },
+          ]
+        : []),
     ],
   },
   {
-    menuIcon: icons.luusers,
-    menuName: "Kepegawaian",
+    icon: icons.luusers,
     menuLink: "kepegawaian",
-
-    subMenu: [
-      { subMenuName: "Pegawai", subMenuLink: "/kepegawaian/pegawai", element: <PegawaiPage /> },
-      { subMenuName: "Payroll", subMenuLink: "/kepegawaian/payroll", element: <PayrollPage /> },
-      { subMenuName: "Penugasan", subMenuLink: "/kepegawaian/penugasan", element: <PenugasanPage /> },
-      { subMenuName: "Rekrutmen", subMenuLink: "/kepegawaian/rekrutmen", element: <RekerutmenPage /> },
+    name: "kepegawaian",
+    title: "Kepegawaian",
+    element: null, // Change to null if there's no component to render
+    sub: [
+      {
+        menuLink: "/kepegawaian/pegawai",
+        name: "data pegawai",
+        title: "Data Pegawai",
+        element: <PegawaiPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/masterdata/import-pegawai",
+        name: "import pegawai",
+        title: "Import Pegawai",
+        element: <ImportPegawai />,
+        sub: [],
+      },
+      {
+        menuLink: "/kepegawaian/penugasan",
+        name: "penugasan pekerjaan",
+        title: "Penugasan Pekerjaan",
+        element: <PenugasanPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/kepegawaian/surat-penugasan",
+        name: "surat penugasan",
+        title: "Surat Penugasan",
+        element: <SuratPenugasanSlug />,
+        sub: [],
+      },
+      {
+        menuLink: "/kepegawaian/rekrutmen",
+        name: "rekrutmen",
+        title: "Rekrutmen",
+        element: <RekerutmenPage />,
+        sub: [],
+      },
     ],
   },
+  // {
+  //   icon: icons.luNewspaper,
+  //   menuLink: "suratPenugasan",
+  //   name: "surat penugasan",
+  //   title: "Surat Penugasan",
+  //   element: null, // Change to null if there's no component to render
+  //   sub: [
+  //     {
+  //       icon: icons.luSmartHome,
+  //       menuLink: "/surat-penugasan/master-template",
+  //       name: "master template",
+  //       title: "Master Template",
+  //       element: <MasterTemplate />,
+  //       sub: [],
+  //     },
+  //   ],
+  // },
   {
-    menuIcon: icons.luclipboardlist,
-    menuName: "Asesmen",
+    icon: icons.luclipboardlist,
     menuLink: "asesmen",
-
-    subMenu: [
-      { subMenuName: "Cuti", subMenuLink: "/asesmen/cuti", element: <CutiPage /> },
-      { subMenuName: "Kehadiran", subMenuLink: "/asesmen/kehadiran", element: <KehadiranPage /> },
-      { subMenuName: "Kinerja", subMenuLink: "/asesmen/kinerja", element: <KinerjaPage /> },
-      { subMenuName: "Karir", subMenuLink: "/asesmen/karir" },
-    ],
-  },
-  {
-    menuIcon: icons.luactivity,
-    menuName: "Kompetensi",
-    menuLink: "kompetensi",
-
-    subMenu: [
-      { subMenuName: "Sebaran", subMenuLink: "/kompetensi/sebaran" },
-      { subMenuName: "Program", subMenuLink: "/kompetensi/program" },
-      { subMenuName: "Kegiatan", subMenuLink: "/kompetensi/kegiatan" },
-    ],
-  },
-  {
-    menuIcon: icons.luhearthandshake,
-    menuName: "Kemitraan",
-    menuLink: "kemitraan",
-
-    subMenu: [
-      { subMenuName: "Perusahaan", subMenuLink: "/kemitraan/perusahaan" },
-      { subMenuName: "Perseorangan", subMenuLink: "/kemitraan/perseorangan" },
-    ],
-  },
-  {
-    menuIcon: icons.lufiletext,
-    menuName: "Dokumentasi",
-    menuLink: "dokumentasi",
-
-    subMenu: [
+    name: "asesmen",
+    title: "Asesmen",
+    element: null, // Change to null if there's no component to render
+    sub: [
       {
-        subMenuName: "Administratif",
-        subMenuLink: "/dokumentasi/administratif",
-      },
-      { subMenuName: "Kegiatan", subMenuLink: "/dokumentasi/kegiatan" },
-      { subMenuName: "Transaksi", subMenuLink: "/dokumentasi/transaksi" },
-      { subMenuName: "Raport", subMenuLink: "/dokumentasi/raport" },
-    ],
-  },
-  {
-    menuIcon: icons.luunplug,
-    menuName: "API",
-    menuLink: "api",
-    isSuperAdmin: true,
-    subMenu: [
-      {
-        subMenuName: "Api",
-        subMenuLink: "/api/api",
-        element: <ApiPage />
+        menuLink: "/asesmen/kehadiran",
+        name: "kehadiran",
+        title: "Kehadiran",
+        element: <KehadiranPage />,
+        sub: [],
       },
       {
-        subMenuName: "Callback",
-        subMenuLink: "/api/callback",
-        element: <CallbackPage />
+        menuLink: "/asesmen/cuti",
+        name: "cuti",
+        title: "Cuti",
+        element: <CutiPage />,
+        sub: [],
       },
     ],
   },
   {
-    menuIcon: icons.luusers2,
-    menuName: "Akun",
-    menuLink: "/akun",
-    element: <AkunPage />,
-    subMenu: [],
+    icon: icons.luhearthandshake,
+    menuLink: "/kemitraan",
+    name: "kemitraan",
+    title: "Kemitraan",
+    element: <Kemitraan />,
+    sub: [],
+  },
+  {
+    icon: icons.lufiletext,
+    menuLink: "/dokumentasi",
+    name: "dokumentasi",
+    title: "Dokumentasi",
+    element: <Dokumentasi />,
+    sub: [],
+  },
+  ...(jwt && jwt.level === "Super Admin"
+    ? [
+        {
+          icon: icons.luunplug,
+          menuLink: "api",
+          name: "api",
+          title: "API",
+          isSuperAdmin: true,
+          element: null, // Change to null if there's no component to render
+          sub: [
+            {
+              icon: icons.luSmartHome,
+              menuLink: "/api/api",
+              name: "api",
+              title: "Api",
+              element: <ApiPage />,
+              sub: [],
+            },
+            {
+              icon: icons.luSmartHome,
+              menuLink: "/api/callback",
+              name: "callback",
+              title: "Callback",
+              element: <CallbackPage />,
+              sub: [],
+            },
+          ],
+        },
+        {
+          icon: icons.luusers2,
+          menuLink: "/akun",
+          name: "akun",
+          title: "Akun",
+          element: <AkunPage />,
+          sub: [],
+        },
+      ]
+    : []),
+  {
+    icon: icons.luCalendarDays,
+    menuLink: "/kalender",
+    name: "kalender",
+    title: "Kalender",
+    element: <KalenderPage />,
+    sub: [],
   },
 ];

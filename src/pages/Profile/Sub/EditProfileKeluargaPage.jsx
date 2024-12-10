@@ -113,7 +113,7 @@ const EditProfileKeluargaPage = () => {
               name="nama_ayah"
               value={formik.values.nama_ayah}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.nama_ayah ? formik.errors.nama_ayah : ''}
             />
             <TextField
@@ -122,7 +122,7 @@ const EditProfileKeluargaPage = () => {
               name="nama_ibu"
               value={formik.values.nama_ibu}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.nama_ibu ? formik.errors.nama_ibu : ''}
             />
             <Select
@@ -149,7 +149,7 @@ const EditProfileKeluargaPage = () => {
                 name="nama_pasangan"
                 value={formik.values.nama_pasangan}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                onBlur={(e) => formik.handleBlur}
                 error={formik.touched.nama_pasangan ? formik.errors.nama_pasangan : ''}
               />
             )}
@@ -159,7 +159,7 @@ const EditProfileKeluargaPage = () => {
               name="anak"
               value={formik.values.anak}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.anak ? formik.errors.anak : ''}
             />
             <TextField
@@ -168,7 +168,7 @@ const EditProfileKeluargaPage = () => {
               name="nama_kontak_emergency"
               value={formik.values.nama_kontak_emergency}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.nama_kontak_emergency ? formik.errors.nama_kontak_emergency : ''}
             />
             <TextField
@@ -177,7 +177,7 @@ const EditProfileKeluargaPage = () => {
               name="no_telepon_emergency"
               value={formik.values.no_telepon_emergency}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.no_telepon_emergency ? formik.errors.no_telepon_emergency : ''}
             />
           </div>

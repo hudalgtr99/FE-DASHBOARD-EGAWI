@@ -2,15 +2,45 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
+/**
+ *
+ * @param {{
+ * id: string;
+ * name: string;
+ * label: string;
+ * value: string;
+ * onChange: React.Dispatch<React.SetStateAction<string>>;
+ * onBlur: React.Dispatch<React.SetStateAction<string>>;
+ * disabled: boolean;
+ * readOnly: boolean;
+ * required: boolean;
+ * placeholder: string;
+ * variant: "basic" | "outline" | "underlined" | "filled";
+ * size: "sm" | "md" | "lg" | "xl";
+ * color: "primary" | "base" | "success" | "warning" | "danger" | "info";
+ * rounded: "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+ * density: "tight" | "normal" | "loose";
+ * prefix: React.ReactNode;
+ * suffix: React.ReactNode;
+ * prepend: React.ReactNode;
+ * append: React.ReactNode;
+ * note: React.ReactNode;
+ * error: React.ReactNode;
+ * rows: number;
+ * }}
+ *
+ */
+
 const TextArea = ({
 	id = "",
 	name = "",
 	label = "",
 	value = "",
-	onChange = () => { },
-	onBlur = () => { },
+	onChange = () => {},
+	onBlur = () => {},
 	disabled = false,
 	readOnly = false,
+	required = false,
 	placeholder = "",
 	variant = "basic",
 	size = "md",
@@ -24,7 +54,6 @@ const TextArea = ({
 	note = null,
 	error = null,
 	rows = 2,
-	required = false,
 }) => {
 	const { themeColor, colorMode } = useContext(ThemeContext);
 
@@ -81,25 +110,25 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-					? colorMode === "light"
-						? "#BABCBA80"
-						: "#4D535580"
-					: isFocus
-						? textFieldColor
-						: isHover
-							? colorMode === "light"
-								? "#9A9C9A"
-								: "#6F6F6F"
-							: colorMode === "light"
-								? "#BABCBA"
-								: "#4D5355",
+				? colorMode === "light"
+					? "#BABCBA80"
+					: "#4D535580"
+				: isFocus
+				? textFieldColor
+				: isHover
+				? colorMode === "light"
+					? "#9A9C9A"
+					: "#6F6F6F"
+				: colorMode === "light"
+				? "#BABCBA"
+				: "#4D5355",
 			borderWidth: 1,
 			borderStyle: "solid",
 			outline: error
 				? `2px solid #ef4444`
 				: isFocus
-					? `2px solid ${textFieldColor}`
-					: "none",
+				? `2px solid ${textFieldColor}`
+				: "none",
 			outlineOffset: -2,
 			borderRadius: textFieldRounded,
 		};
@@ -108,18 +137,18 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-					? colorMode === "light"
-						? "#BABCBA80"
-						: "#4D535580"
-					: isFocus
-						? textFieldColor
-						: isHover
-							? colorMode === "light"
-								? "#9A9C9A"
-								: "#6F6F6F"
-							: colorMode === "light"
-								? "#BABCBA"
-								: "#4D5355",
+				? colorMode === "light"
+					? "#BABCBA80"
+					: "#4D535580"
+				: isFocus
+				? textFieldColor
+				: isHover
+				? colorMode === "light"
+					? "#9A9C9A"
+					: "#6F6F6F"
+				: colorMode === "light"
+				? "#BABCBA"
+				: "#4D5355",
 			borderBottomWidth: 1,
 			borderBottomStyle: "solid",
 			borderTopLeftRadius: textFieldRounded,
@@ -131,18 +160,18 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-					? colorMode === "light"
-						? "#BABCBA80"
-						: "#4D535580"
-					: isFocus
-						? textFieldColor
-						: isHover
-							? colorMode === "light"
-								? "#9A9C9A"
-								: "#6F6F6F"
-							: colorMode === "light"
-								? "#BABCBA"
-								: "#4D5355",
+				? colorMode === "light"
+					? "#BABCBA80"
+					: "#4D535580"
+				: isFocus
+				? textFieldColor
+				: isHover
+				? colorMode === "light"
+					? "#9A9C9A"
+					: "#6F6F6F"
+				: colorMode === "light"
+				? "#BABCBA"
+				: "#4D5355",
 			borderBottomWidth: 1,
 			borderBottomStyle: "solid",
 		};
@@ -151,18 +180,18 @@ const TextArea = ({
 			borderColor: error
 				? "#ef4444"
 				: disabled
-					? colorMode === "light"
-						? "#BABCBA80"
-						: "#4D535580"
-					: isFocus
-						? textFieldColor
-						: isHover
-							? colorMode === "light"
-								? "#9A9C9A"
-								: "#6F6F6F"
-							: colorMode === "light"
-								? "#BABCBA"
-								: "#4D5355",
+				? colorMode === "light"
+					? "#BABCBA80"
+					: "#4D535580"
+				: isFocus
+				? textFieldColor
+				: isHover
+				? colorMode === "light"
+					? "#9A9C9A"
+					: "#6F6F6F"
+				: colorMode === "light"
+				? "#BABCBA"
+				: "#4D5355",
 			borderWidth: 1,
 			borderStyle: "solid",
 			outline: "none",
@@ -240,7 +269,6 @@ const TextArea = ({
 					className={`mb-1 ${required && "required"}`}
 				>
 					{label}
-					{required && <span className="text-red-500">*</span>}
 				</label>
 			)}
 
@@ -267,11 +295,12 @@ const TextArea = ({
 					{vaiants.includes(variant) && label && (
 						<span
 							style={{ ...labelStyle }}
-							className={`absolute pointer-events-none transition-[top,font,padding,margin] leading-none whitespace-nowrap ${(isFocus && variant === "outline") ||
-									(variant === "outline" && value)
-									? "bg-white/80 dark:bg-gray-600/80 backdrop-blur px-1 -ml-1"
+							className={`absolute pointer-events-none transition-[top,font,padding,margin] leading-none whitespace-nowrap ${
+								(isFocus && variant === "outline") ||
+								(variant === "outline" && value)
+									? "bg-white/80 dark:bg-base-600/80 backdrop-blur px-1 -ml-1"
 									: ""
-								}`}
+							}`}
 						>
 							{label}
 						</span>
@@ -282,56 +311,88 @@ const TextArea = ({
 							style={{
 								fontSize: textFieldSize,
 							}}
-							className="absolute top-0 left-0 flex items-center p-3 pointer-events-none"
+							className="flex items-start p-[10px] leading-none"
 						>
 							{prefix}
 						</div>
 					)}
 
 					<textarea
+						ref={textAreaRef}
 						id={id}
 						name={name}
-						value={value}
-						onChange={onChange}
-						onBlur={onBlur}
 						disabled={disabled}
 						readOnly={readOnly}
-						placeholder={placeholder}
-						style={{
-							...inputStyle,
-							fontSize: textFieldSize,
-							color: colorMode === "light" ? "#000" : "#FFF",
+						value={value}
+						onChange={onChange}
+						onFocus={() => setIsFocus(true)}
+						onBlur={() => {
+							setIsFocus(false);
+							onBlur && onBlur();
 						}}
-						ref={textAreaRef}
+						onMouseEnter={() => setIsHover(true)}
+						onMouseLeave={() => setIsHover(false)}
+						style={{
+							fontSize: textFieldSize,
+							...inputStyle,
+						}}
+						className={`bg-transparent flex-1 appearance-none outline-none w-full h-full leading-none placeholder:transition-all resize-none overflow-hidden box-border ${
+							isFocus ? "placeholder:pl-1" : "pl-0"
+						} ${
+							vaiants.includes(variant) && !isFocus
+								? "placeholder:opacity-0"
+								: "placeholder:opacity-50"
+						}`}
+						placeholder={placeholder}
 						rows={rows}
-						className={`w-full resize-none ${disabled ? "cursor-not-allowed" : ""}`}
 					/>
+
+					{suffix && (
+						<div
+							style={{
+								fontSize: textFieldSize,
+							}}
+							className="flex items-start p-[10px] leading-none"
+						>
+							{suffix}
+						</div>
+					)}
 				</div>
 
-				{suffix && (
+				{append && (
 					<div
 						style={{
 							fontSize: textFieldSize,
 						}}
-						className="flex items-center p-[10px] leading-none"
+						className="flex items-start p-[10px] leading-none"
 					>
-						{suffix}
+						{append}
 					</div>
 				)}
 			</div>
 
 			{/* Error */}
 			{error && (
-				<span className="text-red-500 text-sm mt-1 block">
+				<div
+					style={{
+						fontSize: textFieldSize - 3,
+					}}
+					className="leading-none tracking-wide mt-1 text-danger-500"
+				>
 					{error}
-				</span>
+				</div>
 			)}
 
 			{/* Note */}
-			{note && !error && (
-				<p className="text-gray-500 text-xs mt-1">
+			{note && (
+				<div
+					style={{
+						fontSize: textFieldSize - 3,
+					}}
+					className="leading-none tracking-wide mt-1"
+				>
 					{note}
-				</p>
+				</div>
 			)}
 		</div>
 	);
@@ -346,27 +407,43 @@ TextArea.propTypes = {
 	onBlur: PropTypes.func,
 	disabled: PropTypes.bool,
 	readOnly: PropTypes.bool,
+	required: PropTypes.bool,
 	placeholder: PropTypes.string,
-	variant: PropTypes.oneOf(["outline", "underlined", "filled"]),
+	variant: PropTypes.oneOf(["basic", "outline", "underlined", "filled"]),
 	size: PropTypes.oneOf(["sm", "md", "lg", "xl"]),
-	color: PropTypes.oneOf([
-		"primary",
-		"base",
-		"success",
-		"warning",
-		"danger",
-		"info",
+	color: PropTypes.oneOfType([
+		PropTypes.oneOf([
+			"primary",
+			"base",
+			"success",
+			"warning",
+			"danger",
+			"info",
+		]),
+		PropTypes.string,
 	]),
-	rounded: PropTypes.oneOf(["none", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "4xl"]),
+	rounded: PropTypes.oneOfType([
+		PropTypes.oneOf([
+			"none",
+			"sm",
+			"base",
+			"md",
+			"lg",
+			"xl",
+			"2xl",
+			"3xl",
+			"4xl",
+		]),
+		PropTypes.number,
+	]),
 	density: PropTypes.oneOf(["tight", "normal", "loose"]),
 	prefix: PropTypes.node,
 	suffix: PropTypes.node,
 	prepend: PropTypes.node,
 	append: PropTypes.node,
-	note: PropTypes.string,
-	error: PropTypes.string,
+	note: PropTypes.node,
+	error: PropTypes.node,
 	rows: PropTypes.number,
-	required: PropTypes.bool,
 };
 
 export default TextArea;

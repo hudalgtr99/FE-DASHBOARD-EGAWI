@@ -201,7 +201,7 @@ const EditProfilePegawaiPage = () => {
               type="date"
               value={formik.values.tgl_bergabung}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
               error={formik.touched.tgl_bergabung ? formik.errors.tgl_bergabung : ''}
             />
             <TextField
@@ -210,7 +210,7 @@ const EditProfilePegawaiPage = () => {
               type="date"
               value={formik.values.tgl_resign}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={(e) => formik.handleBlur}
             />
           </div>
           <div className="mt-6 flex justify-end">

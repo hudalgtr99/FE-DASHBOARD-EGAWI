@@ -1,17 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { deleteData, getData, updateData } from "@/actions";
+import { userReducer } from "@/reducers/authReducers";
 import {
-  addData,
-  deleteData,
-  getData,
-  updateData,
-} from '@/actions';
-import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
-import {
-  API_URL_getdatapegawai,
   API_URL_edeluser,
-} from '@/constants';
+  API_URL_getdataakun,
+  API_URL_changeactive,
+  API_URL_changeoutofarea,
+} from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
@@ -21,17 +18,19 @@ import {
   Limit,
   TextField,
   Tooltip,
-} from '@/components';
-import { debounce } from 'lodash'; // Import lodash debounce
-import { FaPlus } from 'react-icons/fa';
-import { CiSearch } from 'react-icons/ci';
+  PulseLoading,
+} from "@/components";
+import { debounce } from "lodash"; // Import lodash debounce
+import { CiSearch } from "react-icons/ci";
+import { FaPlus } from "react-icons/fa";
 
-const PegawaiPage = () => {
-  const {
-    getPegawaiResult,
-    addPegawaiResult,
-    deletePegawaiResult,
-  } = useSelector((state) => state.kepegawaian);
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+
+const AkunPage = () => {
+  const { getDataAkunResult, addAkunResult, deleteAkunResult, getDataAkunLoading } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,11 +38,25 @@ const PegawaiPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const [jwt, setJwt] = useState({}); // Initialize jwt variable
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = value
-        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        ? {
+            param: `?search=${value}&limit=${limit}&offset=${
+              pageActive * limit
+            }`,
+          }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
     }, 300),
@@ -57,35 +70,35 @@ const PegawaiPage = () => {
     setPageActive(0);
   };
 
-  const onAdd = () => {
-    navigate('/pegawai/form');
+  const onEdit = (item) => {
+    // Store the item in localStorage
+    localStorage.setItem("editUserData", JSON.stringify(item));
+    navigate(`/kepegawaian/pegawai/form/${item.datapribadi.user_id}`);
   };
 
-  const onEdit = (item) => {
-    navigate(`/pegawai/form/${item.datapribadi.user_id}`, {
-      state: {
-        item,
-      },
-    });
+  const onChange = (item) => {
+    navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.user_id}`);
   };
 
   const doDelete = (item) => {
     deleteData(
-      { dispatch, redux: pegawaiReducer },
+      { dispatch, redux: userReducer },
       item.datapribadi.user_id,
       API_URL_edeluser,
-      "DELETE_PEGAWAI"
+      "DELETE_AKUN"
     );
   };
 
   const get = useCallback(
     async (param) => {
-      getData(
-        { dispatch, redux: pegawaiReducer },
+      await getData(
+        { dispatch, redux: userReducer },
         param,
-        API_URL_getdatapegawai,
-        "GET_PEGAWAI"
+        API_URL_getdataakun,
+        "GET_AKUN"
       );
+
+      setLoading(false);
     },
     [dispatch]
   );
@@ -109,52 +122,112 @@ const PegawaiPage = () => {
     setPageActive(0);
   };
 
-  const [actions] = useState([
-    {
-      name: "Edit",
-      icon: icons.bspencil,
-      color: "text-green-500",
-      func: onEdit,
-    },
-    {
-      name: "Delete",
-      icon: icons.citrash,
-      color: "text-red-500",
-      func: doDelete,
-    },
-  ]);
+  const handleSwitch = (e, item, index) => {
+    if (index === 6) {
+      updateData(
+        { dispatch, redux: userReducer },
+        {
+          pk: item.datapribadi.user_id,
+          is_staff: e.target.checked,
+        },
+        API_URL_changeactive,
+        "ADD_AKUN"
+      );
+    } else if (index === 7) {
+      updateData(
+        { dispatch, redux: userReducer },
+        {
+          pk: item.datapribadi.user_id,
+          out_of_area: e.target.checked,
+        },
+        API_URL_changeoutofarea,
+        "ADD_AKUN"
+      );
+    }
+  };
 
   useEffect(() => {
-    const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
+    const param = {
+      param: "?limit=" + limit + "&offset=" + pageActive * limit,
+    };
     get(param);
   }, [limit, pageActive, get]);
 
   useEffect(() => {
-    if (
-      addPegawaiResult ||
-      deletePegawaiResult
-    ) {
+    if (addAkunResult || deleteAkunResult) {
       const offset = pageActive * limit;
       const param = search
         ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
         : { param: `?limit=${limit}&offset=${offset}` };
       get(param);
     }
-  }, [
-    addPegawaiResult,
-    deletePegawaiResult,
-    search,
-    limit,
-    pageActive,
-    get,
+  }, [addAkunResult, deleteAkunResult, search, limit, pageActive, get]);
+
+  const dataWithIndex = getDataAkunResult.results
+    ? getDataAkunResult.results.map((item, index) => ({
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
+    : [];
+
+  const [actions] = useState([
+    {
+      name: "Edit",
+      icon: icons.fiedit,
+      color: "text-blue-500",
+      func: onEdit,
+    },
+    {
+      name: "Change Password",
+      icon: icons.fakey,
+      color: "text-yellow-500",
+      func: onChange,
+    },
+    {
+      name: "Delete",
+      icon: icons.rideletebin6line,
+      color: "text-red-500",
+      func: doDelete,
+    },
   ]);
 
-  const dataWithIndex = getPegawaiResult.results
-    ? getPegawaiResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
-    : [];
+  const onAdd = () => {
+    localStorage.setItem(
+      "editUserData",
+      JSON.stringify({
+        datapribadi: {
+          user_id: null,
+          nama: "",
+          username: "",
+          email: "",
+          is_staff: false,
+          perusahaan: "",
+          lokasi_absen: "",
+          groups: {},
+          jenis_kelamin: "",
+          no_identitas: "",
+          npwp: "",
+          agama: "",
+          alamat_ktp: "",
+          alamat_domisili: "",
+          no_telepon: "",
+          tempat_lahir: "",
+          tgl_lahir: "",
+          out_of_area: false,
+          password: "",
+        },
+        datapegawai: null,
+        datakeluarga: null,
+        datapendidikan: null,
+        datalainnya: null,
+        datajadwal: {
+          jadwal: "{}",
+        },
+        index: null,
+      })
+    );
+    navigate("/kepegawaian/pegawai/form");
+  };
 
   return (
     <div>
@@ -174,55 +247,93 @@ const PegawaiPage = () => {
             </div>
           </Button>
         </div>
-        <Tables>
-          <Tables.Head>
-            <tr>
-              <Tables.Header>No</Tables.Header>
-              <Tables.Header>ID Pegawai</Tables.Header>
-              <Tables.Header>Nama Pegawai</Tables.Header>
-              <Tables.Header>Pangkat</Tables.Header>
-              <Tables.Header>Jabatan</Tables.Header>
-              <Tables.Header>Departemen</Tables.Header>
-              <Tables.Header>Divisi</Tables.Header>
-              <Tables.Header>Unit</Tables.Header>
-              <Tables.Header center>Actions</Tables.Header>
-            </tr>
-          </Tables.Head>
-          <Tables.Body>
-            {dataWithIndex.map((item) => (
-              <Tables.Row key={item.datapribadi.user_id}>
-                <Tables.Data>{item.index}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.id_pegawai || '-'}</Tables.Data>
-                <Tables.Data>{item.datapribadi?.nama || '-'}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.pangkat?.nama || '-'}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.jabatan?.nama || '-'}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.departemen?.nama || '-'}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.divisi?.nama || '-'}</Tables.Data>
-                <Tables.Data>{item.datapegawai?.unit?.nama || '-'}</Tables.Data>
-                <Tables.Data center>
-                  <div className="flex items-center justify-center gap-2">
-                    {actions.map((action) => (
-                      <Tooltip key={action.name} tooltip={action.name}>
-                        <div
-                          key={action.name}
-                          onClick={() => action.func(item)}
-                          className={action.color}
-                        >
-                          {action.icon}
-                        </div>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </Tables.Data>
-              </Tables.Row>
-            ))}
-          </Tables.Body>
-
-        </Tables>
-        <div className="flex justify-between items-center mt-4">
-          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
+        {getDataAkunLoading ? ( // Show loading indicator if loading is true
+          <div className="flex justify-center py-4">
+            <PulseLoading />
+          </div>
+        ) : (
+          <Tables>
+            <Tables.Head>
+              <tr>
+                <Tables.Header>No</Tables.Header>
+                {/* <Tables.Header>Id pegawai</Tables.Header> */}
+                {!jwt.perusahaan && (
+                  <Tables.Header>Nama perusahaan</Tables.Header>
+                )}
+                <Tables.Header>Id Pegawai</Tables.Header>
+                <Tables.Header>Nama Pribadi</Tables.Header>
+                <Tables.Header>Jabatan</Tables.Header>
+                <Tables.Header>Email</Tables.Header>
+                <Tables.Header>Nomor Telepon</Tables.Header>
+                <Tables.Header>Active</Tables.Header>
+                <Tables.Header>Out of Area</Tables.Header>
+                <Tables.Header center>Actions</Tables.Header>
+              </tr>
+            </Tables.Head>
+            <Tables.Body>
+              {dataWithIndex.length > 0 ? (
+                dataWithIndex.map((item) => (
+                  <Tables.Row key={item.datapribadi.user_id}>
+                    <Tables.Data>{item.index || "-"}</Tables.Data>
+                    {!jwt.perusahaan && (
+                      <Tables.Data>
+                        {item?.datapribadi?.perusahaan?.nama || "N/A"}
+                      </Tables.Data>
+                    )}
+                    <Tables.Data>{item.datapegawai?.id_pegawai || "belum ada"}</Tables.Data>
+                    <Tables.Data>{item.datapribadi?.nama || "Nama tidak tersedia"}</Tables.Data>
+                    <Tables.Data>{item.datapegawai?.jabatan?.nama || "-"}</Tables.Data>
+                    <Tables.Data>{item.datapribadi?.email || "Email tidak tersedia"}</Tables.Data>
+                    <Tables.Data>{item.datapribadi?.no_telepon || "No telepon tidak tersedia"}</Tables.Data>
+                    <Tables.Data>
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.datapribadi?.is_staff || false}
+                          onChange={(e) => handleSwitch(e, item, 6)}
+                          className="toggle-switch"
+                        />
+                      </label>
+                    </Tables.Data>
+                    <Tables.Data>
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.datapribadi?.out_of_area || false}
+                          onChange={(e) => handleSwitch(e, item, 7)}
+                          className="toggle-switch"
+                        />
+                      </label>
+                    </Tables.Data>
+                    <Tables.Data center>
+                      <div className="flex items-center justify-center gap-2">
+                        {actions.map((action) => (
+                          <Tooltip key={action.name} tooltip={action.name}>
+                            <div
+                              onClick={() => action.func(item)}
+                              className={`${action.color} cursor-pointer`}
+                            >
+                              {action.icon}
+                            </div>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </Tables.Data>
+                  </Tables.Row>
+                ))                
+              ) : (
+                <Tables.Row>
+                  <td colSpan="9" className="text-center">
+                    Tidak ada data yang tersedia
+                  </td>
+                </Tables.Row>
+              )}
+            </Tables.Body>
+          </Tables>
+        )}
+        <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getPegawaiResult.count} // Total items count from the API result
+            totalCount={getDataAkunResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler
@@ -238,4 +349,4 @@ const PegawaiPage = () => {
   );
 };
 
-export default PegawaiPage;
+export default AkunPage;

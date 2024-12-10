@@ -1,151 +1,128 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
-import { NavLink } from "react-router-dom";
-import { useOnClickOutside } from "@/hooks/useOnClickOutside";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useWindowSize } from "@/hooks/useWindowSize";
-import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react";
-import { BiChevronRight } from "react-icons/bi";
-import { menu } from "@/constants/menu";
-import { BsChevronDoubleLeft } from "react-icons/bs";
-import { TiMinus } from "react-icons/ti";
+import PerfectScrollbar from "perfect-scrollbar";
+import { useContext, useEffect, useRef, useState } from "react";
+import { LiaCircle, LiaDotCircle } from "react-icons/lia";
+import { TbX } from "react-icons/tb";
+import { ButtonRipple } from "@/components";
+import Menu from "./Menu";
 
-const Sidebar = ({ open, setOpen }) => {
-  const initNav = {
-    perusahaan: false,
-    masterdata: false,
-    kepegawaian: false,
-    asesmen: false,
-    kompetensi: false,
-    kemitraan: false,
-    dokumentasi: false,
-    api: false,
-  };
-
+const Sidebar = ({ sideOpen, setSideOpen }) => {
   const { width } = useWindowSize();
-  const [navopen, setNavopen] = useState(initNav);
+  const { themeColor, colorMode, themeSkin, themeBg } =
+    useContext(ThemeContext);
+  const [openHover, setOpenHover] = useState(false);
+  const scrollbarContainer = useRef();
+  const [scrolled, setScrolled] = useState(false);
 
-  const navOpen = (data) => {
-    setNavopen({ ...initNav, [data]: !navopen[data] });
-  };
+  // Initialize PerfectScrollbar
+  useEffect(() => {
+    const ps = new PerfectScrollbar(scrollbarContainer.current, {
+      wheelPropagation: true,
+      useBothWheelAxes: true,
+    });
 
-  const ref = useRef();
-  useOnClickOutside(ref, () => setNavopen(initNav));
+    scrollbarContainer.current.addEventListener("ps-scroll-y", () => {
+      if (ps.scrollbarYTop > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    });
+
+    return () => {
+      ps.destroy();
+    };
+  }, []);
 
   useEffect(() => {
-    if (width < 1024) {
-      setOpen(false);
+    if (width && width < 1024) {
+      setSideOpen(false);
     }
-  }, [width, setOpen]);
-
-  useEffect(() => {
-    if (width > 1024) {
-      setOpen(true);
-    }
-  }, [width, setOpen]);
+  }, [width]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Fragment>
-      {/* Overlay for mobile view */}
-      <div
-        onClick={() => setOpen(!open)}
-        className={`fixed w-screen h-screen transition-opacity duration-150 ${open ? "bg-black bg-opacity-50 min-[1000px]:hidden z-10" : "opacity-0 pointer-events-none"}`}
-      ></div>
-
+    <>
       {/* Sidebar */}
-      <div
-        className={`${open ? "translate-x-0 w-[260px]" : "w-0"} fixed lg:relative h-screen flex flex-col bg-gradient-to-b from-orange-400 via-pink-400 to-purple-400 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-40 shadow-xl transition-all duration-150 ease-in-out`}
+      <aside
+        onMouseEnter={() => width > 1024 && setOpenHover(true)}
+        onMouseLeave={() => setOpenHover(false)}
+        className={`fixed lg:left-0 z-50 h-full flex flex-col bg-white dark:bg-base-600 transition-[width,left] duration-500 tracking-wide ${
+          sideOpen || openHover ? "w-64 -left-0" : "w-20 -left-96"
+        } ${themeSkin === "default" ? "shadow-lg" : themeSkin}`}
       >
+        {/* Background */}
+        {themeBg !== "none" && (
+          <img
+            src={`/images/sidebar/${themeBg}`}
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-10 -z-10 pointer-events-none "
+            alt="bg-sidebar"
+          />
+        )}
+
         {/* Logo */}
-        <div className={`${open ? "flex items-center justify-between w-full py-2 px-3" : "hidden"}`}>
-          <div className="flex items-center gap-2">
-            <img className="w-12" src="/assets/Logo.png" alt="logo" />
-            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline text-white dark:text-white">
-              QUEEN
-            </span>
+        <div className="flex justify-between items-center w-full h-16 px-3 mx-auto">
+          <div className="flex gap-2 items-center px-[8px]">
+            <img src="/images/icons/egawi.png" alt="" className="w-10" />
+            <div
+              style={{ color: themeColor }}
+              className={`font-bold transition-opacity duration-[1000ms] whitespace-nowrap ${
+                sideOpen || openHover ? "opacity-100" : "opacity-0"
+              } ${sideOpen || openHover ? "visible" : "invisible"}`}
+            >
+              E-Gawi
+            </div>
           </div>
-          <div onClick={() => setOpen(!open)} className="cursor-pointer text-white hover:bg-white hover:text-gray-900 dark:text-white dark:hover:bg-gray-600 rounded-full p-2">
-            <BsChevronDoubleLeft />
+          <div className=" px-[8px]">
+            <button
+              className={`text-xl hidden lg:block ${
+                !sideOpen && !openHover ? "lg:hidden" : ""
+              }`}
+            >
+              {sideOpen ? (
+                <LiaDotCircle onClick={() => setSideOpen(false)} />
+              ) : (
+                <LiaCircle onClick={() => setSideOpen(true)} />
+              )}
+            </button>
           </div>
+          <ButtonRipple
+            color={colorMode === "light" ? "#00000030" : "#ffffff30"}
+            className="block lg:hidden p-2 rounded-full transition-[background] hover:bg-neutral-200 dark:hover:bg-base-400"
+            onClick={() => setSideOpen(false)}
+          >
+            <TbX />
+          </ButtonRipple>
         </div>
+
+        {/* shadow */}
+        {themeBg === "none" && (
+          <div
+            className={`bg-gradient-to-b from-white to-transparent dark:bg-gradient-to-b dark:from-base-600 dark:to-transparent h-10 w-full absolute top-16 z-10 transition-opacity duration-200 pointer-events-none ${
+              scrolled ? "opacity-100" : "opacity-0"
+            }`}
+          ></div>
+        )}
 
         {/* Menu */}
-        <div className={`px-2 pt-1 pb-5 text-sm overflow-y-auto max-h-[80vh] hidden-scroll ${open ? "" : "hidden"}`}>
-          {menu.map((menu, menuIdx) => {
-            // If there are no submenu items, skip rendering the Disclosure
-            if (menu.subMenu.length === 0) {
-              return (
-                <NavLink key={menuIdx} to={menu.menuLink}>
-                  {({ isActive }) => (
-                    <div
-                      className={`${isActive ? "bg-white text-gray-900 dark:bg-gray-600 dark:text-white" : "text-white"} px-3 py-2 rounded-lg mt-2 transition hover:bg-white dark:hover:bg-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white`}
-                    >
-                      <span className="flex items-center">
-                        <span className="text-lg flex justify-center items-center">
-                          {menu.menuIcon}
-                        </span>
-                        <span className="ml-2 font-medium">{menu.menuName}</span>
-                      </span>
-                    </div>
-                  )}
-                </NavLink>
-              );
-            }
-
-            // If there are submenu items, render Disclosure
-            return (
-              <Disclosure key={menuIdx} as={"div"} className="my-1">
-                <>
-                  <DisclosureButton
-                    onClick={() => navOpen(menu.menuLink)}
-                    className={`${navopen[menu.menuLink] ? "bg-white text-gray-900 dark:bg-gray-600 dark:text-white" : "text-white"} flex px-3 py-2 rounded-lg justify-between items-center w-full transition-all duration-150 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white`}
-                  >
-                    <span className="flex">
-                      <span className="text-lg flex justify-center items-center">
-                        {menu.menuIcon}
-                      </span>
-                      <span className="ml-2 font-medium">{menu.menuName}</span>
-                    </span>
-                    <BiChevronRight
-                      className={`${navopen[menu.menuLink] ? "rotate-90" : ""} transition-all`}
-                    />
-                  </DisclosureButton>
-                  <Transition
-                    show={navopen[menu.menuLink]}
-                    className="overflow-hidden"
-                    enter="transition-[max-height] duration-150 ease-in"
-                    enterFrom="max-h-0"
-                    enterTo="max-h-screen"
-                    leave="transition-[max-height] duration-150 ease-out"
-                    leaveFrom="max-h-screen"
-                    leaveTo="max-h-0"
-                  >
-                    <DisclosurePanel>
-                      {menu.subMenu.map((subMenu, subMenuIdx) => (
-                        <NavLink key={subMenuIdx} to={subMenu.subMenuLink}>
-                          {({ isActive }) => (
-                            <div
-                              className={`${isActive ? "text-gray-900 bg-white dark:bg-gray-600 dark:text-white" : "text-white"} px-3 py-2 rounded-lg mt-2 ml-[26px] transition hover:bg-white dark:hover:bg-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 font-medium`}
-                            >
-                              <TiMinus /> {subMenu.subMenuName}
-                            </div>
-                          )}
-                        </NavLink>
-                      ))}
-                    </DisclosurePanel>
-                  </Transition>
-                </>
-              </Disclosure>
-            );
-          })}
+        <div
+          ref={scrollbarContainer}
+          className="relative flex-1 overflow-hidden group/rail"
+        >
+          <Menu sideOpen={sideOpen} openHover={openHover} />
         </div>
+      </aside>
 
-        {/* Copyright */}
-        {open && (
-          <div className="text-[8px] text-center flex w-[260px] mt-auto mb-2 items-center font-medium text-white dark:text-gray-400 justify-center">
-            Copyright &copy; PT. Queen Network Nusantara
-          </div>
-        )}
-      </div>
-    </Fragment>
+      {/* Backdrop */}
+      <div
+        onClick={() => setSideOpen(false)}
+        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-500 ${
+          sideOpen
+            ? "opacity-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none"
+            : "opacity-0 pointer-events-none"
+        }`}
+      ></div>
+    </>
   );
 };
 

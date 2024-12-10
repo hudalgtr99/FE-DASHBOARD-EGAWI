@@ -1,12 +1,99 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from "tailwindcss/defaultTheme";
+
 export default {
-  darkMode: "class",
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+	darkMode: "class",
+	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+	theme: {
+		extend: {
+			fontFamily: {
+				sans: ["Public Sans", ...defaultTheme.fontFamily.sans],
+			},
+			colors: {
+				// primary: {
+				// 	50: "#E8F8F6",
+				// 	100: "#B6E9E3",
+				// 	200: "#93DED6",
+				// 	300: "#62CFC3",
+				// 	400: "#43C6B8",
+				// 	500: "#14B8A6",
+				// 	600: "#12A797",
+				// 	700: "#0E8376",
+				// 	800: "#0B655B",
+				// 	900: "#084D46",
+				// },
+				base: {
+					50: "#f7f6f9",
+					75: "#EAECED",
+					100: "#BABCBD",
+					200: "#989C9D",
+					300: "#6A6F70",
+					400: "#4D5355",
+					500: "#20282A",
+					600: "#1D2426",
+					700: "#171C1E",
+					800: "#121617",
+					900: "#0D1112",
+				},
+				success: {
+					50: "#E9F9EF",
+					100: "#BAEDCD",
+					200: "#99E4B5",
+					300: "#6BD893",
+					400: "#4ED17E",
+					500: "#22C55E",
+					600: "#1FB356",
+					700: "#188C43",
+					800: "#136C34",
+					900: "#0E5327",
+				},
+				warning: {
+					50: "#FDF7E6",
+					100: "#F8E7B2",
+					200: "#F5DC8D",
+					300: "#F1CC5A",
+					400: "#EEC239",
+					500: "#EAB308",
+					600: "#D5A307",
+					700: "#A67F06",
+					800: "#816204",
+					900: "#624B03",
+				},
+				danger: {
+					50: "#FDECEC",
+					100: "#FAC5C5",
+					200: "#F8A9A9",
+					300: "#F48282",
+					400: "#F26969",
+					500: "#EF4444",
+					600: "#D93E3E",
+					700: "#AA3030",
+					800: "#832525",
+					900: "#641D1D",
+				},
+				info: {
+					50: "#EBF3FE",
+					100: "#C2D8FC",
+					200: "#A5C6FB",
+					300: "#7CABF9",
+					400: "#629BF8",
+					500: "#3B82F6",
+					600: "#3676E0",
+					700: "#2A5CAF",
+					800: "#204887",
+					900: "#193767",
+				},
+			},
+			keyframes: {
+				wiggle: {
+					"0%, 100%": { transform: "rotate(-0.5deg)" },
+					"50%": { transform: "rotate(0.5deg)" },
+				},
+			},
+			animation: {
+				wiggle: "wiggle 100ms ease-in-out infinite",
+			},
+		},
+	},
+	plugins: [],
+};

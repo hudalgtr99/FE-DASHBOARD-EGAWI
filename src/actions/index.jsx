@@ -3,6 +3,19 @@ import { icons } from "../../public/icons";
 import Swal from "sweetalert2";
 import CryptoJS from "crypto-js";
 import axiosAPI from "@/authentication/axiosApi";
+import { toast } from "react-toastify";
+
+export const showToast = (type, message) => {
+  toast[type](message, {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
 
 export function encrypted(plainText) {
   var key = CryptoJS.enc.Utf8.parse("_secret_hrdapps_");
@@ -22,7 +35,7 @@ export function decrypted(encrypted) {
     mode: CryptoJS.mode.CBC,
   });
   decrypted = decrypted.toString(CryptoJS.enc.Utf8);
-  return JSON.parse(decrypted);
+  return decrypted;
 }
 
 export function convertJSON(data) {
@@ -186,8 +199,81 @@ export const getData = (reducers, data, url, type) => {
     });
 };
 
+// export const addData = (reducers, data, url, type) => {
+//   const { dispatch, redux } = reducers;
+//   dispatch(
+//     redux({
+//       type: type,
+//       payload: {
+//         loading: true,
+//         data: false,
+//       },
+//     })
+//   );
+
+//   axiosAPI({
+//     method: "POST",
+//     url: url,
+//     timeout: 120000,
+//     data: data,
+//   })
+//     .then((response) => {
+//       if (response.data.status === 201) {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops...",
+//           customClass: {
+//             container: "z-[99999]",
+//           },
+//           text: response.data.messages,
+//         });
+//       } else {
+//         Swal.fire({
+//           icon: "success",
+//           title: "Good job!",
+//           customClass: {
+//             container: "z-[99999]",
+//           },
+//           text: response.data.messages,
+//           showConfirmButton: false,
+//           timer: 1500,
+//         });
+//       }
+//       dispatch(
+//         redux({
+//           type: type,
+//           payload: {
+//             loading: false,
+//             data: response.data,
+//           },
+//         })
+//       );
+//     })
+//     .catch((error) => {
+//       Swal.fire({
+//         icon: "error",
+//         title: "Oops...",
+//         customClass: {
+//           container: "z-[99999]",
+//         },
+//         text: error,
+//       });
+//       dispatch(
+//         redux({
+//           type: type,
+//           payload: {
+//             loading: false,
+//             data: false,
+//           },
+//         })
+//       );
+//     });
+// };
+
 export const addData = (reducers, data, url, type) => {
   const { dispatch, redux } = reducers;
+
+  // Dispatch loading state
   dispatch(
     redux({
       type: type,
@@ -198,34 +284,22 @@ export const addData = (reducers, data, url, type) => {
     })
   );
 
-  axiosAPI({
+  // Kembalikan promise dari axios
+  return axiosAPI({
     method: "POST",
     url: url,
     timeout: 120000,
     data: data,
   })
     .then((response) => {
+      // Menangani respons
       if (response.data.status === 201) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-        });
+        showToast("error", response.data.messages);
       } else {
-        Swal.fire({
-          icon: "success",
-          title: "Good job!",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        showToast("success", response.data.messages);
       }
+
+      // Dispatch data dari respons
       dispatch(
         redux({
           type: type,
@@ -235,16 +309,15 @@ export const addData = (reducers, data, url, type) => {
           },
         })
       );
+
+      // Kembalikan respons
+      return response.data; // Mengembalikan data respons
     })
     .catch((error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        customClass: {
-          container: "z-[99999]",
-        },
-        text: error,
-      });
+      // Menangani error
+      showToast("error", error.response?.data?.messages || "Terjadi kesalahan.");
+
+      // Dispatch error state
       dispatch(
         redux({
           type: type,
@@ -254,82 +327,73 @@ export const addData = (reducers, data, url, type) => {
           },
         })
       );
+
+      // Lempar error untuk penanganan lebih lanjut
+      throw error; // Mengembalikan error untuk ditangani di luar
     });
 };
 
-export const updateData = (reducers, data, url, type) => {
-  const { dispatch, redux } = reducers;
-  dispatch(
-    redux({
-      type: type,
-      payload: {
-        loading: true,
-        data: false,
-      },
-    })
-  );
+export const updateData = (reducers, data, url, type, method = "PUT") => {
+  return new Promise((resolve, reject) => {
+    const { dispatch, redux } = reducers;
 
-  axiosAPI({
-    method: "PUT",
-    url: url + data.pk,
-    timeout: 120000,
-    data: data,
-  })
-    .then((response) => {
-      if (response.data.status === 201) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-        });
-      } else {
-        Swal.fire({
-          icon: "success",
-          title: "Good job!",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-      dispatch(
-        redux({
-          type: type,
-          payload: {
-            loading: false,
-            data: response.data,
-          },
-        })
-      );
-    })
-    .catch((error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        customClass: {
-          container: "z-[99999]",
+    // Dispatch loading state
+    dispatch(
+      redux({
+        type: type,
+        payload: {
+          loading: true,
+          data: false,
         },
-        text: error,
+      })
+    );
+
+    axiosAPI({
+      method: method,
+      url: `${url}${data.pk}`, // Menambahkan pk ke URL
+      timeout: 120000,
+      data: data,
+    })
+      .then((response) => {
+        if (response.data.status === 201) {
+          showToast("error", response.data.messages); // Toast error
+          reject(response.data); // Reject dengan data respons
+        } else {
+          showToast("success", response.data.messages); // Toast success
+          dispatch(
+            redux({
+              type: type,
+              payload: {
+                loading: false,
+                data: response.data,
+              },
+            })
+          );
+          resolve(response.data); // Resolve dengan data respons
+        }
+      })
+      .catch((error) => {
+        showToast("error", error.response?.data?.messages || error.response?.data?.detail || "Terjadi kesalahan."); // Toast error
+        dispatch(
+          redux({
+            type: type,
+            payload: {
+              loading: false,
+              data: false,
+            },
+          })
+        );
+        reject(error); // Reject dengan error
       });
-      dispatch(
-        redux({
-          type: type,
-          payload: {
-            loading: false,
-            data: false,
-          },
-        })
-      );
-    });
+  });
 };
+
+
 
 export const addFormData = (reducers, data, url, type) => {
   const { dispatch, redux } = reducers;
+
+  // Dispatch loading state
   dispatch(
     redux({
       type: type,
@@ -340,6 +404,7 @@ export const addFormData = (reducers, data, url, type) => {
       },
     })
   );
+
   axiosAPI({
     method: "POST",
     url: url,
@@ -352,18 +417,22 @@ export const addFormData = (reducers, data, url, type) => {
     .then((response) => {
       let payload = {};
       if (response.data.status === 201) {
+        showToast("error", response.data.messages); // Tampilkan notifikasi error
         payload = {
           loading: false,
           data: false,
           error: response.data.messages,
         };
       } else {
+        showToast("success", response.data.messages); // Tampilkan notifikasi success
         payload = {
           loading: false,
           data: response.data,
           error: false,
         };
       }
+
+      // Dispatch hasil ke state
       dispatch(
         redux({
           type: type,
@@ -372,6 +441,7 @@ export const addFormData = (reducers, data, url, type) => {
       );
     })
     .catch((error) => {
+      showToast("error", error.response?.data?.messages || "Terjadi kesalahan."); // Tampilkan notifikasi error
       dispatch(
         redux({
           type: type,
@@ -384,6 +454,7 @@ export const addFormData = (reducers, data, url, type) => {
       );
     });
 };
+
 
 export const updateFormData = (reducers, data, url, type, pk) => {
   const { dispatch, redux } = reducers;
@@ -458,6 +529,7 @@ export const updateFormData = (reducers, data, url, type, pk) => {
 
 export const deleteData = (reducers, pk, url, type) => {
   const { dispatch, redux } = reducers;
+
   dispatch(
     redux({
       type: type,
@@ -466,14 +538,17 @@ export const deleteData = (reducers, pk, url, type) => {
       },
     })
   );
+
+  // Konfirmasi menggunakan SweetAlert sebelum menghapus
   Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
+    title: "Apakah Anda yakin?",
+    text: "Anda tidak akan dapat mengembalikan data ini!",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#6a82fb",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
+    confirmButtonText: "Ya, hapus!",
+    cancelButtonText: "Batal",
     customClass: {
       container: "z-[99999]",
     },
@@ -485,16 +560,14 @@ export const deleteData = (reducers, pk, url, type) => {
         timeout: 120000,
       })
         .then((response) => {
-          Swal.fire({
-            icon: "success",
-            title: "Good job!",
-            customClass: {
-              container: "z-[99999]",
-            },
-            text: response.data.messages,
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          // Menampilkan pesan menggunakan showToast
+          if (response.data.status === 201) {
+            showToast("error", response.data.messages); // Menampilkan pesan error
+          } else {
+            showToast("success", response.data.messages); // Menampilkan pesan sukses
+          }
+
+          // Mengirimkan data terbaru ke Redux
           dispatch(
             redux({
               type: type,
@@ -505,14 +578,8 @@ export const deleteData = (reducers, pk, url, type) => {
           );
         })
         .catch((error) => {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            customClass: {
-              container: "z-[99999]",
-            },
-            text: error,
-          });
+          showToast("error", error.message || "Terjadi kesalahan");
+
           dispatch(
             redux({
               type: type,
