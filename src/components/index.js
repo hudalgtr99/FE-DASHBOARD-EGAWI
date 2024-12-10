@@ -34,16 +34,12 @@ import Select from "./forms/Select";
 import Switch from "./forms/Switch";
 import TextArea from "./forms/TextArea";
 import TextField from "./forms/TextField";
-<<<<<<< HEAD
 import Layout from "./layout/Layout";
 import CardStatistic from "./molecules/CardStatistic";
 import Invoice from "./molecules/Invoice";
 import Kuitansi from "./molecules/Kuitansi";
 import Tables from "./molecules/Tables";
-=======
-import DatePicker from "./forms/DatePicker";
 import Slip from "./molecules/Slip";
->>>>>>> eada576d240605ae594c340d36868ed04828c3d8
 
 export {
 	Alert,
@@ -60,7 +56,6 @@ export {
 	Collapsible,
 	ColorPicker,
 	Container,
-	DatePicker,
 	Drawer,
 	FileInput,
 	FileInputForm,
@@ -83,13 +78,10 @@ export {
 	Tabs,
 	TextArea,
 	TextField,
-<<<<<<< HEAD
 	Timeline,
 	Tooltip,
 	CardOrgChart,
 	PulseLoading,
-=======
 	DatePicker,
 	Slip,
->>>>>>> eada576d240605ae594c340d36868ed04828c3d8
 };

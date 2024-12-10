@@ -14,19 +14,29 @@ const Pendidikan = ({ onTabChange }) => {
   const { addPegawaiLoading } = useSelector((state) => state.kepegawaian);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const localStorageData = JSON.parse(localStorage.getItem("editUserData"));
+  const [isLanjut, setIsLanjut] = useState(false)
+  const { pk } = useParams();
+  const isEdit = pk && pk !== "add";
 
-  // Parse the formal and non_formal fields
-  const formalData = JSON.parse(state?.item?.datapendidikan?.formal || '[]');
-  const nonFormalData = JSON.parse(state?.item?.datapendidikan?.non_formal || '[]');
+  const pendidikanData = localStorageData.datapendidikan || {};
+  const formalData = Array.isArray(pendidikanData.formal)
+    ? pendidikanData.formal
+    : JSON.parse(pendidikanData.formal || "[]");
+  const nonFormalData = Array.isArray(pendidikanData.non_formal)
+    ? pendidikanData.non_formal
+    : JSON.parse(pendidikanData.non_formal || "[]");
 
   const initialData = {
-    user_id: state?.item?.datapribadi.user_id || '',
-    formal: formalData.length > 0 ? formalData : [
-      { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
-    ],
-    non_formal: nonFormalData.length > 0 ? nonFormalData : [
-      { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
-    ],
+    user_id: localStorageData.datapribadi.user_id || "",
+    formal:
+      formalData.length > 0
+        ? formalData
+        : [{ asal_sekolah: "", masa_waktu: "", keterangan_pendidikan: "" }],
+    non_formal:
+      nonFormalData.length > 0
+        ? nonFormalData
+        : [{ nama_lembaga: "", tahun_lulus: "", sertifikat: null }],
   };
 
   const formik = useFormik({
@@ -264,40 +274,50 @@ const Pendidikan = ({ onTabChange }) => {
                   </button>
                 </div>
               </div>
-              {formik.values.non_formal.map((edu, index) => (
-                <div key={index}>
-                  <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
-                    <TextField
-                      required
-                      label="Nama Lembaga"
-                      name={`non_formal[${index}].nama_lembaga`}
-                      value={edu.nama_lembaga}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.non_formal?.[index]?.nama_lembaga
-                          ? formik.errors.non_formal?.[index]?.nama_lembaga
-                          : ''
-                      }
-                    />
-                    <TextField
-                      required
-                      label="Tahun Lulus"
-                      name={`non_formal[${index}].tahun_lulus`}
-                      value={edu.tahun_lulus}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.non_formal?.[index]?.tahun_lulus
-                          ? formik.errors.non_formal?.[index]?.tahun_lulus
-                          : ''
-                      }
-                    />
-                    <TextField
-                      type="file"
-                      label="Sertifikat"
-                      name={`non_formal[${index}].sertifikat`}
-                      onChange={(event) =>
+              <div className="flex flex-col gap-3">
+                {formik.values.non_formal.map((edu, index) => (
+                  <div
+                    key={index}
+                    className="sm:grid grid-cols-3 block sm:gap-4 max-[640px]:space-y-4 mb-4"
+                  >
+                    <div className="flex flex-col gap-2 col-span-2">
+                      <TextField
+                        required
+                        label="Nama Lembaga"
+                        name={`non_formal[${index}].nama_lembaga`}
+                        value={edu.nama_lembaga}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.non_formal?.[index]?.nama_lembaga
+                            ? formik.errors.non_formal?.[index]?.nama_lembaga
+                            : ""
+                        }
+                      />
+                      <TextField
+                        required
+                        label="Tahun Lulus"
+                        name={`non_formal[${index}].tahun_lulus`}
+                        value={edu.tahun_lulus}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.non_formal?.[index]?.tahun_lulus
+                            ? formik.errors.non_formal?.[index]?.tahun_lulus
+                            : ""
+                        }
+                      />
+                    </div>
+                    <FileInput
+                      height={100} // Set your desired height
+                      accept={{ "image/jpeg": [], "image/png": [] }} // Change to desired file types
+                      disabled={false}
+                      maxFiles={1}
+                      minSize={0}
+                      maxSize={2097152} // 2 MB
+                      multiple={false}
+                      value={edu.sertifikat ? [edu.sertifikat] : []}
+                      setValue={(files) => {
                         formik.setFieldValue(
                           `non_formal[${index}].sertifikat`,
                           files[0] || null

@@ -29,7 +29,6 @@ import EditProfilePegawaiPage from "@/pages/Profile/Sub/EditProfilePegawaiPage";
 import EditProfileKeluargaPage from "@/pages/Profile/Sub/EditProfileKeluargaPage";
 import EditProfilePendidikanPage from "@/pages/Profile/Sub/EditProfilePendidikanPage";
 import EditProfileLainnyaPage from "@/pages/Profile/Sub/EditProfileLainnyaPage";
-<<<<<<< HEAD
 import MyKalender from "@/pages/Kalender/MyKalender";
 import KalenderList from "../pages/Kalender/KalenderList";
 import LokasiAbsenForm from "../pages/MasterData/LokasiAbsen/LokasiAbsenForm";
@@ -50,9 +49,7 @@ if (isAuthenticated()) {
   const token = isAuthenticated();
   jwt = jwtDecode(token);
 }
-=======
 import SlipGaji from "@/pages/MasterData/Gaji/SlipGaji";
->>>>>>> eada576d240605ae594c340d36868ed04828c3d8
 
 const Router = () => {
   return (
@@ -144,8 +141,6 @@ const Router = () => {
               />
             </>
           )}
-
-<<<<<<< HEAD
           {/* Kalender */}
           <Route path="/kalender/list" element={<KalenderList />} />
           <Route path="/kalender/form" element={<KalenderForm />} />
@@ -156,11 +151,9 @@ const Router = () => {
               <Route path="/kalender/list/:pk" element={<KalenderList />} />
             </>
           )}
-=======
 					{/* Gaji */}
 					<Route path="/gaji/form" element={<GajiForm />} />
 					<Route path="/gaji/slip" element={<SlipGaji />} />
->>>>>>> eada576d240605ae594c340d36868ed04828c3d8
 
           {/* Gaji */}
           <Route path="/gaji/form" element={<GajiForm />} />
