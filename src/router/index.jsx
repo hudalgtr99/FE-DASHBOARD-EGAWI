@@ -248,11 +248,11 @@ const Router = () => {
             element={<SuratPenugasanSlug />}
           />
           <Route
-            path="/surat-penugasan/surat-penugasan/form/:id"
+            path="/kepegawaian/surat-penugasan/form/:id"
             element={<SuratPenugasanSlugForm />}
           />
           <Route
-            path="/surat-penugasan/surat-penugasan/form"
+            path="/kepegawaian/surat-penugasan/form"
             element={<SuratPenugasanSlugForm />}
           />
           <Route

@@ -73,11 +73,11 @@ const AkunPage = () => {
   const onEdit = (item) => {
     // Store the item in localStorage
     localStorage.setItem("editUserData", JSON.stringify(item));
-    navigate(`/kepegawaian/pegawai/form/${item.datapribadi.user_id}`);
+    navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
   };
 
   const onChange = (item) => {
-    navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.user_id}`);
+    navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`);
   };
 
   const doDelete = (item) => {
@@ -286,7 +286,7 @@ const AkunPage = () => {
                     <Tables.Data>{item.datapribadi?.email || "Email tidak tersedia"}</Tables.Data>
                     <Tables.Data>{item.datapribadi?.no_telepon || "No telepon tidak tersedia"}</Tables.Data>
                     <Tables.Data>
-                      <label className="flex items-center cursor-pointer">
+                      <label className="flex items-center justify-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={item.datapribadi?.is_staff || false}
@@ -296,7 +296,7 @@ const AkunPage = () => {
                       </label>
                     </Tables.Data>
                     <Tables.Data>
-                      <label className="flex items-center cursor-pointer">
+                      <label className="flex items-center justify-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={item.datapribadi?.out_of_area || false}

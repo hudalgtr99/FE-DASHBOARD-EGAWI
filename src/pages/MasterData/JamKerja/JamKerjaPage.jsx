@@ -10,8 +10,9 @@ import { BsPencilFill } from "react-icons/bs";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+import { IoMdReturnLeft } from "react-icons/io";
 
-const LokasiAbsen = () => {
+const JamKerjaPage = () => {
   const { pk } = useParams();
   const navigate = useNavigate();
   const [search, setSearch] = useState(""); // State for search input
@@ -19,17 +20,17 @@ const LokasiAbsen = () => {
   const handleSearch = (e) => setSearch(e.target.value);
   const [perusahaanId, setPerusahaanId] = useState("");
 
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const [jwt, setJwt] = useState({}); 
 
   useEffect(() => {
     if (isAuthenticated()) {
       const token = isAuthenticated();
       setJwt(jwtDecode(token));
     }
-  }, [])
+  }, []);
 
   const onEdit = (item) => {
-    navigate(`/masterdata/jam-kerja/form/${item.id}`, {
+    navigate(`/masterdata/jam-kerja/form/${pk}`, {
       state: {
         item, // Pass the entire item object as state
       },
@@ -68,15 +69,10 @@ const LokasiAbsen = () => {
   return (
     <div>
       <Container>
-        <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
-            {/* <TextField
-              onChange={handleSearch}
-              placeholder="Search"
-              value={search}
-              icon={<CiSearch />}
-            /> */}
-          </div>
+        <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-4">
+          {/* <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-semibold">Jam Kerja</h1>
+          </div> */}
           {locations.length > 0 && (
             <Button onClick={() => onEdit(locations[0])}>
               <div className="flex items-center gap-2">
@@ -126,4 +122,4 @@ const LokasiAbsen = () => {
   );
 };
 
-export default LokasiAbsen;
+export default JamKerjaPage;

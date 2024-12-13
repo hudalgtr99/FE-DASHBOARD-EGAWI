@@ -37,8 +37,8 @@ const DivisiSubForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      nama: state?.item?.nama,
-      departemen: state?.item?.departemen.id
+      nama: state?.item?.nama ,
+      departemen: state?.item?.departemen?.pk || '',
     },
     validationSchema: Yup.object().shape({
       nama: Yup.string().required("Nama Divisi wajib diisi").max(255, "Nama Divisi harus kurang dari 255 karakter"),
@@ -75,6 +75,8 @@ const DivisiSubForm = () => {
   // if (!state?.item) {
   //   navigate(`/masterdata/organ`)
   // }
+
+  console.log("Formik Values: ", formik.values);
 
   return (
     <div>

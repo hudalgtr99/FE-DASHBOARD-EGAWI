@@ -89,7 +89,7 @@ export default function KalenderPage() {
                       image={item.image}
                       nama={item.nama}
                       pk={item.pk}
-                      to={`/kalender/${item.pk}`}
+                      to={`/kalender/${item.slug}`}
                     />
                   ))}
                 </div>

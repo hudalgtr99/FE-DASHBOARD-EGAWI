@@ -151,6 +151,7 @@ export const loginUser = (dispatch, data) => {
           },
         })
       );
+      return response.data;
     })
     .catch((error) => {
       showToast("error", error.response.data.detail);

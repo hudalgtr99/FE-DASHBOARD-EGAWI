@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { deleteData, getData } from "@/actions";
+import { deleteData, getData, updateData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
   API_URL_edelperusahaan,
   API_URL_getperusahaan_withPaginations,
+  API_URL_changeactiveperusahaan
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -77,7 +78,7 @@ const PerusahaanPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/masterdata/data-perusahaan/form/${item.pk}`, {
+    navigate(`/masterdata/data-perusahaan/form/${item.slug}`, {
       state: {
         item,
       },
@@ -87,7 +88,7 @@ const PerusahaanPage = () => {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: perusahaanReducer },
-      item.pk,
+      item.slug,
       API_URL_edelperusahaan,
       "DELETE_perusahaan" // Update to match your action type
     );
@@ -131,12 +132,6 @@ const PerusahaanPage = () => {
       color: "text-green-500",
       func: onEdit,
     },
-    {
-      name: "Delete",
-      icon: icons.citrash,
-      color: "text-red-500",
-      func: doDelete,
-    },
   ]);
 
   useEffect(() => {
@@ -177,6 +172,18 @@ const PerusahaanPage = () => {
       }))
     : [];
 
+  function handleActive(e, item){
+    const data = updateData(
+      { dispatch, redux: perusahaanReducer },
+      {
+        pk: "perusahaan",
+        slug: item.slug,
+      },
+      API_URL_changeactiveperusahaan,
+      "ADD_perusahaan"
+    );
+  }
+
   return (
     <div>
       <Container>
@@ -208,6 +215,7 @@ const PerusahaanPage = () => {
                 <Tables.Header>Nama perusahaan</Tables.Header>
                 <Tables.Header>No Telepon</Tables.Header>
                 <Tables.Header>Alamat</Tables.Header>
+                <Tables.Header>Active</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
@@ -219,6 +227,16 @@ const PerusahaanPage = () => {
                     <Tables.Data>{item.nama}</Tables.Data>
                     <Tables.Data>{item.no_telepon}</Tables.Data>
                     <Tables.Data>{item.alamat}</Tables.Data>
+                    <Tables.Data center>
+                      <label className="flex items-center justify-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.is_active ? true : false}
+                          onChange={(e) => handleActive(e, item)}
+                          className="toggle-switch"
+                        />
+                      </label>
+                    </Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action, i) => (

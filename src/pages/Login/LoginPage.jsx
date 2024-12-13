@@ -23,8 +23,8 @@ const LoginPage = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!email) newErrors.email = "Email is required";
-    if (!password) newErrors.password = "Password is required";
+    if (!email) newErrors.email = "Email wajib diisi";
+    if (!password) newErrors.password = "Password wajib diisi";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -33,6 +33,8 @@ const LoginPage = () => {
     e.preventDefault();
     if (validate()) {
       loginUser(dispatch, { email, password });
+    }else{
+      setPassword("");
     }
   };
 
@@ -44,7 +46,12 @@ const LoginPage = () => {
           (item) => item === "Super Admin" || item === "Admin"
         ).length > 0)
     ) {
-      navigate("/");
+      // tidak pakai navigate karena agar sekalian me-refresh cookies nya
+      window.location.href = "/";
+    } else {
+      setPassword("");
+      setTimeout(() => setPassword(""), 500); 
+      // console.log("password salah");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginUserResult]);

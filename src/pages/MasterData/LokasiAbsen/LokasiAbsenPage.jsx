@@ -74,7 +74,7 @@ const PerusahaanPage = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/masterdata/lokasi-absen/form/${item.id}`, {
+    navigate(`/masterdata/lokasi-absen/form/${item.slug}`, {
       state: {
         item,
       },
@@ -84,7 +84,7 @@ const PerusahaanPage = () => {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: perusahaanReducer },
-      item.id,
+      item.slug,
       API_URL_edellokasi,
       "DELETE_perusahaan" // Update to match your action type
     );
@@ -218,7 +218,7 @@ const PerusahaanPage = () => {
                   <Tables.Row key={item?.id}>
                     <Tables.Data>{item?.index}</Tables.Data>
                     {!jwt.perusahaan && (
-                      <Tables.Data>{item?.perusahaan?.nama}</Tables.Data>
+                      <Tables.Data>{item?.perusahaan && item?.perusahaan?.nama  || "-"}</Tables.Data>
                     )}
                     <Tables.Data>{item?.nama_lokasi}</Tables.Data>
                     <Tables.Data>{item?.longitude}</Tables.Data>

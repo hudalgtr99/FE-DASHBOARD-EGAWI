@@ -41,17 +41,81 @@ const ImportPegawai = () => {
       no_identitas: 1222255,
       jenis_kelamin: "Laki laki",
       no_telepon: "081234567890",
-      tempat_lahir: "lampung",
+      tempat_lahir: "Lampung",
       tanggal_lahir: "1990-01-01",
-      agama: "islam",
+      agama: "Islam",
       npwp: 1234567890,
-      alamat_ktp: "lampung",
-      alamat_domisili: "lampung",
+      alamat_ktp: "Lampung",
+      alamat_domisili: "Lampung",
       perusahaan: 1,
       example: true,
       lokasi_absen: { value: 1, label: "Qnn office" },
     },
-  ];
+    {
+      nama: "Jane Smith",
+      email: "janesmith@gmail.com",
+      no_identitas: 1222256,
+      jenis_kelamin: "Perempuan",
+      no_telepon: "082345678901",
+      tempat_lahir: "Jakarta",
+      tanggal_lahir: "1985-05-15",
+      agama: "Kristen",
+      npwp: 1234567891,
+      alamat_ktp: "Jakarta",
+      alamat_domisili: "Jakarta",
+      perusahaan: 2,
+      example: true,
+      lokasi_absen: { value: 2, label: "Jakarta office" },
+    },
+    {
+      nama: "Michael Johnson",
+      email: "michaelj@gmail.com",
+      no_identitas: 1222257,
+      jenis_kelamin: "Laki laki",
+      no_telepon: "083456789012",
+      tempat_lahir: "Surabaya",
+      tanggal_lahir: "1988-08-20",
+      agama: "Hindu",
+      npwp: 1234567892,
+      alamat_ktp: "Surabaya",
+      alamat_domisili: "Surabaya",
+      perusahaan: 3,
+      example: true,
+      lokasi_absen: { value: 3, label: "Surabaya office" },
+    },
+    {
+      nama: "Emma White",
+      email: "emmawhite@gmail.com",
+      no_identitas: 1222258,
+      jenis_kelamin: "Perempuan",
+      no_telepon: "084567890123",
+      tempat_lahir: "Bali",
+      tanggal_lahir: "1992-02-25",
+      agama: "Buddha",
+      npwp: 1234567893,
+      alamat_ktp: "Bali",
+      alamat_domisili: "Bali",
+      perusahaan: 4,
+      example: true,
+      lokasi_absen: { value: 4, label: "Bali office" },
+    },
+    {
+      nama: "Chris Green",
+      email: "chrisgreen@gmail.com",
+      no_identitas: 1222259,
+      jenis_kelamin: "Laki laki",
+      no_telepon: "085678901234",
+      tempat_lahir: "Bandung",
+      tanggal_lahir: "1994-09-10",
+      agama: "Islam",
+      npwp: 1234567894,
+      alamat_ktp: "Bandung",
+      alamat_domisili: "Bandung",
+      perusahaan: 5,
+      example: true,
+      lokasi_absen: { value: 5, label: "Bandung office" },
+    }
+  ];  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,6 +249,8 @@ const ImportPegawai = () => {
     }
   }
 
+  console.log(formik.values);
+
   return (
     <div>
       <Container>
@@ -248,7 +314,7 @@ const ImportPegawai = () => {
                   ) || null
                 }
                 onChange={(option) =>
-                  formik.setFieldValue("perusahaan", option || "")
+                  formik.setFieldValue("perusahaan", option.value || "")
                 }
                 options={perusahaanOptions}
                 error={

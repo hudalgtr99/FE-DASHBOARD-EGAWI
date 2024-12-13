@@ -74,7 +74,7 @@ const KalenderPage = () => {
       ...data,
       perusahaan_id: data.perusahaan.id,
     }
-    navigate(`/kalender/form/${data.id}`, {
+    navigate(`/kalender/form/${data.slug}`, {
       state: { item },
     });
     sessionStorage.setItem("url", location.pathname)
@@ -83,7 +83,7 @@ const KalenderPage = () => {
   const handleDelete = (item) => {
     deleteData(
       { dispatch, redux: kalenderReducer },
-      item.id,
+      item.slug,
       API_URL_edelkalender,
       "DELETE_KALENDER"
     );
@@ -181,7 +181,7 @@ const KalenderPage = () => {
                     <Tables.Data>{item?.title}</Tables.Data>
                     <Tables.Data>{item?.start}</Tables.Data>
                     <Tables.Data>{item?.end}</Tables.Data>
-                    <Tables.Data>{item?.type}</Tables.Data>
+                    <Tables.Data>{item?.type === "National Holiday" ? "Libur" : item?.type}</Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Edit">

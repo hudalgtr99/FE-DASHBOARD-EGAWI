@@ -476,25 +476,9 @@ export const updateFormData = (reducers, data, url, type, pk) => {
   })
     .then((response) => {
       if (response.data.status === 201) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-        });
+        showToast("error", response.data.messages); 
       } else {
-        Swal.fire({
-          icon: "success",
-          title: "Good job!",
-          customClass: {
-            container: "z-[99999]",
-          },
-          text: response.data.messages,
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        showToast("success", response.data.messages); 
       }
       dispatch(
         redux({
@@ -507,14 +491,7 @@ export const updateFormData = (reducers, data, url, type, pk) => {
       );
     })
     .catch((error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        customClass: {
-          container: "z-[99999]",
-        },
-        text: error,
-      });
+      showToast("error", error.response?.data?.detail || "Terjadi kesalahan."); 
       dispatch(
         redux({
           type: type,

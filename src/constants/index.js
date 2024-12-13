@@ -103,6 +103,7 @@ export const API_URL_edelpotongan = `${baseurl}/edelpotongan/`;
 
 // === perusahaan ===
 export const API_URL_getperusahaan = `${baseurl}/getperusahaan/`;
+export const API_URL_changeactiveperusahaan = `${baseurl}/active/`;
 export const API_URL_getperusahaan_withPaginations = `${baseurl}/getperusahaanwithpaginations/`;
 export const API_URL_createperusahaan = `${baseurl}/createperusahaan/`;
 export const API_URL_edelperusahaan = `${baseurl}/edelperusahaan/`;

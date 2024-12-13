@@ -77,7 +77,7 @@ const UnitSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/masterdata/organization/unit/form/${item.pk}`, {
+    navigate(`/masterdata/organization/unit/form/${item.slug}`, {
       state: {
         item,
       },
@@ -87,7 +87,7 @@ const UnitSub = () => {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: unitReducers },
-      item.pk,
+      item.slug,
       API_URL_edelunit,
       "DELETE_UNIT"
     );
@@ -223,15 +223,15 @@ const UnitSub = () => {
               {dataWithIndex.length > 0 ? (
                 dataWithIndex.map((item) => (
                   <Tables.Row key={item.pk}>
-                    <Tables.Data>{item.index}</Tables.Data>
-                    <Tables.Data>{item.nama}</Tables.Data>
+                    <Tables.Data>{item?.index || "-"}</Tables.Data>
                     {!jwt.perusahaan && (
                       <Tables.Data>
-                        {item.divisi.departemen.perusahaan.nama}
+                        {item?.divisi?.departemen?.perusahaan && item.divisi.departemen.perusahaan.nama || "-"}
                       </Tables.Data>
                     )}
-                    <Tables.Data>{item.divisi.departemen.nama}</Tables.Data>
-                    <Tables.Data>{item.divisi.nama}</Tables.Data>
+                    <Tables.Data>{item?.nama || "-"}</Tables.Data>
+                    <Tables.Data>{item?.divisi?.departemen && item?.divisi?.departemen.nama || "-"}</Tables.Data>
+                    <Tables.Data>{item?.divisi && item?.divisi?.nama || "-"}</Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
@@ -258,7 +258,7 @@ const UnitSub = () => {
             </Tables.Body>
           </Tables>
         )}
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-end items-center mt-4">
           <Pagination
             totalCount={getUnitResult.count}
             pageSize={limit}

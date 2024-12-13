@@ -68,7 +68,9 @@ const KalenderForm = () => {
         title: values.nama_event,
         start_date: values.tgl_mulai,
         end_date: values.tgl_berakhir,
-        is_national_holiday: Boolean(values.type_event === "Libur"),
+        is_national_holiday:
+          values.type_event?.toLowerCase() === "libur" ||
+          values.type_event?.toLowerCase() === "national holiday",
         perusahaan: values.perusahaan, // Include perusahaan in the payload
       };
 
@@ -94,6 +96,8 @@ const KalenderForm = () => {
       );
     },
   });
+
+  console.log(formik.values);
 
   return (
     <div>
@@ -173,7 +177,10 @@ const KalenderForm = () => {
                 formik.values.type_event
                   ? {
                       value: formik.values.type_event,
-                      label: formik.values.type_event,
+                      label:
+                        formik.values.type_event === "National Holiday"
+                          ? "Libur"
+                          : formik.values.type_event,
                     }
                   : null
               }

@@ -56,11 +56,11 @@ export default function MasterTemplate() {
   };
 
   const onView = (item) => {
-    navigate(`/masterdata/master-template/${item.id}`);
+    navigate(`/masterdata/master-template/${item.slug}`);
     sessionStorage.removeItem("ckeditor");
   };
   const onEdit = (item) => {
-    navigate(`/masterdata/master-template/form/${item.id}`, {
+    navigate(`/masterdata/master-template/form/${item.slug}`, {
       state: {
         item,
       },
@@ -70,7 +70,7 @@ export default function MasterTemplate() {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: penugasanReducer },
-      item.id,
+      item.slug,
       API_URL_edeltemplatesurattugas,
       "DELETE_TUGAS"
     );

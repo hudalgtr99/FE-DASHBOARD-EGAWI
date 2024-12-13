@@ -17,6 +17,7 @@ const UnitSubForm = () => {
   const dispatch = useDispatch();
   const [departemenOptions, setDepartemenOptions] = useState([]);
   const [divisiOptions, setDivisiOptions] = useState([]);
+  const [divisiAll, setDivisiAll] = useState([]);
   const [selectedDepartemen, setSelectedDepartemen] = useState(null); // State untuk menyimpan departemen yang dipilih
 
   const isEdit = pk && pk !== 'add';
@@ -37,6 +38,13 @@ const UnitSubForm = () => {
           departemenId: item.departemen.pk, // Simpan id departemen untuk digunakan nanti
         }))
       );
+      setDivisiAll(
+        response.data.divisi.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+          departemenId: item.departemen.pk, // Simpan id departemen untuk digunakan nanti
+        }))
+      );
     };
     fetchData();
   }, []);
@@ -44,8 +52,8 @@ const UnitSubForm = () => {
   const formik = useFormik({
     initialValues: {
       nama: state?.item?.nama,
-      divisi: state?.item?.divisi?.id || '', // Pastikan untuk menyesuaikan dengan format state
-      departemen: state?.item?.divisi?.departemen?.id || ''
+      divisi: state?.item?.divisi?.pk || '', // Pastikan untuk menyesuaikan dengan format state
+      departemen: state?.item?.divisi?.departemen?.pk || ''
     },
     validationSchema: Yup.object().shape({
       nama: Yup.string().required("Nama Unit wajib diisi").max(255, "Nama Unit harus kurang dari 255 karakter"),
@@ -94,8 +102,10 @@ const UnitSubForm = () => {
 
   // Filter divisi berdasarkan departemen yang dipilih
   const filteredDivisiOptions = selectedDepartemen 
-    ? divisiOptions.filter(divisi => divisi.departemenId === selectedDepartemen) 
-    : [];
+  ? (divisiOptions || []).filter(divisi => divisi.departemenId === selectedDepartemen) 
+  : (formik.values.divisi 
+      ? (divisiOptions || []).filter(divisi => divisi.value === formik.values.divisi)
+      : []);
 
   console.log("divisi:", divisiOptions);
 

@@ -28,7 +28,7 @@ import { formatISO, parseISO } from "date-fns";
 import PDFToPrint from "../../../components/molecules/PDFToPrint";
 import CKEditor from "../../../components/forms/CKEditor";
 
-const TemplateSlugForm = () => {
+const SuratPenugasanSlug = () => {
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -83,6 +83,7 @@ const TemplateSlugForm = () => {
         pemohon: values.pemohon,
         template: values.template,
         isi: sessionStorage.getItem("ckeditor"),
+        no_surat: formik.values.noSurat
       };
 
       if (isEdit) {
@@ -104,7 +105,7 @@ const TemplateSlugForm = () => {
           "ADD_TUGAS"
         );
       }
-      navigate("/kepegawaian/penugasan")
+      navigate("/kepegawaian/surat-penugasan")
     },
   });
 
@@ -193,6 +194,8 @@ const TemplateSlugForm = () => {
       </div>
     );
   }
+
+  console.log(formik.values);
 
   const handleHtmlChange = (newHtml) => {
     formik.setFieldValue("isi", newHtml);
@@ -314,4 +317,4 @@ const TemplateSlugForm = () => {
   );
 };
 
-export default TemplateSlugForm;
+export default SuratPenugasanSlug;

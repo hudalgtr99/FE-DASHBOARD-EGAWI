@@ -87,20 +87,20 @@ const PenugasanPage = () => {
       ...item,
       perusahaan: item?.perusahaan?.id
     }
-    navigate(`/kepegawaian/penugasan/form/${item?.id}`, {
+    navigate(`/kepegawaian/penugasan/form/${item?.slug}`, {
       state: {
         item,
       },
     });
   };
   const doDetail = (item) => {
-    navigate(`/kepegawaian/penugasan/detail/${item?.id}`);
+    navigate(`/kepegawaian/penugasan/detail/${item?.slug}`);
   };
 
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: penugasanReducer },
-      item?.id,
+      item?.slug,
       API_URL_edeltugas,
       "DELETE_TUGAS"
     );
@@ -214,17 +214,17 @@ const PenugasanPage = () => {
                   <Tables.Row key={item?.index}>
                     <Tables.Data>{item?.index}</Tables.Data>
                     {!jwt.perusahaan && (
-                      <Tables.Data>{item?.perusahaan.nama}</Tables.Data>
+                      <Tables.Data>{item?.perusahaan &&item?.perusahaan.nama || "-"}</Tables.Data>
                     )}
-                    <Tables.Data>{item?.judul}</Tables.Data>
-                    <Tables.Data>{item?.pengirim.nama}</Tables.Data>
+                    <Tables.Data>{item?.judul || "-"}</Tables.Data>
+                    <Tables.Data>{item?.pengirim?.nama || "-"}</Tables.Data>
                     <Tables.Data>
-                      {item?.penerima.map((p, idx) => (
+                      {item.penerima ? item?.penerima.map((p, idx) => (
                         <span key={p.id}>
                           {p.nama}
                           {idx < item?.penerima.length - 1 ? ", " : ""}
                         </span>
-                      ))}
+                      )) : "-" }
                     </Tables.Data>
                     <Tables.Data>
                       {prioritases.map((prioritas) =>

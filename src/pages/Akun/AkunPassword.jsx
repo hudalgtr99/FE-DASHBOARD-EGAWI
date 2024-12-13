@@ -10,9 +10,9 @@ import { updateData } from "@/actions";
 import { API_URL_changepassword } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
 import { TbEye, TbEyeOff } from "react-icons/tb";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const UbahPasswordPage = () => {
-
+  const navigate = useNavigate();
   const { addUserLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -42,7 +42,9 @@ const UbahPasswordPage = () => {
         "ADD_USER"
       )
         .then(() => {
-          formik.resetForm(); 
+          if(updateData){
+            navigate("/kepegawaian/pegawai");
+          }
         })
     },
   });
@@ -115,8 +117,8 @@ const UbahPasswordPage = () => {
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button type="submit" disabled={addUserLoading}>
-            {addUserLoading ? "Mengirim..." : "Simpan"}
+          <Button type="submit" loading={addUserLoading}>
+            Simpan
           </Button>
         </div>
       </form>

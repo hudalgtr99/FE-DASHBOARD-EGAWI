@@ -82,7 +82,7 @@ const JabatanSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/masterdata/jabatan/form/${item.pk}`, {
+    navigate(`/masterdata/jabatan/form/${item?.slug}`, {
       state: {
         item,
       },
@@ -92,7 +92,7 @@ const JabatanSub = () => {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: jabatanReducers },
-      item.pk,
+      item.slug,
       API_URL_edeljabatan,
       "DELETE_JABATAN"
     );
@@ -228,13 +228,13 @@ const JabatanSub = () => {
             <Tables.Body>
               {dataWithIndex.length > 0 ? 
               dataWithIndex.map((item) => (
-                <Tables.Row key={item.pk}>
-                  <Tables.Data>{item.index}</Tables.Data>
+                <Tables.Row key={item?.pk}>
+                  <Tables.Data>{item?.index}</Tables.Data>
                   {!jwt.perusahaan && (
-                    <Tables.Data>{item.perusahaan.nama}</Tables.Data>
+                    <Tables.Data>{item?.perusahaan && item?.perusahaan?.nama  || "-"}</Tables.Data>
                   )}
-                  <Tables.Data>{item.nama}</Tables.Data>
-                  <Tables.Data>{item.keterangan}</Tables.Data>
+                  <Tables.Data>{item?.nama}</Tables.Data>
+                  <Tables.Data>{item?.keterangan}</Tables.Data>
                   <Tables.Data center>
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (

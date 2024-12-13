@@ -21,7 +21,7 @@ import { API_URL_getsurattugas, API_URL_edelsurattugas } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment/moment";
 
-export default function MasterTemplateSlug() {
+export default function SuratPenugasanPage() {
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -35,13 +35,15 @@ export default function MasterTemplateSlug() {
     useSelector((state) => state.tugas);
 
   const onAdd = () => {
-    navigate(`/surat-penugasan/surat-penugasan/form`);
+    navigate(`/kepegawaian/surat-penugasan/form`);
     sessionStorage.removeItem("ckeditor");
   };
 
   const onEdit = (item) => {
-    item.pemohon = item.pemohon.id;
-    navigate(`/surat-penugasan/surat-penugasan/form/${item.id}`, {
+    console.log(item)
+    item.pemohon = item.pemohon;
+    item.perusahaan = item.perusahaan ? item.perusahaan.id : "";
+    navigate(`/kepegawaian/surat-penugasan/form/${item.slug}`, {
       state: {
         item,
       },
@@ -52,7 +54,7 @@ export default function MasterTemplateSlug() {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: penugasanReducer },
-      item.id,
+      item.slug,
       API_URL_edelsurattugas,
       "DELETE_TUGAS"
     );
@@ -172,6 +174,7 @@ syncDisplay();
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
+                <Tables.Header>Nama perusahaan</Tables.Header>
                 <Tables.Header>Nama template</Tables.Header>
                 <Tables.Header>Pengirim</Tables.Header>
                 <Tables.Header>Nama Surat</Tables.Header>
@@ -184,6 +187,7 @@ syncDisplay();
                 dataWithIndex.map((item, i) => (
                   <Tables.Row key={item.id}>
                     <Tables.Data>{item.index}</Tables.Data>
+                    <Tables.Data>{item?.perusahaan && item?.perusahaan?.nama || "-"}</Tables.Data>
                     <Tables.Data>{item?.template?.nama}</Tables.Data>
                     <Tables.Data>{item?.pemohon?.nama}</Tables.Data>
                     <Tables.Data>

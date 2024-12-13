@@ -73,6 +73,7 @@ const DepartemenSubForm = () => {
       perusahaanOptions.length === 1
         ? (values.perusahaan = perusahaanOptions[0].value)
         : (values.perusahaan = values.perusahaan);
+      values.perusahaan_id = Number(values.perusahaan);
       try {
         if (isEdit) {
           await updateData(

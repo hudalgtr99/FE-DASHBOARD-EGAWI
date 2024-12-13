@@ -70,7 +70,7 @@ const DivisiSub = () => {
   };
 
   const onEdit = (item) => {
-    navigate(`/masterdata/organization/divisi/form/${item.pk}`, {
+    navigate(`/masterdata/organization/divisi/form/${item.slug}`, {
       state: {
         item,
       },
@@ -80,7 +80,7 @@ const DivisiSub = () => {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: divisiReducers },
-      item.pk,
+      item.slug,
       API_URL_edeldivisi,
       "DELETE_DIVISI"
     );

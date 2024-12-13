@@ -67,15 +67,17 @@ const DivisiSub = () => {
 
   const onAdd = () => navigate("/masterdata/organization/departemen/form");
 
-  const onEdit = (item) =>
-    navigate(`/masterdata/organization/departemen/form/${item.pk}`, {
+  const onEdit = (item) =>{
+    item.perusahaan = item.perusahaan.id,
+    navigate(`/masterdata/organization/departemen/form/${item.slug}`, {
       state: { item },
     });
+  };
 
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: divisiReducers },
-      item.pk,
+      item.slug,
       API_URL_edeldepartemen,
       "DELETE_DIVISI" 
       // reducer departemen gabisa, jadi pakai divisi

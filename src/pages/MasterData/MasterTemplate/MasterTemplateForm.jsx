@@ -76,8 +76,8 @@ const MasterTemplateForm = () => {
           "ADD_TUGAS"
         );
       }
-      // navigate(`/masterdata/master-template`);
-      // sessionStorage.removeItem("ckeditor");
+      navigate(`/masterdata/master-template`);
+      sessionStorage.removeItem("ckeditor");
     },
   });
 

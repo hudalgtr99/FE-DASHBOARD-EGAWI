@@ -42,7 +42,7 @@ const TextField = ({
 	name = null,
 	type = "text",
 	label = "",
-	value = "",
+	value,
 	setValue = () => {},
 	onChange = () => {},
 	onBlur = () => {},
