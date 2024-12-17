@@ -4,13 +4,16 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, Select } from '@/components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addData, updateData } from '@/actions';
 import { unitReducers } from '@/reducers/organReducers';
 import { API_URL_createunit, API_URL_edelunit, API_URL_getmasterpegawai } from '@/constants';
 import axiosAPI from "@/authentication/axiosApi";
 
 const UnitSubForm = () => {
+  const { addUnitLoading } = useSelector(
+    (state) => state.organ
+  );
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -63,7 +66,7 @@ const UnitSubForm = () => {
     onSubmit: async (values) => {
       try {
         if (isEdit) {
-          await updateData(
+          const data = await updateData(
             { dispatch, redux: unitReducers },
             {
               pk: pk,
@@ -72,10 +75,13 @@ const UnitSubForm = () => {
               departemen_id: values.departemen
             },
             API_URL_edelunit,
-            'UPDATE_UNIT'
+            'ADD_UNIT'
           );
+          if(data && !addUnitLoading){
+            navigate("/masterdata/organization", { state: { activeTab: '2' } });;
+          }
         } else {
-          await addData(
+          const data = await addData(
             { dispatch, redux: unitReducers },
             {
               nama: values.nama,
@@ -85,8 +91,10 @@ const UnitSubForm = () => {
             API_URL_createunit,
             'ADD_UNIT'
           );
+          if(data && !addUnitLoading){
+            navigate("/masterdata/organization", { state: { activeTab: '2' } });;
+          }
         }
-        navigate("/masterdata/organization");
       } catch (error) {
         console.error('Error in form submission: ', error);
       }
@@ -106,8 +114,6 @@ const UnitSubForm = () => {
   : (formik.values.divisi 
       ? (divisiOptions || []).filter(divisi => divisi.value === formik.values.divisi)
       : []);
-
-  console.log("divisi:", divisiOptions);
 
   return (
     <div>
@@ -151,7 +157,7 @@ const UnitSubForm = () => {
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button loading={addUnitLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
             </div>
           </form>
         </div>

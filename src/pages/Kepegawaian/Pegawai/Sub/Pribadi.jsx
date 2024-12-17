@@ -17,7 +17,6 @@ import {
 import axiosAPI from "@/authentication/axiosApi";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
-import { decrypted } from "@/actions";
 
 const Pribadi = ({ onTabChange }) => {
   const { pk } = useParams();
@@ -65,7 +64,7 @@ const Pribadi = ({ onTabChange }) => {
       alamat_ktp: "",
       alamat_domisili: "",
       perusahaan: "",
-      lokasi_absen: "",
+      lokasi_absen: [],
       groups: "",
     };
   };
@@ -101,28 +100,41 @@ const Pribadi = ({ onTabChange }) => {
       try {
         const updatedValues = {
           ...values,
-          lokasi_absen_id: values.lokasi_absen.value,
+          lokasi_absen_ids: JSON.stringify(
+            values.lokasi_absen.map((option) => option.value)
+          ),
           groups: values.groups.value || values.groups.pk,
           perusahaan_id: values.perusahaan.id || values.perusahaan.value,
         };
+
         if (isEdit) {
           delete updatedValues.password;
-          // console.log("update")
+
           const data = await updateData(
             { dispatch, redux: pegawaiReducer },
             { pk: "datapribadi", ...updatedValues },
             API_URL_edeluser,
-            "UPDATE_PEGAWAI"
+            "ADD_PEGAWAI"
           );
 
           if (data && !addPegawaiLoading) {
+            // Update localStorage with the updated values
+            const storedData = localStorage.getItem("editUserData");
+            if (storedData) {
+              const parsedData = JSON.parse(storedData);
+              parsedData.datapribadi = { ...parsedData.datapribadi, ...values };
+              parsedData.datapribadi.user_id = data.user_id;
+              localStorage.setItem("editUserData", JSON.stringify(parsedData));
+            }
+
             isLanjut
               ? onTabChange("1")
-              : (navigate("/kepegawaian/pegawai"),
+              : (sessionStorage.getItem("url")
+                  ? (navigate(sessionStorage.getItem("url")), sessionStorage.removeItem("url"))
+                  : navigate("/kepegawaian/pegawai"),
                 localStorage.removeItem("editUserData"));
           }
         } else {
-          // console.log("add")
           // Handle create, including password in the payload
           const data = await addData(
             { dispatch, redux: pegawaiReducer },
@@ -142,10 +154,10 @@ const Pribadi = ({ onTabChange }) => {
             }
             isLanjut
               ? onTabChange("1")
-              : () => {
-                  navigate("/kepegawaian/pegawai");
-                  localStorage.removeItem("editUserData");
-                };
+              : (sessionStorage.getItem("url") === "/akun"
+                  ? (navigate("/akun"), sessionStorage.removeItem("url"))
+                  : navigate("/kepegawaian/pegawai"),
+                localStorage.removeItem("editUserData"));
           }
         }
       } catch (error) {
@@ -267,7 +279,7 @@ const Pribadi = ({ onTabChange }) => {
     }
   };
 
-  // console.log(formik.errors)
+  // console.log(formik.values.lokasi_absen)
 
   // console.log("roles", JSON.stringify(roles));
   return (
@@ -276,7 +288,12 @@ const Pribadi = ({ onTabChange }) => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/kepegawaian/pegawai")}
+            onClick={() => (
+              sessionStorage.getItem("url") === "/akun"
+                ? (navigate("/akun"), sessionStorage.removeItem("url"))
+                : navigate("/kepegawaian/pegawai"),
+              localStorage.removeItem("editUserData")
+            )}
           >
             <IoMdReturnLeft />
           </button>
@@ -324,15 +341,6 @@ const Pribadi = ({ onTabChange }) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.nama ? formik.errors.nama : ""}
               />
-              {/* <TextField
-                required
-                label="Username"
-                name="username"
-                value={formik.values.username}
-                onChange={formik.handleChange}
-                onBlur={(e) => formik.handleBlur}
-                error={formik.touched.username ? formik.errors.username : ""}
-              /> */}
               <TextField
                 required
                 label="Email"
@@ -493,13 +501,14 @@ const Pribadi = ({ onTabChange }) => {
               ></Select>
               <Select
                 required
+                multi
                 label="Lokasi Absen"
                 name="lokasi_absen"
                 value={
-                  lokasiOptions.find(
-                    (option) =>
-                      option.value === formik.values.lokasi_absen.value
-                  ) || null
+                  formik.values.lokasi_absen.map((item) => ({
+                    value: item.value,
+                    label: item.label,
+                  })) || []
                 }
                 onChange={(option) =>
                   formik.setFieldValue("lokasi_absen", option ? option : "")
@@ -509,21 +518,29 @@ const Pribadi = ({ onTabChange }) => {
                   formik.touched.lokasi_absen ? formik.errors.lokasi_absen : ""
                 }
               />
+              {/* <Select
+                required
+                label="Penerima"
+                name="penerima"
+                value={formik.values.penerima}
+                onChange={(options) =>
+                  formik.setFieldValue("penerima", options)
+                }
+                options={pegawaiOptions}
+                error={formik.touched.penerima && formik.errors.penerima}
+              /> */}
             </div>
             <div className="justify-end flex gap-3">
-              {isEdit ? (
-                <Button loading={addPegawaiLoading} type="submit">
-                  Simpan
-                </Button>
-              ) : (
-                <Button
-                  loading={addPegawaiLoading}
-                  type="button"
-                  onClick={handleLanjut}
-                >
-                  Simpan dan lanjut
-                </Button>
-              )}
+              <Button loading={addPegawaiLoading} type="submit">
+                Simpan
+              </Button>
+              <Button
+                loading={addPegawaiLoading}
+                type="button"
+                onClick={handleLanjut}
+              >
+                Lanjut
+              </Button>
             </div>
           </form>
         </div>

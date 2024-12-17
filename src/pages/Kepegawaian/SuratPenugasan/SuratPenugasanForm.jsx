@@ -11,7 +11,7 @@ import {
   PulseLoading,
   Checkbox,
 } from "@/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import {
@@ -24,11 +24,11 @@ import {
 } from "@/constants";
 import axiosAPI from "@/authentication/axiosApi";
 import { fetchUserDetails } from "@/constants/user";
-import { formatISO, parseISO } from "date-fns";
-import PDFToPrint from "../../../components/molecules/PDFToPrint";
 import CKEditor from "../../../components/forms/CKEditor";
 
 const SuratPenugasanSlug = () => {
+  const { addTugasLoading } =
+    useSelector((state) => state.tugas);
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const SuratPenugasanSlug = () => {
     initialValues: {
       perusahaan: state?.item?.perusahaan || "",
       nama: state?.item?.nama || "",
-      pemohon: state?.item?.pemohon || "",
+      pemohon: state?.item?.pemohon?.id || state?.item?.pemohon || "",
       penerima:
         state?.item?.penerima?.map((item) => ({
           value: item.id,
@@ -88,24 +88,29 @@ const SuratPenugasanSlug = () => {
 
       if (isEdit) {
         if (id) {
-          await updateData(
+          const data = await updateData(
             { dispatch, redux: penugasanReducer },
             { pk: id, data: payload },
             API_URL_edelsurattugas,
-            "UPDATE_TUGAS"
+            "ADD_TUGAS"
           );
+          if(data && !addTugasLoading){
+            navigate("/kepegawaian/surat-penugasan")
+          }
         } else {
           console.error("ID is undefined for updating the task.");
         }
       } else {
-        await addData(
+        const data = await addData(
           { dispatch, redux: penugasanReducer },
           payload,
           API_URL_createsurattugas,
           "ADD_TUGAS"
         );
+        if(data && !addTugasLoading){
+          navigate("/kepegawaian/surat-penugasan")
+        }
       }
-      navigate("/kepegawaian/surat-penugasan")
     },
   });
 
@@ -194,8 +199,6 @@ const SuratPenugasanSlug = () => {
       </div>
     );
   }
-
-  console.log(formik.values);
 
   const handleHtmlChange = (newHtml) => {
     formik.setFieldValue("isi", newHtml);
@@ -304,7 +307,7 @@ const SuratPenugasanSlug = () => {
         />
         <div className="flex justify-end mt-8">
           <Button
-            disabled={isLoading}
+            loading={addTugasLoading}
             type="submit"
             color="primary"
             className="shadow-md hover:shadow-lg"

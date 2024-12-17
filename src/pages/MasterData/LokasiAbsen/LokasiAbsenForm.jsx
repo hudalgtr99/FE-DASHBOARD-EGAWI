@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Container, TextField, Button, Select } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
@@ -11,10 +11,11 @@ import {
   API_URL_getperusahaan,
   API_URL_edellokasi,
 } from "@/constants";
-import { lokasiAbsenReducer } from "@/reducers/lokasiAbsenReducers";
+import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import axiosAPI from "@/authentication/axiosApi";
 
 const LokasiAbsenForm = () => {
+  const { addperusahaanLoading } = useSelector((state) => state.perusahaan);
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -76,25 +77,29 @@ const LokasiAbsenForm = () => {
     onSubmit: async (values) => {
       if (isEdit) {
         try {
-          await updateData(
-            { dispatch, redux: lokasiAbsenReducer },
+          const data = await updateData(
+            { dispatch, redux: perusahaanReducer },
             { pk: pk, ...values },
             API_URL_edellokasi,
-            "UPDATE_LOKASI_ABSEN"
+            "ADD_perusahaan"
           );
 
-          navigate("/masterdata/lokasi-absen");
+          if (data && !addperusahaanLoading) {
+            navigate("/masterdata/lokasi-absen");
+          }
         } catch (error) {}
       } else {
         try {
-          await addData(
-            { dispatch, redux: lokasiAbsenReducer },
+          const data = await addData(
+            { dispatch, redux: perusahaanReducer },
             values,
             API_URL_createLokasiAbsen,
-            "ADD_LOKASI_ABSEN"
+            "ADD_perusahaan"
           );
 
-          navigate("/masterdata/lokasi-absen");
+          if (data && !addperusahaanLoading) {
+            navigate("/masterdata/lokasi-absen");
+          }
         } catch (e) {}
       }
     },
@@ -170,7 +175,9 @@ const LokasiAbsenForm = () => {
             error={formik.touched.radius ? formik.errors.radius : ""}
           />
           <div className="mt-6 flex justify-end">
-            <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+            <Button loading={addperusahaanLoading} type="submit">
+              {isEdit ? "Update" : "Tambah"}
+            </Button>
           </div>
         </form>
       </Container>

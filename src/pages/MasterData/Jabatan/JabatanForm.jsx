@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, TextArea, Select } from "@/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";
 import {
@@ -19,7 +19,9 @@ const JabatanSubForm = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const {
+    addJabatanLoading,
+  } = useSelector((state) => state.strata);
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const isEdit = pk && pk !== "add";
 
@@ -64,21 +66,26 @@ const JabatanSubForm = () => {
     }),
     onSubmit: async (values) => {
       if (isEdit) {
-        await updateData(
+        const data = await updateData(
           { dispatch, redux: jabatanReducers },
           { pk: pk, ...values },
           API_URL_edeljabatan,
-          "UPDATE_JABATAN"
+          "ADD_JABATAN"
         );
+        if(data && !addJabatanLoading){
+          navigate("/masterdata/jabatan");
+        }
       } else {
-        await addData(
+        const data = await addData(
           { dispatch, redux: jabatanReducers },
           values,
           API_URL_createjabatan,
           "ADD_JABATAN"
         );
+        if(data && !addJabatanLoading){
+          navigate("/masterdata/jabatan");
+        }
       }
-      navigate("/masterdata/jabatan");
     },
   });
 
@@ -131,7 +138,7 @@ const JabatanSubForm = () => {
               error={formik.touched.keterangan ? formik.errors.keterangan : ""}
             />
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button loading={addJabatanLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
             </div>
           </form>
         </div>

@@ -6,11 +6,14 @@ import { divisiReducers } from '@/reducers/organReducers';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { IoMdReturnLeft } from "react-icons/io";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 const DivisiSubForm = () => {
+  const { addDivisiLoading } = useSelector(
+    (state) => state.organ
+  );
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ const DivisiSubForm = () => {
     onSubmit: async (values) => {
       try {
         if (isEdit) {
-          await updateData(
+          const data = await updateData(
             { dispatch, redux: divisiReducers },
             {
               pk: pk, // Ensure pk is an integer
@@ -55,28 +58,27 @@ const DivisiSubForm = () => {
               departemen_id: values.departemen,
             },
             API_URL_edeldivisi,
-            'UPDATE_DIVISI'
+            'ADD_DIVISI'
           );
+          if (data && !addDivisiLoading) {
+            navigate("/masterdata/organization", { state: { activeTab: '1' } });
+          }
         } else {
-          await addData(
+          const data = await addData(
             { dispatch, redux: divisiReducers },
             { nama: values.nama, departemen_id: values.departemen },
             API_URL_createdivisi,
             'ADD_DIVISI'
           );
+          if(data && !addDivisiLoading){
+            navigate("/masterdata/organization", { state: { activeTab: '1' } });
+          }
         }
-        navigate("/masterdata/organization");
       } catch (error) {
         console.error('Error in form submission: ', error);
       }
     },
   });
-
-  // if (!state?.item) {
-  //   navigate(`/masterdata/organ`)
-  // }
-
-  console.log("Formik Values: ", formik.values);
 
   return (
     <div>
@@ -111,7 +113,7 @@ const DivisiSubForm = () => {
               error={formik.touched.nama ? formik.errors.nama : ''}
             />
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button loading ={addDivisiLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
             </div>
           </form>
         </div>

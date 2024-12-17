@@ -87,7 +87,7 @@ const KalenderForm = () => {
             { dispatch, redux: kalenderReducer },
             { pk: pk, data: payload },
             API_URL_edelkalender,
-            "UPDATE_KALENDER"
+            "ADD_KALENDER"
           );
       navigate(
         sessionStorage.getItem("url")
@@ -194,7 +194,7 @@ const KalenderForm = () => {
               error={formik.touched.type_event ? formik.errors.type_event : ""}
             />
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button type="submit">{isEdit ? "Update" : "Tambah"}</Button>
             </div>
           </form>
         </div>

@@ -62,11 +62,11 @@ const Pegawai = ({ onTabChange }) => {
     initialValues: {
       user_id: initialData?.user_id || "",
       id_pegawai: initialData?.id_pegawai || "",
-      jabatan_id: initialData?.jabatan?.id || initialData?.jabatan_id || "", // Change here
+      jabatan_id: initialData?.jabatan_id || initialData?.jabatan?.id || "", // Change here
       departemen_id:
-        initialData?.departemen?.id || initialData?.departemen_id || "",
-      divisi_id: initialData?.divisi?.id || initialData?.divisi_id || "",
-      unit_id: initialData?.unit?.id || initialData?.unit_id || "",
+        initialData?.departemen_id || initialData?.departemen?.id || "",
+      divisi_id:  initialData?.divisi_id || initialData?.divisi?.id || "",
+      unit_id: initialData?.unit_id || initialData?.unit?.id || "",
       tgl_bergabung: initialData?.tgl_bergabung || "",
       tgl_resign: initialData?.tgl_resign || "",
       status: initialData?.status || "",
@@ -113,7 +113,8 @@ const Pegawai = ({ onTabChange }) => {
     const storedData = localStorage.getItem("editUserData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      parsedData.datapegawai = { ...parsedData.datapegawai, ...formik.values }; // Update the datapegawai with new form values
+      parsedData.datapegawai = { ...parsedData.datapegawai, ...formik.values }; 
+      console.log("datapegawai:", parsedData.datapegawai);
 
       // Save the updated data back to local storage
       localStorage.setItem("editUserData", JSON.stringify(parsedData));
@@ -278,7 +279,7 @@ const Pegawai = ({ onTabChange }) => {
                     : ""
                 }
               />
-              {isEdit && localStorageData.datapribadi.is_staff === false && (
+              {!isEdit || localStorageData.datapribadi.is_staff === false && (
                 <TextField
                   label="Tanggal Resign"
                   name="tgl_resign"
@@ -294,13 +295,10 @@ const Pegawai = ({ onTabChange }) => {
             </div>
             <div className="justify-end flex gap-3">
               <div className="justify-end flex gap-3">
-                {isEdit ? (
                   <Button type="submit">Simpan</Button>
-                ) : (
                   <Button loading={addPegawaiLoading} type="button" onClick={handleLanjut}>
                     Lanjut
                   </Button>
-                )}
               </div>
             </div>
           </form>

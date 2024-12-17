@@ -1,36 +1,33 @@
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Limit,
   TextField,
   Tooltip,
   PulseLoading,
 } from "@/components";
-import { debounce, set } from "lodash";
+import { debounce } from "lodash";
 import { FaEdit, FaPlus, FaPrint, FaTrash } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useReactToPrint } from "react-to-print";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { getData, deleteData } from "@/actions";
 import { API_URL_getsurattugas, API_URL_edelsurattugas } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment/moment";
+import { useReactToPrint } from "react-to-print";
 
 export default function SuratPenugasanPage() {
-  const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const printRef = useRef();
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [printPDF, setPrintPDF] = useState(2);
+  const [printData, setPrintData] = useState("");
   const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } =
     useSelector((state) => state.tugas);
 
@@ -40,7 +37,6 @@ export default function SuratPenugasanPage() {
   };
 
   const onEdit = (item) => {
-    console.log(item)
     item.pemohon = item.pemohon;
     item.perusahaan = item.perusahaan ? item.perusahaan.id : "";
     navigate(`/kepegawaian/surat-penugasan/form/${item.slug}`, {
@@ -59,12 +55,6 @@ export default function SuratPenugasanPage() {
       "DELETE_TUGAS"
     );
   };
-
-  const contentRef = useRef(null);
-
-  const handlePrint = useReactToPrint({
-    content: () => contentRef.current,
-  });
 
   // Debounce search function
   const debouncedSearch = useCallback(
@@ -125,27 +115,71 @@ export default function SuratPenugasanPage() {
       }))
     : [];
 
-  // Fungsi untuk sinkronisasi display antara <th> dan <tr>
-function syncDisplay() {
-  // Ambil semua elemen <th> yang memiliki atribut id
-  const thElements = document.querySelectorAll("th[id]");
-  
-  // Iterasi setiap <th> dan sinkronisasi <tr> dengan id yang sama
-  thElements.forEach((th) => {
-    const id = th.id; // Ambil id <th>
-    const thDisplay = window.getComputedStyle(th).display; // Dapatkan style display <th>
-
-    // Cari semua <td> di dalam <tr> dengan id yang sesuai
-    const tdElements = document.querySelectorAll(`td#${id}`);
-
-    // Sesuaikan display <td> berdasarkan <th>
-    tdElements.forEach((td) => {
-      td.style.display = thDisplay; // Atur display <td> sesuai <th>
-    });
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    documentTitle: "Surat Tugas",
   });
-}
 
-syncDisplay();
+  const onPrint = (index) => {
+    const selectedData = dataWithIndex[index];
+
+    // Validasi dan format ulang data untuk cetak
+    const formattedIsi = selectedData.isi
+      ?.replace(
+        /\{nama_pemohon\}/g,
+        selectedData.pemohon?.nama
+          ?.split(" ")
+          .map(
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          )
+          .join(" ") || "Tidak ada pemohon"
+      )
+      .replace(
+        /\{jabatan_pemohon\}/g,
+        selectedData.pemohon?.jabatan || "Tidak ada jabatan"
+      )
+      .replace(
+        /\{departement_pemohon\}/g,
+        selectedData.pemohon?.departemen || "Tidak ada departemen"
+      )
+      .replace(
+        /\{divisi_pemohon\}/g,
+        selectedData.pemohon?.divisi || "Tidak ada divisi"
+      )
+      .replace(
+        /\{unit_pemohon\}/g,
+        selectedData.pemohon?.unit || "Tidak ada unit"
+      )
+      .replace(
+        /<tbody>\s*.*?<\/tbody>/,
+        `
+        <tbody>
+          ${selectedData.penerima
+            ?.map(
+              (item, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${item.nama || "Tidak ada nama"}</td>
+                  <td>${item.jabatan || "Tidak ada jabatan"}</td>
+                  <td>${item.departemen || "Tidak ada departemen"}</td>
+                  <td>${item.divisi || "Tidak ada divisi"}</td>
+                  <td>${item.unit || "Tidak ada unit"}</td>
+                </tr>`
+            )
+            .join("")}
+        </tbody>
+        `
+      );
+
+      if (printRef.current) {
+        printRef.current.innerHTML = formattedIsi;
+      }
+
+    setPrintData({ ...selectedData, formattedIsi });
+
+    // Cetak dokumen
+    handlePrint();
+  };
 
   return (
     <div>
@@ -164,8 +198,7 @@ syncDisplay();
             </div>
           </Button>
         </div>
-
-        {getTugasLoading ? ( // Show loading indicator if loading is true
+        {getTugasLoading ? (
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -187,7 +220,9 @@ syncDisplay();
                 dataWithIndex.map((item, i) => (
                   <Tables.Row key={item.id}>
                     <Tables.Data>{item.index}</Tables.Data>
-                    <Tables.Data>{item?.perusahaan && item?.perusahaan?.nama || "-"}</Tables.Data>
+                    <Tables.Data>
+                      {(item?.perusahaan && item?.perusahaan?.nama) || "-"}
+                    </Tables.Data>
                     <Tables.Data>{item?.template?.nama}</Tables.Data>
                     <Tables.Data>{item?.pemohon?.nama}</Tables.Data>
                     <Tables.Data>
@@ -202,9 +237,7 @@ syncDisplay();
                       <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Print">
                           <div
-                            onClick={() => {
-                              setPrintPDF(i), handlePrint();
-                            }}
+                            onClick={() => onPrint(i)}
                             className="text-blue-500 cursor-pointer"
                           >
                             <FaPrint />
@@ -240,83 +273,20 @@ syncDisplay();
             </Tables.Body>
           </Tables>
         )}
-        <div ref={contentRef} className="print-only">
-          {dataWithIndex[0] && (
-            <div
+        <div ref={printRef} className="print-only">
+          <div
             dangerouslySetInnerHTML={{
-              __html: dataWithIndex[0]?.isi
-                ?.replace(
-                  /\{nama_pemohon\}/g,
-                  dataWithIndex[0]?.pemohon?.nama
-                    ?.split(" ")
-                    .map(
-                      (word) =>
-                        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-                    )
-                    .join(" ") || "Tidak ada pemohon"
-                )
-                .replace(
-                  /\{jabatan_pemohon\}/g,
-                  dataWithIndex[0]?.pemohon?.jabatan || "Tidak ada jabatan"
-                )
-                .replace(
-                  /\{departement_pemohon\}/g,
-                  dataWithIndex[0]?.pemohon?.departemen || "Tidak ada departemen"
-                )
-                .replace(
-                  /\{divisi_pemohon\}/g,
-                  dataWithIndex[0]?.pemohon?.divisi || "Tidak ada divisi"
-                )
-                .replace(
-                  /\{unit_pemohon\}/g,
-                  dataWithIndex[0]?.pemohon?.unit || "Tidak ada unit"
-                )
-                .replace(
-                  /<tbody>\s*.*?<\/tbody>/,
-                  `
-                  <tbody>
-                    ${dataWithIndex[0]?.penerima
-                      ?.map(
-                        (item, index) => `
-                          <tr>
-                            <td>${index + 1}</td>
-                            <td>${item.nama
-                              ?.split(" ")
-                              .map(
-                                (word) =>
-                                  word.charAt(0).toUpperCase() +
-                                  word.slice(1).toLowerCase()
-                              )
-                              .join(" ") || "Tidak ada nama"}</td>
-                            <td id="table_jabatan" style="display: none;">
-                              ${item.jabatan || "Tidak ada jabatan"}
-                            </td>
-                            <td id="table_departement" style="display: none;">
-                              ${item.departemen || "Tidak ada departemen"}
-                            </td>
-                            <td id="table_divisi" style="display: none;">
-                              ${item.divisi || "Tidak ada divisi"}
-                            </td>
-                            <td id="table_unit" style="display: none;">
-                              ${item.unit || "Tidak ada unit"}
-                            </td>
-                          </tr>`
-                      )
-                      .join("")}
-                  </tbody>
-                  `
-                ),
+              __html: printData.formattedIsi || "<p>Data tidak tersedia</p>",
             }}
-          />          
-          )}
+          />
         </div>
-
+        ;
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getTugasResult.count || 0} // Dynamic total count
-            pageSize={limit} // Use current limit for page size
-            currentPage={pageActive + 1} // Adjust for zero-indexed pages
-            onPageChange={handlePageClick} // Handle page changes
+            totalCount={getTugasResult.count || 0}
+            pageSize={limit}
+            currentPage={pageActive + 1}
+            onPageChange={handlePageClick}
             siblingCount={1}
             activeColor="primary"
             rounded="md"

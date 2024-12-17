@@ -114,8 +114,8 @@ const ImportPegawai = () => {
       perusahaan: 5,
       example: true,
       lokasi_absen: { value: 5, label: "Bandung office" },
-    }
-  ];  
+    },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,7 +144,7 @@ const ImportPegawai = () => {
 
   const initialValues = {
     perusahaan: state?.item?.perusahaan?.id || "",
-    lokasi_absen: state?.item?.lokasi_absen?.id || "",
+    lokasi_absen: state?.item?.lokasi_absen || [],
     excel: null,
   };
 
@@ -164,15 +164,15 @@ const ImportPegawai = () => {
                 value.type ===
                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
         ),
-      lokasi_absen: Yup.object().required("Lokasi Absen wajib diisi"),
+      lokasi_absen: Yup.array().required("Lokasi Absen wajib diisi"),
     }),
     onSubmit: async (values) => {
       setImportedDataLoading(false);
       const formData = new FormData();
       formData.append("perusahaan_id", values.perusahaan);
       formData.append(
-        "lokasi_absen_id",
-        values.lokasi_absen?.value || values.lokasi_absen
+        "lokasi_absen_ids",
+        JSON.stringify(values.lokasi_absen.map((option) => option.value))
       );
       formData.append("excel", values.excel);
 
@@ -217,6 +217,7 @@ const ImportPegawai = () => {
     });
 
     if (formik.isValid) {
+      console.log(formik.values);
       setExcelModal(true);
       const file = formik.values.excel;
       if (file) {
@@ -249,8 +250,6 @@ const ImportPegawai = () => {
     }
   }
 
-  console.log(formik.values);
-
   return (
     <div>
       <Container>
@@ -278,22 +277,33 @@ const ImportPegawai = () => {
         <div>
           <form onSubmit={handleTableExcel} className="space-y-6">
             <div className="flex flex-col">
-              <FileInput
-                height={70}
-                accept={{
-                  "application/vnd.ms-excel": [],
-                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                    [],
-                }}
-                maxFiles={1}
-                minSize={0}
-                maxSize={2097152} // 2 MB
-                multiple={false}
-                value={formik.values.excel ? [formik.values.excel] : []}
-                setValue={(files) => {
-                  formik.setFieldValue("excel", files[0] || null);
-                }}
-              />
+              <div className="">
+                <label
+                  style={{
+                    fontSize: "14px",
+                  }}
+                  className={`mb-2 font-[400]`}
+                >
+                  File Excel
+                </label>
+                <FileInput
+                  text={"Drag 'n' drop some Excel file here."}
+                  height={70}
+                  accept={{
+                    "application/vnd.ms-excel": [],
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                      [],
+                  }}
+                  maxFiles={1}
+                  minSize={0}
+                  maxSi ze={2097152} // 2 MB
+                  multiple={false}
+                  value={formik.values.excel ? [formik.values.excel] : []}
+                  setValue={(files) => {
+                    formik.setFieldValue("excel", files[0] || null);
+                  }}
+                />
+              </div>
               <div
                 style={{
                   fontSize: "11px",
@@ -324,13 +334,14 @@ const ImportPegawai = () => {
               />
               <Select
                 required
+                multi
                 label="Lokasi Absen"
                 name="lokasi_absen"
                 value={
-                  lokasiOptions.find(
-                    (option) =>
-                      option.value === formik.values.lokasi_absen.value
-                  ) || null
+                  formik.values.lokasi_absen.map((item) => ({
+                    value: item.value,
+                    label: item.label,
+                  })) || []
                 }
                 onChange={(option) =>
                   formik.setFieldValue("lokasi_absen", option || "")
@@ -349,7 +360,12 @@ const ImportPegawai = () => {
       </Container>
       <Modal show={excelModal} setShow={setExcelModal} width="full" persistent>
         <div className="text-lg font-normal p-5">
-          <div className="mb-3">{jsonData.find((data) => data.example === true) ? 'Contoh' : 'Preview'} Table</div>
+          <div className="mb-3">
+            {jsonData.find((data) => data.example === true)
+              ? "Contoh"
+              : "Preview"}{" "}
+            Table
+          </div>
           <Tables>
             <Tables.Head>
               <tr>

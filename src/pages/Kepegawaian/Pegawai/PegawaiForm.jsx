@@ -15,7 +15,7 @@ const tabComponents = [
   { key: '4', label: 'Lainnya', Component: Lainnya },
 ];
 
-const FormComponent = () => {
+const PegawaiForm = () => {
   const {state} = useLocation(); // Use useLocation to access the current location
   const initialTab = `${state?.activeTab || '0'}`; // Set default tab to '0' if no state
 
@@ -40,4 +40,4 @@ const FormComponent = () => {
   );
 };
 
-export default FormComponent;
+export default PegawaiForm;

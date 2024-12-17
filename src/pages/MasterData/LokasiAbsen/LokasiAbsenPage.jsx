@@ -30,7 +30,7 @@ const PerusahaanPage = () => {
     addperusahaanResult,
     addperusahaanLoading,
     deleteperusahaanResult,
-  } = useSelector((state) => state.perusahaan); // Use 'perusahaan' here
+  } = useSelector((state) => state.perusahaan);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

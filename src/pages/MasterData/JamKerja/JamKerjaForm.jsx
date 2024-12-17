@@ -1,7 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import { updateData } from "@/actions";
@@ -14,7 +14,8 @@ const JamKerjaForm = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+  const { addperusahaanLoading } = useSelector((state) => state.perusahaan);
+
   // Get initial values from state
   const jadwal = state?.item?.jadwal || {};
 
@@ -65,33 +66,54 @@ const JamKerjaForm = () => {
     onSubmit: async (values) => {
       const formattedValues = {
         jadwal: JSON.stringify({
-          senin: { masuk: values.jadwal.senin.masuk, keluar: values.jadwal.senin.keluar },
-          selasa: { masuk: values.jadwal.selasa.masuk, keluar: values.jadwal.selasa.keluar },
-          rabu: { masuk: values.jadwal.rabu.masuk, keluar: values.jadwal.rabu.keluar },
-          kamis: { masuk: values.jadwal.kamis.masuk, keluar: values.jadwal.kamis.keluar },
-          jumat: { masuk: values.jadwal.jumat.masuk, keluar: values.jadwal.jumat.keluar },
-          sabtu: { masuk: values.jadwal.sabtu.masuk, keluar: values.jadwal.sabtu.keluar },
-          minggu: { masuk: values.jadwal.minggu.masuk, keluar: values.jadwal.minggu.keluar },
+          senin: {
+            masuk: values.jadwal.senin.masuk,
+            keluar: values.jadwal.senin.keluar,
+          },
+          selasa: {
+            masuk: values.jadwal.selasa.masuk,
+            keluar: values.jadwal.selasa.keluar,
+          },
+          rabu: {
+            masuk: values.jadwal.rabu.masuk,
+            keluar: values.jadwal.rabu.keluar,
+          },
+          kamis: {
+            masuk: values.jadwal.kamis.masuk,
+            keluar: values.jadwal.kamis.keluar,
+          },
+          jumat: {
+            masuk: values.jadwal.jumat.masuk,
+            keluar: values.jadwal.jumat.keluar,
+          },
+          sabtu: {
+            masuk: values.jadwal.sabtu.masuk,
+            keluar: values.jadwal.sabtu.keluar,
+          },
+          minggu: {
+            masuk: values.jadwal.minggu.masuk,
+            keluar: values.jadwal.minggu.keluar,
+          },
         }),
       };
 
       console.log("Formatted Values:", formattedValues);
       try {
-        await updateData(
+        const data = await updateData(
           { dispatch, redux: perusahaanReducer },
           { pk, ...formattedValues },
           API_URL_editjamkerja,
-          "UPDATE_perusahaan",
-          'PATCH'
+          "ADD_perusahaan",
+          "PATCH"
         );
-        console.log(JSON.stringify(formattedValues));
-        navigate("/masterdata/jam-kerja");
+        if (data && !addperusahaanLoading) {
+          navigate("/masterdata/jam-kerja");
+        }
       } catch (error) {
         console.error("Error in form submission: ", error);
       }
     },
   });
-
 
   return (
     <div>
@@ -106,32 +128,42 @@ const JamKerjaForm = () => {
           <h1>Edit Jam Kerja</h1>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          {["senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"].map((day) => (
-            <div key={day} className="flex gap-4">
-              <TextField
-                required
-                label={`${day.charAt(0).toUpperCase() + day.slice(1)} Masuk`}
-                name={`jadwal.${day}.masuk`}
-                type="time"
-                value={formik.values.jadwal[day].masuk}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.jadwal?.[day]?.masuk ? formik.errors.jadwal?.[day]?.masuk : ""}
-              />
-              <TextField
-                required
-                label={`${day.charAt(0).toUpperCase() + day.slice(1)} Keluar`}
-                name={`jadwal.${day}.keluar`}
-                type="time"
-                value={formik.values.jadwal[day].keluar}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.jadwal?.[day]?.keluar ? formik.errors.jadwal?.[day]?.keluar : ""}
-              />
-            </div>
-          ))}
+          {["senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"].map(
+            (day) => (
+              <div key={day} className="flex gap-4">
+                <TextField
+                  required
+                  label={`${day.charAt(0).toUpperCase() + day.slice(1)} Masuk`}
+                  name={`jadwal.${day}.masuk`}
+                  type="time"
+                  value={formik.values.jadwal[day].masuk}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.jadwal?.[day]?.masuk
+                      ? formik.errors.jadwal?.[day]?.masuk
+                      : ""
+                  }
+                />
+                <TextField
+                  required
+                  label={`${day.charAt(0).toUpperCase() + day.slice(1)} Keluar`}
+                  name={`jadwal.${day}.keluar`}
+                  type="time"
+                  value={formik.values.jadwal[day].keluar}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.jadwal?.[day]?.keluar
+                      ? formik.errors.jadwal?.[day]?.keluar
+                      : ""
+                  }
+                />
+              </div>
+            )
+          )}
           <div className="mt-6 flex justify-end">
-            <Button type="submit">Simpan</Button>
+            <Button type="submit" loading={addperusahaanLoading}>Ubah</Button>
           </div>
         </form>
       </Container>

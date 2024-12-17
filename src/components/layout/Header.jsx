@@ -234,10 +234,10 @@ const Header = ({ setSideOpen }) => {
                   )}
                     </div>
                     <div>
-                      <div className="text-sm font-semibold whitespace-nowrap">
+                      <div className="text-sm font-semibold whitespace-nowrap line-clamp-1">
                         {user.nama}
                       </div>
-                      <div className="text-xs">{user.nama}</div>
+                      <div className="text-xs line-clamp-1">{user.email}</div>
                     </div>
                   </Link>
                 )}
@@ -245,14 +245,18 @@ const Header = ({ setSideOpen }) => {
               <div className="p-2 font-medium border-b dark:border-base-500">
                 <Link to={"/profile"}>
                   <List prefix={<TbUser />} density="loose">
+                    <div className="line-clamp-1">
                     {user?.groups?.name}
+                    </div>
                   </List>
                 </Link>
               </div>
               {user.perusahaan && (
                 <div className="p-2 font-medium border-b dark:border-base-500">
                   <List prefix={<TbBuilding />} density="loose">
+                    <div className=" line-clamp-1">
                     {user.perusahaan.nama}
+                    </div>
                   </List>
                 </div>
               )}

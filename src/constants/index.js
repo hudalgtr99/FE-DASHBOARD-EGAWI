@@ -6,6 +6,7 @@ export const baseurl = `${localhost}${apiURL}`;
 export const API_URL_signin = `${baseurl}/signin/`;
 export const API_URL_getakun = `${baseurl}/getakun/`;
 export const API_URL_getdataakun = `${baseurl}/getdataakun/`;
+export const API_URL_getdataakunnonaktif = `${baseurl}/getdataakun/nonaktif`;
 export const API_URL_updateakun = `${baseurl}/updateakun/`;
 export const API_URL_updateprofile = `${baseurl}/updateprofile/`;
 export const API_URL_changepassword = `${baseurl}/changepassword/`;
@@ -37,7 +38,6 @@ export const API_URL_responsepengajuan = `${baseurl}/responsepengajuan/`;
 // === end kehadiran ===
 
 //=== kepegegawaian ===
-export const API_URL_getdatapegawai = `${baseurl}/getdatapegawai/`;
 export const API_URL_getpegawai = `${baseurl}/getpegawai/`;
 export const API_URL_gettugas = `${baseurl}/gettugas/`;
 export const API_URL_createtugas = `${baseurl}/createtugas/`;
@@ -103,7 +103,7 @@ export const API_URL_edelpotongan = `${baseurl}/edelpotongan/`;
 
 // === perusahaan ===
 export const API_URL_getperusahaan = `${baseurl}/getperusahaan/`;
-export const API_URL_changeactiveperusahaan = `${baseurl}/active/`;
+export const API_URL_changeactivedata = `${baseurl}/active/`;
 export const API_URL_getperusahaan_withPaginations = `${baseurl}/getperusahaanwithpaginations/`;
 export const API_URL_createperusahaan = `${baseurl}/createperusahaan/`;
 export const API_URL_edelperusahaan = `${baseurl}/edelperusahaan/`;

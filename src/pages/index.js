@@ -1,8 +1,6 @@
 import Dashboard from "../pages/Dashboard/DashboardPage";
 import Kemitraan from "../pages/Kemitraan/KemitraanPage";
 import Dokumentasi from "../pages/Dokumentasi/DokumentasiPage";
-import TentangPage from "../pages/Perusahaan/Tentang/TentangPage";
-import PengurusPage from "../pages/Perusahaan/Pengurus/PengurusPage";
 import KalenderPage from "../pages/Kalender/KalenderPage";
 import OrganPage from "./MasterData/Organization/OrganizationPage";
 // import perusahaanPage from "./MasterData/Perusahaan/perusahaanPage";
@@ -33,9 +31,7 @@ export {
 	TunjanganPage,
 	PegawaiPage,
 	PenugasanPage,
-	PengurusPage,
 	JabatanPage,
-	TentangPage,
 	CutiPage,
 	KinerjaPage,
 	GajiPage,

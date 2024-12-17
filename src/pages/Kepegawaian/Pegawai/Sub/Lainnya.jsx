@@ -1,155 +1,139 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container } from '@/components';
-import { useDispatch } from 'react-redux';
-import { updateData } from '@/actions';
-import { pegawaiReducer } from '@/reducers/kepegawaianReducers';
-import { API_URL_edeluser } from '@/constants';
+import { Button, Container } from "@/components";
+import { useDispatch } from "react-redux";
+import { updateFormData } from "@/actions";
+import { pegawaiReducer } from "@/reducers/kepegawaianReducers";
+import { API_URL_edeluser } from "@/constants";
 import { FaTimes, FaPlus } from "react-icons/fa";
-import { FileInput } from "../../../../components";
 
-const Lainnya = ({ onTabChange }) => {
-  const { addPegawaiLoading } = useSelector((state) => state.kepegawaian);
-  const { state } = useLocation();
+const Lainnya = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const localStorageData =
-    JSON.parse(localStorage.getItem("editUserData")) || {};
 
-  // Cek apakah ini mode edit atau tidak
-  const isEditMode = localStorageData && localStorageData.datalainnya;
-
-  const pendidikanData = isEditMode ? localStorageData.datalainnya : {};
-  const datalainnya = Array.isArray(pendidikanData.data)
-    ? pendidikanData.data
-    : JSON.parse(pendidikanData.data || "[]");
+  // Extract 'datalainnya' and 'user_id' from localStorage
+  const storedData = JSON.parse(localStorage.getItem("editUserData"));
+  const user_id = storedData?.datapribadi?.user_id || "";
+  const datalainnya = JSON.parse(storedData.datalainnya.data) || [];
 
   const formik = useFormik({
     initialValues: {
-      user_id: state?.item?.datapribadi.user_id || '',
-      lainnya: state?.item?.datalainnya?.lainnya || [{ data: null, link: '' }],
+      user_id: user_id,
+      lainnya: datalainnya || [],
+      datalainnya: datalainnya || [],
     },
     validationSchema: Yup.object().shape({
-      lainnya: Yup.array().of(
-        Yup.object().shape({
-          data: Yup.mixed()
-            .nullable()
-            .test(
-              "fileType",
-              "Only PDF files are allowed",
-              (value) => !value || (value && value.type === "application/pdf")
-            ),
-          link: Yup.string().nullable(),
-        })
-      ),
+      lainnya: Yup.array()
+        .of(
+          Yup.object().shape({
+            link: Yup.string().url("Invalid URL").nullable(),
+            data: Yup.mixed().required("A file or link is required"),
+          })
+        )
+        .required("At least one item is required"),
     }),
     onSubmit: async (values) => {
       console.log("Submitting Values: ", values); // Log the values
-      try {
-        const formData = new FormData();
-        formData.append("user_id", values.user_id);
+      const formData = new FormData();
+      formData.append("user_id", user_id);
 
-        // Append files to FormData under 'datalainnya'
-        values.lainnya.forEach((item) => {
-          if (item.data) {
-            formData.append(`datalainnya`, item.data); // Append files under the 'datalainnya' key
-          }
-        });
+      // Map your 'lainnya' structure to JSON string
+      formData.append(
+        "lainnya",
+        JSON.stringify(
+          values.lainnya.map((item) => ({
+            lainnya: item.data ? "" : item.link ? item.link : null,
+          }))
+        )
+      );
 
-        // Prepare the 'lainnya' data
-        const lainnyaData = values.lainnya.map(item => ({
-          lainnya: item.data ? "" : item.link ? item.link : null,
-        }));
+      // Append 'datalainnya' to FormData
+      values.lainnya.forEach((item) => {
+        formData.append("datalainnya", item.data ? item.data : item.link);
+      });
 
-        // Append the 'lainnya' JSON data
-        formData.append("lainnya", JSON.stringify(lainnyaData));
+      await updateFormData(
+        { dispatch, redux: pegawaiReducer },
+        formData,
+        API_URL_edeluser,
+        "ADD_PEGAWAI",
+        "datalainnya"
+      );
 
-        const payload = {
-          pk: "datalainnya",
-          user_id: values.user_id,
-          datalainnya: formData, // Sending FormData
-        };
-
-        await updateData(
-          { dispatch, redux: pegawaiReducer },
-          payload,
-          API_URL_edeluser,
-          "ADD_PEGAWAI",
-          "datalainnya"
-        );
-
-        navigate('/kepegawaian/pegawai'); // Navigate after successful submission
-      } catch (error) {
-        console.error('Error in form submission: ', error);
-      }
+      // navigate('/kepegawaian/pegawai'); // Navigate after successful submission
     },
   });
 
+  // Handle adding a new file input
   const handleAddFile = () => {
     const newLainnya = [...formik.values.lainnya, { data: null, link: "" }];
     formik.setFieldValue("lainnya", newLainnya);
   };
 
+  // Handle removing a file input
   const handleRemoveFile = (index) => {
     const updatedLainnya = formik.values.lainnya.filter((_, i) => i !== index);
     formik.setFieldValue("lainnya", updatedLainnya);
   };
 
-  const handleFileChange = (index) => (files) => {
+  // Handle file input change
+  const handleFileChange = (index) => (event) => {
+    const file = event.currentTarget.files[0]; // Correctly access the file
+    console.log("Selected file: ", file); // Debugging file selection
+
     const updatedLainnya = formik.values.lainnya.map((item, i) =>
-      i === index ? { ...item, data: files[0] || null } : item
+      i === index ? { ...item, data: file } : item
     );
+
     formik.setFieldValue("lainnya", updatedLainnya);
   };
 
-  const handleMundur = () => {
-    onTabChange("3");
-  };
-
-  console.log(pendidikanData);
+  console.log("Formik Values: ", formik.values.datalainnya);
 
   return (
     <div>
       <Container>
-        <div className="flex items-center gap-2 mb-4">
-          <button
-            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={handleMundur}
-          >
-            <IoMdReturnLeft />
-          </button>
-          <h1>Data Lainnya</h1>
+        <div className="flex items-center justify-between gap-2 ">
+          <div className="flex items-center gap-2 ">
+            <button
+              className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+              onClick={() => navigate("/kepegawaian/pegawai")}
+            >
+              <IoMdReturnLeft />
+            </button>
+            <h1>Data Lainnya</h1>
+          </div>
+          <div className="flex flex-row-reverse gap-1 items-center">
+            {formik.values.lainnya.length > 1 && (
+              <button
+                type="button"
+                className="bg-gray-200 p-1 rounded-lg"
+                onClick={() =>
+                  handleRemoveFile(formik.values.lainnya.length - 1)
+                }
+              >
+                <FaTimes />
+              </button>
+            )}
+            <button
+              type="button"
+              className="bg-gray-200 p-1 rounded-lg"
+              onClick={handleAddFile}
+            >
+              <FaPlus />
+            </button>
+          </div>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className='flex justify-between'>
-            <h3 className='font-medium'>Data lainnya</h3>
-            <div className='flex gap-2 items-center cursor-pointer'>
-              {formik.values.lainnya.length > 0 && (
-                <div>
-                  {formik.values.lainnya.length > 1 && (
-                    <button
-                      type="button"
-                      className='bg-gray-200 p-1 rounded-lg'
-                      onClick={() => handleRemoveFile(formik.values.lainnya.length - 1)}
-                    >
-                      <FaTimes />
-                    </button>
-                  )}
-                </div>
-              )}
-              <div>
-                <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={handleAddFile}>
-                  <FaPlus />
-                </button>
-              </div>
-            </div>
-          </div>
+          <div className="flex gap-2 justify-end items-center cursor-pointer"></div>
           {formik.values.lainnya.map((item, index) => (
-            <div key={index} className="flex items-center gap-4">
-              <label htmlFor={`file-${index}`} className="block whitespace-nowrap">{`File Ke-${index + 1}`}</label>
+            <div key={index} className="items-center gap-4">
+              <label htmlFor={`file-${index}`} className="block">{`File Ke-${
+                index + 1
+              }`}</label>
               <input
                 type="file"
                 id={`file-${index}`}
@@ -164,10 +148,25 @@ const Lainnya = ({ onTabChange }) => {
                       file:bg-blue-500 file:text-white 
                       hover:file:bg-blue-600"
               />
-              {formik.touched.lainnya?.[index]?.data && formik.errors.lainnya?.[index]?.data && (
-                <span className="text-red-500">
-                  {formik.errors.lainnya[index].data}
-                </span>
+              {formik.touched.lainnya?.[index]?.data &&
+                formik.errors.lainnya?.[index]?.data && (
+                  <span className="text-red-500">
+                    {formik.errors.lainnya[index].data}
+                  </span>
+                )}
+              {item.data && (
+                <a
+                  href={
+                    typeof item.data === "string"
+                      ? item.data
+                      : URL.createObjectURL(item.data)
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500"
+                >
+                  Preview File
+                </a>
               )}
             </div>
           ))}

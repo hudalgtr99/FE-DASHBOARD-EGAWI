@@ -31,6 +31,7 @@ const FileInput = ({
   maxFiles,
   minSize,
   maxSize,
+  text
 }) => {
   const [rejectedFiles, setRejectedFiles] = useState([]);
 
@@ -207,7 +208,7 @@ const FileInput = ({
         <div className="w-full h-full flex items-center justify-center">
           {isDragActive
             ? "Drop the files here ..."
-            : "Drag 'n' drop some files here, or click to select files"}
+            : text || "Drag 'n' drop some files here, or click to select files"}
         </div>
       )}
     </div>

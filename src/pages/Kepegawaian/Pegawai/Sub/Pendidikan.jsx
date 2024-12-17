@@ -15,7 +15,7 @@ const Pendidikan = ({ onTabChange }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const localStorageData = JSON.parse(localStorage.getItem("editUserData"));
-  const [isLanjut, setIsLanjut] = useState(false)
+  const [isLanjut, setIsLanjut] = useState(false);
   const { pk } = useParams();
   const isEdit = pk && pk !== "add";
 
@@ -44,8 +44,12 @@ const Pendidikan = ({ onTabChange }) => {
     validationSchema: Yup.object().shape({
       formal: Yup.array().of(
         Yup.object().shape({
-          asal_sekolah: Yup.string().required("Asal Sekolah wajib diisi").max(255, "Asal Sekolah harus kurang dari 255 karakter"),
-          masa_waktu: Yup.string().required("Masa Waktu wajib diisi").max(255, "Masa Waktu harus kurang dari 255 karakter"),
+          asal_sekolah: Yup.string()
+            .required("Asal Sekolah wajib diisi")
+            .max(255, "Asal Sekolah harus kurang dari 255 karakter"),
+          masa_waktu: Yup.string()
+            .required("Masa Waktu wajib diisi")
+            .max(255, "Masa Waktu harus kurang dari 255 karakter"),
           keterangan_pendidikan: Yup.string().required(
             "Keterangan wajib diisi"
           ),
@@ -86,7 +90,7 @@ const Pendidikan = ({ onTabChange }) => {
           { dispatch, redux: pegawaiReducer },
           formData,
           API_URL_edeluser,
-          "UPDATE_PEGAWAI"
+          "ADD_PEGAWAI"
         );
 
         const storedData = localStorage.getItem("editUserData");
@@ -101,11 +105,11 @@ const Pendidikan = ({ onTabChange }) => {
           localStorage.setItem("editUserData", JSON.stringify(parsedData));
         }
 
-        if(response && !addPegawaiLoading){
+        if (response && !addPegawaiLoading) {
           isLanjut
             ? onTabChange("4")
             : (navigate("/kepegawaian/pegawai"),
-            localStorage.removeItem("editUserData"))
+              localStorage.removeItem("editUserData"));
         }
       } catch (error) {
       } finally {
@@ -139,7 +143,7 @@ const Pendidikan = ({ onTabChange }) => {
   };
 
   const handleLanjut = () => {
-    setIsLanjut(true)
+    setIsLanjut(true);
     formik.handleSubmit();
   };
 
@@ -162,7 +166,7 @@ const Pendidikan = ({ onTabChange }) => {
         <div>
           <form
             onSubmit={(e) => {
-              e.preventDefault()
+              e.preventDefault();
               if (isEdit) {
                 formik.handleSubmit();
               } else {
@@ -351,15 +355,12 @@ const Pendidikan = ({ onTabChange }) => {
             </div>
 
             <div className="justify-end flex gap-3">
-            <div className="justify-end flex gap-3">
-              {isEdit ? (
+              <div className="justify-end flex gap-3">
                 <Button type="submit">Simpan</Button>
-              ) : (
                 <Button type="button" onClick={handleLanjut}>
                   Lanjut
                 </Button>
-              )}
-            </div>
+              </div>
             </div>
           </form>
         </div>

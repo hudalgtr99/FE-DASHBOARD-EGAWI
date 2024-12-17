@@ -155,9 +155,7 @@ const DivisiSub = () => {
         ...item,
         index: pageActive * limit + index + 1,
       }))
-    : []; // reducer departemen gabisa, jadi pakai departemen
-
-    console.log("getDivisiResult.count", getDivisiResult.count);
+    : []; // reducer departemen gabisa, jadi pakai divisi
 
   return (
     <div>

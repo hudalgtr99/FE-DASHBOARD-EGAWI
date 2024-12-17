@@ -9,8 +9,6 @@ export const lokasiAbsenReducers = createSlice({
     addLokasiAbsenResult: false,
     addLokasiAbsenLoading: false,
     deleteLokasiAbsenResult: false,
-    updateLokasiAbsenResult: false,
-    updateLokasiAbsenLoading: false,
   },
   reducers: {
     lokasiAbsenReducer: (state, action) => {
@@ -34,14 +32,6 @@ export const lokasiAbsenReducers = createSlice({
             ...state,
             getLokasiAbsenResult: state.getLokasiAbsenResult.filter(item => item.id !== payload.data.id), // Menghapus data dari hasil
             deleteLokasiAbsenResult: payload.data,
-          };
-        case "UPDATE_LOKASI_ABSEN":
-          return {
-            ...state,
-            getLokasiAbsenResult: state.getLokasiAbsenResult.map(item =>
-              item.id === payload.data.id ? payload.data : item // Memperbarui data yang sesuai
-            ),
-            updateLokasiAbsenLoading: payload.loading,
           };
         default:
           return state;

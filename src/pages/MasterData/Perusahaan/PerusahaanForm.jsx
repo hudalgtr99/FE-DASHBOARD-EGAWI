@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import { addData, updateData } from "@/actions";
@@ -17,6 +17,9 @@ import { TbBuilding, TbPhotoPlus } from "react-icons/tb";
 import { Avatar } from "../../../components";
 
 const perusahaanForm = () => {
+  const {
+    addperusahaanLoading,
+  } = useSelector((state) => state.perusahaan); 
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -125,8 +128,12 @@ const perusahaanForm = () => {
             { dispatch, redux: perusahaanReducer },
             { pk: pk, ...data },
             API_URL_edelperusahaan,
-            "UPDATE_perusahaan"
+            "ADD_perusahaan"
           );
+          
+          if(response && !addperusahaanLoading){
+            navigate("/masterdata/data-perusahaan");
+          }
         } else {
           response = await addData(
             { dispatch, redux: perusahaanReducer },
@@ -134,7 +141,10 @@ const perusahaanForm = () => {
             API_URL_createperusahaan,
             "ADD_perusahaan"
           );
-          console.log(response);
+          
+          if(response && !addperusahaanLoading){
+            navigate("/masterdata/data-perusahaan");
+          }
         }
 
         // Upload the image if selected
@@ -152,8 +162,6 @@ const perusahaanForm = () => {
           );
           setImagePreview(URL.createObjectURL(selectedImage));
         }
-
-        navigate("/masterdata/data-perusahaan");
       } catch (error) {
         console.error("Error in form submission: ", error);
       }
@@ -328,7 +336,7 @@ const perusahaanForm = () => {
               </div>
             ))}
             <div className="flex justify-end">
-              <Button type="submit">{isEdit ? "Update" : "Simpan"}</Button>
+              <Button loading={addperusahaanLoading} type="submit">{isEdit ? "Update" : "Simpan"}</Button>
             </div>
           </form>
         </div>

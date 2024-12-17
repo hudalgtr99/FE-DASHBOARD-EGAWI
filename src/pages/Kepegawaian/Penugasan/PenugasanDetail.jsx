@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Chip, Container, Modal, Tooltip } from "../../../components";
+import {
+  Avatar,
+  Button,
+  Chip,
+  Container,
+  Modal,
+  Tooltip,
+} from "../../../components";
 import { API_URL_getdetailtugas } from "../../../constants";
 import axiosAPI from "@/authentication/axiosApi";
 import { useParams } from "react-router-dom";
@@ -60,93 +67,27 @@ const PenugasanDetail = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* <div className="sm:grid sm:grid-cols-2 gap-4">
-          <div className="flex">
-            <p>
-              <strong>Judul</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p>{detail?.judul}</p>
-          </div>
-          <div className="flex">
-            <p>
-              <strong>Pengirim</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p>{detail?.pengirim.nama}</p>
-          </div>
-          <div className="flex">
-            <p>
-              <strong>Penerima</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p>{detail?.penerima.map((p) => p.nama).join(", ")}</p>
-          </div>
-          <div className="flex">
-            <p>
-              <strong>Prioritas</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p className={`${prioritasObject?.color} px-1 rounded text-white`}>
-              {prioritasLabel}
-            </p>
-          </div>
-          <div className="flex">
-            <p>
-              <strong>Mulai</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p>{moment(detail?.start_date).format("D MMMM YYYY")}</p>
-          </div>
-          <div className="flex">
-            <p>
-              <strong>Selesai</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p>{moment(detail?.end_date).format("D MMMM YYYY")}</p>
-          </div>
-          <div className="flex">
-            <p>
-              <strong>Status</strong>
-            </p>
-            <p className="mx-1">
-              <strong>:</strong>
-            </p>
-            <p className={`${statusObject?.color} px-1 rounded text-white`}>
-              {statusLabel}
-            </p>
-          </div>
-          {detail?.file && (
-            <div className="flex">
-              <Button onClick={() => window.open(detail?.file, "_blank")}>
-                Lihat tugas
-              </Button>
-            </div>
-          )}
-        </div> */}
       <Container>
         <div className="flex justify-center items-start gap-2">
-          <div className="flex-1">
-            <Avatar size="md">AD</Avatar>
+          <div className="flex-1 mt-[2px]">
+            <Avatar size="md">
+              {detail?.pengirim.image ? (
+                <img
+                  src={detail?.pengirim.image}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                detail?.pengirim.nama.substring(0, 2).toUpperCase()
+              )}
+            </Avatar>
           </div>
           <div className="flex flex-col gap-1 w-[94%]">
             <div className="flex gap-2 items-center">
               <p className=" font-bold capitalize ">{detail?.pengirim.nama}</p>
-              <Tooltip tooltip="Penerima">
-                <Chip rounded="md">
-                  <TbUsers onClick={() => setBasicModal(true)} className="text-sm cursor-pointer" />
+              <Tooltip tooltip="Prioritas">
+                <Chip color={prioritasObject.color} rounded="md">
+                  {prioritasLabel}
                 </Chip>
               </Tooltip>
             </div>
@@ -155,9 +96,12 @@ const PenugasanDetail = () => {
                 {moment(detail?.start_date).format("D MMMM YYYY")} -{" "}
                 {moment(detail?.end_date).format("D MMMM YYYY")}
               </p>
-              <Tooltip tooltip="Prioritas">
-                <Chip color={prioritasObject.color} rounded="md">
-                  {prioritasLabel}
+              <Tooltip tooltip="Penerima">
+                <Chip rounded="md">
+                  <TbUsers
+                    onClick={() => setBasicModal(true)}
+                    className="text-sm cursor-pointer"
+                  />
                 </Chip>
               </Tooltip>
             </div>
@@ -192,21 +136,40 @@ const PenugasanDetail = () => {
         </Container>
       )}
       <Modal show={basicModal} setShow={setBasicModal} width="sm">
-				<div className="text-lg font-normal p-5">
-					<div className="mb-3">Basic Modal</div>
-					<div className="text-sm mb-3">
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aspernatur
-						quae officia doloribus in alias laudantium odio delectus nostrum
-						iure! Ipsa eos harum tenetur distinctio! Eligendi ab dignissimos
-						laboriosam ipsa velit.
-					</div>
-					<div className="text-sm flex justify-end">
-						<Button onClick={() => setBasicModal(false)} color="primary">
-							Close
-						</Button>
-					</div>
-				</div>
-			</Modal>
+        <div className="text-lg font-normal p-5">
+          <div className="mb-3 font-semibold">List penerima</div>
+          <div className="flex flex-col gap-1">
+            {detail?.penerima.map((penerima) => (
+              <div
+                key={penerima.id}
+                className="flex justify-center items-start gap-2 mb-3"
+              >
+                <div className="flex-1 mt-[2px]">
+                  <Avatar size="md">
+                    {penerima.image ? (
+                      <img
+                        src={penerima.image}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      penerima.nama.substring(0, 2).toUpperCase() || "-"
+                    )}
+                  </Avatar>
+                </div>
+                <div className="flex flex-col gap-1 w-[94%]">
+                  <div className="flex flex-col text-sm items-start">
+                    <p className=" font-bold capitalize ">
+                      {penerima.nama || "-"}
+                    </p>
+                    <p className="capitalize">{penerima ? penerima.role[0] : "-"}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

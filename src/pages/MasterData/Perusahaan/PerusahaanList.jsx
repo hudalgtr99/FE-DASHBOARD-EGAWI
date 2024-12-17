@@ -6,7 +6,7 @@ import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
   API_URL_edelperusahaan,
   API_URL_getperusahaan_withPaginations,
-  API_URL_changeactiveperusahaan
+  API_URL_changeactivedata
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -25,6 +25,7 @@ import { CiSearch } from "react-icons/ci";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
 
 const PerusahaanPage = () => {
   const {
@@ -34,7 +35,7 @@ const PerusahaanPage = () => {
     addperusahaanResult,
     addperusahaanLoading,
     deleteperusahaanResult,
-  } = useSelector((state) => state.perusahaan); // Use 'perusahaan' here
+  } = useSelector((state) => state.perusahaan); 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -173,15 +174,30 @@ const PerusahaanPage = () => {
     : [];
 
   function handleActive(e, item){
-    const data = updateData(
-      { dispatch, redux: perusahaanReducer },
-      {
-        pk: "perusahaan",
-        slug: item.slug,
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Ingin mengubah status perusahaan ini?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6a82fb",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, ubah!",
+      cancelButtonText: "Batal",
+      customClass: {
+        container: "z-[99999]",
       },
-      API_URL_changeactiveperusahaan,
-      "ADD_perusahaan"
-    );
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const data = updateData(
+          { dispatch, redux: perusahaanReducer },
+          {
+            pk: "perusahaan",
+            slug: item.slug,
+          },
+          API_URL_changeactivedata,
+          "ADD_perusahaan"
+        );
+      }})
   }
 
   return (

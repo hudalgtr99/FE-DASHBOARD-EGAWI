@@ -12,6 +12,7 @@ import {
 } from "@/constants";
 import { Button, Container, TextField } from "@/components";
 import { updateData } from "@/actions";
+import { updateProfile } from "@/actions/auth";
 import { Avatar } from "../../../components";
 
 const PerusahaanPage = () => {
@@ -123,25 +124,29 @@ const PerusahaanPage = () => {
 
         const data = { ...values, jadwal };
 
+        console.log("item", item);
         // Update existing perusahaan
         await updateData(
           { dispatch, redux: perusahaanReducer },
-          { pk: item.pk, ...data },
+          { pk: item.slug, ...data },
           API_URL_edelperusahaan,
-          "UPDATE_perusahaan"
+          "ADD_perusahaan"
         );
 
         // Upload the image if selected
         if (selectedImage) {
           const formData = new FormData();
+          formData.append("perusahaan_id", item.pk);
           formData.append("image", selectedImage);
-          formData.append("perusahaan_id", item.id);
 
-          await axiosAPI.post(API_URL_updateprofileperusahaan, formData);
+          await updateProfile(
+            dispatch,
+            formData,
+            API_URL_updateprofileperusahaan,
+            "UPDATE_PROFILE",
+            "profile"
+          );
         }
-
-          
-
       } catch (error) {
         console.error("Error in form submission: ", error);
       }

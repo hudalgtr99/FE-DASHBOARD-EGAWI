@@ -10,39 +10,23 @@ import {
   PulseLoading,
   TextArea,
 } from "@/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import {
   API_URL_createtemplatesurattugas,
   API_URL_edeltemplatesurattugas,
 } from "@/constants";
-import { fetchUserDetails } from "@/constants/user";
 import CKEditor from "../../../components/forms/CKEditor";
 
 const MasterTemplateForm = () => {
-  const { id, pk } = useParams();
+  const { addTugasLoading } =
+    useSelector((state) => state.tugas);
+  const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState([]);
-  const [noSurat, setNoSurat] = useState("");
   const [idTemplate, setIdTemplate] = useState(pk);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const userData = await fetchUserDetails();
-      setUser(userData);
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-    setIsLoading(false);
-  }, [fetchData]);
 
   const isEdit = pk && pk !== "add";
 
@@ -59,35 +43,33 @@ const MasterTemplateForm = () => {
       values.isi = sessionStorage.getItem("ckeditor");
       if (isEdit) {
         if (idTemplate) {
-          await updateData(
+          const data = await updateData(
             { dispatch, redux: penugasanReducer },
             { pk: idTemplate, data: values },
             API_URL_edeltemplatesurattugas,
-            "UPDATE_TUGAS"
+            "ADD_TUGAS"
           );
+          if(data && !addTugasLoading){
+            navigate(`/masterdata/master-template`);
+            sessionStorage.removeItem("ckeditor");
+          }
         } else {
           console.error("ID is undefined for updating the task.");
         }
       } else {
-        await addData(
+        const data = await addData(
           { dispatch, redux: penugasanReducer },
           values,
           API_URL_createtemplatesurattugas,
           "ADD_TUGAS"
         );
+        if(data && !addTugasLoading){
+          navigate(`/masterdata/master-template`);
+          sessionStorage.removeItem("ckeditor");
+        }
       }
-      navigate(`/masterdata/master-template`);
-      sessionStorage.removeItem("ckeditor");
     },
   });
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-4 h-[80vh] items-center">
-        <PulseLoading />
-      </div>
-    );
-  }
 
   return (
     <Container>
@@ -115,7 +97,7 @@ const MasterTemplateForm = () => {
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+          <Button loading={addTugasLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
         </div>
       </form>
     </Container>

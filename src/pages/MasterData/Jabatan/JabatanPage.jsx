@@ -29,10 +29,8 @@ import { jwtDecode } from "jwt-decode";
 const JabatanSub = () => {
   const {
     getJabatanResult,
-    getJabatanLoading, // Loading state for getting Jabatan
-    getJabatanError,
+    getJabatanLoading,
     addJabatanResult,
-    addJabatanLoading,
     addPangkatResult,
     deleteJabatanResult,
     deletePangkatResult,

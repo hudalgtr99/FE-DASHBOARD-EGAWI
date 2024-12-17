@@ -350,7 +350,7 @@ export const updateData = (reducers, data, url, type, method = "PUT") => {
 
     axiosAPI({
       method: method,
-      url: `${url}${data.pk}`, // Menambahkan pk ke URL
+      url: `${url}${data.pk || "datalainnya"}`, // Menambahkan pk ke URL
       timeout: 120000,
       data: data,
     })
@@ -369,11 +369,11 @@ export const updateData = (reducers, data, url, type, method = "PUT") => {
               },
             })
           );
-          resolve(response.data); // Resolve dengan data respons
+          resolve(response.data); 
         }
       })
       .catch((error) => {
-        showToast("error", error.response?.data?.messages || error.response?.data?.detail || "Terjadi kesalahan."); // Toast error
+        showToast("error", "Terjadi kesalahan."); // Toast error
         dispatch(
           redux({
             type: type,

@@ -71,13 +71,13 @@ const Keluarga = ({ onTabChange }) => {
         { dispatch, redux: pegawaiReducer },
         { pk: "datakeluarga", ...values },
         API_URL_edeluser,
-        "UPDATE_PEGAWAI"
+        "ADD_PEGAWAI"
       );
-      if(data && !addPegawaiLoading){
+      if (data && !addPegawaiLoading) {
         isLanjut
-        ? onTabChange("3")
-        : (navigate("/kepegawaian/pegawai"),
-        localStorage.removeItem("editUserData"));
+          ? onTabChange("3")
+          : (navigate("/kepegawaian/pegawai"),
+            localStorage.removeItem("editUserData"));
       }
     },
   });
@@ -227,20 +227,24 @@ const Keluarga = ({ onTabChange }) => {
               value={formik.values.anak}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.anak ? formik.errors.anak : ''}
+              error={formik.touched.anak ? formik.errors.anak : ""}
             />
             {Number(formik.values.anak) > 0 && (
               <div>
-                <div className='flex justify-between'>
+                <div className="flex justify-between">
                   <label className="text-sm font-medium">Nama Anak</label>
-                  <div className='flex gap-2 items-center cursor-pointer'>
+                  <div className="flex gap-2 items-center cursor-pointer">
                     {formik.values.nama_anak.length > 0 && (
                       <div>
                         {formik.values.nama_anak.length > 1 && (
                           <button
                             type="button"
-                            className='bg-gray-200 p-1 rounded-lg'
-                            onClick={() => handleRemoveChild(formik.values.nama_anak.length - 1)}
+                            className="bg-gray-200 p-1 rounded-lg"
+                            onClick={() =>
+                              handleRemoveChild(
+                                formik.values.nama_anak.length - 1
+                              )
+                            }
                           >
                             <FaTimes />
                           </button>
@@ -248,7 +252,11 @@ const Keluarga = ({ onTabChange }) => {
                       </div>
                     )}
                     <div>
-                      <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={handleAddChild}>
+                      <button
+                        type="button"
+                        className="bg-gray-200 p-1 rounded-lg"
+                        onClick={handleAddChild}
+                      >
                         <FaPlus />
                       </button>
                     </div>
@@ -256,14 +264,21 @@ const Keluarga = ({ onTabChange }) => {
                 </div>
                 <div>
                   {formik.values.nama_anak.map((name, index) => (
-                    <div key={index} className="flex items-center space-x-4 mb-2">
+                    <div
+                      key={index}
+                      className="flex items-center space-x-4 mb-2"
+                    >
                       <TextField
                         label={`Anak Ke-${index + 1}`}
                         name={`nama_anak_${index}`}
                         value={name}
                         onChange={(e) => handleChangeChildName(index, e)}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.nama_anak ? formik.errors.nama_anak?.[index] : ''}
+                        error={
+                          formik.touched.nama_anak
+                            ? formik.errors.nama_anak?.[index]
+                            : ""
+                        }
                       />
                     </div>
                   ))}
@@ -299,13 +314,16 @@ const Keluarga = ({ onTabChange }) => {
               />
             </div>
             <div className="justify-end flex gap-3">
-              {isEdit ? (
-                <Button loading={addPegawaiLoading} type="submit">Simpan</Button>
-              ) : (
-                <Button loading={addPegawaiLoading} type="button" onClick={handleLanjut}>
-                  Lanjut
-                </Button>
-              )}
+              <Button loading={addPegawaiLoading} type="submit">
+                Simpan
+              </Button>
+              <Button
+                loading={addPegawaiLoading}
+                type="button"
+                onClick={handleLanjut}
+              >
+                Lanjut
+              </Button>
             </div>
           </form>
         </div>

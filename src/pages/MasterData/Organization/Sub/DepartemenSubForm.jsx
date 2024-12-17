@@ -4,9 +4,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, Select } from "@/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
-import { departemenReducers } from "@/reducers/organReducers";
+import { divisiReducers } from "@/reducers/organReducers";
 import axiosAPI from "@/authentication/axiosApi";
 import {
   API_URL_createdepartemen,
@@ -16,6 +16,9 @@ import {
 import { fetchUserDetails } from "@/constants/user";
 
 const DepartemenSubForm = () => {
+  const { addDivisiLoading } = useSelector(
+    (state) => state.organ
+  ); // reducer departemen gabisa, jadi pakai departemen
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -76,29 +79,32 @@ const DepartemenSubForm = () => {
       values.perusahaan_id = Number(values.perusahaan);
       try {
         if (isEdit) {
-          await updateData(
-            { dispatch, redux: departemenReducers },
+          const data = await updateData(
+            { dispatch, redux: divisiReducers },
             { pk: pk, ...values },
             API_URL_edeldepartemen,
-            "UPDATE_DEPARTEMEN"
+            "ADD_DIVISI"
           );
+          if(data && !addDivisiLoading){
+            navigate("/masterdata/organization");
+          }
         } else {
-          await addData(
-            { dispatch, redux: departemenReducers },
+          const data = await addData(
+            { dispatch, redux: divisiReducers },
             values,
             API_URL_createdepartemen,
-            "ADD_DEPARTEMEN"
+            "ADD_DIVISI"
           );
+          if(data && !addDivisiLoading){
+            navigate("/masterdata/organization");
+          }
         }
-        navigate("/masterdata/organization");
       } catch (error) {
         console.error("Error in form submission: ", error);
       }
     },
     
   });
-
-  console.log(formik.values);
 
   return (
     <div>
@@ -151,7 +157,7 @@ const DepartemenSubForm = () => {
             </div>
 
             <div className="mt-6 flex justify-end">
-              <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+              <Button loading={addDivisiLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
             </div>
           </form>
         </div>

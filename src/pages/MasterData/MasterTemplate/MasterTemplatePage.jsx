@@ -1,10 +1,8 @@
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Limit,
   TextField,
   Tooltip,
   PulseLoading, // Import your PulseLoading component here
@@ -16,13 +14,15 @@ import { useNavigate } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
-import { getData, deleteData } from "@/actions";
+import { getData, deleteData, updateData } from "@/actions";
 import {
   API_URL_gettemplatesurattugas,
   API_URL_edeltemplatesurattugas,
+  API_URL_changeactivedata,
 } from "@/constants";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 export default function MasterTemplate() {
   const navigate = useNavigate();
@@ -31,9 +31,8 @@ export default function MasterTemplate() {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } = useSelector(
-    (state) => state.tugas
-  );
+  const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } =
+    useSelector((state) => state.tugas);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
 
@@ -59,6 +58,33 @@ export default function MasterTemplate() {
     navigate(`/masterdata/master-template/${item.slug}`);
     sessionStorage.removeItem("ckeditor");
   };
+  function handleActive(e, item) {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Ingin mengubah status template ini?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6a82fb",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, ubah!",
+      cancelButtonText: "Batal",
+      customClass: {
+        container: "z-[99999]",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const data = updateData(
+          { dispatch, redux: penugasanReducer },
+          {
+            pk: "template-tugas",
+            slug: item.slug,
+          },
+          API_URL_changeactivedata,
+          "ADD_TUGAS"
+        );
+      }
+    });
+  }
   const onEdit = (item) => {
     navigate(`/masterdata/master-template/form/${item.slug}`, {
       state: {
@@ -158,6 +184,7 @@ export default function MasterTemplate() {
               <tr>
                 <Tables.Header>No</Tables.Header>
                 <Tables.Header>Nama template</Tables.Header>
+                <Tables.Header center>Active</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
@@ -167,6 +194,16 @@ export default function MasterTemplate() {
                   <Tables.Row>
                     <Tables.Data>{index + 1}</Tables.Data>
                     <Tables.Data>{item.nama}</Tables.Data>
+                    <Tables.Data center>
+                      <label className="flex items-center justify-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.is_active ? true : false}
+                          onChange={(e) => handleActive(e, item)}
+                          className="toggle-switch"
+                        />
+                      </label>
+                    </Tables.Data>
                     <Tables.Data center>
                       <div className="flex it ems-center justify-center gap-2">
                         {/* <Tooltip tooltip="Lihat">

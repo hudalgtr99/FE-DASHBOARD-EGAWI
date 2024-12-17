@@ -11,7 +11,7 @@ import {
   Select,
   PulseLoading,
 } from "@/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import {
@@ -27,6 +27,7 @@ import { FileInput } from "../../../components";
 import { updateFormData } from "../../../actions";
 
 const PenugasanForm = () => {
+  const { addTugasLoading } = useSelector((state) => state.tugas);
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -145,27 +146,32 @@ const PenugasanForm = () => {
       // Use the appropriate API URL and action
       if (isEdit) {
         if (id) {
-          await updateFormData(
+          const data = await updateFormData(
             { dispatch, redux: penugasanReducer },
             formData, // Tetap gunakan FormData
             API_URL_edeltugas,
-            "UPDATE_TUGAS",
+            "ADD_TUGAS",
             id,
             { headers: { "Content-Type": "multipart/form-data" } } // Tambahkan header di sini
           );
+          if (data && !addTugasLoading) {
+            navigate("/kepegawaian/penugasan");
+          }
         } else {
           console.error("ID is undefined for updating the task.");
         }
       } else {
-        await addData(
+        const data = await addData(
           { dispatch, redux: penugasanReducer },
           formData,
           API_URL_createtugas,
           "ADD_TUGAS",
           { headers: { "Content-Type": "multipart/form-data" } }
         );
+        if (data && !addTugasLoading) {
+          navigate("/kepegawaian/penugasan");
+        }
       }
-      navigate("/kepegawaian/penugasan");
     },
   });
 
@@ -176,8 +182,6 @@ const PenugasanForm = () => {
       </div>
     );
   }
-
-  console.log(formik.values);
 
   return (
     <Container>
@@ -282,20 +286,30 @@ const PenugasanForm = () => {
           onBlur={formik.handleBlur}
           error={formik.touched.file_pendukung && formik.errors.file_pendukung}
         /> */}
-        <FileInput
-          height={70}
-          accept={{ "application/pdf": [] }}
-          maxFiles={1}
-          minSize={0}
-          maxSize={2097152}
-          multiple={false}
-          value={
-            formik.values.file_pendukung ? [formik.values.file_pendukung] : []
-          }
-          setValue={(files) => {
-            formik.setFieldValue("file_pendukung", files[0] || null);
-          }}
-        />
+        <div className="">
+          <label
+            style={{
+              fontSize: "14px",
+            }}
+            className={`mb-2 font-[400]`}
+          >
+            File tugas {"(opsional)"}
+          </label>
+          <FileInput
+            height={70}
+            accept={{ "application/pdf": [] }}
+            maxFiles={1}
+            minSize={0}
+            maxSize={2097152}
+            multiple={false}
+            value={
+              formik.values.file_pendukung ? [formik.values.file_pendukung] : []
+            }
+            setValue={(files) => {
+              formik.setFieldValue("file_pendukung", files[0] || null);
+            }}
+          />
+        </div>
 
         <TextField
           required
@@ -318,7 +332,9 @@ const PenugasanForm = () => {
           error={formik.touched.end_date && formik.errors.end_date}
         />
         <div className="mt-6 flex justify-end">
-          <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+          <Button loading={addTugasLoading} type="submit">
+            {isEdit ? "Update" : "Tambah"}
+          </Button>
         </div>
       </form>
     </Container>

@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { deleteData, getData, updateData } from "@/actions";
 import { userReducer } from "@/reducers/authReducers";
 import {
   API_URL_edeluser,
-  API_URL_getdataakun,
   API_URL_changeactive,
   API_URL_changeoutofarea,
 } from "@/constants";
@@ -22,19 +21,12 @@ import {
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
-import { FaPlus } from "react-icons/fa";
 
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { jwtDecode } from "jwt-decode";
-import Swal from "sweetalert2";
-
-const AkunPage = () => {
-  const {
-    getDataAkunResult,
-    addAkunResult,
-    deleteAkunResult,
-    getDataAkunLoading,
-  } = useSelector((state) => state.auth);
+const TemplateAkun = ({getapiakun, aktif}) => {
+  const { getDataAkunResult, addAkunResult, deleteAkunResult, getDataAkunLoading } = useSelector(
+    (state) => state.auth
+  );
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -43,15 +35,6 @@ const AkunPage = () => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const token = isAuthenticated();
-      setJwt(jwtDecode(token));
-    }
-  }, []);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -77,15 +60,12 @@ const AkunPage = () => {
   const onEdit = (item) => {
     // Store the item in localStorage
     localStorage.setItem("editUserData", JSON.stringify(item));
-    sessionStorage.removeItem("url");
     navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
+    sessionStorage.setItem("url", location.pathname)
   };
-  
+
   const onChange = (item) => {
-    sessionStorage.removeItem("url");
-    navigate(
-      `/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`
-    );
+    navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`);
   };
 
   const doDelete = (item) => {
@@ -102,10 +82,9 @@ const AkunPage = () => {
       await getData(
         { dispatch, redux: userReducer },
         param,
-        API_URL_getdataakun,
+        getapiakun,
         "GET_AKUN"
       );
-
       setLoading(false);
     },
     [dispatch]
@@ -132,55 +111,25 @@ const AkunPage = () => {
 
   const handleSwitch = (e, item, index) => {
     if (index === 6) {
-      Swal.fire({
-        title: "Apakah Anda yakin?",
-        text: "Ingin mengubah status pegawai ini?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#6a82fb",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, ubah!",
-        cancelButtonText: "Batal",
-        customClass: {
-          container: "z-[99999]",
+      updateData(
+        { dispatch, redux: userReducer },
+        {
+          pk: item.datapribadi.user_id,
+          is_staff: e.target.checked,
         },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          updateData(
-            { dispatch, redux: userReducer },
-            {
-              pk: item.datapribadi.user_id,
-            },
-            API_URL_changeactive,
-            "ADD_AKUN"
-          );
-        }
-      });
+        API_URL_changeactive,
+        "ADD_AKUN"
+      );
     } else if (index === 7) {
-      Swal.fire({
-        title: "Apakah Anda yakin?",
-        text: "Ingin mengubah status pegawai ini?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#6a82fb",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, ubah!",
-        cancelButtonText: "Batal",
-        customClass: {
-          container: "z-[99999]",
+      updateData(
+        { dispatch, redux: userReducer },
+        {
+          pk: item.datapribadi.user_id,
+          out_of_area: e.target.checked,
         },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          updateData(
-            { dispatch, redux: userReducer },
-            {
-              pk: item.datapribadi.user_id,
-            },
-            API_URL_changeoutofarea,
-            "ADD_AKUN"
-          );
-        }
-      });
+        API_URL_changeoutofarea,
+        "ADD_AKUN"
+      );
     }
   };
 
@@ -229,43 +178,7 @@ const AkunPage = () => {
     },
   ]);
 
-  const onAdd = () => {
-    localStorage.setItem(
-      "editUserData",
-      JSON.stringify({
-        datapribadi: {
-          user_id: null,
-          nama: "",
-          username: "",
-          email: "",
-          is_staff: false,
-          perusahaan: "",
-          lokasi_absen: [],
-          groups: {},
-          jenis_kelamin: "",
-          no_identitas: "",
-          npwp: "",
-          agama: "",
-          alamat_ktp: "",
-          alamat_domisili: "",
-          no_telepon: "",
-          tempat_lahir: "",
-          tgl_lahir: "",
-          out_of_area: false,
-          password: "",
-        },
-        datapegawai: null,
-        datakeluarga: null,
-        datapendidikan: null,
-        datalainnya: null,
-        datajadwal: {
-          jadwal: "{}",
-        },
-        index: null,
-      })
-    );
-    navigate("/kepegawaian/pegawai/form");
-  };
+  // console.log(JSON.stringify(dataWithIndex))
 
   return (
     <div>
@@ -279,14 +192,9 @@ const AkunPage = () => {
               icon={<CiSearch />}
             />
           </div>
-          <Button onClick={onAdd}>
-            <div className="flex items-center gap-2">
-              <FaPlus /> Tambah Pegawai
-            </div>
-          </Button>
         </div>
-        {getDataAkunLoading ? ( // Show loading indicator if loading is true
-          <div className="flex justify-center py-4">
+        {getDataAkunLoading ? (
+          <div className="flex justify-center items-center">
             <PulseLoading />
           </div>
         ) : (
@@ -294,11 +202,8 @@ const AkunPage = () => {
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
+                <Tables.Header>Nama Perusahaan</Tables.Header>
                 {/* <Tables.Header>Id pegawai</Tables.Header> */}
-                {!jwt.perusahaan && (
-                  <Tables.Header>Nama perusahaan</Tables.Header>
-                )}
-                <Tables.Header>Id Pegawai</Tables.Header>
                 <Tables.Header>Nama Pribadi</Tables.Header>
                 <Tables.Header>Jabatan</Tables.Header>
                 <Tables.Header>Email</Tables.Header>
@@ -312,34 +217,23 @@ const AkunPage = () => {
               {dataWithIndex.length > 0 ? (
                 dataWithIndex.map((item) => (
                   <Tables.Row key={item.datapribadi.user_id}>
-                    <Tables.Data>{item.index || "-"}</Tables.Data>
-                    {!jwt.perusahaan && (
-                      <Tables.Data>
-                        {item?.datapribadi?.perusahaan?.nama || "N/A"}
-                      </Tables.Data>
-                    )}
+                    <Tables.Data>{item.index}</Tables.Data>
                     <Tables.Data>
-                      {item.datapegawai?.id_pegawai || "belum ada"}
+                      {item?.datapribadi?.perusahaan && item.datapribadi.perusahaan.nama || "-"}
                     </Tables.Data>
-                    <Tables.Data>
-                      {item.datapribadi?.nama || "Nama tidak tersedia"}
-                    </Tables.Data>
+                    {/* <Tables.Data>{item.datapegawai?.id_pegawai || "belum ada"}</Tables.Data> */}
+                    <Tables.Data>{item.datapribadi.nama}</Tables.Data>
                     <Tables.Data>
                       {item.datapegawai?.jabatan?.nama || "-"}
                     </Tables.Data>
-                    <Tables.Data>
-                      {item.datapribadi?.email || "Email tidak tersedia"}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {item.datapribadi?.no_telepon ||
-                        "No telepon tidak tersedia"}
-                    </Tables.Data>
+                    <Tables.Data>{item.datapribadi.email}</Tables.Data>
+                    <Tables.Data>{item.datapribadi.no_telepon}</Tables.Data>
                     <Tables.Data>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={item.datapribadi?.is_staff || false}
-                          onChange={(e) => handleSwitch(e, item, 6)}
+                          checked={item.datapribadi?.is_staff}
+                          onChange={(e) => handleSwitch(e, item, 6)} // Pass index 6 for is_staff
                           className="toggle-switch"
                         />
                       </label>
@@ -348,8 +242,8 @@ const AkunPage = () => {
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={item.datapribadi?.out_of_area || false}
-                          onChange={(e) => handleSwitch(e, item, 7)}
+                          checked={item.datapribadi?.out_of_area}
+                          onChange={(e) => handleSwitch(e, item, 7)} // Pass index 7 for out_of_area
                           className="toggle-switch"
                         />
                       </label>
@@ -359,6 +253,7 @@ const AkunPage = () => {
                         {actions.map((action) => (
                           <Tooltip key={action.name} tooltip={action.name}>
                             <div
+                              key={action.name}
                               onClick={() => action.func(item)}
                               className={`${action.color} cursor-pointer`}
                             >
@@ -398,4 +293,4 @@ const AkunPage = () => {
   );
 };
 
-export default AkunPage;
+export default TemplateAkun;

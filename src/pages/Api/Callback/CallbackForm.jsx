@@ -143,7 +143,7 @@ const CallbackForm = () => {
                             error={formik.touched.api ? formik.errors.api : ''}
                         />
                         <div className="mt-6 flex justify-end">
-                            <Button type="submit">{isEdit ? "Simpan" : "Tambah"}</Button>
+                            <Button type="submit">{isEdit ? "Update" : "Tambah"}</Button>
                         </div>
                     </form>
                 </div>
