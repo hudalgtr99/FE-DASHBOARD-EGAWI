@@ -91,6 +91,14 @@ const Pribadi = ({ onTabChange }) => {
       agama: Yup.string().required("Agama wajib diisi"),
       perusahaan: Yup.object().required("Perusahaan wajib diisi"),
       // lokasi_absen: Yup.object().required("Aokasi Absen wajib diisi"),
+      lokasi_absen: Yup.array()
+        .min(1, "Lokasi absen wajib dipilih") // Minimal 1 lokasi harus dipilih
+        .of(
+          Yup.object().shape({
+            value: Yup.string().required("Value harus ada"),
+            label: Yup.string().required("Label harus ada"),
+          })
+        ),
       // roles: Yup.object().required("Roles wajib diisi"),
     }),
 
@@ -130,12 +138,22 @@ const Pribadi = ({ onTabChange }) => {
             isLanjut
               ? onTabChange("1")
               : (sessionStorage.getItem("url")
-                  ? (navigate(sessionStorage.getItem("url")), sessionStorage.removeItem("url"))
+                  ? (navigate(sessionStorage.getItem("url"), {
+                      state: {
+                        activeTab: ["0", "1"].includes(
+                          sessionStorage.getItem("activeTab")
+                        )
+                          ? sessionStorage.getItem("activeTab")
+                          : "0",
+                      },
+                    }),
+                    sessionStorage.removeItem("url"),
+                    sessionStorage.removeItem("activeTab"),
+                    sessionStorage.removeItem("activeTab"))
                   : navigate("/kepegawaian/pegawai"),
                 localStorage.removeItem("editUserData"));
           }
         } else {
-          // Handle create, including password in the payload
           const data = await addData(
             { dispatch, redux: pegawaiReducer },
             updatedValues,
@@ -154,8 +172,18 @@ const Pribadi = ({ onTabChange }) => {
             }
             isLanjut
               ? onTabChange("1")
-              : (sessionStorage.getItem("url") === "/akun"
-                  ? (navigate("/akun"), sessionStorage.removeItem("url"))
+              : (sessionStorage.getItem("url")
+                  ? (navigate(sessionStorage.getItem("url"), {
+                      state: {
+                        activeTab: ["0", "1"].includes(
+                          sessionStorage.getItem("activeTab")
+                        )
+                          ? sessionStorage.getItem("activeTab")
+                          : "0",
+                      },
+                    }),
+                    sessionStorage.removeItem("url"),
+                    sessionStorage.removeItem("activeTab"))
                   : navigate("/kepegawaian/pegawai"),
                 localStorage.removeItem("editUserData"));
           }
@@ -289,8 +317,18 @@ const Pribadi = ({ onTabChange }) => {
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => (
-              sessionStorage.getItem("url") === "/akun"
-                ? (navigate("/akun"), sessionStorage.removeItem("url"))
+              sessionStorage.getItem("url")
+                ? (navigate(sessionStorage.getItem("url"), {
+                    state: {
+                      activeTab: ["0", "1"].includes(
+                        sessionStorage.getItem("activeTab")
+                      )
+                        ? sessionStorage.getItem("activeTab")
+                        : "0",
+                    },
+                  }),
+                  sessionStorage.removeItem("url"),
+                  sessionStorage.removeItem("activeTab"))
                 : navigate("/kepegawaian/pegawai"),
               localStorage.removeItem("editUserData")
             )}
@@ -303,11 +341,7 @@ const Pribadi = ({ onTabChange }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (isEdit) {
-                formik.handleSubmit();
-              } else {
-                handleLanjut();
-              }
+              handleLanjut();
             }}
             className="space-y-6"
           >
@@ -531,12 +565,15 @@ const Pribadi = ({ onTabChange }) => {
               /> */}
             </div>
             <div className="justify-end flex gap-3">
-              <Button loading={addPegawaiLoading} type="submit">
+              <Button
+                onClick={() => formik.handleSubmit()}
+                loading={addPegawaiLoading}
+              >
                 Simpan
               </Button>
               <Button
                 loading={addPegawaiLoading}
-                type="button"
+                type="submit"
                 onClick={handleLanjut}
               >
                 Lanjut

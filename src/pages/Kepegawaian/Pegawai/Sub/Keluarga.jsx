@@ -76,7 +76,19 @@ const Keluarga = ({ onTabChange }) => {
       if (data && !addPegawaiLoading) {
         isLanjut
           ? onTabChange("3")
-          : (navigate("/kepegawaian/pegawai"),
+          : (sessionStorage.getItem("url")
+              ? (navigate(sessionStorage.getItem("url"), {
+                  state: {
+                    activeTab: ["0", "1"].includes(
+                      sessionStorage.getItem("activeTab")
+                    )
+                      ? sessionStorage.getItem("activeTab")
+                      : "0",
+                  },
+                }),
+                sessionStorage.removeItem("url"),
+                sessionStorage.removeItem("activeTab"))
+              : navigate("/kepegawaian/pegawai"),
             localStorage.removeItem("editUserData"));
       }
     },
@@ -149,11 +161,7 @@ const Keluarga = ({ onTabChange }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (isEdit) {
-                formik.handleSubmit();
-              } else {
-                handleLanjut();
-              }
+              handleLanjut();
             }}
             className="space-y-6"
           >
@@ -314,12 +322,15 @@ const Keluarga = ({ onTabChange }) => {
               />
             </div>
             <div className="justify-end flex gap-3">
-              <Button loading={addPegawaiLoading} type="submit">
+              <Button
+                onClick={() => formik.handleSubmit()}
+                loading={addPegawaiLoading}
+              >
                 Simpan
               </Button>
               <Button
                 loading={addPegawaiLoading}
-                type="button"
+                type="submit"
                 onClick={handleLanjut}
               >
                 Lanjut

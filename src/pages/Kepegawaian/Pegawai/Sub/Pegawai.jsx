@@ -65,7 +65,7 @@ const Pegawai = ({ onTabChange }) => {
       jabatan_id: initialData?.jabatan_id || initialData?.jabatan?.id || "", // Change here
       departemen_id:
         initialData?.departemen_id || initialData?.departemen?.id || "",
-      divisi_id:  initialData?.divisi_id || initialData?.divisi?.id || "",
+      divisi_id: initialData?.divisi_id || initialData?.divisi?.id || "",
       unit_id: initialData?.unit_id || initialData?.unit?.id || "",
       tgl_bergabung: initialData?.tgl_bergabung || "",
       tgl_resign: initialData?.tgl_resign || "",
@@ -98,7 +98,19 @@ const Pegawai = ({ onTabChange }) => {
         if (data && !addPegawaiLoading) {
           isLanjut
             ? onTabChange("2")
-            : (navigate("/kepegawaian/pegawai"),
+            : (sessionStorage.getItem("url")
+                ? (navigate(sessionStorage.getItem("url"), {
+                    state: {
+                      activeTab: ["0", "1"].includes(
+                        sessionStorage.getItem("activeTab")
+                      )
+                        ? sessionStorage.getItem("activeTab")
+                        : "0",
+                    },
+                  }),
+                  sessionStorage.removeItem("url"),
+                  sessionStorage.removeItem("activeTab"))
+                : navigate("/kepegawaian/pegawai"),
               localStorage.removeItem("editUserData"));
         }
       } catch (error) {
@@ -113,8 +125,7 @@ const Pegawai = ({ onTabChange }) => {
     const storedData = localStorage.getItem("editUserData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      parsedData.datapegawai = { ...parsedData.datapegawai, ...formik.values }; 
-      console.log("datapegawai:", parsedData.datapegawai);
+      parsedData.datapegawai = { ...parsedData.datapegawai, ...formik.values };
 
       // Save the updated data back to local storage
       localStorage.setItem("editUserData", JSON.stringify(parsedData));
@@ -143,11 +154,7 @@ const Pegawai = ({ onTabChange }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (isEdit) {
-                formik.handleSubmit();
-              } else {
-                handleLanjut();
-              }
+              handleLanjut();
             }}
             className="space-y-6"
           >
@@ -279,26 +286,32 @@ const Pegawai = ({ onTabChange }) => {
                     : ""
                 }
               />
-              {!isEdit || localStorageData.datapribadi.is_staff === false && (
-                <TextField
-                  label="Tanggal Resign"
-                  name="tgl_resign"
-                  type="date"
-                  value={formik.values.tgl_resign}
-                  onChange={formik.handleChange}
-                  onBlur={(e) => formik.handleBlur}
-                  error={
-                    formik.touched.tgl_resign ? formik.errors.tgl_resign : ""
-                  }
-                />
-              )}
+              {!isEdit ||
+                (localStorageData.datapribadi.is_staff === false && (
+                  <TextField
+                    label="Tanggal Resign"
+                    name="tgl_resign"
+                    type="date"
+                    value={formik.values.tgl_resign}
+                    onChange={formik.handleChange}
+                    onBlur={(e) => formik.handleBlur}
+                    error={
+                      formik.touched.tgl_resign ? formik.errors.tgl_resign : ""
+                    }
+                  />
+                ))}
             </div>
             <div className="justify-end flex gap-3">
               <div className="justify-end flex gap-3">
-                  <Button type="submit">Simpan</Button>
-                  <Button loading={addPegawaiLoading} type="button" onClick={handleLanjut}>
-                    Lanjut
-                  </Button>
+                <Button
+                  onClick={() => formik.handleSubmit()}
+                  loading={addPegawaiLoading}
+                >
+                  Simpan
+                </Button>
+                <Button loading={addPegawaiLoading} type="submit">
+                  Lanjut
+                </Button>
               </div>
             </div>
           </form>

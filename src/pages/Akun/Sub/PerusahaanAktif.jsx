@@ -4,5 +4,5 @@ import {
 } from "@/constants";
 
 export default function AkunAktifPage(){
-  return <TemplateAkun getapiakun={API_URL_getdataakun} aktif={true} />
+  return <TemplateAkun getapiakun={API_URL_getdataakun} activeTab="0" />
 }

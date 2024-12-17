@@ -4,8 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container } from "@/components";
-import { useDispatch } from "react-redux";
-import { updateFormData } from "@/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { updateData } from "@/actions";
 import { pegawaiReducer } from "@/reducers/kepegawaianReducers";
 import { API_URL_edeluser } from "@/constants";
 import { FaTimes, FaPlus } from "react-icons/fa";
@@ -13,11 +13,14 @@ import { FaTimes, FaPlus } from "react-icons/fa";
 const Lainnya = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { addPegawaiLoading } = useSelector((state) => state.kepegawaian);
 
   // Extract 'datalainnya' and 'user_id' from localStorage
   const storedData = JSON.parse(localStorage.getItem("editUserData"));
   const user_id = storedData?.datapribadi?.user_id || "";
-  const datalainnya = JSON.parse(storedData.datalainnya.data) || [];
+  const datalainnya =
+    JSON.parse(storedData.datalainnya ? storedData.datalainnya.data : "[]") ||
+    [];
 
   const formik = useFormik({
     initialValues: {
@@ -55,15 +58,30 @@ const Lainnya = () => {
         formData.append("datalainnya", item.data ? item.data : item.link);
       });
 
-      await updateFormData(
+      const data = await updateData(
         { dispatch, redux: pegawaiReducer },
         formData,
         API_URL_edeluser,
         "ADD_PEGAWAI",
-        "datalainnya"
+        "PUT"
       );
 
-      // navigate('/kepegawaian/pegawai'); // Navigate after successful submission
+      if (data && !addPegawaiLoading) {
+        sessionStorage.getItem("url")
+          ? (navigate(sessionStorage.getItem("url"), {
+              state: {
+                activeTab: ["0", "1"].includes(
+                  sessionStorage.getItem("activeTab")
+                )
+                  ? sessionStorage.getItem("activeTab")
+                  : "0",
+              },
+            }),
+            sessionStorage.removeItem("url"),
+            sessionStorage.removeItem("activeTab"))
+          : navigate("/kepegawaian/pegawai"),
+          localStorage.removeItem("editUserData");
+      }
     },
   });
 
@@ -171,7 +189,9 @@ const Lainnya = () => {
             </div>
           ))}
           <div className="mt-6 flex justify-end">
-            <Button type="submit">Simpan</Button>
+            <Button loading={addPegawaiLoading} type="submit">
+              Simpan
+            </Button>
           </div>
         </form>
       </Container>

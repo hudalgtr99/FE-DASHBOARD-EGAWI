@@ -5,11 +5,12 @@ import { fetchUserDetails } from "@/constants/user";
 import { jwtDecode } from "jwt-decode";
 import { FileInput, TextField } from "../../../components";
 import { BsPencil } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const PengaturanProfilSub = () => {
   const [data, setData] = useState(null);
   const [auth, setAuth] = useState({});
+    const location = useLocation();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -241,10 +242,12 @@ const PengaturanProfilSub = () => {
           <p className="text-base font-semibold">{title}</p>
           {data?.groups[0]?.name !== "Super Admin" && (
             <Link
-              to="/kepegawaian/pegawai/form"
+              to={`/kepegawaian/pegawai/form/${data?.datapribadi?.no_identitas}`}
               state={{ activeTab: onTab }}
               onClick={() => {
                 localStorage.setItem("editUserData", JSON.stringify(data));
+                sessionStorage.setItem("url", location.pathname);
+                sessionStorage.setItem("activeTab", "1");
               }}
             >
               <BsPencil className="text-green-500" />

@@ -40,12 +40,23 @@ const UbahPasswordPage = () => {
         },
         API_URL_changepassword,
         "ADD_USER"
-      )
-        .then(() => {
-          if(updateData){
-            navigate("/kepegawaian/pegawai");
-          }
-        })
+      ).then(() => {
+        if (updateData) {
+          sessionStorage.getItem("url")
+            ? (navigate(sessionStorage.getItem("url"), {
+                state: {
+                  activeTab: ["0", "1"].includes(
+                    sessionStorage.getItem("activeTab")
+                  )
+                    ? sessionStorage.getItem("activeTab")
+                    : "0",
+                },
+              }),
+              sessionStorage.removeItem("url"),
+              sessionStorage.removeItem("activeTab"))
+            : navigate("/kepegawaian/pegawai");
+        }
+      });
     },
   });
 
@@ -93,20 +104,20 @@ const UbahPasswordPage = () => {
             onBlur={formik.handleBlur}
             value={formik.values.konfirmasi_password_baru}
             suffix={
-                visibleConfirmPassword ? (
-                  <TbEyeOff
-                    className="cursor-pointer"
-                    size={20}
-                    onClick={() => setVisibleConfirmPassword(false)}
-                  />
-                ) : (
-                  <TbEye
-                    className="cursor-pointer"
-                    size={20}
-                    onClick={() => setVisibleConfirmPassword(true)}
-                  />
-                )
-              }
+              visibleConfirmPassword ? (
+                <TbEyeOff
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => setVisibleConfirmPassword(false)}
+                />
+              ) : (
+                <TbEye
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => setVisibleConfirmPassword(true)}
+                />
+              )
+            }
           />
           {formik.touched.konfirmasi_password_baru &&
             formik.errors.konfirmasi_password_baru && (

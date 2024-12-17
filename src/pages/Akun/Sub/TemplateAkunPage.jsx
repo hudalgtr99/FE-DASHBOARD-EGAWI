@@ -22,7 +22,7 @@ import {
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
 
-const TemplateAkun = ({getapiakun, aktif}) => {
+const TemplateAkun = ({getapiakun, activeTab}) => {
   const { getDataAkunResult, addAkunResult, deleteAkunResult, getDataAkunLoading } = useSelector(
     (state) => state.auth
   );
@@ -62,9 +62,13 @@ const TemplateAkun = ({getapiakun, aktif}) => {
     localStorage.setItem("editUserData", JSON.stringify(item));
     navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
     sessionStorage.setItem("url", location.pathname)
+    sessionStorage.setItem("activeTab", activeTab);
   };
 
+
   const onChange = (item) => {
+    sessionStorage.setItem("url", location.pathname)
+    sessionStorage.setItem("activeTab", activeTab);
     navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`);
   };
 

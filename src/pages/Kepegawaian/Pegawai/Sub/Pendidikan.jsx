@@ -108,7 +108,19 @@ const Pendidikan = ({ onTabChange }) => {
         if (response && !addPegawaiLoading) {
           isLanjut
             ? onTabChange("4")
-            : (navigate("/kepegawaian/pegawai"),
+            : (sessionStorage.getItem("url")
+                ? (navigate(sessionStorage.getItem("url"), {
+                    state: {
+                      activeTab: ["0", "1"].includes(
+                        sessionStorage.getItem("activeTab")
+                      )
+                        ? sessionStorage.getItem("activeTab")
+                        : "0",
+                    },
+                  }),
+                  sessionStorage.removeItem("url"),
+                  sessionStorage.removeItem("activeTab"))
+                : navigate("/kepegawaian/pegawai"),
               localStorage.removeItem("editUserData"));
         }
       } catch (error) {
@@ -167,11 +179,7 @@ const Pendidikan = ({ onTabChange }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (isEdit) {
-                formik.handleSubmit();
-              } else {
-                handleLanjut();
-              }
+              handleLanjut();
             }}
             encType="multipart/form-data"
             className="space-y-6"
@@ -356,8 +364,17 @@ const Pendidikan = ({ onTabChange }) => {
 
             <div className="justify-end flex gap-3">
               <div className="justify-end flex gap-3">
-                <Button type="submit">Simpan</Button>
-                <Button type="button" onClick={handleLanjut}>
+                <Button
+                  onClick={() => formik.handleSubmit()}
+                  loading={addPegawaiLoading}
+                >
+                  Simpan
+                </Button>
+                <Button
+                  loading={addPegawaiLoading}
+                  type="submit"
+                  onClick={handleLanjut}
+                >
                   Lanjut
                 </Button>
               </div>

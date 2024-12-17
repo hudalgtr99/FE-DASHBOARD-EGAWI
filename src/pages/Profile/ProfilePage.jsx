@@ -1,35 +1,38 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Import useLocation to access location state
 
 // components
-import { TabsOld } from "@/components";
+import { Tabs } from "@/components"; // Assuming this is the correct Tabs component
 
-// sub
+// sub-components
 import PengaturanAkunSub from "./Sub/PengaturanAkunSub";
 import PengaturanProfilSub from "./Sub/PengaturanProfilSub";
 
+// Define tab components in an array with key, label, and component
+const tabComponents = [
+  { key: '0', label: 'Pengaturan Akun', Component: PengaturanAkunSub },
+  { key: '1', label: 'Pengaturan Profil', Component: PengaturanProfilSub }
+];
+
 const ProfilePage = () => {
-  const [activeTab, setActiveTab] = useState(0);
-  const [tabNames] = useState(["Pengaturan Akun", "Pengaturan Profil"]);
-  const [tabContents] = useState([<PengaturanAkunSub />, <PengaturanProfilSub />]);
+  const { state } = useLocation(); // Access location state
+  const initialTab = `${state?.activeTab || '0'}`; // Default to '0' if no state is found
 
-  useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (hash && tabNames.includes(hash)) {
-      setActiveTab(tabNames.indexOf(hash));
-    }
-  }, [tabNames]);
+  const [activeTab, setActiveTab] = useState(initialTab); // Initialize active tab
 
-  const handleTabChange = (index) => {
-    window.location.hash = tabNames[index];
-    setActiveTab(index);
+  const handleTabChange = (tab) => {
+    setActiveTab(tab); // Update active tab when a tab is selected
   };
 
   return (
-    <Fragment>
-      <TabsOld tab={tabNames} defaultindex={activeTab} onTabChange={handleTabChange}>
-        {tabContents}
-      </TabsOld>
-    </Fragment>
+    <div className='flex flex-col gap-4'>
+      <Tabs activeTab={activeTab} tabComponents={tabComponents} onTabChange={handleTabChange} />
+      
+      {/* Render the tab content based on the active tab */}
+      {tabComponents.map(({ key, Component }) => (
+        activeTab === key && <Component key={key} />
+      ))}
+    </div>
   );
 };
 

@@ -77,12 +77,12 @@ const AkunPage = () => {
   const onEdit = (item) => {
     // Store the item in localStorage
     localStorage.setItem("editUserData", JSON.stringify(item));
-    sessionStorage.removeItem("url");
+    sessionStorage.removeItem("url"), sessionStorage.removeItem("activeTab");
     navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
   };
-  
+
   const onChange = (item) => {
-    sessionStorage.removeItem("url");
+    sessionStorage.removeItem("url"), sessionStorage.removeItem("activeTab");
     navigate(
       `/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`
     );
@@ -264,6 +264,7 @@ const AkunPage = () => {
         index: null,
       })
     );
+    sessionStorage.removeItem("url"), sessionStorage.removeItem("activeTab");
     navigate("/kepegawaian/pegawai/form");
   };
 

@@ -147,7 +147,6 @@ const LokasiAbsenForm = () => {
               required
               label="Latitude"
               name="latitude"
-              type="number"
               value={formik.values.latitude}
               onChange={formik.handleChange}
               onBlur={(e) => formik.handleBlur}
@@ -157,7 +156,6 @@ const LokasiAbsenForm = () => {
               required
               label="Longitude"
               name="longitude"
-              type="number"
               value={formik.values.longitude}
               onChange={formik.handleChange}
               onBlur={(e) => formik.handleBlur}
