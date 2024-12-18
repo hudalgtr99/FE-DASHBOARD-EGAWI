@@ -54,7 +54,6 @@ const PengaturanAkunSub = () => {
       email: Yup.string().email("Invalid email").required("Email wajib diisi"),
     }),
     onSubmit: (values) => {
-      console.log("values", values)
       const formData = new FormData();
       formData.append("nama", values.nama);
       formData.append("email", values.email);

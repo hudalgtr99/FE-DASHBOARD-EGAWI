@@ -71,7 +71,6 @@ const EditProfilePendidikanPage = () => {
     }),
     onSubmit: (values) => {
       const newInput = handleInputError(values);
-      console.log("New Input:", newInput); // Check this output
 
       const payload = {
         pk: "datapendidikan",

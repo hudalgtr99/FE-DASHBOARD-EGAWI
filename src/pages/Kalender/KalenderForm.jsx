@@ -23,8 +23,6 @@ const KalenderForm = () => {
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(pk);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -74,8 +72,6 @@ const KalenderForm = () => {
         perusahaan: values.perusahaan, // Include perusahaan in the payload
       };
 
-      console.log(payload);
-
       !pk
         ? await addData(
             { dispatch, redux: kalenderReducer },
@@ -96,8 +92,6 @@ const KalenderForm = () => {
       );
     },
   });
-
-  console.log(formik.values);
 
   return (
     <div>

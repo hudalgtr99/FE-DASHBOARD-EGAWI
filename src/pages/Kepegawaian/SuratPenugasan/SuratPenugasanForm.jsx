@@ -177,7 +177,6 @@ const SuratPenugasanSlug = () => {
             .toString()
             .padStart(2, "0");
           const currentYear = new Date().getFullYear();
-          console.log("id_template", id_template)
 
           const generatedNoSurat = `${isEdit ? id_templateEdit : id_template}·${suratCount}/${perusahaanSingkatan}-${departemenSingkatan}/${currentMonth}/${currentYear}`;
           formik.setFieldValue("noSurat", generatedNoSurat);

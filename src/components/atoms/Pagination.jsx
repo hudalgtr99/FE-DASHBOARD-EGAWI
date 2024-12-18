@@ -44,8 +44,6 @@ const Pagination = ({
         pageSize,
     });
 
-    console.log({ paginationRange }); // Debugging log
-
     if (!paginationRange || paginationRange.length === 0) return null;
 
     const onNext = () => onPageChange(currentPage + 1);

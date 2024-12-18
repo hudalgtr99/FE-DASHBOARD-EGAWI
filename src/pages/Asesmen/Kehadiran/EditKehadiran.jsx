@@ -53,7 +53,6 @@ const EditKehadiran = () => {
   const handleFileChange = (e) => {
     const file = e.currentTarget.files[0];
     if (file) {
-      console.log("Uploaded file type:", file.type); 
       const reader = new FileReader();
       reader.onloadend = () => {
         formik.setFieldValue('gambar', reader.result);

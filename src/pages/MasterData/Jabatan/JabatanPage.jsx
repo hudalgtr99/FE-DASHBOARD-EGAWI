@@ -36,7 +36,6 @@ const JabatanSub = () => {
     deletePangkatResult,
   } = useSelector((state) => state.strata);
 
-  console.log("getJabatanResult", getJabatanResult);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

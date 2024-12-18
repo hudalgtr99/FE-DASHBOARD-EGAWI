@@ -5,7 +5,6 @@ import { useContext, useState } from "react";
 
 const TablePage = () => {
 	const { themeColor } = useContext(ThemeContext);
-	console.log(themeColor)
 
 	const [data] = useState([
 		{

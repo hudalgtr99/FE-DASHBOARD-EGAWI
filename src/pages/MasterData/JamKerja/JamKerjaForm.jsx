@@ -97,7 +97,6 @@ const JamKerjaForm = () => {
         }),
       };
 
-      console.log("Formatted Values:", formattedValues);
       try {
         const data = await updateData(
           { dispatch, redux: perusahaanReducer },

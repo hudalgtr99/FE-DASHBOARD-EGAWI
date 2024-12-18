@@ -126,7 +126,6 @@ const DashboardPage = () => {
     const param = { param: `?date=${date}&limit=${limitAbsensi}&offset=${offset}` };
 
     getAbsensi(param);
-    console.log("param", param);
     setPageAbsensiActive(page - 1); // Set the active page
   };
 

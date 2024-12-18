@@ -39,7 +39,6 @@ const Lainnya = () => {
         .required("At least one item is required"),
     }),
     onSubmit: async (values) => {
-      console.log("Submitting Values: ", values); // Log the values
       const formData = new FormData();
       formData.append("user_id", user_id);
 
@@ -99,8 +98,7 @@ const Lainnya = () => {
 
   // Handle file input change
   const handleFileChange = (index) => (event) => {
-    const file = event.currentTarget.files[0]; // Correctly access the file
-    console.log("Selected file: ", file); // Debugging file selection
+    const file = event.currentTarget.files[0]; 
 
     const updatedLainnya = formik.values.lainnya.map((item, i) =>
       i === index ? { ...item, data: file } : item
@@ -108,8 +106,6 @@ const Lainnya = () => {
 
     formik.setFieldValue("lainnya", updatedLainnya);
   };
-
-  console.log("Formik Values: ", formik.values.datalainnya);
 
   return (
     <div>

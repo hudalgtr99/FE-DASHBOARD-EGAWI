@@ -41,7 +41,6 @@ const PenugasanForm = () => {
     try {
       const userData = await fetchUserDetails();
       setUser(userData.datapribadi);
-      console.log(userData);
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -121,8 +120,6 @@ const PenugasanForm = () => {
         ),
     }),
     onSubmit: async (values) => {
-      console.log("values", values);
-      console.log("data", user);
 
       // Create FormData and append values
       const formData = new FormData();

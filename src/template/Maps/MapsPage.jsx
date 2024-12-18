@@ -25,19 +25,15 @@ const MyComponent = () => {
 	useEffect(() => {
 		if (!map) return;
 
-		console.log(map);
 	}, [map]);
 
 	useEffect(() => {
 		if (!drawLib) return;
 
-		console.log(drawLib);
 	}, [drawLib]);
 
 	useEffect(() => {
 		if (!apiIsLoaded) return;
-
-		console.log("apiIsLoaded", apiIsLoaded);
 	}, [apiIsLoaded]);
 
 	return <></>;
@@ -118,7 +114,6 @@ const MapsPage = () => {
 							key={index}
 							position={marker.position}
 							onClick={() => {
-								console.log("marker clicked");
 								const newMarkers = [...markers];
 								newMarkers[index].showInfo = true;
 								setMarkers(newMarkers);

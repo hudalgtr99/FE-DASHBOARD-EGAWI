@@ -87,7 +87,6 @@ const EditProfilePribadiPage = () => {
     }),
     onSubmit: (values) => {
       const newInput = handleInputError(values);
-      console.log("New Input:", newInput); // Check this output
 
       if (isAuthenticated().user_id) {
         updateData(

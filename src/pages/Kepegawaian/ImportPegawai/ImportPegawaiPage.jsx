@@ -217,7 +217,6 @@ const ImportPegawai = () => {
     });
 
     if (formik.isValid) {
-      console.log(formik.values);
       setExcelModal(true);
       const file = formik.values.excel;
       if (file) {

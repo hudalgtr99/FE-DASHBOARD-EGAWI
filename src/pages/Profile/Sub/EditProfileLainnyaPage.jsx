@@ -61,7 +61,6 @@ const EditProfileLainnyaPage = () => {
     }),
     onSubmit: (values) => {
       const newInput = handleInputError(values);
-      console.log("New Input:", newInput); // Check this output
 
       const formData = new FormData();
       formData.append("user_id", values.user_id);
@@ -127,8 +126,7 @@ const EditProfileLainnyaPage = () => {
 
   // Handle file input change
   const handleFileChange = (index) => (event) => {
-    const file = event.currentTarget.files[0]; // Correctly access the file
-    console.log("Selected file: ", file); // Debugging file selection
+    const file = event.currentTarget.files[0];
 
     const updatedDataLainnya = formik.values.data_lainnya.map((item, i) =>
       i === index ? { ...item, data: file } : item

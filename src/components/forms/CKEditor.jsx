@@ -99,7 +99,6 @@ export default function CKEditorInput({
     let htmlContent = "";
 
     if (type) {
-      console.log("type", type);
       const matchedTemplate =
         type !== prevType
           ? template.find((t) => t.id === type)

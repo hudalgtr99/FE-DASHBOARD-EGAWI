@@ -37,7 +37,6 @@ const PenugasanDetail = () => {
         tugas_id: pk,
       });
       setDetail(res.data);
-      console.log(res.data);
       setLoading(true);
     } catch (error) {
       console.error(error);

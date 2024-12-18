@@ -89,8 +89,6 @@ const JabatanSubForm = () => {
     },
   });
 
-  console.log(formik.values);
-
   return (
     <div>
       <Container>

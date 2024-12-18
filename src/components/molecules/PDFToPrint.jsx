@@ -105,7 +105,6 @@ const PDFToPrint = ({
   useEffect(() => {
     if (isEditTemplate === false) {
       if (isEditSurat) {
-        console.log(isEditSurat);
         setHtml(isEditSurat);
         setLoadingEditor(false);
       } else {

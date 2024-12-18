@@ -123,8 +123,6 @@ const PerusahaanPage = () => {
         });
 
         const data = { ...values, jadwal };
-
-        console.log("item", item);
         // Update existing perusahaan
         await updateData(
           { dispatch, redux: perusahaanReducer },
