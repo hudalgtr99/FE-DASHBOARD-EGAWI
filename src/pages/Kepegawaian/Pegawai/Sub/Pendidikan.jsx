@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, FileInput } from "@/components";
+import { Button, Container, TextField, FileInput, Modal } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { updateData } from "@/actions";
 import { pegawaiReducer } from "@/reducers/kepegawaianReducers";
@@ -18,6 +18,9 @@ const Pendidikan = ({ onTabChange }) => {
   const [isLanjut, setIsLanjut] = useState(false);
   const { pk } = useParams();
   const isEdit = pk && pk !== "add";
+
+  const [showModal, setShowModal] = useState(false);
+  const [imageModal, setImageModal] = useState(null);
 
   const pendidikanData = localStorageData.datapendidikan || {};
   const formalData = Array.isArray(pendidikanData.formal)
@@ -163,6 +166,12 @@ const Pendidikan = ({ onTabChange }) => {
     onTabChange("2");
   };
 
+  const handlePreview = (preview) => {
+    setShowModal(true);
+    setImageModal(preview);
+    console.log("preview", preview);
+  };
+
   return (
     <div>
       <Container>
@@ -262,7 +271,9 @@ const Pendidikan = ({ onTabChange }) => {
             {/* Non-Formal Education Section */}
             <div className="">
               <div className="flex justify-between">
-                <h3 className="font-medium">Pendidikan Non Formal</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-medium">Pendidikan Non Formal</h3>
+                </div>
                 <div className="flex gap-2 mb-4 items-center">
                   {formik.values.non_formal.length > 1 && (
                     <button
@@ -306,19 +317,31 @@ const Pendidikan = ({ onTabChange }) => {
                             : ""
                         }
                       />
-                      <TextField
-                        required
-                        label="Tahun Lulus"
-                        name={`non_formal[${index}].tahun_lulus`}
-                        value={edu.tahun_lulus}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.non_formal?.[index]?.tahun_lulus
-                            ? formik.errors.non_formal?.[index]?.tahun_lulus
-                            : ""
-                        }
-                      />
+                      <div className="flex flex-col gap-2">
+                        <TextField
+                          required
+                          label="Tahun Lulus"
+                          name={`non_formal[${index}].tahun_lulus`}
+                          value={edu.tahun_lulus}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          error={
+                            formik.touched.non_formal?.[index]?.tahun_lulus
+                              ? formik.errors.non_formal?.[index]?.tahun_lulus
+                              : ""
+                          }
+                        />
+                        {typeof edu.sertifikat === 'string' && edu.sertifikat && (
+                          <div className="">
+                            <Button
+                            className="inline-block"
+                            onClick={() => handlePreview(edu.sertifikat)}
+                          >
+                            Lihat Gambar
+                          </Button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <FileInput
                       height={100} // Set your desired height
@@ -381,6 +404,11 @@ const Pendidikan = ({ onTabChange }) => {
             </div>
           </form>
         </div>
+        <Modal show={showModal} width="md" setShow={setShowModal} persistent>
+          <div>
+          <img src={imageModal} alt="" />
+          </div>
+        </Modal>
       </Container>
     </div>
   );
