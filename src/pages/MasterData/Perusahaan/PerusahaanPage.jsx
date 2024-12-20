@@ -9,7 +9,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useContext } from "react";
 
-export default function KalenderPage() {
+export default function PerusahaanPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { deleteperusahaanResult } = useSelector((state) => state.perusahaan);

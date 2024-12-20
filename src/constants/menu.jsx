@@ -46,19 +46,20 @@ export const menu = [
     sub: [],
   },
   {
+    icon: icons.lubuilding,
+    menuLink: "perusahaan",
+    name: "perusahaan",
+    title: "Perusahaan",
+    element: <PerusahaanPage />,
+    sub: [],
+  },
+  {
     icon: icons.ludatabase,
     menuLink: "masterdata",
     name: "masterdata",
     title: "Masterdata",
     element: null, // Change to null if there's no component to render
     sub: [
-      {
-        menuLink: "masterdata/data-perusahaan",
-        name: "data perusahaan",
-        title: "Data perusahaan",
-        element: <PerusahaanPage />,
-        sub: [],
-      },
       {
         menuLink: "masterdata/lokasi-absen",
         name: "lokasi absen",
@@ -88,17 +89,13 @@ export const menu = [
         element: <JamKerja />,
         sub: [],
       },
-      ...(jwt && jwt.level === "Super Admin"
-        ? [
-            {
-              menuLink: "/masterdata/master-template",
-              name: "master template",
-              title: "Master Template",
-              element: <MasterTemplate />,
-              sub: [],
-            },
-          ]
-        : []),
+      {
+        menuLink: "/masterdata/master-template",
+        name: "master template",
+        title: "Master Template",
+        element: <MasterTemplate />,
+        sub: [],
+      },
     ],
   },
   {

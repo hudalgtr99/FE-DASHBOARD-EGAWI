@@ -5,7 +5,7 @@ import KalenderPage from "../pages/Kalender/KalenderPage";
 import OrganPage from "./MasterData/Organization/OrganizationPage";
 // import perusahaanPage from "./MasterData/Perusahaan/perusahaanPage";
 import LokasiAbsen from "../pages/MasterData/LokasiAbsen/LokasiAbsenPage";
-import JamKerja from "../pages/MasterData/JamKerja/JamKerjaCard";
+import JamKerja from "../pages/MasterData/JamKerja/JamKerjaPage";
 import PotonganPage from "../pages/MasterData/Potongan/PotonganPage";
 import TunjanganPage from "../pages/MasterData/Tunjangan/TunjanganPage";
 import JabatanPage from "../pages/MasterData/Jabatan/JabatanPage";

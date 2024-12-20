@@ -1,39 +1,99 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { deleteData, getData } from "@/actions";
+import {
+  API_URL_edelsurattugas,
+  API_URL_getsurattugas,
+  API_URL_getperusahaan,
+} from "@/constants";
+import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
+  Select,
   TextField,
   Tooltip,
   PulseLoading,
 } from "@/components";
-import { debounce } from "lodash";
-import { FaEdit, FaPlus, FaPrint, FaTrash } from "react-icons/fa";
+import { debounce } from "lodash"; // Import lodash debounce
+import { FaPlus, FaEdit, FaPrint, FaTrash } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { penugasanReducer } from "@/reducers/penugasanReducers";
-import { getData, deleteData } from "@/actions";
-import { API_URL_getsurattugas, API_URL_edelsurattugas } from "@/constants";
-import { useDispatch, useSelector } from "react-redux";
+import axiosAPI from "@/authentication/axiosApi";
 import { useReactToPrint } from "react-to-print";
 
-export default function SuratPenugasanPage() {
-  const { state } = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+import { penugasanReducer } from "@/reducers/penugasanReducers";
+
+const SuratPenugasanPage = () => {
+  const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =
+    useSelector((state) => state.tugas);
   const printRef = useRef();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
   const [printData, setPrintData] = useState("");
-  const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } =
-    useSelector((state) => state.tugas);
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  const [jwt, setJwt] = useState({}); // Initialize jwt variable
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
+      get(param);
+    }, 300),
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
+  );
+
+  const doSearch = (e) => {
+    const { value } = e.target;
+    setSearch(value);
+    debouncedSearch(value);
+    setPageActive(0);
+  };
 
   const onAdd = () => {
-    navigate(`/kepegawaian/surat-penugasan/form`);
-    sessionStorage.removeItem("ckeditor");
+    navigate("/masterdata/jabatan/form");
   };
 
   const onEdit = (item) => {
@@ -56,57 +116,79 @@ export default function SuratPenugasanPage() {
     );
   };
 
-  // Debounce search function
-  const debouncedSearch = useCallback(
-    debounce((value) => fetchTugas(value), 300),
-    [limit]
+  const get = useCallback(
+    async (param) => {
+      getData(
+        { dispatch, redux: penugasanReducer },
+        param,
+        API_URL_getsurattugas,
+        "GET_TUGAS"
+      );
+    },
+    [dispatch]
   );
 
-  const fetchTugas = (searchValue = "") => {
-    setLoading(true);
-    const param = searchValue
-      ? {
-          param: `?search=${searchValue}&limit=${limit}&offset=${
-            pageActive * limit
-          }`,
-        }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-    getData(
-      { dispatch, redux: penugasanReducer },
-      param,
-      `${API_URL_getsurattugas}/`,
-      "GET_TUGAS"
-    );
-
-    setLoading(false);
-  };
-
-  const doSearch = (e) => {
-    const { value } = e.target;
-    setSearch(value);
-    debouncedSearch(value);
-    setPageActive(0);
-  };
-
   const handlePageClick = (page) => {
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
     setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    setLimit(newLimit);
-    setPageActive(0);
-    fetchTugas(search);
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
   };
 
   useEffect(() => {
-    fetchTugas(search);
-  }, [limit, pageActive, search]);
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+    get(param);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
-      fetchTugas(search); // Refetch the data after add/delete
+      const param = search
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          };
+      get(param);
     }
-  }, [addTugasResult, deleteTugasResult, search]);
+  }, [
+    addTugasResult,
+    deleteTugasResult,
+    selectedPerusahaan,
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
   const dataWithIndex = getTugasResult.results
     ? getTugasResult.results.map((item, index) => ({
@@ -153,27 +235,27 @@ export default function SuratPenugasanPage() {
       .replace(
         /<tbody>\s*.*?<\/tbody>/,
         `
-        <tbody>
-          ${selectedData.penerima
-            ?.map(
-              (item, index) => `
-                <tr>
-                  <td>${index + 1}</td>
-                  <td>${item.nama || "Tidak ada nama"}</td>
-                  <td>${item.jabatan || "Tidak ada jabatan"}</td>
-                  <td>${item.departemen || "Tidak ada departemen"}</td>
-                  <td>${item.divisi || "Tidak ada divisi"}</td>
-                  <td>${item.unit || "Tidak ada unit"}</td>
-                </tr>`
-            )
-            .join("")}
-        </tbody>
-        `
+          <tbody>
+            ${selectedData.penerima
+              ?.map(
+                (item, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.nama || "Tidak ada nama"}</td>
+                    <td>${item.jabatan || "Tidak ada jabatan"}</td>
+                    <td>${item.departemen || "Tidak ada departemen"}</td>
+                    <td>${item.divisi || "Tidak ada divisi"}</td>
+                    <td>${item.unit || "Tidak ada unit"}</td>
+                  </tr>`
+              )
+              .join("")}
+          </tbody>
+          `
       );
 
-      if (printRef.current) {
-        printRef.current.innerHTML = formattedIsi;
-      }
+    if (printRef.current) {
+      printRef.current.innerHTML = formattedIsi;
+    }
 
     setPrintData({ ...selectedData, formattedIsi });
 
@@ -185,12 +267,25 @@ export default function SuratPenugasanPage() {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
-              placeholder="Search"
-              icon={<CiSearch />}
               onChange={doSearch}
+              placeholder="Search"
+              value={search}
+              icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={() => onAdd()}>
             <div className="flex items-center gap-2">
@@ -207,7 +302,9 @@ export default function SuratPenugasanPage() {
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
-                <Tables.Header>Nama perusahaan</Tables.Header>
+                {!jwt.perusahaan && (
+                  <Tables.Header>Nama perusahaan</Tables.Header>
+                )}
                 <Tables.Header>Nama template</Tables.Header>
                 <Tables.Header>Pengirim</Tables.Header>
                 <Tables.Header>Nama Surat</Tables.Header>
@@ -220,9 +317,13 @@ export default function SuratPenugasanPage() {
                 dataWithIndex.map((item, i) => (
                   <Tables.Row key={item.id}>
                     <Tables.Data>{item.index}</Tables.Data>
-                    <Tables.Data>
-                      {(item?.perusahaan && item?.perusahaan?.nama) || "-"}
-                    </Tables.Data>
+                    {!jwt.perusahaan && (
+                      <Tables.Data>
+                        {(item?.template?.perusahaan &&
+                          item?.template?.perusahaan?.nama) ||
+                          "-"}
+                      </Tables.Data>
+                    )}
                     <Tables.Data>{item?.template?.nama}</Tables.Data>
                     <Tables.Data>{item?.pemohon?.nama}</Tables.Data>
                     <Tables.Data>
@@ -280,7 +381,6 @@ export default function SuratPenugasanPage() {
             }}
           />
         </div>
-        ;
         <div className="flex justify-end items-center mt-4">
           <Pagination
             totalCount={getTugasResult.count || 0}
@@ -297,4 +397,6 @@ export default function SuratPenugasanPage() {
       </Container>
     </div>
   );
-}
+};
+
+export default SuratPenugasanPage;

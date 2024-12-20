@@ -1,16 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addData, deleteData, getData, updateData } from "@/actions";
+import { deleteData, getData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
-import { API_URL_getlokasiabsenwithpaginations, API_URL_edellokasi } from "@/constants";
+import {
+  API_URL_getlokasiabsenwithpaginations,
+  API_URL_edellokasi,
+  API_URL_getperusahaan,
+} from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Limit,
+  Select,
   TextField,
   Tooltip,
   PulseLoading,
@@ -18,7 +22,7 @@ import {
 import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-
+import axiosAPI from "@/authentication/axiosApi";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 
@@ -26,13 +30,13 @@ const PerusahaanPage = () => {
   const {
     getperusahaanResult,
     getperusahaanLoading,
-    getperusahaanError,
     addperusahaanResult,
-    addperusahaanLoading,
     deleteperusahaanResult,
   } = useSelector((state) => state.perusahaan);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -47,19 +51,36 @@ const PerusahaanPage = () => {
       setJwt(jwtDecode(token));
     }
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
-      const param = value
-        ? {
-            param: `?search=${value}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
-          }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`
+      };
+  
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+  
       get(param);
     }, 300),
-    [limit, pageActive]
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
   const doSearch = (e) => {
@@ -104,22 +125,25 @@ const PerusahaanPage = () => {
 
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
-
-    get(param);
-    setPageActive(page - 1); // Set the active page
+    
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ''}&perusahaan=${selectedPerusahaan?.value || ''}&limit=${limit}&offset=${offset}`
+    };
+  
+    get(param); 
+    setPageActive(page - 1); 
   };
-
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
-    get(param);
-    setLimit(newLimit);
-    setPageActive(0);
-  };
+  
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption); 
+    const offset = pageActive * limit; 
+    const param = {
+      param: `?search=${search || ''}&perusahaan=${selectedOption?.value || ''}&limit=${limit}&offset=${offset}`
+    };
+  
+    get(param); 
+  };  
 
   const [actions] = useState([
     {
@@ -137,30 +161,31 @@ const PerusahaanPage = () => {
   ]);
 
   useEffect(() => {
-    const param = { param: `?limit=${limit}&offset=${pageActive * limit}` };
-    if (search) {
-      get({
-        param: `?search=${search}&limit=${limit}&offset=${pageActive * limit}`,
-      });
-    } else {
-      get(param);
-    }
-  }, [limit, pageActive, search, get]);
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+    get(param);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addperusahaanResult || deleteperusahaanResult) {
       const param = search
         ? {
-            param: `?search=${search}&limit=${limit}&offset=${
+            param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${
               pageActive * limit
             }`,
           }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+        : { param: `?&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${pageActive * limit}` };
       get(param);
     }
   }, [
     addperusahaanResult,
     deleteperusahaanResult,
+    selectedPerusahaan,
     search,
     limit,
     pageActive,
@@ -178,13 +203,21 @@ const PerusahaanPage = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div className={`w-full flex gap-2 ${jwt.perusahaan ? 'sm:w-60' : 'sm:w-1/2'}`}>
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
@@ -213,12 +246,14 @@ const PerusahaanPage = () => {
               </tr>
             </Tables.Head>
             <Tables.Body>
-              {dataWithIndex.length > 0 ? 
+              {dataWithIndex.length > 0 ? (
                 dataWithIndex.map((item) => (
                   <Tables.Row key={item?.id}>
                     <Tables.Data>{item?.index}</Tables.Data>
                     {!jwt.perusahaan && (
-                      <Tables.Data>{item?.perusahaan && item?.perusahaan?.nama  || "-"}</Tables.Data>
+                      <Tables.Data>
+                        {(item?.perusahaan && item?.perusahaan?.nama) || "-"}
+                      </Tables.Data>
                     )}
                     <Tables.Data>{item?.nama_lokasi}</Tables.Data>
                     <Tables.Data>{item?.longitude}</Tables.Data>
@@ -240,7 +275,7 @@ const PerusahaanPage = () => {
                     </Tables.Data>
                   </Tables.Row>
                 ))
-               : (
+              ) : (
                 <Tables.Row>
                   <td className="text-center" colSpan="7">
                     <p>Tidak ada data yang tersedia</p>

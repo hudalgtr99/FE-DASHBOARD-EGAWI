@@ -19,21 +19,26 @@ export default function CKEditorInput({
   },
   penerima = [],
   user = {},
+  isTemplate = false,
+  perusahaan={},
 }) {
+
+  console.log("perusahaan", perusahaan);
+  
   const headerHtml = `
           <div style="padding: 1.5rem; padding-top: 3rem; padding-bottom: 2.5rem; padding-left: 6rem; padding-right: 6rem; display: flex; flex-wrap: wrap; flex-direction: column;">
-            <header contenteditable="false" style="display: flex; justify-content: flex-start; align-items: center; gap: 2.5rem; margin-bottom: 1.25rem;">
+            <header style="display: flex; justify-content: flex-start; align-items: center; gap: 2.5rem; margin-bottom: 1.25rem;">
               <div>
-                <img alt="Logo QNN" src="/images/icons/qnn.png" style="width: 11rem;" />
+                <img alt="Logo QNN" src="${perusahaan.image || "/images/icons/qnn.png"}" style="width: 11rem;" />
               </div>
               <div style="width: fit-content; text-align: center;">
-                <h1 style="font-size: 1.5rem; color: #ff0000; font-weight: bold; white-space: nowrap;">
-                  PT. QUEEN <span style="color: #09017b;">NETWORK</span> NUSANTARA
+                <h1 style="font-size: 1.5rem; font-weight: bold; white-space: nowrap;">
+                 ${'PT. ' + perusahaan?.nama?.toUpperCase() || `<span style="color: #ff0000;">QUEEN </span><span style="color: #09017b;">NETWORK</span> <span style="color: #ff0000;">NUSANTARA</span>`}
                 </h1>
                 <div style="font-size: .885rem; font-family: 'Tinos', serif;">
-                  <p>Jalan Alam Gaya Nomor 42 BTN II, Way Halim Permai</p>
-                  <p>Kota Bandar Lampung - Lampung Kode Pos 35133</p>
-                  <p>Telepon: (0721) 5615819, Website: www.qnn.co.id</p>
+                      <p>${perusahaan?.alamat?.split(',')[0] || 'Jalan Alam Gaya Nomor 42 BTN II' }, ${perusahaan?.alamat?.split(',')[1] || 'Way Halim Permai'}</p>
+                      <p>${perusahaan?.alamat?.split(',')[2] || 'Kota Bandar Lampung'}, ${perusahaan?.alamat?.split(',')[3] || 'Lampung'}, ${perusahaan?.alamat?.split(',')[4] || 'Kode Pos 35133'}</p>
+                      <p>Telepon: (0721) 5615819, Website: www.qnn.co.id</p>
                 </div>
               </div>
             </header>
@@ -141,28 +146,7 @@ export default function CKEditorInput({
     } else {
       htmlContent = isEdit
         ? values
-        : `
-          <div style="padding: 1.5rem; padding-top: 3rem; padding-bottom: 2.5rem; padding-left: 6rem; padding-right: 6rem; display: flex; flex-wrap: wrap; flex-direction: column;">
-            <header contenteditable="false" style="display: flex; justify-content: flex-start; align-items: center; gap: 2.5rem; margin-bottom: 1.25rem;">
-              <div>
-                <img alt="Logo QNN" src="/images/icons/qnn.png" style="width: 11rem;" />
-              </div>
-              <div style="width: fit-content; text-align: center;">
-                <h1 style="font-size: 1.5rem; color: #ff0000; font-weight: bold; white-space: nowrap;">
-                  PT. QUEEN <span style="color: #09017b;">NETWORK</span> NUSANTARA
-                </h1>
-                <div style="font-size: .885rem; font-family: 'Tinos', serif;">
-                  <p>Jalan Alam Gaya Nomor 42 BTN II, Way Halim Permai</p>
-                  <p>Kota Bandar Lampung - Lampung Kode Pos 35133</p>
-                  <p>Telepon: (0721) 5615819, Website: www.qnn.co.id</p>
-                </div>
-              </div>
-            </header>
-            <hr contenteditable="false" style="border-top: 2px solid #1E293B; margin-bottom: 1rem; width: 100%;" />
-            <br>
-            <div contenteditable="true">${values}</div>
-          </div>
-        `;
+        : headerHtml;
     }
     if (clickJabatan) {
       if (showJabatan) {
@@ -362,7 +346,6 @@ export default function CKEditorInput({
         <>
           <CKEditor
             key={editorKey}
-            onAriaEditorHelpLabel={"Help"}
             style={{ fontFamily: "Tinos" }}
             initData={html}
             onChange={handleEditorChange}

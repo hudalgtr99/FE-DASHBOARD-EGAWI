@@ -5,6 +5,7 @@ import { getData, deleteData } from "@/actions";
 import {
   API_URL_edeltugas,
   API_URL_gettugas,
+  API_URL_getperusahaan,
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -15,12 +16,14 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
+  Select
 } from "@/components";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import moment from "moment";
+import axiosAPI from "@/authentication/axiosApi";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
@@ -38,6 +41,8 @@ const PenugasanPage = () => {
   const [loading, setLoading] = useState(true);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -46,30 +51,37 @@ const PenugasanPage = () => {
     }
   }, []);
 
-  // Debounce search function
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const debouncedSearch = useCallback(
-    debounce((value) => fetchTugas(value), 300),
-    [limit]
+    debounce((value) => {
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
+      get(param);
+    }, 300),
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
-
-  const fetchTugas = (searchValue = "") => {
-    setLoading(true);
-    const param = searchValue
-      ? {
-          param: `?search=${searchValue}&limit=${limit}&offset=${
-            pageActive * limit
-          }`,
-        }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-    getData(
-      { dispatch, redux: penugasanReducer },
-      param,
-      API_URL_gettugas,
-      "GET_TUGAS"
-    );
-
-    setLoading(false);
-  };
 
   const doSearch = (e) => {
     const { value } = e.target;
@@ -85,8 +97,8 @@ const PenugasanPage = () => {
   const onEdit = (item) => {
     item = {
       ...item,
-      perusahaan: item?.perusahaan?.id
-    }
+      perusahaan: item?.perusahaan?.id,
+    };
     navigate(`/kepegawaian/penugasan/form/${item?.slug}`, {
       state: {
         item,
@@ -141,25 +153,79 @@ const PenugasanPage = () => {
     },
   ]);
 
+  const get = useCallback(
+    async (param) => {
+      getData(
+        { dispatch, redux: penugasanReducer },
+        param,
+        API_URL_gettugas,
+        "GET_TUGAS"
+      );
+    },
+    [dispatch]
+  );
+
   const handlePageClick = (page) => {
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
     setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    setLimit(newLimit);
-    setPageActive(0);
-    fetchTugas(search);
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
   };
 
   useEffect(() => {
-    fetchTugas(search);
-  }, [limit, pageActive, search]);
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+    get(param);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
-      fetchTugas(search); // Refetch the data after add/delete
+      const param = search
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          };
+      get(param);
     }
-  }, [addTugasResult, deleteTugasResult, search]);
+  }, [
+    addTugasResult,
+    deleteTugasResult,
+    selectedPerusahaan,
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
   const dataWithIndex = getTugasResult.results
     ? getTugasResult.results.map((item, index) => ({
@@ -172,13 +238,25 @@ const PenugasanPage = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
@@ -214,17 +292,21 @@ const PenugasanPage = () => {
                   <Tables.Row key={item?.index}>
                     <Tables.Data>{item?.index}</Tables.Data>
                     {!jwt.perusahaan && (
-                      <Tables.Data>{item?.perusahaan &&item?.perusahaan.nama || "-"}</Tables.Data>
+                      <Tables.Data>
+                        {(item?.perusahaan && item?.perusahaan.nama) || "-"}
+                      </Tables.Data>
                     )}
                     <Tables.Data>{item?.judul || "-"}</Tables.Data>
                     <Tables.Data>{item?.pengirim?.nama || "-"}</Tables.Data>
                     <Tables.Data>
-                      {item.penerima ? item?.penerima.map((p, idx) => (
-                        <span key={p.id}>
-                          {p.nama}
-                          {idx < item?.penerima.length - 1 ? ", " : ""}
-                        </span>
-                      )) : "-" }
+                      {item.penerima
+                        ? item?.penerima.map((p, idx) => (
+                            <span key={p.id}>
+                              {p.nama}
+                              {idx < item?.penerima.length - 1 ? ", " : ""}
+                            </span>
+                          ))
+                        : "-"}
                     </Tables.Data>
                     <Tables.Data>
                       {prioritases.map((prioritas) =>

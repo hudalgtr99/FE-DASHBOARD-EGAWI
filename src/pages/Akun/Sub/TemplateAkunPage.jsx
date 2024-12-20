@@ -7,6 +7,7 @@ import {
   API_URL_edeluser,
   API_URL_changeactive,
   API_URL_changeoutofarea,
+  API_URL_getperusahaan,
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -14,18 +15,22 @@ import {
   Container,
   Pagination,
   Tables,
-  Limit,
+  Select,
   TextField,
   Tooltip,
   PulseLoading,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
+import axiosAPI from "@/authentication/axiosApi";
 
-const TemplateAkun = ({getapiakun, activeTab}) => {
-  const { getDataAkunResult, addAkunResult, deleteAkunResult, getDataAkunLoading } = useSelector(
-    (state) => state.auth
-  );
+const TemplateAkun = ({ getapiakun, activeTab }) => {
+  const {
+    getDataAkunResult,
+    addAkunResult,
+    deleteAkunResult,
+    getDataAkunLoading,
+  } = useSelector((state) => state.auth);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,19 +40,39 @@ const TemplateAkun = ({getapiakun, activeTab}) => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
-      const param = value
-        ? {
-            param: `?search=${value}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
-          }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
       get(param);
     }, 300),
-    [limit, pageActive]
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
   const doSearch = (e) => {
@@ -61,15 +86,16 @@ const TemplateAkun = ({getapiakun, activeTab}) => {
     // Store the item in localStorage
     localStorage.setItem("editUserData", JSON.stringify(item));
     navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
-    sessionStorage.setItem("url", location.pathname)
+    sessionStorage.setItem("url", location.pathname);
     sessionStorage.setItem("activeTab", activeTab);
   };
 
-
   const onChange = (item) => {
-    sessionStorage.setItem("url", location.pathname)
+    sessionStorage.setItem("url", location.pathname);
     sessionStorage.setItem("activeTab", activeTab);
-    navigate(`/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`);
+    navigate(
+      `/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`
+    );
   };
 
   const doDelete = (item) => {
@@ -96,21 +122,28 @@ const TemplateAkun = ({getapiakun, activeTab}) => {
 
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
 
     get(param);
-    setPageActive(page - 1); // Set the active page
+    setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
     get(param);
-    setLimit(newLimit);
-    setPageActive(0);
   };
 
   const handleSwitch = (e, item, index) => {
@@ -138,21 +171,41 @@ const TemplateAkun = ({getapiakun, activeTab}) => {
   };
 
   useEffect(() => {
-    const param = {
-      param: "?limit=" + limit + "&offset=" + pageActive * limit,
-    };
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
     get(param);
-  }, [limit, pageActive, get]);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addAkunResult || deleteAkunResult) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-        : { param: `?limit=${limit}&offset=${offset}` };
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          };
       get(param);
     }
-  }, [addAkunResult, deleteAkunResult, search, limit, pageActive, get]);
+  }, [
+    addAkunResult,
+    deleteAkunResult,
+    search,
+    selectedPerusahaan,
+    limit,
+    pageActive,
+    get,
+  ]);
 
   const dataWithIndex = getDataAkunResult.results
     ? getDataAkunResult.results.map((item, index) => ({
@@ -188,12 +241,18 @@ const TemplateAkun = ({getapiakun, activeTab}) => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div className="w-full flex gap-2 sm:w-1/2">
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
+            />
+            <Select
+              options={perusahaanOptions}
+              placeholder="Filter perusahaan"
+              onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+              value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
             />
           </div>
         </div>
@@ -223,7 +282,9 @@ const TemplateAkun = ({getapiakun, activeTab}) => {
                   <Tables.Row key={item.datapribadi.user_id}>
                     <Tables.Data>{item.index}</Tables.Data>
                     <Tables.Data>
-                      {item?.datapribadi?.perusahaan && item.datapribadi.perusahaan.nama || "-"}
+                      {(item?.datapribadi?.perusahaan &&
+                        item.datapribadi.perusahaan.nama) ||
+                        "-"}
                     </Tables.Data>
                     {/* <Tables.Data>{item.datapegawai?.id_pegawai || "belum ada"}</Tables.Data> */}
                     <Tables.Data>{item.datapribadi.nama}</Tables.Data>

@@ -3,20 +3,20 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axiosAPI from "@/authentication/axiosApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
   API_URL_getperusahaan,
   API_URL_edelperusahaan,
   API_URL_updateprofileperusahaan,
 } from "@/constants";
-import { Button, Container, TextField } from "@/components";
+import { Button, Container, TextField, GoogleMapInput } from "@/components";
 import { updateData } from "@/actions";
 import { updateProfile } from "@/actions/auth";
-import { Avatar } from "../../../components";
+import { Avatar, PulseLoading } from "../../../components";
 
-const PerusahaanPage = () => {
-  const navigate = useNavigate();
+const MyPerusahaan = () => {
+  const { getperusahaanLoading } = useSelector((state) => state.perusahaan);
   const dispatch = useDispatch();
 
   const [item, setItem] = useState([]);
@@ -160,11 +160,21 @@ const PerusahaanPage = () => {
       setImagePreview(newPreview);
     }
   };
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    if (typeof window.google !== "undefined" && window.google.maps) {
+      setIsLoaded(true);
+    }
+  }, []);
 
   return (
     <div>
       <Container>
-        {item && (
+        {getperusahaanLoading ? (
+          <div className="flex justify-center py-4">
+            <PulseLoading />
+          </div>
+        ) : (
           <>
             <div className="w-full flex justify-center my-4">
               <div className="w-28 h-28 relative">
@@ -215,7 +225,7 @@ const PerusahaanPage = () => {
                 onChange={formik.handleChange}
                 error={formik.touched.no_telepon && formik.errors.no_telepon}
               />
-              <TextField
+              {/* <TextField
                 required
                 label="Latitude"
                 name="latitude"
@@ -238,7 +248,13 @@ const PerusahaanPage = () => {
                 value={formik.values.radius}
                 onChange={formik.handleChange}
                 error={formik.touched.radius && formik.errors.radius}
-              />
+              /> */}
+
+              {formik.values.latitude &&
+                formik.values.longitude &&
+                isLoaded && (
+                  <GoogleMapInput data={formik} isLoaded={isLoaded} />
+                )}
               <div className="mt-6 flex justify-end">
                 <Button type="submit">Simpan</Button>
               </div>
@@ -250,4 +266,4 @@ const PerusahaanPage = () => {
   );
 };
 
-export default PerusahaanPage;
+export default MyPerusahaan;

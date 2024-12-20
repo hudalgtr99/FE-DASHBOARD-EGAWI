@@ -132,11 +132,11 @@ const Router = () => {
           {jwt && jwt.level === "Super Admin" && (
             <>
               <Route
-                path="/masterdata/data-perusahaan/form"
+                path="/perusahaan/form"
                 element={<PerusahaanForm />}
               />
               <Route
-                path="/masterdata/data-perusahaan/form/:pk"
+                path="/perusahaan/form/:pk"
                 element={<PerusahaanForm />}
               />
             </>
@@ -151,9 +151,9 @@ const Router = () => {
               <Route path="/kalender/list/:pk" element={<KalenderList />} />
             </>
           )}
-					{/* Gaji */}
-					<Route path="/gaji/form" element={<GajiForm />} />
-					<Route path="/gaji/slip" element={<SlipGaji />} />
+          {/* Gaji */}
+          <Route path="/gaji/form" element={<GajiForm />} />
+          <Route path="/gaji/slip" element={<SlipGaji />} />
 
           {/* Gaji */}
           <Route path="/gaji/form" element={<GajiForm />} />
@@ -187,7 +187,10 @@ const Router = () => {
             element={<PenugasanForm />}
           />
           {/* <Route path="/kepegawaian/penugasan/detail/:pk" element={<PenugasanPDF />} /> */}
-          <Route path="/kepegawaian/penugasan/detail/:pk" element={<PenugasanDetail />} />
+          <Route
+            path="/kepegawaian/penugasan/detail/:pk"
+            element={<PenugasanDetail />}
+          />
 
           {/* Tunjangan */}
           <Route path="/tunjangan/form" element={<TunjanganForm />} />
@@ -228,19 +231,14 @@ const Router = () => {
           />
           <Route path="/profile/lainnya" element={<EditProfileLainnyaPage />} />
 
-          {/* Template Surat Penugasan */}
-          {jwt && jwt.level === "Super Admin" && (
-            <>
-              <Route
-                path="/masterdata/master-template/form"
-                element={<TemplateSlugForm />}
-              />
-              <Route
-                path="/masterdata/master-template/form/:pk"
-                element={<TemplateSlugForm />}
-              />
-            </>
-          )}
+          <Route
+            path="/masterdata/master-template/form"
+            element={<TemplateSlugForm />}
+          />
+          <Route
+            path="/masterdata/master-template/form/:pk"
+            element={<TemplateSlugForm />}
+          />
 
           {/* Surat Penugasan */}
           <Route

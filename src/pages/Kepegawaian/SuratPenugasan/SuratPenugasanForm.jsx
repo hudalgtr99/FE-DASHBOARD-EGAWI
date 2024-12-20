@@ -18,7 +18,6 @@ import {
   API_URL_createsurattugas,
   API_URL_edelsurattugas,
   API_URL_getpegawai,
-  API_URL_getperusahaan,
   API_URL_getjumlahsurattugas,
   API_URL_getalltemplatesurattugas,
 } from "@/constants";
@@ -34,7 +33,6 @@ const SuratPenugasanSlug = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [pegawaiOptions, setPegawaiOptions] = useState([]);
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const [templatesOptions, setTemplatesOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState([]);
@@ -57,7 +55,6 @@ const SuratPenugasanSlug = () => {
 
   const formik = useFormik({
     initialValues: {
-      perusahaan: state?.item?.perusahaan || "",
       nama: state?.item?.nama || "",
       pemohon: state?.item?.pemohon?.id || state?.item?.pemohon || "",
       penerima:
@@ -73,7 +70,6 @@ const SuratPenugasanSlug = () => {
       nama: Yup.string().required("Nama wajib diisi").max(255, "Nama harus kurang dari 255 karakter"),
       pemohon: Yup.string().required("Pemohon wajib diisi"),
       penerima: Yup.array().min(1, "Penerima wajib diisi"),
-      perusahaan: Yup.mixed().required("Perusahaan wajib diisi"),
     }),
 
     onSubmit: async (values) => {
@@ -120,12 +116,10 @@ const SuratPenugasanSlug = () => {
       try {
         const [
           pegawaiResponse,
-          perusahaanResponse,
           jumlahSuratResponse,
           templatesResponse,
         ] = await Promise.all([
           axiosAPI.get(`${API_URL_getpegawai}?nama=`),
-          axiosAPI.get(API_URL_getperusahaan),
           axiosAPI.get(API_URL_getjumlahsurattugas),
           axiosAPI.get(API_URL_getalltemplatesurattugas),
         ]);
@@ -147,16 +141,6 @@ const SuratPenugasanSlug = () => {
             label: item.nama,
           }))
         );
-
-        const options = perusahaanResponse.data.map((item) => ({
-          value: item.pk,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-
-        if (options.length === 1) {
-          formik.setFieldValue("perusahaan", options[0].value);
-        }
 
         setJumlahSurat(jumlahSuratResponse.data.count);
         if (jumlahSurat >= 0) {
@@ -215,22 +199,6 @@ const SuratPenugasanSlug = () => {
         <h1>{isEdit ? "Edit Surat" : "Tambah Surat"}</h1>
       </div>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-        <Select
-          required
-          label="Perusahaan"
-          name="perusahaan"
-          value={
-            perusahaanOptions.find(
-              (option) => option.value === formik.values.perusahaan
-            ) || null
-          }
-          onChange={(option) => {
-            formik.setFieldValue("perusahaan", option ? option.value : "");
-          }}
-          options={perusahaanOptions}
-          error={formik.touched.perusahaan && formik.errors.perusahaan}
-          disabled={perusahaanOptions.length === 1}
-        />
         <TextField
           label="Nomor Surat"
           name="noSurat"

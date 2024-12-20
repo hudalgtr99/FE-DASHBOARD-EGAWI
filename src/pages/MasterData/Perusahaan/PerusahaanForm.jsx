@@ -10,16 +10,14 @@ import {
   API_URL_edelperusahaan,
   API_URL_updateprofileperusahaan,
 } from "@/constants";
-import { Container, TextField, Button } from "@/components";
+import { Container, TextField, Button, GoogleMapInput } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
 import { updateProfile } from "@/actions/auth";
 import { TbBuilding, TbPhotoPlus } from "react-icons/tb";
 import { Avatar } from "../../../components";
 
 const perusahaanForm = () => {
-  const {
-    addperusahaanLoading,
-  } = useSelector((state) => state.perusahaan); 
+  const { addperusahaanLoading } = useSelector((state) => state.perusahaan);
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -130,9 +128,9 @@ const perusahaanForm = () => {
             API_URL_edelperusahaan,
             "ADD_perusahaan"
           );
-          
-          if(response && !addperusahaanLoading){
-            navigate("/masterdata/data-perusahaan");
+
+          if (response && !addperusahaanLoading) {
+            navigate("/perusahaan");
           }
         } else {
           response = await addData(
@@ -141,9 +139,9 @@ const perusahaanForm = () => {
             API_URL_createperusahaan,
             "ADD_perusahaan"
           );
-          
-          if(response && !addperusahaanLoading){
-            navigate("/masterdata/data-perusahaan");
+
+          if (response && !addperusahaanLoading) {
+            navigate("/perusahaan");
           }
         }
 
@@ -183,6 +181,12 @@ const perusahaanForm = () => {
       setImagePreview(newPreview);
     }
   };
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    if (typeof window.google !== "undefined" && window.google.maps) {
+      setIsLoaded(true);
+    }
+  }, []);
 
   // console.log(formik.values)
 
@@ -265,37 +269,15 @@ const perusahaanForm = () => {
                   formik.touched.no_telepon ? formik.errors.no_telepon : ""
                 }
               />
-              <TextField
-                required
-                label="Latitude"
-                name="latitude"
-                value={formik.values.latitude}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.latitude ? formik.errors.latitude : ""}
+            </div>
+            <div className="flex flex-col gap-4">
+              <GoogleMapInput
+                data={formik}
+                isEdit={isEdit}
+                isLoaded={isLoaded}
               />
             </div>
-            <div className="flex gap-4">
-              <TextField
-                required
-                label="Longitude"
-                name="longitude"
-                value={formik.values.longitude}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.longitude ? formik.errors.longitude : ""}
-              />
-              <TextField
-                label="Radius (m)"
-                name="radius"
-                type="number"
-                value={formik.values.radius}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.radius ? formik.errors.radius : ""}
-              />
-            </div>
-            {[
+            {/* {[
               "senin",
               "selasa",
               "rabu",
@@ -334,9 +316,11 @@ const perusahaanForm = () => {
                   }
                 />
               </div>
-            ))}
+            ))} */}
             <div className="flex justify-end">
-              <Button loading={addperusahaanLoading} type="submit">{isEdit ? "Update" : "Simpan"}</Button>
+              <Button loading={addperusahaanLoading} type="submit">
+                {isEdit ? "Update" : "Simpan"}
+              </Button>
             </div>
           </form>
         </div>

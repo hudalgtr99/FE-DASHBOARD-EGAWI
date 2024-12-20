@@ -5,24 +5,26 @@ import {
   Tables,
   TextField,
   Tooltip,
-  PulseLoading, // Import your PulseLoading component here
+  PulseLoading,
+  Select,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
-import { getData, deleteData, updateData } from "@/actions";
+import { getData, updateData } from "@/actions";
 import {
   API_URL_gettemplatesurattugas,
-  API_URL_edeltemplatesurattugas,
+  API_URL_getperusahaan,
   API_URL_changeactivedata,
 } from "@/constants";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import axiosAPI from "@/authentication/axiosApi";
 
 export default function MasterTemplate() {
   const navigate = useNavigate();
@@ -35,6 +37,8 @@ export default function MasterTemplate() {
     useSelector((state) => state.tugas);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -42,6 +46,46 @@ export default function MasterTemplate() {
       setJwt(jwtDecode(token));
     }
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
+      get(param);
+    }, 300),
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
+  );
+
+  const doSearch = (e) => {
+    const { value } = e.target;
+    setSearch(value);
+    debouncedSearch(value);
+    setPageActive(0);
+  };
+
   const onAdd = () => {
     navigate("/masterdata/master-template/form", {
       state: {
@@ -54,10 +98,6 @@ export default function MasterTemplate() {
     sessionStorage.removeItem("ckeditor");
   };
 
-  const onView = (item) => {
-    navigate(`/masterdata/master-template/${item.slug}`);
-    sessionStorage.removeItem("ckeditor");
-  };
   function handleActive(e, item) {
     Swal.fire({
       title: "Apakah Anda yakin?",
@@ -85,7 +125,9 @@ export default function MasterTemplate() {
       }
     });
   }
+
   const onEdit = (item) => {
+    item = { ...item, perusahaan: item.perusahaan.id };
     navigate(`/masterdata/master-template/form/${item.slug}`, {
       state: {
         item,
@@ -93,66 +135,79 @@ export default function MasterTemplate() {
     });
   };
 
-  const doDelete = (item) => {
-    deleteData(
-      { dispatch, redux: penugasanReducer },
-      item.slug,
-      API_URL_edeltemplatesurattugas,
-      "DELETE_TUGAS"
-    );
-  };
-
-  // Debounce search function
-  const debouncedSearch = useCallback(
-    debounce((value) => fetchTugas(value), 300),
-    [limit]
+  const get = useCallback(
+    async (param) => {
+      getData(
+        { dispatch, redux: penugasanReducer },
+        param,
+        API_URL_gettemplatesurattugas,
+        "GET_TUGAS"
+      );
+    },
+    [dispatch]
   );
 
-  const fetchTugas = (searchValue = "") => {
-    setLoading(true);
-    const param = searchValue
-      ? {
-          param: `?search=${searchValue}&limit=${limit}&offset=${
-            pageActive * limit
-          }`,
-        }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-    getData(
-      { dispatch, redux: penugasanReducer },
-      param,
-      API_URL_gettemplatesurattugas,
-      "GET_TUGAS"
-    );
-
-    setLoading(false);
-  };
-
-  const doSearch = (e) => {
-    const { value } = e.target;
-    setSearch(value);
-    debouncedSearch(value);
-    setPageActive(0);
-  };
-
   const handlePageClick = (page) => {
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
     setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    setLimit(newLimit);
-    setPageActive(0);
-    fetchTugas(search);
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
   };
 
   useEffect(() => {
-    fetchTugas(search);
-  }, [limit, pageActive, search]);
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+    get(param);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
-      fetchTugas(search); // Refetch the data after add/delete
+      const param = search
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          };
+      get(param);
     }
-  }, [addTugasResult, deleteTugasResult, search]);
+  }, [
+    addTugasResult,
+    deleteTugasResult,
+    selectedPerusahaan,
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
   const dataWithIndex = getTugasResult.results
     ? getTugasResult.results.map((item, index) => ({
@@ -165,8 +220,25 @@ export default function MasterTemplate() {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
-            <TextField placeholder="Search" icon={<CiSearch />} />
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
+            <TextField
+              onChange={doSearch}
+              placeholder="Search"
+              value={search}
+              icon={<CiSearch />}
+            />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Updated to use handlePerusahaanSelect
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={() => onAdd()}>
             <div className="flex items-center gap-2">
@@ -183,6 +255,9 @@ export default function MasterTemplate() {
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
+                {!jwt.perusahaan && (
+                  <Tables.Header>Nama perusahaan</Tables.Header>
+                )}
                 <Tables.Header>Nama template</Tables.Header>
                 <Tables.Header center>Active</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
@@ -191,29 +266,26 @@ export default function MasterTemplate() {
             <Tables.Body>
               {dataWithIndex.length > 0 ? (
                 dataWithIndex.map((item, index) => (
-                  <Tables.Row>
+                  <Tables.Row key={index}>
                     <Tables.Data>{index + 1}</Tables.Data>
-                    <Tables.Data>{item.nama}</Tables.Data>
+                    {!jwt.perusahaan && (
+                      <Tables.Data>
+                        {(item.perusahaan && item?.perusahaan?.nama) || "-"}
+                      </Tables.Data>
+                    )}
+                    <Tables.Data>{item?.nama}</Tables.Data>
                     <Tables.Data center>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={item.is_active ? true : false}
+                          checked={item?.is_active ? true : false}
                           onChange={(e) => handleActive(e, item)}
                           className="toggle-switch"
                         />
                       </label>
                     </Tables.Data>
                     <Tables.Data center>
-                      <div className="flex it ems-center justify-center gap-2">
-                        {/* <Tooltip tooltip="Lihat">
-                        <div
-                          onClick={() => onView(item)}
-                          className="text-blue-500 cursor-pointer"
-                        >
-                          <FaEye />
-                        </div>
-                      </Tooltip> */}
+                      <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Edit">
                           <div
                             onClick={() => onEdit(item)}
@@ -222,21 +294,13 @@ export default function MasterTemplate() {
                             <FaEdit />
                           </div>
                         </Tooltip>
-                        <Tooltip tooltip="Delete">
-                          <div
-                            onClick={() => doDelete(item)}
-                            className="text-red-500 cursor-pointer"
-                          >
-                            <FaTrash />
-                          </div>
-                        </Tooltip>
                       </div>
                     </Tables.Data>
                   </Tables.Row>
                 ))
               ) : (
                 <Tables.Row>
-                  <td colSpan={3} className="text-center">
+                  <td colSpan={4} className="text-center">
                     Tidak ada data yang tersedia
                   </td>
                 </Tables.Row>

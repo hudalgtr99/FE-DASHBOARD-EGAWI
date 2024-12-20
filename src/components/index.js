@@ -32,6 +32,7 @@ import MonthPicker from "./forms/MonthPicker";
 import Radio from "./forms/Radio";
 import Select from "./forms/Select";
 import Switch from "./forms/Switch";
+import GoogleMapInput from "./forms/GoogleMapInput";
 import TextArea from "./forms/TextArea";
 import TextField from "./forms/TextField";
 import Layout from "./layout/Layout";
@@ -84,4 +85,5 @@ export {
 	PulseLoading,
 	DatePicker,
 	Slip,
+	GoogleMapInput
 };

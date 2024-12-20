@@ -3,14 +3,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { unitReducers } from "@/reducers/organReducers";
-import { API_URL_edelunit, API_URL_getunit } from "@/constants";
+import {
+  API_URL_edelunit,
+  API_URL_getunit,
+  API_URL_getperusahaan,
+} from "@/constants";
 import { icons } from "../../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Limit,
+  Select,
   TextField,
   Tooltip,
   PulseLoading,
@@ -21,6 +25,7 @@ import { CiSearch } from "react-icons/ci";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+import axiosAPI from "@/authentication/axiosApi";
 
 const UnitSub = () => {
   const {
@@ -31,7 +36,7 @@ const UnitSub = () => {
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,
-    getUnitLoading
+    getUnitLoading,
   } = useSelector((state) => state.organ);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,9 +45,11 @@ const UnitSub = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true); 
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -51,18 +58,36 @@ const UnitSub = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const debouncedSearch = useCallback(
     debounce((value) => {
-      const param = value
-        ? {
-            param: `?search=${value}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
-          }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
       get(param);
     }, 300),
-    [limit, pageActive]
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
   const doSearch = (e) => {
@@ -108,22 +133,29 @@ const UnitSub = () => {
   );
 
   const handlePageClick = (page) => {
-    const offset = (page - 1) * limit;
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
+    const offset = (page - 1) * limit; // Calculate the offset based on the page
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
 
     get(param);
     setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
     get(param);
-    setLimit(newLimit);
-    setPageActive(0);
   };
 
   const [actions] = useState([
@@ -142,11 +174,15 @@ const UnitSub = () => {
   ]);
 
   useEffect(() => {
-    const param = {
-      param: "?limit=" + limit + "&offset=" + pageActive * limit,
-    };
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
     get(param);
-  }, [limit, pageActive, get]);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (
@@ -159,8 +195,8 @@ const UnitSub = () => {
     ) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-        : { param: `?limit=${limit}&offset=${offset}` };
+        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
+        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
       get(param);
     }
   }, [
@@ -170,6 +206,7 @@ const UnitSub = () => {
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,
+    selectedPerusahaan, 
     search,
     limit,
     pageActive,
@@ -187,13 +224,25 @@ const UnitSub = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
@@ -226,12 +275,20 @@ const UnitSub = () => {
                     <Tables.Data>{item?.index || "-"}</Tables.Data>
                     {!jwt.perusahaan && (
                       <Tables.Data>
-                        {item?.divisi?.departemen?.perusahaan && item.divisi.departemen.perusahaan.nama || "-"}
+                        {(item?.divisi?.departemen?.perusahaan &&
+                          item.divisi.departemen.perusahaan.nama) ||
+                          "-"}
                       </Tables.Data>
                     )}
                     <Tables.Data>{item?.nama || "-"}</Tables.Data>
-                    <Tables.Data>{item?.divisi?.departemen && item?.divisi?.departemen.nama || "-"}</Tables.Data>
-                    <Tables.Data>{item?.divisi && item?.divisi?.nama || "-"}</Tables.Data>
+                    <Tables.Data>
+                      {(item?.divisi?.departemen &&
+                        item?.divisi?.departemen.nama) ||
+                        "-"}
+                    </Tables.Data>
+                    <Tables.Data>
+                      {(item?.divisi && item?.divisi?.nama) || "-"}
+                    </Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (

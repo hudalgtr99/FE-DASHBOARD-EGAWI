@@ -3,13 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  Container,
-  TextField,
-  Button,
-  Select,
-  GoogleMapInput,
-} from "@/components";
+import { Container, TextField, Button, Select } from "@/components";
 import { IoMdReturnLeft } from "react-icons/io";
 import { addData, updateData } from "@/actions";
 import {
@@ -110,12 +104,6 @@ const LokasiAbsenForm = () => {
       }
     },
   });
-  const [isLoaded, setIsLoaded] = useState(false);
-  useEffect(() => {
-    if (typeof window.google !== "undefined" && window.google.maps) {
-      setIsLoaded(true);
-    }
-  }, []);
 
   return (
     <div>
@@ -154,10 +142,35 @@ const LokasiAbsenForm = () => {
             onBlur={(e) => formik.handleBlur}
             error={formik.touched.nama_lokasi ? formik.errors.nama_lokasi : ""}
           />
-          <GoogleMapInput
-            data={formik} 
-            isEdit={isEdit}
-            isLoaded={isLoaded}
+          <div className="flex gap-4">
+            <TextField
+              required
+              label="Latitude"
+              name="latitude"
+              value={formik.values.latitude}
+              onChange={formik.handleChange}
+              onBlur={(e) => formik.handleBlur}
+              error={formik.touched.latitude ? formik.errors.latitude : ""}
+            />
+            <TextField
+              required
+              label="Longitude"
+              name="longitude"
+              value={formik.values.longitude}
+              onChange={formik.handleChange}
+              onBlur={(e) => formik.handleBlur}
+              error={formik.touched.longitude ? formik.errors.longitude : ""}
+            />
+          </div>
+          <TextField
+            required
+            label="Radius"
+            name="radius"
+            type="number"
+            value={formik.values.radius}
+            onChange={formik.handleChange}
+            onBlur={(e) => formik.handleBlur}
+            error={formik.touched.radius ? formik.errors.radius : ""}
           />
           <div className="mt-6 flex justify-end">
             <Button loading={addperusahaanLoading} type="submit">

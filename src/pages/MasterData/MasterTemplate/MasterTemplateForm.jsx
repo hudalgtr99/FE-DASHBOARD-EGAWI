@@ -3,30 +3,37 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import {
-  Button,
-  Container,
-  TextField,
-  PulseLoading,
-  TextArea,
-} from "@/components";
+import { Button, Container, TextField, Select } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import {
+  API_URL_getperusahaan,
   API_URL_createtemplatesurattugas,
   API_URL_edeltemplatesurattugas,
 } from "@/constants";
 import CKEditor from "../../../components/forms/CKEditor";
+import axiosAPI from "@/authentication/axiosApi";
+import {isAuthenticated} from "@/authentication/authenticationApi";
+import {jwtDecode} from "jwt-decode";
 
 const MasterTemplateForm = () => {
-  const { addTugasLoading } =
-    useSelector((state) => state.tugas);
+  const { addTugasLoading } = useSelector((state) => state.tugas);
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [idTemplate, setIdTemplate] = useState(pk);
+
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [perusahaan, Setperusahaan] = useState([]);
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    const token = isAuthenticated();
+      const jwt = jwtDecode(token);
+      setRole(jwt.level);
+  }, []);
 
   const isEdit = pk && pk !== "add";
 
@@ -34,9 +41,13 @@ const MasterTemplateForm = () => {
     initialValues: {
       nama: state?.item?.nama || "",
       isi: state?.item?.isi || "",
+      perusahaan: state?.item?.perusahaan || "",
     },
     validationSchema: Yup.object().shape({
-      nama: Yup.string().required("Nama is required").max(255, "Nama template harus kurang dari 255 karakter"),
+      nama: Yup.string()
+        .required("Nama is required")
+        .max(255, "Nama template harus kurang dari 255 karakter"),
+      perusahaan: Yup.mixed().required("Perusahaan wajib diisi"),
     }),
 
     onSubmit: async (values) => {
@@ -49,7 +60,7 @@ const MasterTemplateForm = () => {
             API_URL_edeltemplatesurattugas,
             "ADD_TUGAS"
           );
-          if(data && !addTugasLoading){
+          if (data && !addTugasLoading) {
             navigate(`/masterdata/master-template`);
             sessionStorage.removeItem("ckeditor");
           }
@@ -63,13 +74,46 @@ const MasterTemplateForm = () => {
           API_URL_createtemplatesurattugas,
           "ADD_TUGAS"
         );
-        if(data && !addTugasLoading){
+        if (data && !addTugasLoading) {
           navigate(`/masterdata/master-template`);
           sessionStorage.removeItem("ckeditor");
         }
       }
     },
   });
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const [perusahaanResponse] = await Promise.all([
+          axiosAPI.get(API_URL_getperusahaan),
+        ]);
+
+        const options = perusahaanResponse.data.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+        Setperusahaan(perusahaanResponse.data)
+
+        if (options.length === 1) {
+          formik.setFieldValue("perusahaan", options[0].value);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchAllData();
+  }, []);
+
+  useEffect(() => {
+    if (isEdit) {
+      setIdTemplate(pk);
+    }
+  }, [pk, isEdit]);
+
+  console.log(formik.values)
 
   return (
     <Container>
@@ -83,6 +127,22 @@ const MasterTemplateForm = () => {
         <h1>{isEdit ? "Edit Template" : "Tambah Template"}</h1>
       </div>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
+        <Select
+          required
+          label="Perusahaan"
+          name="perusahaan"
+          value={
+            perusahaanOptions.find(
+              (option) => option.value === formik.values.perusahaan
+            ) || null
+          }
+          onChange={(option) => {
+            formik.setFieldValue("perusahaan", option ? option.value : "");
+          }}
+          options={perusahaanOptions}
+          error={formik.touched.perusahaan && formik.errors.perusahaan}
+          disabled={perusahaanOptions.length === 1}
+        />
         <TextField
           required
           label="Nama Template"
@@ -93,11 +153,13 @@ const MasterTemplateForm = () => {
           error={formik.touched.nama && formik.errors.nama}
         />
         <div className="w-full">
-          <CKEditor values={formik.values.isi} isEdit={isEdit}  />
+          <CKEditor isTemplate={true} perusahaan={role !== "Super Admin" && perusahaan[0]} values={formik.values.isi} isEdit={isEdit} />
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button loading={addTugasLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
+          <Button loading={addTugasLoading} type="submit">
+            {isEdit ? "Update" : "Tambah"}
+          </Button>
         </div>
       </form>
     </Container>

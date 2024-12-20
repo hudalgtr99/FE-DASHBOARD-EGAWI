@@ -31,9 +31,7 @@ const PerusahaanPage = () => {
   const {
     getperusahaanResult,
     getperusahaanLoading,
-    getperusahaanError,
     addperusahaanResult,
-    addperusahaanLoading,
     deleteperusahaanResult,
   } = useSelector((state) => state.perusahaan); 
   const dispatch = useDispatch();
@@ -75,11 +73,11 @@ const PerusahaanPage = () => {
   };
 
   const onAdd = () => {
-    navigate("/masterdata/data-perusahaan/form");
+    navigate("/perusahaan/form");
   };
 
   const onEdit = (item) => {
-    navigate(`/masterdata/data-perusahaan/form/${item.slug}`, {
+    navigate(`/perusahaan/form/${item.slug}`, {
       state: {
         item,
       },
@@ -115,15 +113,6 @@ const PerusahaanPage = () => {
 
     get(param);
     setPageActive(page - 1); // Set the active page
-  };
-
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
-    get(param);
-    setLimit(newLimit);
-    setPageActive(0);
   };
 
   const [actions] = useState([

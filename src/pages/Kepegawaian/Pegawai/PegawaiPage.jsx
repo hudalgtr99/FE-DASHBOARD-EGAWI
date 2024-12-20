@@ -8,6 +8,7 @@ import {
   API_URL_getdataakun,
   API_URL_changeactive,
   API_URL_changeoutofarea,
+  API_URL_getperusahaan
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -15,7 +16,7 @@ import {
   Container,
   Pagination,
   Tables,
-  Limit,
+  Select,
   TextField,
   Tooltip,
   PulseLoading,
@@ -27,6 +28,7 @@ import { FaPlus } from "react-icons/fa";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
+import axiosAPI from "@/authentication/axiosApi";
 
 const AkunPage = () => {
   const {
@@ -44,7 +46,9 @@ const AkunPage = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const [jwt, setJwt] = useState({});
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -53,18 +57,36 @@ const AkunPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const debouncedSearch = useCallback(
     debounce((value) => {
-      const param = value
-        ? {
-            param: `?search=${value}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
-          }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
       get(param);
     }, 300),
-    [limit, pageActive]
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
   const doSearch = (e) => {
@@ -113,21 +135,28 @@ const AkunPage = () => {
 
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
 
     get(param);
-    setPageActive(page - 1); // Set the active page
+    setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
     get(param);
-    setLimit(newLimit);
-    setPageActive(0);
   };
 
   const handleSwitch = (e, item, index) => {
@@ -185,21 +214,25 @@ const AkunPage = () => {
   };
 
   useEffect(() => {
-    const param = {
-      param: "?limit=" + limit + "&offset=" + pageActive * limit,
-    };
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
     get(param);
-  }, [limit, pageActive, get]);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addAkunResult || deleteAkunResult) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-        : { param: `?limit=${limit}&offset=${offset}` };
+        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
+        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
       get(param);
     }
-  }, [addAkunResult, deleteAkunResult, search, limit, pageActive, get]);
+  }, [addAkunResult, deleteAkunResult, search, selectedPerusahaan, limit, pageActive, get]);
 
   const dataWithIndex = getDataAkunResult.results
     ? getDataAkunResult.results.map((item, index) => ({
@@ -272,13 +305,25 @@ const AkunPage = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">

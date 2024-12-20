@@ -3,14 +3,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { divisiReducers } from "@/reducers/organReducers";
-import { API_URL_edeldepartemen, API_URL_getdepartemen } from "@/constants";
+import {
+  API_URL_edeldepartemen,
+  API_URL_getdepartemen,
+  API_URL_getperusahaan,
+} from "@/constants";
 import { icons } from "../../../../../public/icons";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Limit,
+  Select,
   TextField,
   Tooltip,
   PulseLoading, // Import PulseLoading component
@@ -18,17 +22,23 @@ import {
 import { debounce } from "lodash"; // Import lodash debounce
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
+import axiosAPI from "@/authentication/axiosApi";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { data } from "autoprefixer";
 
 const DivisiSub = () => {
-  const { getDivisiResult, addDivisiResult, deleteDivisiResult, getDivisiLoading } = useSelector(
-    (state) => state.organ
-  ); // reducer departemen gabisa, jadi pakai departemen
+  const {
+    getDivisiResult,
+    addDivisiResult,
+    deleteDivisiResult,
+    getDivisiLoading,
+  } = useSelector((state) => state.organ); // reducer departemen gabisa, jadi pakai departemen
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -44,18 +54,36 @@ const DivisiSub = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosAPI.get(API_URL_getperusahaan);
+        const options = response.data.map((item) => ({
+          value: item.slug,
+          label: item.nama,
+        }));
+        setPerusahaanOptions(options);
+      } catch (error) {
+        console.error("Error fetching perusahaan data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const debouncedSearch = useCallback(
     debounce((value) => {
-      const param = value
-        ? {
-            param: `?search=${value}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
-          }
-        : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      const param = {
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
+      };
+
+      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
+      if (selectedPerusahaan) {
+        param.param += `&perusahaan=${selectedPerusahaan.value}`;
+      }
+
       get(param);
     }, 300),
-    [limit, pageActive]
+    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
   const doSearch = (e) => {
@@ -67,11 +95,11 @@ const DivisiSub = () => {
 
   const onAdd = () => navigate("/masterdata/organization/departemen/form");
 
-  const onEdit = (item) =>{
-    item.perusahaan = item.perusahaan.id,
-    navigate(`/masterdata/organization/departemen/form/${item.slug}`, {
-      state: { item },
-    });
+  const onEdit = (item) => {
+    (item.perusahaan = item.perusahaan.id),
+      navigate(`/masterdata/organization/departemen/form/${item.slug}`, {
+        state: { item },
+      });
   };
 
   const doDelete = (item) => {
@@ -79,7 +107,7 @@ const DivisiSub = () => {
       { dispatch, redux: divisiReducers },
       item.slug,
       API_URL_edeldepartemen,
-      "DELETE_DIVISI" 
+      "DELETE_DIVISI"
       // reducer departemen gabisa, jadi pakai divisi
     );
   };
@@ -91,7 +119,7 @@ const DivisiSub = () => {
         { dispatch, redux: divisiReducers },
         param,
         API_URL_getdepartemen,
-        "GET_DIVISI" 
+        "GET_DIVISI"
         // reducer departemen gabisa, jadi pakai divisi
       );
       setLoading(false); // Set loading to false after fetching
@@ -101,21 +129,28 @@ const DivisiSub = () => {
 
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
-    const param = search
-      ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-      : { param: `?limit=${limit}&offset=${offset}` };
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
 
     get(param);
-    setPageActive(page - 1); // Set the active page
+    setPageActive(page - 1);
   };
 
-  const handleSelect = (newLimit) => {
-    const param = search
-      ? { param: `?search=${search}&limit=${newLimit}` }
-      : { param: `?limit=${newLimit}` };
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
     get(param);
-    setLimit(newLimit);
-    setPageActive(0);
   };
 
   const [actions] = useState([
@@ -134,21 +169,25 @@ const DivisiSub = () => {
   ]);
 
   useEffect(() => {
-    const param = {
-      param: "?limit=" + limit + "&offset=" + pageActive * limit,
-    };
+    const param = selectedPerusahaan
+      ? {
+          param: `?perusahaan=${
+            selectedPerusahaan.value
+          }&limit=${limit}&offset=${pageActive * limit}`,
+        }
+      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
     get(param);
-  }, [limit, pageActive, get]);
+  }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addDivisiResult || deleteDivisiResult) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
-        : { param: `?limit=${limit}&offset=${offset}` };
+        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
+        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
       get(param);
     }
-  }, [addDivisiResult, deleteDivisiResult, search, limit, pageActive, get]); // reducer departemen gabisa, jadi pakai departemen
+  }, [addDivisiResult, deleteDivisiResult, selectedPerusahaan,search, limit, pageActive, get]); // reducer departemen gabisa, jadi pakai departemen
 
   const dataDepartemen = getDivisiResult.results
     ? getDivisiResult.results.map((item, index) => ({
@@ -161,13 +200,25 @@ const DivisiSub = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
