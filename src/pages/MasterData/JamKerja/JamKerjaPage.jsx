@@ -98,7 +98,6 @@ const JamKerjaPage = () => {
     <div>
       <Container>
         <div className={`mb-4 flex flex-col sm:flex-row justify-center ${!jwt.perusahaan ? 'sm:justify-between' : 'sm:justify-end'} items-center gap-4`}>
-          {locations.length > 0 ? (
             <>
               {!jwt.perusahaan && (
                 <div className={`w-full sm:w-60`}>
@@ -116,12 +115,6 @@ const JamKerjaPage = () => {
                 </div>
               </Button>
             </>
-          ) : (
-            <div className="flex flex-col w-full gap-2 justify-center items-center h-[60vh]">
-              <FaExclamation className="text-3xl" />
-              <p className="font-bold">Tidak ada data yang tersedia</p>
-            </div>
-          )}
         </div>
         {locations.length > 0 && (
           <Tables>
