@@ -209,16 +209,17 @@ export const menu = [
             },
           ],
         },
-        {
-          icon: icons.luusers2,
-          menuLink: "/akun",
-          name: "akun",
-          title: "Akun",
-          element: <AkunPage />,
-          sub: [],
-        },
       ]
     : []),
+
+  {
+    icon: icons.luusers2,
+    menuLink: "/akun",
+    name: "akun",
+    title: "Akun",
+    element: <AkunPage />,
+    sub: [],
+  },
   {
     icon: icons.luCalendarDays,
     menuLink: "/kalender",

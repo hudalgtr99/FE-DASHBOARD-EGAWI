@@ -373,7 +373,6 @@ export const updateData = (reducers, data, url, type, method = "PUT") => {
         }
       })
       .catch((error) => {
-        console.log("error",)
         showToast("error", error.response.data.messages); // Toast error
         dispatch(
           redux({

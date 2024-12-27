@@ -47,13 +47,12 @@ import {
   PenugasanPage,
   LokasiAbsen,
   JamKerja,
-  PegawaiPage
+  PegawaiPage,
 } from "@/pages";
 
 import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
 import SuratPenugasanPage from "@/pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
 import ImportPegawai from "../pages/Kepegawaian/ImportPegawai/ImportPegawaiPage";
-
 
 let jwt = null; // Initialize jwt variable
 
@@ -148,13 +147,13 @@ const Router = () => {
             </>
           )}
           {/* Kalender */}
-          <Route path="/kalender/list" element={<KalenderList />} />
           <Route path="/kalender/form" element={<KalenderForm />} />
           <Route path="/kalender/form/:pk" element={<KalenderForm />} />
+          <Route path="/kalender/list" element={<KalenderList />} />
+          <Route path="/kalender/list/:pk" element={<KalenderList />} />
           {jwt && jwt.level === "Super Admin" && (
             <>
               <Route path="/kalender/:pk" element={<KalenderPage />} />
-              <Route path="/kalender/list/:pk" element={<KalenderList />} />
             </>
           )}
           {/* Gaji */}
@@ -215,7 +214,10 @@ const Router = () => {
           />
 
           {/* jam kerja */}
-          <Route path="/masterdata/jam-kerja/:slug" element={<JamKerjaPage />} />
+          <Route
+            path="/masterdata/jam-kerja/:slug"
+            element={<JamKerjaPage />}
+          />
           <Route path="/masterdata/jam-kerja/form" element={<JamKerjaForm />} />
           <Route
             path="/masterdata/jam-kerja/form/:pk"
@@ -264,6 +266,7 @@ const Router = () => {
             path="/kepegawaian/pegawai/changepassword/:id"
             element={<AkunPassword />}
           />
+          <Route path="/akun/import-pegawai" element={<ImportPegawai />} />
 
           {/* super admin menu */}
           {jwt && jwt.level === "Super Admin" && (
@@ -297,7 +300,6 @@ const Router = () => {
                 element={<MasterTemplate />}
               />
               <Route path="/kalender/:pk" element={<KalenderPage />} />
-              <Route path="/akun/import-pegawai" element={<ImportPegawai />} />
             </>
           )}
           <Route

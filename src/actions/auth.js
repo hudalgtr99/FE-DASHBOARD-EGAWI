@@ -140,7 +140,7 @@ export const loginUser = (dispatch, data) => {
   })
     .then((response) => {
       setNewHeaders(response.data);
-      showToast("success", "Login in successfully!");
+      showToast("success", "Login berhasil!");
 
       dispatch(
         authReducer({
@@ -170,7 +170,7 @@ export const loginUser = (dispatch, data) => {
 export const logoutUser = (dispatch) => {
   try {
     logout();
-    showToast("success", "Logout successfully!");
+    showToast("success", "Logout berhasil!");
 
     dispatch(
       authReducer({

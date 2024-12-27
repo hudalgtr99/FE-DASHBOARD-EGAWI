@@ -86,3 +86,7 @@ input:-webkit-autofill:active {
   height: auto; /* Adjust height based on content */
   overflow-y: auto; /* Allow scrolling if content exceeds height */
 }
+
+.ckeditor-container {
+  margin-top: 0 !important;
+}

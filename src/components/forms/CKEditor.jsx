@@ -21,18 +21,32 @@ export default function CKEditorInput({
   user = {},
   perusahaan = {},
 }) {
-  const headerHtml = ` ${values ? `${values}` : `<div style="padding: 1.5rem; padding-top: 3rem; padding-bottom: 2.5rem; padding-left: 6rem; padding-right: 6rem; display: flex; flex-wrap: wrap; flex-direction: column;">
+  const headerHtml = ` ${
+    values
+      ? `${values}`
+      : `<div style="padding: 1.5rem; padding-top: 3rem; padding-bottom: 2.5rem; padding-left: 6rem; padding-right: 6rem; display: flex; flex-wrap: wrap; flex-direction: column;">
     <header style="display: flex; justify-content: flex-start; align-items: center; gap: 2.5rem; margin-bottom: 1.25rem;">
       <div>
-        <img alt="Logo" src="${perusahaan?.image || "/images/icons/qnn.png"}" style="width: 11rem;" />
+        <img alt="Logo" src="${
+          perusahaan?.image || "/images/icons/qnn.png"
+        }" style="width: 11rem;" />
       </div>
       <div style="width: fit-content; text-align: center;">
         <h1 style="font-size: 1.5rem; font-weight: bold; white-space: nowrap;">
-          ${perusahaan?.nama ? 'PT. ' + perusahaan?.nama.toUpperCase() : `<span style="color: #ff0000;">QUEEN </span><span style="color: #09017b;">NETWORK</span> <span style="color: #ff0000;">NUSANTARA</span>`}
+          ${
+            perusahaan?.nama
+              ? perusahaan?.nama.toUpperCase()
+              : `<span style="color: #ff0000;">PT. QUEEN </span><span style="color: #09017b;">NETWORK</span> <span style="color: #ff0000;">NUSANTARA</span>`
+          }
         </h1>
         <div style="font-size: .885rem; font-family: 'Tinos', serif;">
-          <p>${(perusahaan?.alamat?.split(',')[0] || 'Jalan Alam Gaya Nomor 42 BTN II')}, ${perusahaan?.alamat?.split(',')[1] || 'Way Halim Permai'}</p>
-          <p>${(perusahaan?.alamat?.split(',')[2] || 'Kota Bandar Lampung')}, ${(perusahaan?.alamat?.split(',')[3] || 'Lampung')}, ${(perusahaan?.alamat?.split(',')[4] || 'Kode Pos 35133')}</p>
+          <p>${
+            perusahaan?.alamat?.split(",")[0] ||
+            "Jalan Alam Gaya Nomor 42 BTN II"
+          }, ${perusahaan?.alamat?.split(",")[1] || "Way Halim Permai"}</p>
+          <p>${perusahaan?.alamat?.split(",")[2] || "Kota Bandar Lampung"}, ${
+          perusahaan?.alamat?.split(",")[3] || "Lampung"
+        }, ${perusahaan?.alamat?.split(",")[4] || "Kode Pos 35133"}</p>
           <p>Telepon: (0721) 5615819, Website: www.qnn.co.id</p>
         </div>
       </div>
@@ -40,7 +54,8 @@ export default function CKEditorInput({
     <div style="border-bottom: 2px solid #1E293B; width: 100%;">&nbsp;</div>
     <br>
     <div contenteditable="true">${values}</div>
-  </div>`}`;
+  </div>`
+  }`;
 
   const [editorKey, setEditorKey] = useState(null);
   const [html, setHtml] = useState("");
@@ -117,7 +132,7 @@ export default function CKEditorInput({
                   )
                   .join(" ") || ""
               : "Bandar Lampung"
-          )
+          );
       }
       setTimeout(() => {
         setPrevType(type);
@@ -134,47 +149,62 @@ export default function CKEditorInput({
       sessionStorage.setItem("ckeditor", htmlContent);
     }
     setLoadingEditor(false);
-  }, [
-    html,
-    values,
-    template,
-    type,
-    isEdit,
-    noSurat,
-    penerima,
-    user,
-  ]);
+  }, [html, values, template, type, isEdit, noSurat, penerima, user]);
 
   return (
     <>
       {!loadingEditor && (
         <>
-          <CKEditor
-            key={editorKey}
-            style={{ fontFamily: "Tinos" }}
-            initData={html}
-            onChange={handleEditorChange}
-            config={{
-              allowedContent: true,
-              contentsCss: [
-                "input, textarea { margin: 0; padding: 0; border: none; }",
-                "ul { margin: 0; padding-left: 0; }",
-                "li { margin: 0; padding-left: 0; }",
-              ],
-              extraPlugins: "justify,colorbutton,colordialog",
-              colorButton_colors:
-                "1d4ed8,000,800000,8B4513,2F4F4F,008080,000080,4B0082,696969," +
-                "B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080," +
-                "F00,FF8C00,FFD700,008000,0FF,00F,EE82EE,A9A9A9," +
-                "FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3," +
-                "FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFF",
-              colorButton_enableMore: false,
+          <label
+            htmlFor="editor"
+            style={{
+              fontSize: "15px",
             }}
-          />
+            className={``}
+          >
+            Isi surat
+          </label>
+          <br />
+          <label
+            htmlFor="editor"
+            style={{
+              fontSize: "15px",
+            }}
+            className={`mb-1`}
+          >
+            Note: <code>{`{nama_pemohon}`}</code>,{" "}
+            <code>{`{jabatan_pemohon}`}</code>, <code>{`{nama_penerima}`}</code>
+            , <code>{`{jabatan_penerima}`}</code>,{" "}, <code>{`{no_surat}`}</code>,{" "}
+            <code>{`{format_date}`}</code>, <code>{`{nama_perusahaan}`}</code>,{" "}
+            <code>{`{nama_kota}`}</code>
+          </label>
+          <div className="ckeditor-container">
+            <CKEditor
+              id="editor"
+              key={editorKey}
+              style={{ fontFamily: "Tinos" }}
+              initData={html}
+              onChange={handleEditorChange}
+              config={{
+                allowedContent: true,
+                contentsCss: [
+                  "input, textarea { margin: 0; padding: 0; border: none; }",
+                  "ul { margin: 0; padding-left: 0; }",
+                  "li { margin: 0; padding-left: 0; }",
+                ],
+                extraPlugins: "justify,colorbutton,colordialog",
+                colorButton_colors:
+                  "1d4ed8,000,800000,8B4513,2F4F4F,008080,000080,4B0082,696969," +
+                  "B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080," +
+                  "F00,FF8C00,FFD700,008000,0FF,00F,EE82EE,A9A9A9," +
+                  "FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3," +
+                  "FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFF",
+                colorButton_enableMore: false,
+              }}
+            />
+          </div>
         </>
       )}
     </>
   );
 }
-
-

@@ -208,7 +208,7 @@ const DashboardPage = () => {
           icon={<TbUserCheck />}
           dataSeries={kehadiranPegawai}
           dataLabels={["Hadir", "Alfa", "Cuti"]}
-          dataColor={["#36AE7C", "#EB5353", "#FF8AAE", "#F9D923"]}
+          dataColor={["#36AE7C", "#EB5353", "#FF8AAE"]}
         />
         {!jwt.perusahaan && (
           <CardDonuts

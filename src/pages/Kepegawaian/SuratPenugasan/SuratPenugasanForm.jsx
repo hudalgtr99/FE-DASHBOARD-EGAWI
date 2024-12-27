@@ -137,14 +137,13 @@ const SuratPenugasanSlug = () => {
             axiosAPI.get(API_URL_getalltemplatesurattugas),
           ]);
 
+        console.log(pegawaiResponse.data);
+
         setPegawaiOptions(
           pegawaiResponse.data.map((item) => ({
             value: item.id,
             label: item.nama,
             jabatan: item.datapegawai.jabatan.nama,
-            departemen: item.datapegawai.departemen.nama,
-            divisi: item.datapegawai.divisi.nama,
-            unit: item.datapegawai.unit.nama,
           }))
         );
 
@@ -218,7 +217,7 @@ const SuratPenugasanSlug = () => {
           </button>
           <h1>{isEdit ? "Edit Surat" : "Tambah Surat"}</h1>
         </div>
-        <div className="flex items-center gap-2 mb-4">
+        {/* <div className="flex items-center gap-2 mb-4">
           <Tooltip placement="left" tooltip="Lihat tutorial">
             <button
               className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
@@ -235,7 +234,7 @@ const SuratPenugasanSlug = () => {
               </Drawer>
             </button>
           </Tooltip>
-        </div>
+        </div> */}
       </div>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
         <TextField

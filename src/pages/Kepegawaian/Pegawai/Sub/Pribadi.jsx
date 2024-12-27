@@ -184,7 +184,7 @@ const Pribadi = ({ onTabChange }) => {
                     }),
                     sessionStorage.removeItem("url"),
                     sessionStorage.removeItem("activeTab"))
-                  : navigate("/kepegawaian/pegawai"),
+                  : navigate("/akun"),
                 localStorage.removeItem("editUserData"));
           }
         }

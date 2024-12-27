@@ -94,6 +94,7 @@ const KalenderSubPage = () => {
               placeholder="Filter perusahaan"
               onChange={handleSelect}
               value={selectedPerusahaan}
+              disabled={perusahaanOptions.length === 1}
             />
           </div>
           <Button onClick={() => onDetail(selectedPerusahaan?.value)}>

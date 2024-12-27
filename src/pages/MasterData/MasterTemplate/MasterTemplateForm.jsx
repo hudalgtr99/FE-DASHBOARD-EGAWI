@@ -155,7 +155,7 @@ const MasterTemplateForm = () => {
           </button>
           <h1>{isEdit ? "Edit Template" : "Tambah Template"}</h1>
         </div>
-        <Tooltip placement="left" tooltip="Lihat tutorial">
+        {/* <Tooltip placement="left" tooltip="Lihat tutorial">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => setDrawer(true)}
@@ -165,7 +165,7 @@ const MasterTemplateForm = () => {
               <SuratTutorial />
             </Drawer>
           </button>
-        </Tooltip>
+        </Tooltip> */}
       </div>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
         <Select
