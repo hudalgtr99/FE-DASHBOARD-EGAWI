@@ -14,8 +14,10 @@ import {
 } from "@/constants";
 import CKEditor from "../../../components/forms/CKEditor";
 import axiosAPI from "@/authentication/axiosApi";
-import {isAuthenticated} from "@/authentication/authenticationApi";
-import {jwtDecode} from "jwt-decode";
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+import { Drawer, SuratTutorial, Tooltip } from "../../../components";
+import { MdQuestionMark } from "react-icons/md";
 
 const MasterTemplateForm = () => {
   const { addTugasLoading } = useSelector((state) => state.tugas);
@@ -25,14 +27,16 @@ const MasterTemplateForm = () => {
   const dispatch = useDispatch();
   const [idTemplate, setIdTemplate] = useState(pk);
 
+  const [drawer, setDrawer] = useState(false);
+
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const [perusahaan, Setperusahaan] = useState([]);
   const [role, setRole] = useState("");
 
   useEffect(() => {
     const token = isAuthenticated();
-      const jwt = jwtDecode(token);
-      setRole(jwt.level);
+    const jwt = jwtDecode(token);
+    setRole(jwt.level);
   }, []);
 
   const isEdit = pk && pk !== "add";
@@ -92,12 +96,19 @@ const MasterTemplateForm = () => {
         const options = perusahaanResponse.data.map((item) => ({
           value: item.pk,
           label: item.nama,
+          slug: item.slug,
         }));
         setPerusahaanOptions(options);
-        Setperusahaan(perusahaanResponse.data)
+        Setperusahaan(perusahaanResponse.data);
 
-        if (options.length === 1) {
-          formik.setFieldValue("perusahaan", options[0].value);
+        if (options.length === 1 || state?.item?.perusahaan) {
+          const perusahaanSlug = state?.item?.perusahaan?.slug;
+          const perusahaanId =
+            perusahaanSlug && options.find((opt) => opt.slug === perusahaanSlug)
+              ? options.find((opt) => opt.slug === perusahaanSlug).value
+              : state?.item?.perusahaan?.id || options[0].value;
+
+          formik.setFieldValue("perusahaan", perusahaanId);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -113,18 +124,31 @@ const MasterTemplateForm = () => {
     }
   }, [pk, isEdit]);
 
-  console.log(formik.values)
+  // console.log(formik.values)
 
   return (
     <Container>
-      <div className="flex items-center gap-2 mb-4">
-        <button
-          className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-          onClick={() => navigate("/kepegawaian/penugasan")}
-        >
-          <IoMdReturnLeft />
-        </button>
-        <h1>{isEdit ? "Edit Template" : "Tambah Template"}</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+            onClick={() => navigate("/kepegawaian/penugasan")}
+          >
+            <IoMdReturnLeft />
+          </button>
+          <h1>{isEdit ? "Edit Template" : "Tambah Template"}</h1>
+        </div>
+        <Tooltip placement="left" tooltip="Lihat tutorial">
+          <button
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+            onClick={() => setDrawer(true)}
+          >
+            <MdQuestionMark className="text-base" />
+            <Drawer dismiss title="Tutorial" open={drawer} setOpen={setDrawer}>
+              <SuratTutorial />
+            </Drawer>
+          </button>
+        </Tooltip>
       </div>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
         <Select
@@ -153,7 +177,12 @@ const MasterTemplateForm = () => {
           error={formik.touched.nama && formik.errors.nama}
         />
         <div className="w-full">
-          <CKEditor isTemplate={true} perusahaan={role !== "Super Admin" && perusahaan[0]} values={formik.values.isi} isEdit={isEdit} />
+          <CKEditor
+            isTemplate={true}
+            perusahaan={role !== "Super Admin" && perusahaan[0]}
+            values={formik.values.isi}
+            isEditTemplate={isEdit}
+          />
         </div>
 
         <div className="mt-6 flex justify-end">

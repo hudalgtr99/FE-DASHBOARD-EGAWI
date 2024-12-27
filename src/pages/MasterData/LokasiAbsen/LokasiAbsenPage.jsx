@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
   API_URL_getlokasiabsenwithpaginations,
   API_URL_edellokasi,
-  API_URL_getperusahaan,
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -14,7 +13,6 @@ import {
   Container,
   Pagination,
   Tables,
-  Select,
   TextField,
   Tooltip,
   PulseLoading,
@@ -22,9 +20,10 @@ import {
 import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import axiosAPI from "@/authentication/axiosApi";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+import { useAuth } from "@/context/AuthContext";
+import { Select } from "../../../components";
 
 const PerusahaanPage = () => {
   const {
@@ -33,11 +32,40 @@ const PerusahaanPage = () => {
     addperusahaanResult,
     deleteperusahaanResult,
   } = useSelector((state) => state.perusahaan);
+  const { slug } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setperusahaanOptions(options);
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
+      console.log(perusahaan);
+    }
+  }, [loadingPerusahaan]);
+
+  const handleSelect = (selectedOption) => {
+    console.log(selectedOption);
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
+    };
+
+    get(param);
+  };
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
@@ -51,33 +79,18 @@ const PerusahaanPage = () => {
       setJwt(jwtDecode(token));
     }
   }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = {
-        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`
+        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
       };
-  
+
       // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
       if (selectedPerusahaan) {
         param.param += `&perusahaan=${selectedPerusahaan.value}`;
       }
-  
+
       get(param);
     }, 300),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
@@ -91,7 +104,16 @@ const PerusahaanPage = () => {
   };
 
   const onAdd = () => {
-    navigate("/masterdata/lokasi-absen/form");
+    const item = {
+      perusahaan: {
+        slug: slug || "",
+      },
+    };
+    navigate("/masterdata/lokasi-absen/form", {
+      state: {
+        item,
+      },
+    });
   };
 
   const onEdit = (item) => {
@@ -125,25 +147,19 @@ const PerusahaanPage = () => {
 
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
-    
+
     // Menyiapkan parameter pencarian dan perusahaan
     const param = {
-      param: `?search=${search || ''}&perusahaan=${selectedPerusahaan?.value || ''}&limit=${limit}&offset=${offset}`
+      param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan.value
+      }&perusahaan=${
+        selectedPerusahaan?.value || ""
+      }&limit=${limit}&offset=${offset}`,
     };
-  
-    get(param); 
-    setPageActive(page - 1); 
+
+    get(param);
+    setPageActive(page - 1);
   };
-  
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption); 
-    const offset = pageActive * limit; 
-    const param = {
-      param: `?search=${search || ''}&perusahaan=${selectedOption?.value || ''}&limit=${limit}&offset=${offset}`
-    };
-  
-    get(param); 
-  };  
 
   const [actions] = useState([
     {
@@ -165,9 +181,13 @@ const PerusahaanPage = () => {
       ? {
           param: `?perusahaan=${
             selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
+          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      : {
+          param: `?limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
+        };
     get(param);
   }, [limit, pageActive, search, selectedPerusahaan, get]);
 
@@ -175,11 +195,15 @@ const PerusahaanPage = () => {
     if (addperusahaanResult || deleteperusahaanResult) {
       const param = search
         ? {
-            param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
           }
-        : { param: `?&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${pageActive * limit}` };
+        : {
+            param: `?&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          };
       get(param);
     }
   }, [
@@ -203,7 +227,11 @@ const PerusahaanPage = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className={`w-full flex gap-2 ${jwt.perusahaan ? 'sm:w-60' : 'sm:w-1/2'}`}>
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
               onChange={doSearch}
               placeholder="Search"
@@ -226,7 +254,7 @@ const PerusahaanPage = () => {
           </Button>
         </div>
 
-        {getperusahaanLoading ? (
+        {getperusahaanLoading || loadingPerusahaan ? (
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>

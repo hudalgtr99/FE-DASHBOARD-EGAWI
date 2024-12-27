@@ -25,7 +25,6 @@ axiosAPI.interceptors.request.use(
 // Tambahkan interceptor respons untuk menangani refresh token
 axiosAPI.interceptors.response.use(
   (response) => {
-    console.log(decrypted(getCookie("srehfre")))
     return response;
   },
   async (error) => {

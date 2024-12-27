@@ -18,6 +18,7 @@ const Tables = ({
 	tablefix = false,
 	height = "auto",
 	children,
+	style
 }) => {
 	// Size
 	const tableSize =
@@ -41,6 +42,7 @@ const Tables = ({
 		<div
 			style={{
 				height: height,
+				...style,
 			}}
 			className="w-full overflow-auto custom-scroll"
 		>

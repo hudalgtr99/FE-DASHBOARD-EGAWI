@@ -1,13 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { addData, deleteData, getData, updateData } from "@/actions";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteData, getData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";
-import {
-  API_URL_edeljabatan,
-  API_URL_getjabatan,
-  API_URL_getperusahaan,
-} from "@/constants";
+import { API_URL_edeljabatan, API_URL_getjabatan } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
@@ -19,13 +15,13 @@ import {
   Tooltip,
   PulseLoading,
 } from "@/components";
-import { debounce } from "lodash"; // Import lodash debounce
+import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import axiosAPI from "@/authentication/axiosApi";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+import { useAuth } from "@/context/AuthContext";
 
 const JabatanSub = () => {
   const {
@@ -37,6 +33,8 @@ const JabatanSub = () => {
     deletePangkatResult,
   } = useSelector((state) => state.strata);
 
+  const { slug } = useParams();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,10 +42,24 @@ const JabatanSub = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setperusahaanOptions(options);
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
+      console.log(perusahaan);
+    }
+  }, [loadingPerusahaan]);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -56,21 +68,20 @@ const JabatanSub = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
+  const handleSelect = (selectedOption) => {
+    console.log(selectedOption);
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
     };
-    fetchData();
-  }, []);
+
+    get(param);
+  };
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -96,7 +107,12 @@ const JabatanSub = () => {
   };
 
   const onAdd = () => {
-    navigate("/masterdata/jabatan/form");
+    const item = slug ? { perusahaan: { slug: slug } } : null;
+    navigate("/masterdata/jabatan/form", {
+      state: {
+        item,
+      },
+    });
   };
 
   const onEdit = (item) => {
@@ -142,18 +158,6 @@ const JabatanSub = () => {
     setPageActive(page - 1);
   };
 
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
-
   const [actions] = useState([
     {
       name: "Edit",
@@ -174,9 +178,9 @@ const JabatanSub = () => {
       ? {
           param: `?perusahaan=${
             selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
+          }&limit=${limit}&search=${search || ''}&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      : { param: `?limit=${limit}&search=${search || ''}&offset=${pageActive * limit}` };
     get(param);
   }, [limit, pageActive, search, selectedPerusahaan, get]);
 
@@ -189,11 +193,15 @@ const JabatanSub = () => {
     ) {
       const param = search
         ? {
-            param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${
-              pageActive * limit
-            }`,
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
           }
-        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${pageActive * limit}` };
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          };
       get(param);
     }
   }, [

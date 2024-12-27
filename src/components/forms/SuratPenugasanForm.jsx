@@ -90,7 +90,7 @@ export default function CKEditorInput({
 
       if (matchedTemplate) {
         htmlContent = matchedTemplate.isi
-          // .replace(/\{no_surat\}/g, noSurat || "")
+          .replace(/\{no_surat\}/g, noSurat || "")
           .replace(
             /\{format_date\}/g,
             new Date().toLocaleDateString("id-ID", {

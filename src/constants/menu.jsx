@@ -3,30 +3,21 @@ import {
   PerusahaanPage,
   Dashboard,
   KalenderPage,
-  OrganPage,
   PegawaiPage,
   JabatanPage,
   CutiPage,
-  KinerjaPage,
-  GajiPage,
   KehadiranPage,
   AkunPage,
   ApiPage,
   CallbackPage,
   PenugasanPage,
-  PayrollPage,
-  RekerutmenPage,
-  PotonganPage,
-  TunjanganPage,
   LokasiAbsen,
   JamKerja,
-  Kemitraan,
-  Dokumentasi,
 } from "@/pages";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
-import SuratPenugasanSlug from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
+import SuratPenugasanPage from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
 import ImportPegawai from "../pages/Kepegawaian/ImportPegawai/ImportPegawaiPage";
 
 let jwt = null; // Initialize jwt variable
@@ -75,13 +66,13 @@ export const menu = [
         element: <JabatanPage />,
         sub: [],
       },
-      {
-        menuLink: "masterdata/organization",
-        name: "organization",
-        title: "Organization",
-        element: <OrganPage />,
-        sub: [],
-      },
+      // {
+      //   menuLink: "masterdata/organization",
+      //   name: "organization",
+      //   title: "Organization",
+      //   element: <OrganPage />,
+      //   sub: [],
+      // },
       {
         menuLink: "masterdata/jam-kerja",
         name: "jam kerja",
@@ -113,13 +104,6 @@ export const menu = [
         sub: [],
       },
       {
-        menuLink: "/masterdata/import-pegawai",
-        name: "import pegawai",
-        title: "Import Pegawai",
-        element: <ImportPegawai />,
-        sub: [],
-      },
-      {
         menuLink: "/kepegawaian/penugasan",
         name: "penugasan pekerjaan",
         title: "Penugasan Pekerjaan",
@@ -130,16 +114,16 @@ export const menu = [
         menuLink: "/kepegawaian/surat-penugasan",
         name: "surat penugasan",
         title: "Surat Penugasan",
-        element: <SuratPenugasanSlug />,
+        element: <SuratPenugasanPage />,
         sub: [],
       },
-      {
-        menuLink: "/kepegawaian/rekrutmen",
-        name: "rekrutmen",
-        title: "Rekrutmen",
-        element: <RekerutmenPage />,
-        sub: [],
-      },
+      // {
+      //   menuLink: "/kepegawaian/rekrutmen",
+      //   name: "rekrutmen",
+      //   title: "Rekrutmen",
+      //   element: <RekerutmenPage />,
+      //   sub: [],
+      // },
     ],
   },
   // {
@@ -182,22 +166,22 @@ export const menu = [
       },
     ],
   },
-  {
-    icon: icons.luhearthandshake,
-    menuLink: "/kemitraan",
-    name: "kemitraan",
-    title: "Kemitraan",
-    element: <Kemitraan />,
-    sub: [],
-  },
-  {
-    icon: icons.lufiletext,
-    menuLink: "/dokumentasi",
-    name: "dokumentasi",
-    title: "Dokumentasi",
-    element: <Dokumentasi />,
-    sub: [],
-  },
+  // {
+  //   icon: icons.luhearthandshake,
+  //   menuLink: "/kemitraan",
+  //   name: "kemitraan",
+  //   title: "Kemitraan",
+  //   element: <Kemitraan />,
+  //   sub: [],
+  // },
+  // {
+  //   icon: icons.lufiletext,
+  //   menuLink: "/dokumentasi",
+  //   name: "dokumentasi",
+  //   title: "Dokumentasi",
+  //   element: <Dokumentasi />,
+  //   sub: [],
+  // },
   ...(jwt && jwt.level === "Super Admin"
     ? [
         {

@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
+import { MdQuestionMark } from "react-icons/md";
 import {
   Button,
   Container,
@@ -23,11 +24,12 @@ import {
 } from "@/constants";
 import axiosAPI from "@/authentication/axiosApi";
 import { fetchUserDetails } from "@/constants/user";
-import CKEditor from "../../../components/forms/CKEditor";
+import CKEditor from "@/components/forms/CKEditor";
+import { SuratTutorial, Tooltip } from "@/components";
+import { Drawer } from "../../../components";
 
 const SuratPenugasanSlug = () => {
-  const { addTugasLoading } =
-    useSelector((state) => state.tugas);
+  const { addTugasLoading } = useSelector((state) => state.tugas);
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -37,6 +39,7 @@ const SuratPenugasanSlug = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState([]);
   const [jumlahSurat, setJumlahSurat] = useState(null);
+  const [drawer, setDrawer] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -53,6 +56,8 @@ const SuratPenugasanSlug = () => {
 
   const isEdit = id && id !== "add";
 
+  console.log("formik", state?.item);
+
   const formik = useFormik({
     initialValues: {
       nama: state?.item?.nama || "",
@@ -63,11 +68,13 @@ const SuratPenugasanSlug = () => {
           label: item.nama,
         })) || [],
       template: state?.item?.template || "",
-      noSurat: "",
+      no_surat: state?.item?.no_surat || "",
       isi: state?.item?.isi || "",
     },
     validationSchema: Yup.object().shape({
-      nama: Yup.string().required("Nama wajib diisi").max(255, "Nama harus kurang dari 255 karakter"),
+      nama: Yup.string()
+        .required("Nama wajib diisi")
+        .max(255, "Nama harus kurang dari 255 karakter"),
       pemohon: Yup.string().required("Pemohon wajib diisi"),
       penerima: Yup.array().min(1, "Penerima wajib diisi"),
     }),
@@ -79,7 +86,7 @@ const SuratPenugasanSlug = () => {
         pemohon: values.pemohon,
         template: values.template,
         isi: sessionStorage.getItem("ckeditor"),
-        no_surat: formik.values.noSurat
+        no_surat: formik.values.no_surat,
       };
 
       if (isEdit) {
@@ -90,8 +97,8 @@ const SuratPenugasanSlug = () => {
             API_URL_edelsurattugas,
             "ADD_TUGAS"
           );
-          if(data && !addTugasLoading){
-            navigate("/kepegawaian/surat-penugasan")
+          if (data && !addTugasLoading) {
+            navigate("/kepegawaian/surat-penugasan");
           }
         } else {
           console.error("ID is undefined for updating the task.");
@@ -103,26 +110,22 @@ const SuratPenugasanSlug = () => {
           API_URL_createsurattugas,
           "ADD_TUGAS"
         );
-        if(data && !addTugasLoading){
-          navigate("/kepegawaian/surat-penugasan")
+        if (data && !addTugasLoading) {
+          navigate("/kepegawaian/surat-penugasan");
         }
       }
     },
   });
 
-
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [
-          pegawaiResponse,
-          jumlahSuratResponse,
-          templatesResponse,
-        ] = await Promise.all([
-          axiosAPI.get(`${API_URL_getpegawai}?nama=`),
-          axiosAPI.get(API_URL_getjumlahsurattugas),
-          axiosAPI.get(API_URL_getalltemplatesurattugas),
-        ]);
+        const [pegawaiResponse, jumlahSuratResponse, templatesResponse] =
+          await Promise.all([
+            axiosAPI.get(`${API_URL_getpegawai}?nama=`),
+            axiosAPI.get(API_URL_getjumlahsurattugas),
+            axiosAPI.get(API_URL_getalltemplatesurattugas),
+          ]);
 
         setPegawaiOptions(
           pegawaiResponse.data.map((item) => ({
@@ -147,23 +150,22 @@ const SuratPenugasanSlug = () => {
           const id_template = formik.values.template
             .toString()
             .padStart(2, "0");
-          const id_templateEdit = isEdit ? formik.values.template.id : {}
-            .toString()
-            .padStart(2, "0");
+          const id_templateEdit = isEdit
+            ? formik.values.template.id
+            : {}.toString().padStart(2, "0");
           const suratCount = (jumlahSurat + 1).toString().padStart(2, "0");
           const perusahaanSingkatan = user.datapribadi.perusahaan
             ? user.datapribadi.perusahaan.nama_singkatan
             : "QNN";
-          const departemenSingkatan = user.datapegawai
-            ? user.datapegawai.departemen.nama_singkatan
-            : "SDM";
           const currentMonth = (new Date().getMonth() + 1)
             .toString()
             .padStart(2, "0");
           const currentYear = new Date().getFullYear();
 
-          const generatedNoSurat = `${isEdit ? id_templateEdit : id_template}·${suratCount}/${perusahaanSingkatan}-${departemenSingkatan}/${currentMonth}/${currentYear}`;
-          formik.setFieldValue("noSurat", generatedNoSurat);
+          const generatedNoSurat = `${
+            isEdit ? id_templateEdit : id_template
+          }·${suratCount}/${perusahaanSingkatan}/${currentMonth}/${currentYear}`;
+          if(!isEdit) formik.setFieldValue("no_surat", generatedNoSurat);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -189,20 +191,40 @@ const SuratPenugasanSlug = () => {
 
   return (
     <Container>
-      <div className="flex items-center gap-2 mb-4">
-        <button
-          className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-          onClick={() => navigate("/kepegawaian/penugasan")}
-        >
-          <IoMdReturnLeft />
-        </button>
-        <h1>{isEdit ? "Edit Surat" : "Tambah Surat"}</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+            onClick={() => navigate("/kepegawaian/penugasan")}
+          >
+            <IoMdReturnLeft />
+          </button>
+          <h1>{isEdit ? "Edit Surat" : "Tambah Surat"}</h1>
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <Tooltip placement="left" tooltip="Lihat tutorial">
+            <button
+              className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+              onClick={() => setDrawer(true)}
+            >
+              <MdQuestionMark className="text-base" />
+              <Drawer
+                dismiss
+                title="Tutorial"
+                open={drawer}
+                setOpen={setDrawer}
+              >
+                <SuratTutorial />
+              </Drawer>
+            </button>
+          </Tooltip>
+        </div>
       </div>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
         <TextField
           label="Nomor Surat"
           name="noSurat"
-          value={formik.values.noSurat}
+          value={formik.values.no_surat}
           disabled
         />
         <TextField
@@ -219,8 +241,9 @@ const SuratPenugasanSlug = () => {
           name="pemohon"
           value={
             pegawaiOptions.find(
-              (option) => option.value === formik.values.pemohon.id ||
-                          option.value === formik.values.pemohon
+              (option) =>
+                option.value === formik.values.pemohon.id ||
+                option.value === formik.values.pemohon
             ) || null
           }
           onChange={(option) => {
@@ -243,12 +266,11 @@ const SuratPenugasanSlug = () => {
           required
           label="Template"
           name="template"
-          value={
-            templatesOptions.find(
-              (option) => option.value === formik.values.template.id ||
-                          option.value === formik.values.template
-            )
-          }
+          value={templatesOptions.find(
+            (option) =>
+              option.value === formik.values.template.id ||
+              option.value === formik.values.template
+          )}
           onChange={(option) => {
             formik.setFieldValue("template", option ? option.value : "");
           }}
@@ -259,7 +281,7 @@ const SuratPenugasanSlug = () => {
         <CKEditor
           type={!isEdit && Number(formik.values.template)}
           user={user.datapribadi}
-          noSurat={formik.values.noSurat}
+          noSurat={formik.values.no_surat}
           pemohon={pegawaiOptions.find(
             (option) => option.value === formik.values.pemohon
           )}

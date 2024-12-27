@@ -1,19 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
-import {
-  API_URL_edelsurattugas,
-  API_URL_getsurattugas,
-  API_URL_getperusahaan,
-} from "@/constants";
-import { icons } from "../../../../public/icons";
+import { API_URL_edelsurattugas, API_URL_getsurattugas } from "@/constants";
 import {
   Button,
   Container,
   Pagination,
   Tables,
-  Select,
   TextField,
   Tooltip,
   PulseLoading,
@@ -21,17 +15,19 @@ import {
 import { debounce } from "lodash"; // Import lodash debounce
 import { FaPlus, FaEdit, FaPrint, FaTrash } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import axiosAPI from "@/authentication/axiosApi";
 import { useReactToPrint } from "react-to-print";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
-import { jwtDecode } from "jwt-decode";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "@/context/AuthContext";
+import { Select } from "../../../components";
 
 const SuratPenugasanPage = () => {
   const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =
     useSelector((state) => state.tugas);
   const printRef = useRef();
+  const { slug } = useParams();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,10 +37,24 @@ const SuratPenugasanPage = () => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [printData, setPrintData] = useState("");
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setperusahaanOptions(options);
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
+      console.log(perusahaan);
+    }
+  }, [loadingPerusahaan]);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -53,21 +63,20 @@ const SuratPenugasanPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
+  const handleSelect = (selectedOption) => {
+    console.log(selectedOption);
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
     };
-    fetchData();
-  }, []);
+
+    get(param);
+  };
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -93,7 +102,8 @@ const SuratPenugasanPage = () => {
   };
 
   const onAdd = () => {
-    navigate("/masterdata/jabatan/form");
+    const item = slug ? { perusahaan: { slug: slug } } : null;
+    navigate("/kepegawaian/surat-penugasan/form", { state: { item } });
   };
 
   const onEdit = (item) => {
@@ -142,26 +152,14 @@ const SuratPenugasanPage = () => {
     setPageActive(page - 1);
   };
 
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
-
   useEffect(() => {
     const param = selectedPerusahaan
       ? {
           param: `?perusahaan=${
             selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
+          }&limit=${limit}&search=${search || ''}&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      : { param: `?limit=${limit}&search=${search || ''}&offset=${pageActive * limit}` };
     get(param);
   }, [limit, pageActive, search, selectedPerusahaan, get]);
 
@@ -178,6 +176,7 @@ const SuratPenugasanPage = () => {
               selectedPerusahaan?.value || ""
             }&limit=${limit}&offset=${pageActive * limit}`,
           };
+          
       get(param);
     }
   }, [
@@ -204,12 +203,13 @@ const SuratPenugasanPage = () => {
 
   const onPrint = (index) => {
     const selectedData = dataWithIndex[index];
+    console.log(selectedData);
 
     // Validasi dan format ulang data untuk cetak
-    const formattedIsi = selectedData.isi
+    const formattedIsi = selectedData?.isi
       ?.replace(
         /\{nama_pemohon\}/g,
-        selectedData.pemohon?.nama
+        selectedData?.pemohon?.nama
           ?.split(" ")
           .map(
             (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
@@ -218,42 +218,57 @@ const SuratPenugasanPage = () => {
       )
       .replace(
         /\{jabatan_pemohon\}/g,
-        selectedData.pemohon?.jabatan || "Tidak ada jabatan"
+        selectedData?.pemohon?.jabatan || "Tidak ada jabatan"
       )
       .replace(
-        /\{departement_pemohon\}/g,
-        selectedData.pemohon?.departemen || "Tidak ada departemen"
-      )
-      .replace(
-        /\{divisi_pemohon\}/g,
-        selectedData.pemohon?.divisi || "Tidak ada divisi"
-      )
-      .replace(
-        /\{unit_pemohon\}/g,
-        selectedData.pemohon?.unit || "Tidak ada unit"
-      )
-      .replace(
-        /<tbody>\s*.*?<\/tbody>/,
+        /<tbody id="table_penerima">\s*.*?<\/tbody>/,
         `
           <tbody>
-            ${selectedData.penerima
+            ${selectedData?.penerima
               ?.map(
                 (item, index) => `
                   <tr>
                     <td>${index + 1}</td>
                     <td>${item.nama || "Tidak ada nama"}</td>
                     <td>${item.jabatan || "Tidak ada jabatan"}</td>
-                    <td>${item.departemen || "Tidak ada departemen"}</td>
-                    <td>${item.divisi || "Tidak ada divisi"}</td>
-                    <td>${item.unit || "Tidak ada unit"}</td>
                   </tr>`
               )
               .join("")}
           </tbody>
           `
-      );
+      )
+      .replace(
+        /\{nama_penerima\}/g,
+        selectedData?.penerima
+          ?.map((item) =>
+            item.nama
+              ? item.nama
+                  .split(" ")
+                  .map(
+                    (word) =>
+                      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                  )
+                  .join(" ")
+              : "Tidak ada nama"
+          )
+          .join(", ") || "Tidak ada penerima"
+      )
+      .replace(
+        /\{jabatan_penerima\}/g,
+        selectedData?.penerima
+          ?.map((item) => item.jabatan || "Tidak ada jabatan")
+          .join(", ") || "Tidak ada jabatan"
+      )
+      .replace(
+        /\{logo\}/g,
+        selectedData?.template?.perusahaan?.image
+          ? `<img src="${selectedData.template.perusahaan.image}" alt="Logo" />`
+          : "&nbsp;<br>&nbsp;"
+      )
 
-    if (printRef.current) {
+      .replace(/\{no_surat\}/g, selectedData?.no_surat);
+
+    if (printRef) {
       printRef.current.innerHTML = formattedIsi;
     }
 
@@ -377,7 +392,7 @@ const SuratPenugasanPage = () => {
         <div ref={printRef} className="print-only">
           <div
             dangerouslySetInnerHTML={{
-              __html: printData.formattedIsi || "<p>Data tidak tersedia</p>",
+              __html: printData?.formattedIsi || "<p>Data tidak tersedia</p>",
             }}
           />
         </div>

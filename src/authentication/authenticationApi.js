@@ -21,7 +21,6 @@ export const isAuthenticated = () => {
   } else {
     var decoded = decrypted(casnet);
   }
-  // console.log(decoded)
   return decoded;
 };
 

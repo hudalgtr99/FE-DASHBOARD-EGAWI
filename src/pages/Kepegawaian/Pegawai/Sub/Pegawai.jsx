@@ -16,9 +16,6 @@ const Pegawai = ({ onTabChange }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [jabatanOptions, setJabatanOptions] = useState([]);
-  const [departemenOptions, setDepartemenOptions] = useState([]);
-  const [divisiOptions, setDivisiOptions] = useState([]);
-  const [unitOptions, setUnitOptions] = useState([]);
   const [isLanjut, setIsLanjut] = useState(false);
   const isEdit = pk && pk !== "add";
 
@@ -27,24 +24,6 @@ const Pegawai = ({ onTabChange }) => {
       const response = await axiosAPI.get(API_URL_getmasterpegawai);
       setJabatanOptions(
         response.data.jabatan.map((item) => ({
-          value: item.pk,
-          label: item.nama,
-        }))
-      );
-      setDepartemenOptions(
-        response.data.departemen.map((item) => ({
-          value: item.pk,
-          label: item.nama,
-        }))
-      );
-      setDivisiOptions(
-        response.data.divisi.map((item) => ({
-          value: item.pk,
-          label: item.nama,
-        }))
-      );
-      setUnitOptions(
-        response.data.unit.map((item) => ({
           value: item.pk,
           label: item.nama,
         }))
@@ -62,21 +41,14 @@ const Pegawai = ({ onTabChange }) => {
     initialValues: {
       user_id: initialData?.user_id || "",
       id_pegawai: initialData?.id_pegawai || "",
-      jabatan_id: initialData?.jabatan_id || initialData?.jabatan?.id || "", // Change here
-      departemen_id:
-        initialData?.departemen_id || initialData?.departemen?.id || "",
-      divisi_id: initialData?.divisi_id || initialData?.divisi?.id || "",
-      unit_id: initialData?.unit_id || initialData?.unit?.id || "",
+      jabatan_id: initialData?.jabatan_id || initialData?.jabatan?.id || "", 
       tgl_bergabung: initialData?.tgl_bergabung || "",
       tgl_resign: initialData?.tgl_resign || "",
       status: initialData?.status || "",
     },
     validationSchema: Yup.object().shape({
       id_pegawai: Yup.string().required("ID Pegawai wajib diisi"),
-      jabatan_id: Yup.string().required("Jabatan wajib diisi"), // Change here
-      departemen_id: Yup.string().required("Departemen wajib diisi"),
-      divisi_id: Yup.string().required("Divisi wajib diisi"),
-      unit_id: Yup.string().required("Unit wajib diisi"),
+      jabatan_id: Yup.string().required("Jabatan wajib diisi"), 
       tgl_bergabung: Yup.date().required("Tanggal Bergabung wajib diisi"),
       status: Yup.string().required("Status wajib diisi"),
     }),
@@ -85,6 +57,7 @@ const Pegawai = ({ onTabChange }) => {
         ...values,
         user_id: localStorageData.datapribadi.user_id, // Update here
       };
+      console.log(formik.errors)
       try {
         const data = await updateData(
           { dispatch, redux: pegawaiReducer },
@@ -193,7 +166,7 @@ const Pegawai = ({ onTabChange }) => {
                 }
               />
             </div>
-            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
+            {/* <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <Select
                 required
                 label="Departemen"
@@ -270,7 +243,7 @@ const Pegawai = ({ onTabChange }) => {
                 ]}
                 error={formik.touched.status ? formik.errors.status : ""}
               />
-            </div>
+            </div> */}
             <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <TextField
                 required

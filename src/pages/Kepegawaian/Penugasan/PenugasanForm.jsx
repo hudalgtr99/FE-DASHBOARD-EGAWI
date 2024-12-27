@@ -68,11 +68,17 @@ const PenugasanForm = () => {
         const options = response.data.map((item) => ({
           value: item.pk,
           label: item.nama,
+          slug: item.slug,
         }));
         setperusahaanOptions(options);
-
-        if (options.length === 1) {
-          formik.setFieldValue("perusahaan", options[0].value);
+        if (options.length === 1 || state?.item?.perusahaan) {
+          const perusahaanSlug = state?.item?.perusahaan?.slug;
+          const perusahaanId =
+            perusahaanSlug && options.find((opt) => opt.slug === perusahaanSlug)
+              ? options.find((opt) => opt.slug === perusahaanSlug).value
+              : state?.item?.perusahaan?.id || options[0].value;
+          console.log("perusahaanSlug", perusahaanSlug)
+          formik.setFieldValue("perusahaan", perusahaanId);
         }
       } catch (error) {
         console.error("Error fetching perusahaan data:", error);

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData, updateData } from "@/actions";
 import { userReducer } from "@/reducers/authReducers";
 import {
@@ -8,7 +8,6 @@ import {
   API_URL_getdataakun,
   API_URL_changeactive,
   API_URL_changeoutofarea,
-  API_URL_getperusahaan
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -16,19 +15,19 @@ import {
   Container,
   Pagination,
   Tables,
-  Select,
   TextField,
   Tooltip,
   PulseLoading,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
-import { FaPlus } from "react-icons/fa";
+import { FaFileExcel, FaPlus } from "react-icons/fa";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
-import axiosAPI from "@/authentication/axiosApi";
+import { useAuth } from "@/context/AuthContext";
+import { Select } from "../../../components";
 
 const AkunPage = () => {
   const {
@@ -45,10 +44,24 @@ const AkunPage = () => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setperusahaanOptions(options);
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
+    }
+  }, [loadingPerusahaan]);
 
   const [jwt, setJwt] = useState({});
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -57,21 +70,20 @@ const AkunPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
+  const handleSelect = (selectedOption) => {
+    console.log(selectedOption);
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
     };
-    fetchData();
-  }, []);
+
+    get(param);
+  };
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -147,18 +159,6 @@ const AkunPage = () => {
     setPageActive(page - 1);
   };
 
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
-
   const handleSwitch = (e, item, index) => {
     if (index === 6) {
       Swal.fire({
@@ -218,21 +218,32 @@ const AkunPage = () => {
       ? {
           param: `?perusahaan=${
             selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
+          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      : {
+          param: `?limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
+        };
     get(param);
   }, [limit, pageActive, search, selectedPerusahaan, get]);
 
   useEffect(() => {
     if (addAkunResult || deleteAkunResult) {
-      const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
-        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${pageActive * limit}`,
+          };
       get(param);
     }
-  }, [addAkunResult, deleteAkunResult, search, selectedPerusahaan, limit, pageActive, get]);
+  }, [addAkunResult, deleteAkunResult, search, limit, pageActive, get]);
 
   const dataWithIndex = getDataAkunResult.results
     ? getDataAkunResult.results.map((item, index) => ({
@@ -325,11 +336,21 @@ const AkunPage = () => {
               />
             )}
           </div>
-          <Button onClick={onAdd}>
-            <div className="flex items-center gap-2">
-              <FaPlus /> Tambah Pegawai
-            </div>
-          </Button>
+          <div className="flex gap-2 items-center">
+            <Tooltip tooltip="Import Pegawai">
+              <Button
+                onClick={() => navigate("/kepegawaian/pegawai/import-pegawai")}
+                size="40"
+              >
+                <FaFileExcel className="text-lg text-white" />
+              </Button>
+            </Tooltip>
+            <Button onClick={onAdd}>
+              <div className="flex items-center gap-2">
+                <FaPlus /> Tambah Pegawai
+              </div>
+            </Button>
+          </div>
         </div>
         {getDataAkunLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">

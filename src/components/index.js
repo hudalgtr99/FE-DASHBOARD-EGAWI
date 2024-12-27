@@ -41,6 +41,7 @@ import Invoice from "./molecules/Invoice";
 import Kuitansi from "./molecules/Kuitansi";
 import Tables from "./molecules/Tables";
 import Slip from "./molecules/Slip";
+import SuratTutorial from "./molecules/SuratTutorial"
 
 export {
 	Alert,
@@ -85,5 +86,6 @@ export {
 	PulseLoading,
 	DatePicker,
 	Slip,
+	SuratTutorial,
 	GoogleMapInput
 };

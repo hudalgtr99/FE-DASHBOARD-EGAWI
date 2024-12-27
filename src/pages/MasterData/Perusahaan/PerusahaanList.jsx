@@ -6,7 +6,7 @@ import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
   API_URL_edelperusahaan,
   API_URL_getperusahaan_withPaginations,
-  API_URL_changeactivedata
+  API_URL_changeactivedata,
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -26,6 +26,18 @@ import { CiSearch } from "react-icons/ci";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
+import {
+  BsAward,
+  BsCalendar2Date,
+  BsClock,
+  BsEnvelope,
+  BsFileRichtext,
+  BsGeoAltFill,
+  BsJournalText,
+  BsPersonCheck,
+  BsThreeDots,
+} from "react-icons/bs";
+import { Popover } from "../../../components";
 
 const PerusahaanPage = () => {
   const {
@@ -33,7 +45,7 @@ const PerusahaanPage = () => {
     getperusahaanLoading,
     addperusahaanResult,
     deleteperusahaanResult,
-  } = useSelector((state) => state.perusahaan); 
+  } = useSelector((state) => state.perusahaan);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -84,22 +96,13 @@ const PerusahaanPage = () => {
     });
   };
 
-  const doDelete = (item) => {
-    deleteData(
-      { dispatch, redux: perusahaanReducer },
-      item.slug,
-      API_URL_edelperusahaan,
-      "DELETE_perusahaan" // Update to match your action type
-    );
-  };
-
   const get = useCallback(
     async (param) => {
       getData(
         { dispatch, redux: perusahaanReducer },
         param,
         API_URL_getperusahaan_withPaginations,
-        "GET_perusahaan" // Update to match your action type
+        "GET_perusahaan"
       );
     },
     [dispatch]
@@ -115,12 +118,68 @@ const PerusahaanPage = () => {
     setPageActive(page - 1); // Set the active page
   };
 
+  const toMenu = (item, url) => {
+    navigate(`/${url}/${item.slug}`);
+  };
+
   const [actions] = useState([
     {
       name: "Edit",
       icon: icons.bspencil,
       color: "text-green-500",
+      slug: "",
       func: onEdit,
+    },
+  ]);
+  const [menu] = useState([
+    {
+      name: "Lokasi absen",
+      icon: <BsGeoAltFill />,
+      color: "text-green-500",
+      slug: "masterdata/lokasi-absen",
+      func: toMenu,
+    },
+    {
+      name: "Jabatan",
+      icon: <BsAward />,
+      color: "text-green-500",
+      slug: "masterdata/jabatan",
+      func: toMenu,
+    },
+    {
+      name: "Jam kerja",
+      icon: <BsClock />,
+      color: "text-green-500",
+      slug: "masterdata/jam-kerja",
+      func: toMenu,
+    },
+    {
+      name: "Daftar tugas",
+      icon: <BsJournalText />,
+      color: "text-green-500",
+      slug: "kepegawaian/penugasan",
+      func: toMenu,
+    },
+    {
+      name: "Template surat",
+      icon: <BsFileRichtext />,
+      color: "text-green-500",
+      slug: "masterdata/master-template",
+      func: toMenu,
+    },
+    {
+      name: "Surat penugasan",
+      icon: <BsEnvelope />,
+      color: "text-green-500",
+      slug: "kepegawaian/surat-penugasan",
+      func: toMenu,
+    },
+    {
+      name: "Kalender",
+      icon: <BsCalendar2Date />,
+      color: "text-green-500",
+      slug: "kalender",
+      func: toMenu,
     },
   ]);
 
@@ -162,7 +221,7 @@ const PerusahaanPage = () => {
       }))
     : [];
 
-  function handleActive(e, item){
+  function handleActive(e, item) {
     Swal.fire({
       title: "Apakah Anda yakin?",
       text: "Ingin mengubah status perusahaan ini?",
@@ -186,7 +245,8 @@ const PerusahaanPage = () => {
           API_URL_changeactivedata,
           "ADD_perusahaan"
         );
-      }})
+      }
+    });
   }
 
   return (
@@ -213,7 +273,7 @@ const PerusahaanPage = () => {
             <PulseLoading />
           </div>
         ) : (
-          <Tables>
+          <Tables style={{ overflow: "auto" }}>
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
@@ -242,18 +302,48 @@ const PerusahaanPage = () => {
                         />
                       </label>
                     </Tables.Data>
-                    <Tables.Data center>
+                    <Tables.Data center style={{ position: "relative" }}>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action, i) => (
                           <Tooltip key={i} tooltip={action.name}>
                             <div
-                              onClick={() => action.func(item)}
+                              onClick={() => action.func(item, action.slug)}
                               className={`${action.color} cursor-pointer`}
                             >
                               {action.icon}
                             </div>
                           </Tooltip>
                         ))}
+                        <div className="flex items-center justify-center gap-2">
+                          <Popover
+                            placement="right"
+                            button={
+                              <Tooltip tooltip="Menu">
+                                <div className="cursor-pointer">
+                                <BsThreeDots size={20} />
+                              </div>
+                              </Tooltip>
+                            }
+                          >
+                            <div className="rounded text-sm shadow-lg flex flex-col gap-3 max-h-[8.5rem] overflow-y-scroll">
+                              {menu.map((action, i) => (
+                                <div
+                                  onClick={() => action.func(item, action.slug)}
+                                  className="flex gap-2 items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
+                                >
+                                  <div
+                                    className={`text-base ${action.color} cursor-pointer`}
+                                  >
+                                    {action.icon}
+                                  </div>
+                                  <h2 className="text-xs whitespace-nowrap font-medium">
+                                    {action.name}
+                                  </h2>
+                                </div>
+                              ))}
+                            </div>
+                          </Popover>
+                        </div>
                       </div>
                     </Tables.Data>
                   </Tables.Row>

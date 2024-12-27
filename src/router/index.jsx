@@ -29,7 +29,6 @@ import EditProfilePegawaiPage from "@/pages/Profile/Sub/EditProfilePegawaiPage";
 import EditProfileKeluargaPage from "@/pages/Profile/Sub/EditProfileKeluargaPage";
 import EditProfilePendidikanPage from "@/pages/Profile/Sub/EditProfilePendidikanPage";
 import EditProfileLainnyaPage from "@/pages/Profile/Sub/EditProfileLainnyaPage";
-import MyKalender from "@/pages/Kalender/MyKalender";
 import KalenderList from "../pages/Kalender/KalenderList";
 import LokasiAbsenForm from "../pages/MasterData/LokasiAbsen/LokasiAbsenForm";
 import JamKerjaForm from "../pages/MasterData/JamKerja/JamKerjaForm";
@@ -37,11 +36,22 @@ import JamKerjaPage from "../pages/MasterData/JamKerja/JamKerjaPage";
 import TemplateSlugForm from "../pages/MasterData/MasterTemplate/MasterTemplateForm";
 import SuratPenugasanSlug from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
 import SuratPenugasanSlugForm from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanForm";
-import PenugasanPDF from "../pages/Kepegawaian/Penugasan/PenugasanPDF";
 import Page404 from "@/pages/404/404page";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+
+import {
+  KalenderPage,
+  JabatanPage,
+  PenugasanPage,
+  LokasiAbsen,
+  JamKerja,
+} from "@/pages";
+
+import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
+import SuratPenugasanPage from "@/pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
+import ImportPegawai from "../pages/Kepegawaian/ImportPegawai/ImportPegawaiPage";
 
 let jwt = null; // Initialize jwt variable
 
@@ -131,14 +141,8 @@ const Router = () => {
           {/* perusahaan */}
           {jwt && jwt.level === "Super Admin" && (
             <>
-              <Route
-                path="/perusahaan/form"
-                element={<PerusahaanForm />}
-              />
-              <Route
-                path="/perusahaan/form/:pk"
-                element={<PerusahaanForm />}
-              />
+              <Route path="/perusahaan/form" element={<PerusahaanForm />} />
+              <Route path="/perusahaan/form/:pk" element={<PerusahaanForm />} />
             </>
           )}
           {/* Kalender */}
@@ -147,7 +151,7 @@ const Router = () => {
           <Route path="/kalender/form/:pk" element={<KalenderForm />} />
           {jwt && jwt.level === "Super Admin" && (
             <>
-              <Route path="/kalender/:pk" element={<MyKalender />} />
+              <Route path="/kalender/:pk" element={<KalenderPage />} />
               <Route path="/kalender/list/:pk" element={<KalenderList />} />
             </>
           )}
@@ -209,12 +213,13 @@ const Router = () => {
           />
 
           {/* jam kerja */}
+          <Route path="/masterdata/jam-kerja/:slug" element={<JamKerjaPage />} />
           <Route path="/masterdata/jam-kerja/form" element={<JamKerjaForm />} />
           <Route
             path="/masterdata/jam-kerja/form/:pk"
             element={<JamKerjaForm />}
           />
-          <Route path="/masterdata/jam-kerja/:pk" element={<JamKerjaPage />} />
+          {/* <Route path="/masterdata/jam-kerja/:pk" element={<JamKerjaPage />} /> */}
 
           {/* Profile */}
           <Route path="/profile" element={<ProfilePage />} />
@@ -257,6 +262,44 @@ const Router = () => {
             path="/kepegawaian/pegawai/changepassword/:id"
             element={<AkunPassword />}
           />
+
+          {/* super admin menu */}
+          {jwt && jwt.level === "Super Admin" && (
+            <>
+              <Route
+                path="/masterdata/lokasi-absen/:slug"
+                element={<LokasiAbsen />}
+              />
+              <Route
+                path="/masterdata/jabatan/:slug"
+                element={<JabatanPage />}
+              />
+              <Route
+                path="/masterdata/jam-kerja/:slug"
+                element={<JamKerjaPage />}
+              />
+              <Route
+                path="/kepegawaian/penugasan/:slug"
+                element={<PenugasanPage />}
+              />
+              <Route
+                path="/kepegawaian/surat-penugasan/:slug"
+                element={<SuratPenugasanPage />}
+              />
+              <Route
+                path="/masterdata/master-template/:slug"
+                element={<MasterTemplate />}
+              />
+              <Route path="/kalender/:pk" element={<KalenderPage />} />
+              <Route path="/akun/import-pegawai" element={<ImportPegawai />} />
+            </>
+          )}
+          <Route
+            path="/kepegawaian/pegawai/import-pegawai"
+            element={<ImportPegawai />}
+          />
+
+          {/* end super admin menu */}
         </Route>
 
         {/* Login route with PrivateRoute */}

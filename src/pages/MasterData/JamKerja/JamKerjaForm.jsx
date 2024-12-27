@@ -106,7 +106,8 @@ const JamKerjaForm = () => {
           "PATCH"
         );
         if (data && !addperusahaanLoading) {
-          navigate("/masterdata/jam-kerja");
+          navigate(sessionStorage.getItem("url") || "/masterdata/jam-kerja");
+          sessionStorage.removeItem("url");
         }
       } catch (error) {
         console.error("Error in form submission: ", error);
@@ -120,7 +121,7 @@ const JamKerjaForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/masterdata/jam-kerja")}
+            onClick={() => {navigate(sessionStorage.getItem("url") || "/masterdata/jam-kerja"), sessionStorage.removeItem("url")}}
           >
             <IoMdReturnLeft />
           </button>

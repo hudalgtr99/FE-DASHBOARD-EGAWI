@@ -23,6 +23,9 @@ import {
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
 import axiosAPI from "@/authentication/axiosApi";
+import { FaFileExcel } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+import { isAuthenticated } from "@/authentication/authenticationApi";
 
 const TemplateAkun = ({ getapiakun, activeTab }) => {
   const {
@@ -42,11 +45,28 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
   const [loading, setLoading] = useState(true);
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+  const [jwt, setJwt] = useState({});
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
+        // Start with the base URL for the API
+        let url = API_URL_getperusahaan;
+
+        // Add the active parameter if needed
+        if (activeTab === "0") {
+          url += "?active=true";
+        } else if (activeTab === "1") {
+          url += "?active=false";
+        }
+
+        const response = await axiosAPI.get(url);
         const options = response.data.map((item) => ({
           value: item.slug,
           label: item.nama,
@@ -56,8 +76,9 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
         console.error("Error fetching perusahaan data:", error);
       }
     };
+
     fetchData();
-  }, []);
+  }, []); // Add activeTab as a dependency to refetch on tab change
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -175,9 +196,13 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
       ? {
           param: `?perusahaan=${
             selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
+          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      : {
+          param: `?limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
+        };
     get(param);
   }, [limit, pageActive, search, selectedPerusahaan, get]);
 
@@ -241,19 +266,41 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full flex gap-2 sm:w-1/2">
+          <div
+            className={`w-full flex gap-2 ${
+              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
+            }`}
+          >
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
-            <Select
-              options={perusahaanOptions}
-              placeholder="Filter perusahaan"
-              onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-              value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
-            />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
+          </div>
+          <div className="flex gap-2 items-center">
+            {/* <Tooltip tooltip="Import Pegawai">
+              <Button
+                color="success"
+                onClick={() => navigate("/kepegawaian/pegawai/import-pegawai")}
+                size="40"
+              >
+                
+              </Button>
+            </Tooltip> */}
+            <Button onClick={() => navigate("/akun/import-pegawai")}>
+              <div className="flex items-center gap-2">
+                <FaFileExcel className="text-lg text-white" /> Import Pegawai
+              </div>
+            </Button>
           </div>
         </div>
         {getDataAkunLoading ? (

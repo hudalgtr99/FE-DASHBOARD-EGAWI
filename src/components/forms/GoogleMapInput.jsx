@@ -35,7 +35,7 @@ const MapComponent = ({ data, setFieldValue }) => {
     lat: Number(data?.latitude),
     lng: Number(data?.longitude),
   };
-  console.log("longlat", longlat);
+  // console.log("longlat", longlat);
   const mapRef = useRef(null); 
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const MapComponent = ({ data, setFieldValue }) => {
       handleMapClick({
         latLng: { lat: () => longlat.lat, lng: () => longlat.lng },
       });
-      console.log("ada longlat", longlat.lng, "Latitude:", longlat.lat);
+      // console.log("ada longlat", longlat.lng, "Latitude:", longlat.lat);
       return; // Tidak perlu melanjutkan ke geolocation
     }
 
@@ -59,7 +59,7 @@ const MapComponent = ({ data, setFieldValue }) => {
           const lng = position.coords.longitude;
           setUserLocation({ lat, lng });
           setMarkerPosition({ lat, lng });
-          console.log("User Location Longitude:", lng, "Latitude:", lat); // Log posisi pengguna
+          // console.log("User Location Longitude:", lng, "Latitude:", lat); // Log posisi pengguna
           setFieldValue("latitude", lat);
           setFieldValue("longitude", lng);
           if (mapRef.current) {
@@ -88,12 +88,12 @@ const MapComponent = ({ data, setFieldValue }) => {
       // Menggunakan lokasi longlat jika Geolocation tidak didukung
       setUserLocation(longlat);
       setMarkerPosition(longlat);
-      console.log(
-        "Geolocation not supported. Using longlat. Longitude:",
-        longlat.lng,
-        "Latitude:",
-        longlat.lat
-      ); // Log fallback longlat
+      // console.log(
+      //   "Geolocation not supported. Using longlat. Longitude:",
+      //   longlat.lng,
+      //   "Latitude:",
+      //   longlat.lat
+      // ); // Log fallback longlat
       // Simulasi klik otomatis pada lokasi longlat
       handleMapClick({
         latLng: { lat: () => longlat.lat, lng: () => longlat.lng },

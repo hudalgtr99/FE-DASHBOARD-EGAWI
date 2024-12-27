@@ -6,39 +6,52 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
-  Select,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { getData, updateData } from "@/actions";
 import {
   API_URL_gettemplatesurattugas,
-  API_URL_getperusahaan,
   API_URL_changeactivedata,
 } from "@/constants";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import axiosAPI from "@/authentication/axiosApi";
+import { useAuth } from "@/context/AuthContext";
+import { Select } from "../../../components";
 
 export default function MasterTemplate() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
   const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } =
     useSelector((state) => state.tugas);
 
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [jwt, setJwt] = useState({});
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setperusahaanOptions(options);
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
+      console.log(perusahaan);
+    }
+  }, [loadingPerusahaan]);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -47,21 +60,20 @@ export default function MasterTemplate() {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
+  const handleSelect = (selectedOption) => {
+    console.log(selectedOption);
+    setSelectedPerusahaan(selectedOption);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian dan perusahaan
+    const param = {
+      param: `?search=${search || ""}&perusahaan=${
+        selectedOption?.value || ""
+      }&limit=${limit}&offset=${offset}`,
     };
-    fetchData();
-  }, []);
+
+    get(param);
+  };
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -92,6 +104,7 @@ export default function MasterTemplate() {
         item: {
           nama: "",
           isi: "",
+          perusahaan: slug ? { slug: slug } : null,
         },
       },
     });
@@ -153,6 +166,8 @@ export default function MasterTemplate() {
     // Menyiapkan parameter pencarian dan perusahaan
     const param = {
       param: `?search=${search || ""}&perusahaan=${
+        selectedPerusahaan.value
+      }&perusahaan=${
         selectedPerusahaan?.value || ""
       }&limit=${limit}&offset=${offset}`,
     };
@@ -161,28 +176,21 @@ export default function MasterTemplate() {
     setPageActive(page - 1);
   };
 
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
-
   useEffect(() => {
     const param = selectedPerusahaan
       ? {
           param: `?perusahaan=${
             selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
+          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
+      : {
+          param: `?limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
+        };
+
     get(param);
-  }, [limit, pageActive, search, selectedPerusahaan, get]);
+  }, [selectedPerusahaan, limit, pageActive, search, get]);
 
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
@@ -193,7 +201,7 @@ export default function MasterTemplate() {
             }&limit=${limit}&offset=${pageActive * limit}`,
           }
         : {
-            param: `?perusahaan=${
+            param: `?&perusahaan=${
               selectedPerusahaan?.value || ""
             }&limit=${limit}&offset=${pageActive * limit}`,
           };
@@ -235,7 +243,7 @@ export default function MasterTemplate() {
               <Select
                 options={perusahaanOptions}
                 placeholder="Filter perusahaan"
-                onChange={handleSelect} // Updated to use handlePerusahaanSelect
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
                 value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
               />
             )}

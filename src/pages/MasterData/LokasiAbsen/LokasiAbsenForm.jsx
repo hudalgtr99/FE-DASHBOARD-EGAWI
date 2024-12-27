@@ -38,12 +38,18 @@ const LokasiAbsenForm = () => {
         const options = response.data.map((item) => ({
           value: item.pk,
           label: item.nama,
+          slug: item.slug, // tambahkan slug untuk referensi
         }));
         setPerusahaanOptions(options);
 
         // Set default value jika ada satu opsi perusahaan atau saat sedang edit
         if (options.length === 1 || state?.item?.perusahaan) {
-          const perusahaanId = state?.item?.perusahaan?.id || options[0].value;
+          const perusahaanSlug = state?.item?.perusahaan?.slug;
+          const perusahaanId =
+            perusahaanSlug && options.find((opt) => opt.slug === perusahaanSlug)
+              ? options.find((opt) => opt.slug === perusahaanSlug).value
+              : state?.item?.perusahaan?.id || options[0].value;
+
           formik.setFieldValue("perusahaan", perusahaanId);
         }
 
