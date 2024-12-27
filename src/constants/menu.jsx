@@ -18,7 +18,6 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
 import SuratPenugasanPage from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
-import ImportPegawai from "../pages/Kepegawaian/ImportPegawai/ImportPegawaiPage";
 
 let jwt = null; // Initialize jwt variable
 

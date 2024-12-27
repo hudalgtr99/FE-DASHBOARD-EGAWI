@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
     const fetchPerusahaan = async () => {
       try {
         setLoadingPerusahaan(true);
-        const response = await axiosAPI.get(API_URL_getperusahaan + "?active=true");
+        const response = await axiosAPI.get(API_URL_getperusahaan);
         setPerusahaan(response.data);
       } catch (err) {
         setErrorPerusahaan(err.message);

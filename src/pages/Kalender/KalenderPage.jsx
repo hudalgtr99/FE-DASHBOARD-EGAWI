@@ -1,54 +1,51 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { API_URL_getkalender } from "@/constants";
 import { useSelector } from "react-redux";
 import axiosAPI from "@/authentication/axiosApi";
 import moment from "moment";
-import { Container } from "../../components";
+import { Button, Container } from "../../components";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import { Select } from "@/components";
 import { isAuthenticated } from "@/authentication/authenticationApi";
+import { FaCalendarAlt } from "react-icons/fa";
 
-const KalenderPage = () => {
+const KalenderSubPage = () => {
   const { pk } = useParams();
+  const navigate = useNavigate();
   const { addKalenderResult } = useSelector((state) => state.kalender);
   const calendarRef = useRef(null);
   const [kalender, setKalender] = useState([]);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
   const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
 
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
+  // Fetch perusahaan options and set selectedPerusahaan
   useEffect(() => {
     if (!loadingPerusahaan) {
       const options = perusahaan.map((opt) => ({
         value: opt.slug,
         label: opt.nama,
       }));
-      setperusahaanOptions(options);
-      setSelectedPerusahaan(options.find((opt) => opt?.value === pk) || options[0]);
+      setPerusahaanOptions(options);
+      // Set selectedPerusahaan if pk exists, otherwise default to first perusahaan
+      setSelectedPerusahaan(
+        options.find((opt) => opt?.value === pk) || options[0]
+      );
     }
-  }, [loadingPerusahaan]);
+  }, [loadingPerusahaan, pk]);
 
   const handleSelect = (selectedOption) => {
     setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-
-    // Menyiapkan parameter pencarian dan perusahaan
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
   };
 
+  // Decode JWT token if authenticated
   useEffect(() => {
     if (isAuthenticated()) {
       const token = isAuthenticated();
@@ -56,18 +53,22 @@ const KalenderPage = () => {
     }
   }, []);
 
+  // Fetch events based on selectedPerusahaan or pk
   const getEvent = async (month_year = false) => {
     const params = month_year ? { "month-year": month_year } : {};
-    // Include pk in the request to fetch events for that specific calendar
-    const response = pk
-      ? await axiosAPI.get(`${API_URL_getkalender}${pk}/`, { params })
-      : await axiosAPI.get(`${API_URL_getkalender}`, { params });
+    const perusahaanSlug = selectedPerusahaan ? selectedPerusahaan.value : pk;
+
+    // Request based on selectedPerusahaan or pk
+    const response = await axiosAPI.get(
+      `${API_URL_getkalender}${perusahaanSlug ? `${perusahaanSlug}/` : ""}`,
+      { params }
+    );
     setKalender(response.data);
   };
 
   const fetchData = useCallback(async () => {
     getEvent();
-  }, [pk]);
+  }, [pk, selectedPerusahaan]);
 
   useEffect(() => {
     fetchData();
@@ -79,37 +80,33 @@ const KalenderPage = () => {
     }
   }, [addKalenderResult]);
 
+  const onDetail = (selectedPerusahaan) => {
+    navigate(`${selectedPerusahaan ? `/kalender/list/${selectedPerusahaan}` : "/kalender/list"}`);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Container>
         <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center">
-          <div className="w-full sm:w-60">
-            {/* <TextField
-              placeholder="Search"
-              icon={<CiSearch />}
-              value={searchTerm} // Bind value dengan state
-              onChange={(e) => setSearchTerm(e.target.value)} // Update state saat input berubah
-            /> */}
+          <div className="w-full sm:w-60 z-50">
             <Select
               options={perusahaanOptions}
               placeholder="Filter perusahaan"
-              onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-              value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              onChange={handleSelect}
+              value={selectedPerusahaan}
             />
           </div>
+          <Button onClick={() => onDetail(selectedPerusahaan?.value)}>
+            <div className="flex items-center gap-2">
+            <FaCalendarAlt /> Data Kalender
+            </div>
+          </Button>
         </div>
       </Container>
       <div className="p-6 bg-white dark:bg-base-600 rounded-lg shadow-lg calendar-wrapper">
-        {/* <p className="mb-6 text-lg font-[400]">Perusahaan</p> */}
         <FullCalendar
           ref={calendarRef}
           customButtons={{
-            // buttonAdd: {
-            //   text: "Data Kalender",
-            //   // click: () => navigate("/kalender/form"),
-            //   click: () => navigate(`${pk ? `/kalender/list/${pk}` : "/kalender/list"}`),
-            // },
-
             prev: {
               click: () => {
                 const calendarApi = calendarRef.current.getApi();
@@ -151,4 +148,4 @@ const KalenderPage = () => {
   );
 };
 
-export default KalenderPage;
+export default KalenderSubPage;

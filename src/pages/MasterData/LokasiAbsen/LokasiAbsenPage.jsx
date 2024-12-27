@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
@@ -35,6 +35,7 @@ const PerusahaanPage = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { perusahaan, loadingPerusahaan } = useAuth();
   const [perusahaanOptions, setperusahaanOptions] = useState([]);
 
@@ -104,6 +105,7 @@ const PerusahaanPage = () => {
   };
 
   const onAdd = () => {
+    sessionStorage.setItem("url", location.pathname);
     const item = {
       perusahaan: {
         slug: slug || "",
@@ -117,6 +119,7 @@ const PerusahaanPage = () => {
   };
 
   const onEdit = (item) => {
+    sessionStorage.setItem("url", location.pathname);
     navigate(`/masterdata/lokasi-absen/form/${item.slug}`, {
       state: {
         item,
@@ -177,11 +180,11 @@ const PerusahaanPage = () => {
   ]);
 
   useEffect(() => {
-    const param = selectedPerusahaan
+    const param = slug
       ? {
-          param: `?perusahaan=${
-            selectedPerusahaan.value
-          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
+          param: `?perusahaan=${slug}&limit=${limit}&search=${
+            search || ""
+          }&offset=${pageActive * limit}`,
         }
       : {
           param: `?limit=${limit}&search=${search || ""}&offset=${
@@ -189,7 +192,7 @@ const PerusahaanPage = () => {
           }`,
         };
     get(param);
-  }, [limit, pageActive, search, selectedPerusahaan, get]);
+  }, [limit, pageActive, search, slug, get]);
 
   useEffect(() => {
     if (addperusahaanResult || deleteperusahaanResult) {

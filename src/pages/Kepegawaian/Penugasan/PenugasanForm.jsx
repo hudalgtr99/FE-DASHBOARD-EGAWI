@@ -77,7 +77,6 @@ const PenugasanForm = () => {
             perusahaanSlug && options.find((opt) => opt.slug === perusahaanSlug)
               ? options.find((opt) => opt.slug === perusahaanSlug).value
               : state?.item?.perusahaan?.id || options[0].value;
-          console.log("perusahaanSlug", perusahaanSlug)
           formik.setFieldValue("perusahaan", perusahaanId);
         }
       } catch (error) {
@@ -126,7 +125,6 @@ const PenugasanForm = () => {
         ),
     }),
     onSubmit: async (values) => {
-
       // Create FormData and append values
       const formData = new FormData();
       formData.append("judul", values.judul);
@@ -151,15 +149,14 @@ const PenugasanForm = () => {
         if (id) {
           const data = await updateFormData(
             { dispatch, redux: penugasanReducer },
-            formData, // Tetap gunakan FormData
+            formData, // Use FormData as intended
             API_URL_edeltugas,
-            "ADD_TUGAS",
+            "ADD_TUGAS", // Correct action type
             id,
-            { headers: { "Content-Type": "multipart/form-data" } } // Tambahkan header di sini
+            { headers: { "Content-Type": "multipart/form-data" } } // Add headers here
           );
-          if (data && !addTugasLoading) {
-            navigate("/kepegawaian/penugasan");
-          }
+          navigate(sessionStorage.getItem("url") || "/kepegawaian/penugasan");
+          sessionStorage.removeItem("url");
         } else {
           console.error("ID is undefined for updating the task.");
         }
@@ -171,8 +168,9 @@ const PenugasanForm = () => {
           "ADD_TUGAS",
           { headers: { "Content-Type": "multipart/form-data" } }
         );
-        if (data && !addTugasLoading) {
-          navigate("/kepegawaian/penugasan");
+        if (data) {
+          navigate(sessionStorage.getItem("url") || "/kepegawaian/penugasan");
+          sessionStorage.removeItem("url");
         }
       }
     },
@@ -191,7 +189,10 @@ const PenugasanForm = () => {
       <div className="flex items-center gap-2 mb-4">
         <button
           className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-          onClick={() => navigate("/kepegawaian/penugasan")}
+          onClick={() => {
+            navigate(sessionStorage.getItem("url") || "/kepegawaian/penugasan");
+            sessionStorage.removeItem("url");
+          }}
         >
           <IoMdReturnLeft />
         </button>

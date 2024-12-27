@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
@@ -57,7 +57,6 @@ const Pegawai = ({ onTabChange }) => {
         ...values,
         user_id: localStorageData.datapribadi.user_id, // Update here
       };
-      console.log(formik.errors)
       try {
         const data = await updateData(
           { dispatch, redux: pegawaiReducer },
@@ -166,8 +165,8 @@ const Pegawai = ({ onTabChange }) => {
                 }
               />
             </div>
-            {/* <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
-              <Select
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
+              {/* <Select
                 required
                 label="Departemen"
                 name="departemen_id"
@@ -220,7 +219,7 @@ const Pegawai = ({ onTabChange }) => {
                 }
                 options={unitOptions}
                 error={formik.touched.unit_id ? formik.errors.unit_id : ""}
-              />
+              /> */}
               <Select
                 required
                 label="Status"
@@ -243,8 +242,6 @@ const Pegawai = ({ onTabChange }) => {
                 ]}
                 error={formik.touched.status ? formik.errors.status : ""}
               />
-            </div> */}
-            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <TextField
                 required
                 label="Tanggal Bergabung"
@@ -259,6 +256,8 @@ const Pegawai = ({ onTabChange }) => {
                     : ""
                 }
               />
+            </div>
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               {!isEdit ||
                 (localStorageData.datapribadi.is_staff === false && (
                   <TextField

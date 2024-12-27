@@ -18,6 +18,7 @@ import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { API_URL_edelkalender } from "../../constants";
+import { useAuth } from "@/context/AuthContext";
 
 const KalenderPage = () => {
   const {
@@ -37,6 +38,20 @@ const KalenderPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
+  const { perusahaan, loadingPerusahaan } = useAuth();
+
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.pk,
+        label: opt.nama,
+        slug: opt.slug
+      }));
+      setSelectedPerusahaan(options.find((opt) => opt?.slug === pk)?.value || "");
+    }
+  }, [loadingPerusahaan]);
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -62,22 +77,23 @@ const KalenderPage = () => {
         ? {
             state: {
               item,
+              perusahaan_id: selectedPerusahaan || "",
             },
           }
         : {}
     );
-    sessionStorage.setItem("url", location.pathname)
+    sessionStorage.setItem("url", location.pathname);
   };
 
   const handleEdit = (data) => {
     const item = {
       ...data,
       perusahaan_id: data.perusahaan.id,
-    }
+    };
     navigate(`/kalender/form/${data.slug}`, {
       state: { item },
     });
-    sessionStorage.setItem("url", location.pathname)
+    sessionStorage.setItem("url", location.pathname);
   };
 
   const handleDelete = (item) => {
@@ -181,7 +197,9 @@ const KalenderPage = () => {
                     <Tables.Data>{item?.title}</Tables.Data>
                     <Tables.Data>{item?.start}</Tables.Data>
                     <Tables.Data>{item?.end}</Tables.Data>
-                    <Tables.Data>{item?.type === "National Holiday" ? "Libur" : item?.type}</Tables.Data>
+                    <Tables.Data>
+                      {item?.type === "National Holiday" ? "Libur" : item?.type}
+                    </Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Edit">

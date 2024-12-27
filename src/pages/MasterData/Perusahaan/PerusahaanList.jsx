@@ -34,6 +34,7 @@ import {
   BsFileRichtext,
   BsGeoAltFill,
   BsJournalText,
+  BsPeople,
   BsPersonCheck,
   BsThreeDots,
 } from "react-icons/bs";
@@ -151,6 +152,13 @@ const PerusahaanPage = () => {
       icon: <BsClock />,
       color: "text-green-500",
       slug: "masterdata/jam-kerja",
+      func: toMenu,
+    },
+    {
+      name: "Daftar pegawai",
+      icon: <BsPeople />,
+      color: "text-green-500",
+      slug: "kepegawaian/pegawai",
       func: toMenu,
     },
     {

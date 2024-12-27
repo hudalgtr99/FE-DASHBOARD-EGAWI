@@ -228,9 +228,16 @@ const Pribadi = ({ onTabChange }) => {
       const options = response.data.map((item) => ({
         value: item.pk,
         label: item.nama,
+        slug: item.slug,
       }));
 
       setPerusahaanOptions(options);
+      console.log(formik.values?.perusahaan?.slug);
+      formik.setFieldValue("perusahaan", {
+        value: options.find(
+          (opt) => opt.slug === formik.values?.perusahaan?.slug
+        ).value,
+      });
 
       // console.log(options);
 
@@ -310,6 +317,7 @@ const Pribadi = ({ onTabChange }) => {
   // console.log(formik.values.lokasi_absen)
 
   // console.log("roles", JSON.stringify(roles));
+  console.log(formik.values);
   return (
     <div>
       <Container>

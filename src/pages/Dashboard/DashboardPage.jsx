@@ -149,6 +149,7 @@ const DashboardPage = () => {
           res.data.kehadiranPegawai["Hadir"] || 0,
           res.data.kehadiranPegawai["Alfa"] || 0,
           res.data.kehadiranPegawai["Cuti"] || 0,
+          res.data.kehadiranPegawai["Libur"] || 0,
         ]);
         setTotalPegawai([
           res.data.totalPegawai["laki laki"] || 0,
@@ -207,7 +208,7 @@ const DashboardPage = () => {
           icon={<TbUserCheck />}
           dataSeries={kehadiranPegawai}
           dataLabels={["Hadir", "Alfa", "Cuti"]}
-          dataColor={["#36AE7C", "#EB5353", "#FF8AAE"]}
+          dataColor={["#36AE7C", "#EB5353", "#FF8AAE", "#F9D923"]}
         />
         {!jwt.perusahaan && (
           <CardDonuts

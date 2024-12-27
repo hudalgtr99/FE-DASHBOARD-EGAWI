@@ -39,6 +39,7 @@ export const API_URL_responsepengajuan = `${baseurl}/responsepengajuan/`;
 
 //=== kepegegawaian ===
 export const API_URL_getpegawai = `${baseurl}/getpegawai/`;
+export const API_URL_getdatapegawai = `${baseurl}/getdatapegawai/`;
 export const API_URL_gettugas = `${baseurl}/gettugas/`;
 export const API_URL_createtugas = `${baseurl}/createtugas/`;
 export const API_URL_getriwayattugas = `${baseurl}/getriwayattugas/`;

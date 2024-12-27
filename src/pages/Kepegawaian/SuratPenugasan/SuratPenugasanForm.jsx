@@ -98,7 +98,12 @@ const SuratPenugasanSlug = () => {
             "ADD_TUGAS"
           );
           if (data && !addTugasLoading) {
-            navigate("/kepegawaian/surat-penugasan");
+            navigate(
+              sessionStorage.getItem("url")
+                ? sessionStorage.getItem("url")
+                : "/masterdata/surat-penugasan"
+            );
+            sessionStorage.removeItem("url");
           }
         } else {
           console.error("ID is undefined for updating the task.");
@@ -111,7 +116,12 @@ const SuratPenugasanSlug = () => {
           "ADD_TUGAS"
         );
         if (data && !addTugasLoading) {
-          navigate("/kepegawaian/surat-penugasan");
+          navigate(
+            sessionStorage.getItem("url")
+              ? sessionStorage.getItem("url")
+              : "/masterdata/surat-penugasan"
+          );
+          sessionStorage.removeItem("url");
         }
       }
     },
@@ -165,7 +175,7 @@ const SuratPenugasanSlug = () => {
           const generatedNoSurat = `${
             isEdit ? id_templateEdit : id_template
           }·${suratCount}/${perusahaanSingkatan}/${currentMonth}/${currentYear}`;
-          if(!isEdit) formik.setFieldValue("no_surat", generatedNoSurat);
+          if (!isEdit) formik.setFieldValue("no_surat", generatedNoSurat);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -195,7 +205,14 @@ const SuratPenugasanSlug = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/kepegawaian/penugasan")}
+            onClick={() => {
+              navigate(
+                sessionStorage.getItem("url")
+                  ? sessionStorage.getItem("url")
+                  : "/masterdata/surat-penugasan"
+              );
+              sessionStorage.removeItem("url");
+            }}
           >
             <IoMdReturnLeft />
           </button>

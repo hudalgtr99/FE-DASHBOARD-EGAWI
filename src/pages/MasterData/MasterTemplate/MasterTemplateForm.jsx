@@ -65,7 +65,12 @@ const MasterTemplateForm = () => {
             "ADD_TUGAS"
           );
           if (data && !addTugasLoading) {
-            navigate(`/masterdata/master-template`);
+            navigate(
+              sessionStorage.getItem("url")
+                ? sessionStorage.getItem("url")
+                : "/masterdata/master-template"
+            );
+            sessionStorage.removeItem("url");
             sessionStorage.removeItem("ckeditor");
           }
         } else {
@@ -79,7 +84,12 @@ const MasterTemplateForm = () => {
           "ADD_TUGAS"
         );
         if (data && !addTugasLoading) {
-          navigate(`/masterdata/master-template`);
+          navigate(
+            sessionStorage.getItem("url")
+              ? sessionStorage.getItem("url")
+              : "/masterdata/master-template"
+          );
+          sessionStorage.removeItem("url");
           sessionStorage.removeItem("ckeditor");
         }
       }
@@ -132,7 +142,14 @@ const MasterTemplateForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/kepegawaian/penugasan")}
+            onClick={() => {
+              navigate(
+                sessionStorage.getItem("url")
+                  ? sessionStorage.getItem("url")
+                  : "/masterdata/master-template"
+              );
+              sessionStorage.removeItem("url");
+            }}
           >
             <IoMdReturnLeft />
           </button>

@@ -19,9 +19,7 @@ const JabatanSubForm = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {
-    addJabatanLoading,
-  } = useSelector((state) => state.strata);
+  const { addJabatanLoading } = useSelector((state) => state.strata);
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const isEdit = pk && pk !== "add";
 
@@ -39,12 +37,12 @@ const JabatanSubForm = () => {
         if (options.length === 1 || state?.item?.perusahaan) {
           const perusahaanSlug = state?.item?.perusahaan?.slug;
           const perusahaanId =
-          perusahaanSlug && options.find((opt) => opt.slug === perusahaanSlug)
-          ? options.find((opt) => opt.slug === perusahaanSlug).value
-          : state?.item?.perusahaan?.id || options[0].value;
-          
+            perusahaanSlug && options.find((opt) => opt.slug === perusahaanSlug)
+              ? options.find((opt) => opt.slug === perusahaanSlug).value
+              : state?.item?.perusahaan?.id || options[0].value;
+
           formik.setFieldValue("perusahaan", perusahaanId);
-          console.log(perusahaanId)
+          console.log(perusahaanId);
         }
 
         // Set default value for perusahaan if editing
@@ -79,8 +77,13 @@ const JabatanSubForm = () => {
           API_URL_edeljabatan,
           "ADD_JABATAN"
         );
-        if(data && !addJabatanLoading){
-          navigate("/masterdata/jabatan");
+        if (data && !addJabatanLoading) {
+          navigate(
+            sessionStorage.getItem("url")
+              ? sessionStorage.getItem("url")
+              : "/masterdata/jabatan"
+          );
+          sessionStorage.removeItem("url");
         }
       } else {
         const data = await addData(
@@ -89,8 +92,13 @@ const JabatanSubForm = () => {
           API_URL_createjabatan,
           "ADD_JABATAN"
         );
-        if(data && !addJabatanLoading){
-          navigate("/masterdata/jabatan");
+        if (data && !addJabatanLoading) {
+          navigate(
+            sessionStorage.getItem("url")
+              ? sessionStorage.getItem("url")
+              : "/masterdata/jabatan"
+          );
+          sessionStorage.removeItem("url");
         }
       }
     },
@@ -102,7 +110,14 @@ const JabatanSubForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/masterdata/jabatan")}
+            onClick={() => {
+              navigate(
+                sessionStorage.getItem("url")
+                  ? sessionStorage.getItem("url")
+                  : "/masterdata/jabatan"
+              );
+              sessionStorage.removeItem("url");
+            }}
           >
             <IoMdReturnLeft />
           </button>
@@ -143,7 +158,9 @@ const JabatanSubForm = () => {
               error={formik.touched.keterangan ? formik.errors.keterangan : ""}
             />
             <div className="mt-6 flex justify-end">
-              <Button loading={addJabatanLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
+              <Button loading={addJabatanLoading} type="submit">
+                {isEdit ? "Update" : "Tambah"}
+              </Button>
             </div>
           </form>
         </div>

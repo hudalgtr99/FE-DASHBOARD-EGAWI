@@ -47,11 +47,13 @@ import {
   PenugasanPage,
   LokasiAbsen,
   JamKerja,
+  PegawaiPage
 } from "@/pages";
 
 import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
 import SuratPenugasanPage from "@/pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
 import ImportPegawai from "../pages/Kepegawaian/ImportPegawai/ImportPegawaiPage";
+
 
 let jwt = null; // Initialize jwt variable
 
@@ -281,6 +283,10 @@ const Router = () => {
               <Route
                 path="/kepegawaian/penugasan/:slug"
                 element={<PenugasanPage />}
+              />
+              <Route
+                path="/kepegawaian/pegawai/:slug"
+                element={<PegawaiPage />}
               />
               <Route
                 path="/kepegawaian/surat-penugasan/:slug"

@@ -10,7 +10,7 @@ import {
 import { debounce } from "lodash"; // Import lodash debounce
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
@@ -32,6 +32,7 @@ export default function MasterTemplate() {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const { slug } = useParams();
+  const location = useLocation();
   const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } =
     useSelector((state) => state.tugas);
 
@@ -99,6 +100,7 @@ export default function MasterTemplate() {
   };
 
   const onAdd = () => {
+    sessionStorage.setItem("url", location.pathname);
     navigate("/masterdata/master-template/form", {
       state: {
         item: {
@@ -140,6 +142,7 @@ export default function MasterTemplate() {
   }
 
   const onEdit = (item) => {
+    sessionStorage.setItem("url", location.pathname);
     item = { ...item, perusahaan: item.perusahaan.id };
     navigate(`/masterdata/master-template/form/${item.slug}`, {
       state: {
@@ -177,21 +180,20 @@ export default function MasterTemplate() {
   };
 
   useEffect(() => {
-    const param = selectedPerusahaan
+    const param = slug
       ? {
-          param: `?perusahaan=${
-            selectedPerusahaan.value
-          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
+          param: `?perusahaan=${slug}&limit=${limit}&search=${
+            search || ""
+          }&offset=${pageActive * limit}`,
         }
       : {
           param: `?limit=${limit}&search=${search || ""}&offset=${
             pageActive * limit
           }`,
         };
-
     get(param);
-  }, [selectedPerusahaan, limit, pageActive, search, get]);
-
+  }, [limit, pageActive, search, slug, get]);
+  
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
       const param = search
@@ -217,7 +219,7 @@ export default function MasterTemplate() {
     get,
   ]);
 
-  const dataWithIndex = getTugasResult.results
+  const dataWithIndex = !loadingPerusahaan && getTugasResult.results
     ? getTugasResult.results.map((item, index) => ({
         ...item,
         index: pageActive * limit + index + 1,

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Tables } from "@/components";
 import { Button, Select } from "../../../components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { API_URL_getjamkerja } from "@/constants";
 import { BsPencilFill } from "react-icons/bs";
 
@@ -14,13 +14,13 @@ const JamKerjaPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [locations, setLocations] = useState([]);
-
+  const location = useLocation();
   const [jwt, setJwt] = useState({});
   const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setperusahaanOptions] = useState([]);
-
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
+  // Decode JWT and set the JWT state
   useEffect(() => {
     if (isAuthenticated()) {
       const token = isAuthenticated();
@@ -28,44 +28,36 @@ const JamKerjaPage = () => {
     }
   }, []);
 
+  // Set perusahaan options when loading is complete
   useEffect(() => {
     if (!loadingPerusahaan) {
       const options = perusahaan.map((opt) => ({
         value: opt.slug,
         label: opt.nama,
       }));
-      setperusahaanOptions(options);
-      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
-      console.log(perusahaan);
+      setPerusahaanOptions(options);
+      // Set the selectedPerusahaan if slug is available
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || null);
     }
-  }, [loadingPerusahaan]);
+  }, [loadingPerusahaan, perusahaan, slug]);
 
-  const onEdit = (item) => {
-    sessionStorage.setItem("url", location.pathname);
-    navigate(`/masterdata/jam-kerja/form/${item.slug}`, {
-      state: {
-        item, // Pass the entire item object as state
-      },
-    });
-  };
-
+  // Fetch data based on selectedPerusahaan or slug
   const fetchData = useCallback(async () => {
     try {
-      const response = selectedPerusahaan
-        ? await axiosAPI.get(
-            `${API_URL_getjamkerja}${selectedPerusahaan.value}/`
-          )
+      const currentSlug = selectedPerusahaan ? selectedPerusahaan.value : slug;
+      const response = currentSlug
+        ? await axiosAPI.get(`${API_URL_getjamkerja}${currentSlug}/`)
         : await axiosAPI.get(API_URL_getjamkerja);
 
       setLocations(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, [selectedPerusahaan]);
+  }, [selectedPerusahaan, slug]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, selectedPerusahaan]);
+  }, [fetchData, selectedPerusahaan, slug]);
 
   const daysOfWeek = [
     "senin",
@@ -77,8 +69,19 @@ const JamKerjaPage = () => {
     "minggu",
   ];
 
+  // Handle perusahaan selection
   const handleSelect = (selectedOption) => {
     setSelectedPerusahaan(selectedOption);
+  };
+
+  // Edit functionality
+  const onEdit = (item) => {
+    sessionStorage.setItem("url", location.pathname);
+    navigate(`/masterdata/jam-kerja/form/${item.slug}`, {
+      state: {
+        item, // Pass the entire item object as state
+      },
+    });
   };
 
   return (
@@ -95,8 +98,8 @@ const JamKerjaPage = () => {
                 <Select
                   options={perusahaanOptions}
                   placeholder="Filter perusahaan"
-                  onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-                  value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+                  onChange={handleSelect} // Trigger handleSelect when the value changes
+                  value={selectedPerusahaan} // Show the selected perusahaan
                 />
               </div>
             )}

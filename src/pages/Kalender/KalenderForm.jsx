@@ -52,7 +52,7 @@ const KalenderForm = () => {
       tgl_mulai: state?.item?.start || "", // Mengambil "start" sebagai tgl_mulai
       tgl_berakhir: state?.item?.end || "", // Mengambil "end" sebagai tgl_berakhir
       type_event: state?.item?.type || "", // Mengambil "type" sebagai type_event
-      perusahaan: Number(state?.item?.perusahaan_id) || "", // Mengambil "perusahaan_id"
+      perusahaan: Number(state?.perusahaan_id) || "", // Mengambil "perusahaan_id"
     },
     validationSchema: Yup.object().shape({
       nama_event: Yup.string().required("Nama Event is required"),
@@ -92,6 +92,8 @@ const KalenderForm = () => {
       );
     },
   });
+
+  console.log(formik.values)
 
   return (
     <div>

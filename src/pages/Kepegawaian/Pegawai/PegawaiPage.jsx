@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData, updateData } from "@/actions";
 import { userReducer } from "@/reducers/authReducers";
 import {
   API_URL_edeluser,
-  API_URL_getdataakun,
+  API_URL_getdatapegawai,
   API_URL_changeactive,
   API_URL_changeoutofarea,
 } from "@/constants";
@@ -38,6 +38,7 @@ const AkunPage = () => {
   } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -111,12 +112,13 @@ const AkunPage = () => {
   const onEdit = (item) => {
     // Store the item in localStorage
     localStorage.setItem("editUserData", JSON.stringify(item));
-    sessionStorage.removeItem("url"), sessionStorage.removeItem("activeTab");
+    sessionStorage.setItem("url", location.pathname);
+    sessionStorage.removeItem("activeTab");
     navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
   };
 
   const onChange = (item) => {
-    sessionStorage.removeItem("url"), sessionStorage.removeItem("activeTab");
+    sessionStorage.removeItem("activeTab");
     navigate(
       `/kepegawaian/pegawai/changepassword/${item.datapribadi.no_identitas}`
     );
@@ -136,7 +138,7 @@ const AkunPage = () => {
       await getData(
         { dispatch, redux: userReducer },
         param,
-        API_URL_getdataakun,
+        API_URL_getdatapegawai,
         "GET_AKUN"
       );
 
@@ -214,19 +216,21 @@ const AkunPage = () => {
   };
 
   useEffect(() => {
-    const param = selectedPerusahaan
-      ? {
-          param: `?perusahaan=${
-            selectedPerusahaan.value
-          }&limit=${limit}&search=${search || ""}&offset=${pageActive * limit}`,
-        }
-      : {
-          param: `?limit=${limit}&search=${search || ""}&offset=${
-            pageActive * limit
-          }`,
-        };
-    get(param);
-  }, [limit, pageActive, search, selectedPerusahaan, get]);
+      const param = slug
+        ? {
+            param: `?perusahaan=${
+              slug
+            }&limit=${limit}&search=${search || ""}&offset=${
+              pageActive * limit
+            }`,
+          }
+        : {
+            param: `?limit=${limit}&search=${search || ""}&offset=${
+              pageActive * limit
+            }`,
+          };
+      get(param);
+  }, [limit, pageActive, search, slug, get]);
 
   useEffect(() => {
     if (addAkunResult || deleteAkunResult) {
@@ -274,6 +278,7 @@ const AkunPage = () => {
   ]);
 
   const onAdd = () => {
+    sessionStorage.setItem("url", location.pathname);
     localStorage.setItem(
       "editUserData",
       JSON.stringify({
@@ -283,7 +288,11 @@ const AkunPage = () => {
           username: "",
           email: "",
           is_staff: false,
-          perusahaan: "",
+          perusahaan: slug
+            ? {
+                slug: slug,
+              }
+            : "",
           lokasi_absen: [],
           groups: {},
           jenis_kelamin: "",
@@ -308,7 +317,7 @@ const AkunPage = () => {
         index: null,
       })
     );
-    sessionStorage.removeItem("url"), sessionStorage.removeItem("activeTab");
+    sessionStorage.removeItem("activeTab");
     navigate("/kepegawaian/pegawai/form");
   };
 
@@ -352,7 +361,7 @@ const AkunPage = () => {
             </Button>
           </div>
         </div>
-        {getDataAkunLoading ? ( // Show loading indicator if loading is true
+        {getDataAkunLoading || loadingPerusahaan ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>

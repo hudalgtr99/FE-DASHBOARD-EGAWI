@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { API_URL_edelsurattugas, API_URL_getsurattugas } from "@/constants";
 import {
@@ -31,6 +31,7 @@ const SuratPenugasanPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -102,11 +103,13 @@ const SuratPenugasanPage = () => {
   };
 
   const onAdd = () => {
+    sessionStorage.setItem("url", location.pathname);
     const item = slug ? { perusahaan: { slug: slug } } : null;
     navigate("/kepegawaian/surat-penugasan/form", { state: { item } });
   };
 
   const onEdit = (item) => {
+    sessionStorage.setItem("url", location.pathname);
     item.pemohon = item.pemohon;
     item.perusahaan = item.perusahaan ? item.perusahaan.id : "";
     navigate(`/kepegawaian/surat-penugasan/form/${item.slug}`, {
@@ -153,15 +156,19 @@ const SuratPenugasanPage = () => {
   };
 
   useEffect(() => {
-    const param = selectedPerusahaan
+    const param = slug
       ? {
-          param: `?perusahaan=${
-            selectedPerusahaan.value
-          }&limit=${limit}&search=${search || ''}&offset=${pageActive * limit}`,
+          param: `?perusahaan=${slug}&limit=${limit}&search=${
+            search || ""
+          }&offset=${pageActive * limit}`,
         }
-      : { param: `?limit=${limit}&search=${search || ''}&offset=${pageActive * limit}` };
+      : {
+          param: `?limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
+        };
     get(param);
-  }, [limit, pageActive, search, selectedPerusahaan, get]);
+  }, [limit, pageActive, search, slug, get]);
 
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
@@ -176,7 +183,7 @@ const SuratPenugasanPage = () => {
               selectedPerusahaan?.value || ""
             }&limit=${limit}&offset=${pageActive * limit}`,
           };
-          
+
       get(param);
     }
   }, [

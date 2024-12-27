@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";
 import { API_URL_edeljabatan, API_URL_getjabatan } from "@/constants";
@@ -37,6 +37,7 @@ const JabatanSub = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -107,6 +108,7 @@ const JabatanSub = () => {
   };
 
   const onAdd = () => {
+    sessionStorage.setItem("url", location.pathname);
     const item = slug ? { perusahaan: { slug: slug } } : null;
     navigate("/masterdata/jabatan/form", {
       state: {
@@ -116,6 +118,7 @@ const JabatanSub = () => {
   };
 
   const onEdit = (item) => {
+    sessionStorage.setItem("url", location.pathname);
     navigate(`/masterdata/jabatan/form/${item?.slug}`, {
       state: {
         item,
@@ -174,16 +177,21 @@ const JabatanSub = () => {
   ]);
 
   useEffect(() => {
-    const param = selectedPerusahaan
+    const param = slug
       ? {
           param: `?perusahaan=${
-            selectedPerusahaan.value
-          }&limit=${limit}&search=${search || ''}&offset=${pageActive * limit}`,
+            slug
+          }&limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
         }
-      : { param: `?limit=${limit}&search=${search || ''}&offset=${pageActive * limit}` };
+      : {
+          param: `?limit=${limit}&search=${search || ""}&offset=${
+            pageActive * limit
+          }`,
+        };
     get(param);
-  }, [limit, pageActive, search, selectedPerusahaan, get]);
-
+}, [limit, pageActive, search, slug, get]);
   useEffect(() => {
     if (
       addJabatanResult ||

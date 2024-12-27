@@ -97,7 +97,11 @@ const LokasiAbsenForm = () => {
           );
 
           if (data && !addperusahaanLoading) {
-            navigate("/masterdata/lokasi-absen");
+            navigate(
+              sessionStorage.getItem("url")
+                ? sessionStorage.getItem("url")
+                : "/masterdata/lokasi-absen"
+            );
           }
         } catch (error) {}
       } else {
@@ -110,7 +114,11 @@ const LokasiAbsenForm = () => {
           );
 
           if (data && !addperusahaanLoading) {
-            navigate("/masterdata/lokasi-absen");
+            navigate(
+              sessionStorage.getItem("url")
+                ? sessionStorage.getItem("url")
+                : "/masterdata/lokasi-absen"
+            );
           }
         } catch (e) {}
       }
@@ -129,7 +137,13 @@ const LokasiAbsenForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/masterdata/lokasi-absen")}
+            onClick={() => {
+              navigate(
+                sessionStorage.getItem("url")
+                  ? sessionStorage.getItem("url")
+                  : "/masterdata/lokasi-absen"
+              );
+            }}
           >
             <IoMdReturnLeft />
           </button>
@@ -160,11 +174,7 @@ const LokasiAbsenForm = () => {
             onBlur={(e) => formik.handleBlur}
             error={formik.touched.nama_lokasi ? formik.errors.nama_lokasi : ""}
           />
-          <GoogleMapInput
-            data={formik} 
-            isEdit={isEdit}
-            isLoaded={isLoaded}
-          />
+          <GoogleMapInput data={formik} isEdit={isEdit} isLoaded={isLoaded} />
           <div className="mt-6 flex justify-end">
             <Button loading={addperusahaanLoading} type="submit">
               {isEdit ? "Update" : "Tambah"}
