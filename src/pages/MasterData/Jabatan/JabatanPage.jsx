@@ -274,6 +274,7 @@ const JabatanSub = () => {
                   <Tables.Header>Nama perusahaan</Tables.Header>
                 )}
                 <Tables.Header>Nama Jabatan</Tables.Header>
+                <Tables.Header>Level</Tables.Header>
                 <Tables.Header>Keterangan</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
@@ -289,6 +290,7 @@ const JabatanSub = () => {
                       </Tables.Data>
                     )}
                     <Tables.Data>{item?.nama}</Tables.Data>
+                    <Tables.Data>{item?.level}</Tables.Data>
                     <Tables.Data>{item?.keterangan}</Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">

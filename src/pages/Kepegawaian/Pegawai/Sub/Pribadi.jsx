@@ -317,7 +317,6 @@ const Pribadi = ({ onTabChange }) => {
   // console.log(formik.values.lokasi_absen)
 
   // console.log("roles", JSON.stringify(roles));
-  console.log(formik.values);
   return (
     <div>
       <Container>
