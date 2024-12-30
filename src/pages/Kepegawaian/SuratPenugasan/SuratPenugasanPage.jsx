@@ -359,28 +359,37 @@ const SuratPenugasanPage = () => {
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Print">
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={'info'}
                             onClick={() => onPrint(i)}
-                            className="text-blue-500 cursor-pointer"
+                            className="cursor-pointer"
                           >
                             <FaPrint />
-                          </div>
+                          </Button>
                         </Tooltip>
                         <Tooltip tooltip="Edit">
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={'success'}
                             onClick={() => onEdit(item)}
-                            className="text-yellow-500 cursor-pointer"
+                            className="cursor-pointer"
                           >
                             <FaEdit />
-                          </div>
+                          </Button>
                         </Tooltip>
                         <Tooltip tooltip="Delete">
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={'danger'}
                             onClick={() => doDelete(item)}
-                            className="text-red-500 cursor-pointer"
+                            className="cursor-pointer"
                           >
                             <FaTrash />
-                          </div>
+                          </Button>
                         </Tooltip>
                       </div>
                     </Tables.Data>

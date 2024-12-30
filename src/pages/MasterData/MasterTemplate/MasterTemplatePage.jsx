@@ -23,7 +23,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
-import { Select } from "../../../components";
+import { Checkbox, Select } from "../../../components";
 
 export default function MasterTemplate() {
   const navigate = useNavigate();
@@ -193,7 +193,7 @@ export default function MasterTemplate() {
         };
     get(param);
   }, [limit, pageActive, search, slug, get]);
-  
+
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
       const param = search
@@ -219,12 +219,13 @@ export default function MasterTemplate() {
     get,
   ]);
 
-  const dataWithIndex = !loadingPerusahaan && getTugasResult.results
-    ? getTugasResult.results.map((item, index) => ({
-        ...item,
-        index: pageActive * limit + index + 1,
-      }))
-    : [];
+  const dataWithIndex =
+    !loadingPerusahaan && getTugasResult.results
+      ? getTugasResult.results.map((item, index) => ({
+          ...item,
+          index: pageActive * limit + index + 1,
+        }))
+      : [];
 
   return (
     <div>
@@ -286,7 +287,8 @@ export default function MasterTemplate() {
                     <Tables.Data>{item?.nama}</Tables.Data>
                     <Tables.Data center>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
-                        <input
+                        <Checkbox
+                          color="info"
                           type="checkbox"
                           checked={item?.is_active ? true : false}
                           onChange={(e) => handleActive(e, item)}
@@ -297,12 +299,15 @@ export default function MasterTemplate() {
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Edit">
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={'#22c55e'}
                             onClick={() => onEdit(item)}
-                            className="text-yellow-500 cursor-pointer"
+                            className="cursor-pointer"
                           >
                             <FaEdit />
-                          </div>
+                          </Button>
                         </Tooltip>
                       </div>
                     </Tables.Data>

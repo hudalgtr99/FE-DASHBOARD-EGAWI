@@ -168,13 +168,13 @@ const PerusahaanPage = () => {
     {
       name: "Edit",
       icon: icons.bspencil,
-      color: "text-green-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
       icon: icons.citrash,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -294,12 +294,15 @@ const PerusahaanPage = () => {
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action, i) => (
                           <Tooltip key={i} tooltip={action.name}>
-                            <div
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
                               onClick={() => action.func(item)}
-                              className={`${action.color} cursor-pointer`}
+                              className={`cursor-pointer`}
                             >
                               {action.icon}
-                            </div>
+                            </Button>
                           </Tooltip>
                         ))}
                       </div>

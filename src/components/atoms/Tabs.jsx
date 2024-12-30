@@ -2,9 +2,9 @@
 import React from 'react';
 import { Button } from '../../components';
 
-const Tabs = ({ activeTab, tabComponents, onTabChange }) => {
+const Tabs = ({ activeTab, tabComponents, onTabChange, hidden }) => {
   return (
-    <div className="tabs flex gap-2">
+    <div className={`tabs flex gap-2 ${hidden ? 'hidden' : ''}`}>
       {tabComponents.map(({ key, label }) => (
         <Button
           key={key}

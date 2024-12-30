@@ -116,6 +116,15 @@ const ApiForm = () => {
                 </div>
                 <div>
                     <form onSubmit={formik.handleSubmit} className='space-y-6'>
+                        <Select
+                            label="Perusahaan"
+                            name="perusahaan"
+                            options={perusahaanOptions}
+                            multi
+                            value={formik.values.perusahaan}
+                            onChange={(options) => formik.setFieldValue('perusahaan', options)}
+                            error={formik.touched.perusahaan ? formik.errors.perusahaan : ''}
+                        />
                         <TextField
                             required
                             label="Nama Client"
@@ -133,15 +142,6 @@ const ApiForm = () => {
                             onChange={formik.handleChange}
                             onBlur={(e) => formik.handleBlur}
                             error={formik.touched.keterangan ? formik.errors.keterangan : ''}
-                        />
-                        <Select
-                            label="Perusahaan"
-                            name="perusahaan"
-                            options={perusahaanOptions}
-                            multi
-                            value={formik.values.perusahaan}
-                            onChange={(options) => formik.setFieldValue('perusahaan', options)}
-                            error={formik.touched.perusahaan ? formik.errors.perusahaan : ''}
                         />
                         <Select
                             label="API Access"

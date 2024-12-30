@@ -132,7 +132,7 @@ const PenugasanPage = () => {
   };
 
   const statuses = [
-    { label: "Menunggu Persetujuan", value: 0, color: "bg-amber-500" },
+    { label: "Menunggu Diproses", value: 0, color: "bg-amber-500" },
     { label: "Proses", value: 1, color: "bg-blue-500" },
     { label: "Meminta Ulasan", value: 2, color: "bg-amber-500" },
     { label: "Selesai", value: 3, color: "bg-green-500" },
@@ -149,19 +149,19 @@ const PenugasanPage = () => {
     {
       name: "Detail",
       icon: icons.aifilleye,
-      color: "text-blue-500",
+      color: "info",
       func: doDetail,
     },
     {
       name: "Edit",
       icon: icons.bspencil,
-      color: "text-green-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
       icon: icons.citrash,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -366,12 +366,15 @@ const PenugasanPage = () => {
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
                           <Tooltip key={action.name} tooltip={action.name}>
-                            <div
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
                               onClick={() => action.func(item)}
-                              className={`${action.color} cursor-pointer`}
+                              className={`cursor-pointer`}
                             >
                               {action.icon}
-                            </div>
+                            </Button>
                           </Tooltip>
                         ))}
                       </div>

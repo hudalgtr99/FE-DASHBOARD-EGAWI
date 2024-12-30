@@ -61,12 +61,14 @@ const JabatanSubForm = () => {
     initialValues: {
       nama: state?.item?.nama || "",
       keterangan: state?.item?.keterangan || "",
+      level: state?.item?.level || "",
       perusahaan: state?.item?.perusahaan?.id || "", // Set initial value for perusahaan
     },
     validationSchema: Yup.object().shape({
       nama: Yup.string()
         .required("Nama Jabatan wajib diisi")
         .max(255, "Nama Jabatan harus kurang dari 255 karakter"),
+      level: Yup.number().required("Level Jabatan wajib diisi"),
       perusahaan: Yup.mixed().required("Perusahaan wajib diisi"),
     }),
     onSubmit: async (values) => {
@@ -104,6 +106,8 @@ const JabatanSubForm = () => {
     },
   });
 
+  console.log(state?.item)
+
   return (
     <div>
       <Container>
@@ -125,38 +129,57 @@ const JabatanSubForm = () => {
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
-            <Select
-              label="Perusahaan"
-              name="perusahaan"
-              value={
-                perusahaanOptions.find(
-                  (option) => option.value === formik.values.perusahaan
-                ) || null
-              }
-              onChange={(option) => {
-                formik.setFieldValue("perusahaan", option ? option.value : "");
-              }}
-              options={perusahaanOptions}
-              error={formik.touched.perusahaan ? formik.errors.perusahaan : ""}
-              disabled={perusahaanOptions.length === 1}
-            />
-            <TextField
-              required
-              label="Nama Jabatan"
-              name="nama"
-              value={formik.values.nama}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.nama ? formik.errors.nama : ""}
-            />
-            <TextArea
-              label="Keterangan"
-              name="keterangan"
-              value={formik.values.keterangan}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.keterangan ? formik.errors.keterangan : ""}
-            />
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
+              <Select
+                label="Perusahaan"
+                name="perusahaan"
+                value={
+                  perusahaanOptions.find(
+                    (option) => option.value === formik.values.perusahaan
+                  ) || null
+                }
+                onChange={(option) => {
+                  formik.setFieldValue(
+                    "perusahaan",
+                    option ? option.value : ""
+                  );
+                }}
+                options={perusahaanOptions}
+                error={
+                  formik.touched.perusahaan ? formik.errors.perusahaan : ""
+                }
+                disabled={perusahaanOptions.length === 1}
+              />
+              <TextField
+                required
+                label="Nama Jabatan"
+                name="nama"
+                value={formik.values.nama}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.nama ? formik.errors.nama : ""}
+              />
+            </div>
+            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
+              <TextField
+                required
+                label="Level Jabatan"
+                name="level"
+                type="number"
+                value={formik.values.level}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.level ? formik.errors.level : ""}
+              />
+              <TextArea
+                label="Keterangan"
+                name="keterangan"
+                value={formik.values.keterangan}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.keterangan ? formik.errors.keterangan : ""}
+              />
+            </div>
             <div className="mt-6 flex justify-end">
               <Button loading={addJabatanLoading} type="submit">
                 {isEdit ? "Update" : "Tambah"}

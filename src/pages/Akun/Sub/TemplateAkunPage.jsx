@@ -26,6 +26,7 @@ import axiosAPI from "@/authentication/axiosApi";
 import { FaFileExcel } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { isAuthenticated } from "@/authentication/authenticationApi";
+import { Checkbox } from "../../../components";
 
 const TemplateAkun = ({ getapiakun, activeTab }) => {
   const {
@@ -243,19 +244,19 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
     {
       name: "Edit",
       icon: icons.fiedit,
-      color: "text-blue-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Change Password",
       icon: icons.fakey,
-      color: "text-yellow-500",
+      color: "warning",
       func: onChange,
     },
     {
       name: "Delete",
       icon: icons.rideletebin6line,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -342,7 +343,8 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
                     <Tables.Data>{item.datapribadi.no_telepon}</Tables.Data>
                     <Tables.Data>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
-                        <input
+                        <Checkbox
+                          color="info"
                           type="checkbox"
                           checked={item.datapribadi?.is_staff}
                           onChange={(e) => handleSwitch(e, item, 6)} // Pass index 6 for is_staff
@@ -352,7 +354,8 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
                     </Tables.Data>
                     <Tables.Data>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
-                        <input
+                        <Checkbox
+                          color="info"
                           type="checkbox"
                           checked={item.datapribadi?.out_of_area}
                           onChange={(e) => handleSwitch(e, item, 7)} // Pass index 7 for out_of_area
@@ -364,13 +367,16 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
                           <Tooltip key={action.name} tooltip={action.name}>
-                            <div
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
                               key={action.name}
                               onClick={() => action.func(item)}
-                              className={`${action.color} cursor-pointer`}
+                              className={`cursor-pointer`}
                             >
                               {action.icon}
-                            </div>
+                            </Button>
                           </Tooltip>
                         ))}
                       </div>

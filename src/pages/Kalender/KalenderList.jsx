@@ -47,9 +47,11 @@ const KalenderPage = () => {
       const options = perusahaan.map((opt) => ({
         value: opt.pk,
         label: opt.nama,
-        slug: opt.slug
+        slug: opt.slug,
       }));
-      setSelectedPerusahaan(options.find((opt) => opt?.slug === pk)?.value || "");
+      setSelectedPerusahaan(
+        options.find((opt) => opt?.slug === pk)?.value || ""
+      );
     }
   }, [loadingPerusahaan]);
 
@@ -203,20 +205,26 @@ const KalenderPage = () => {
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         <Tooltip tooltip="Edit">
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={'success'}
                             onClick={() => handleEdit(item)}
-                            className="text-green-500 cursor-pointer"
+                            className="cursor-pointer"
                           >
                             {icons.bspencil}
-                          </div>
+                          </Button>
                         </Tooltip>
                         <Tooltip tooltip="Delete">
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={'danger'}
                             onClick={() => handleDelete(item)}
-                            className="text-red-500 cursor-pointer"
+                            className="cursor-pointer"
                           >
                             {icons.citrash}
-                          </div>
+                          </Button>
                         </Tooltip>
                       </div>
                     </Tables.Data>
