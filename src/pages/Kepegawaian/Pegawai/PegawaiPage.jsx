@@ -29,6 +29,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
 import { Select } from "../../../components";
+import { LuKeyRound, LuPencil } from "react-icons/lu";
 
 const AkunPage = () => {
   const {
@@ -260,13 +261,13 @@ const AkunPage = () => {
   const [actions] = useState([
     {
       name: "Edit",
-      icon: icons.fiedit,
+      icon: <LuPencil />,
       color: "success",
       func: onEdit,
     },
     {
       name: "Change Password",
-      icon: icons.fakey,
+      icon: <LuKeyRound />,
       color: "warning",
       func: onChange,
     },
