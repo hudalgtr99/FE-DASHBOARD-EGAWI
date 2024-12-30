@@ -346,6 +346,7 @@ const PerusahaanPage = () => {
                                   variant="text"
                                   color={action.color}
                                   key={i}
+                                  onClick={() => action.func(item, action.slug)}
                                 >
                                   <div
                                     onClick={() =>
