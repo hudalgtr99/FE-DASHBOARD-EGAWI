@@ -24,6 +24,7 @@ const Card = ({
 	borderPosition= "bottom",
 	children= null,
 	onClick= () => {},
+	reverse=false,
 }) => {
 	const { themeColor, colorMode } = useContext(ThemeContext);
 	const [isHover, setIsHover] = useState(false);
@@ -107,9 +108,11 @@ const Card = ({
 		};
 	} else if (variant === "gradient") {
 		cardStyle = {
-			background: `linear-gradient(120deg, ${cardColor} 0%, ${cardColor}70 100%)`,
+			background: reverse
+			  ? `linear-gradient(120deg, ${cardColor}70 0%, ${cardColor} 100%)`
+			  : `linear-gradient(120deg, ${cardColor} 0%, ${cardColor}70 100%)`,
 			color: "white",
-		};
+		  };
 	} else {
 		cardStyle = {
 			background: cardColor,

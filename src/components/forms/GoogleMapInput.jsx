@@ -169,8 +169,8 @@ const MapComponent = ({ data, setFieldValue }) => {
           <Marker
             position={markerPosition}
             icon={{
-              url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png", // Ikon geolokasi (red dot)
-              scaledSize: new window.google.maps.Size(30, 30), // Ukuran ikon
+              url: "/images/icons/ikonGeolokasiEgawi.png", // Ikon geolokasi (red dot)
+              scaledSize: new window.google.maps.Size(26, 35), // Ukuran ikon
             }}
           />
         )}
