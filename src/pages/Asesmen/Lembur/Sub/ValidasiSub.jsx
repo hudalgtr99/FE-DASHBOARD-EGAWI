@@ -19,7 +19,6 @@ import {
 } from "@/components";
 import { CiSearch } from "react-icons/ci";
 import moment from "moment";
-import { Modal } from "../../../../components";
 
 const ValidasiIzinSub = () => {
   const { getIzinValidasiResult, updatePengajuanResult } = useSelector(
@@ -34,12 +33,9 @@ const ValidasiIzinSub = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState(moment(new Date()).format("YYYY-MM"));
   const [offset, setOffset] = useState(0);
-  const [showModal, setShowModal] = useState(false);
 
   const onTerima = (item) => {
-    console.log(item);
-    setShowModal(true);
-    // navigate("/validasiizin/form", { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
+    navigate("/validasiizin/form", { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
   };
 
   const onTolak = (item) => {
@@ -311,20 +307,6 @@ const ValidasiIzinSub = () => {
           />
         </div>
       </Container>
-
-      {/* Modal  */}
-      <Modal
-        show={showModal}
-        setShow={setShowModal}
-        width="sm"
-        btnClose={true}
-        persistent={false}
-      >
-        <div className="text-lg font-normal p-5">
-          <div className="mb-3 font-semibold">List penerima</div>
-          <div className="flex flex-col gap-1">oke</div>
-        </div>
-      </Modal>
     </div>
   );
 };

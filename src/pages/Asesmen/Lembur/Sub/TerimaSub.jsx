@@ -18,13 +18,15 @@ import {
   Tooltip,
 } from "@/components";
 import { CiSearch } from "react-icons/ci";
-import moment from "moment";
-import { Modal } from "../../../../components";
 
-const ValidasiIzinSub = () => {
-  const { getIzinValidasiResult, updatePengajuanResult } = useSelector(
-    (state) => state.asesmen
-  );
+const TerimaSub = () => {
+  const {
+    getIzinValidasiResult,
+    getIzinValidasiLoading,
+    getIzinValidasiError,
+    updatePengajuanResult,
+    updatePengajuanLoading,
+  } = useSelector((state) => state.asesmen);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -32,14 +34,11 @@ const ValidasiIzinSub = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState(moment(new Date()).format("YYYY-MM"));
+  const [filter, setFilter] = useState("");
   const [offset, setOffset] = useState(0);
-  const [showModal, setShowModal] = useState(false);
 
   const onTerima = (item) => {
-    console.log(item);
-    setShowModal(true);
-    // navigate("/validasiizin/form", { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
+    navigate("/validasiizin/form", { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
   };
 
   const onTolak = (item) => {
@@ -298,6 +297,7 @@ const ValidasiIzinSub = () => {
           </Tables.Body>
         </Tables>
         <div className="flex justify-between items-center mt-4">
+          {/* <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} /> */}
           <Pagination
             totalCount={getIzinValidasiResult.count}
             pageSize={limit}
@@ -311,22 +311,8 @@ const ValidasiIzinSub = () => {
           />
         </div>
       </Container>
-
-      {/* Modal  */}
-      <Modal
-        show={showModal}
-        setShow={setShowModal}
-        width="sm"
-        btnClose={true}
-        persistent={false}
-      >
-        <div className="text-lg font-normal p-5">
-          <div className="mb-3 font-semibold">List penerima</div>
-          <div className="flex flex-col gap-1">oke</div>
-        </div>
-      </Modal>
     </div>
   );
 };
 
-export default ValidasiIzinSub;
+export default TerimaSub;
