@@ -13,7 +13,7 @@ import {
   PulseLoading,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
-import { FaPlus, FaEdit, FaPrint, FaTrash } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { useReactToPrint } from "react-to-print";
 
@@ -22,6 +22,7 @@ import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import { Select } from "../../../components";
+import { LuPencil, LuPrinter, LuTrash2 } from "react-icons/lu";
 
 const SuratPenugasanPage = () => {
   const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =
@@ -366,7 +367,7 @@ const SuratPenugasanPage = () => {
                             onClick={() => onPrint(i)}
                             className="cursor-pointer"
                           >
-                            <FaPrint />
+                            <LuPrinter />
                           </Button>
                         </Tooltip>
                         <Tooltip tooltip="Edit">
@@ -377,7 +378,7 @@ const SuratPenugasanPage = () => {
                             onClick={() => onEdit(item)}
                             className="cursor-pointer"
                           >
-                            <FaEdit />
+                            <LuPencil />
                           </Button>
                         </Tooltip>
                         <Tooltip tooltip="Delete">
@@ -388,7 +389,7 @@ const SuratPenugasanPage = () => {
                             onClick={() => doDelete(item)}
                             className="cursor-pointer"
                           >
-                            <FaTrash />
+                            <LuTrash2 />
                           </Button>
                         </Tooltip>
                       </div>

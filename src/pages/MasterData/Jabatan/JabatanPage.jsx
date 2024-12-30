@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";
 import { API_URL_edeljabatan, API_URL_getjabatan } from "@/constants";
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
@@ -22,6 +21,7 @@ import { CiSearch } from "react-icons/ci";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const JabatanSub = () => {
   const {
@@ -164,13 +164,13 @@ const JabatanSub = () => {
   const [actions] = useState([
     {
       name: "Edit",
-      icon: icons.bspencil,
+      icon: <LuPencil />,
       color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
-      icon: icons.citrash,
+      icon: <LuTrash2 />,
       color: "danger",
       func: doDelete,
     },

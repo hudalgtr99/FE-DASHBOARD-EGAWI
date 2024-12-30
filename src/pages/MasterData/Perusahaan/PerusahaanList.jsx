@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { deleteData, getData, updateData } from "@/actions";
+import { getData, updateData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
   API_URL_getperusahaan_withPaginations,
   API_URL_changeactivedata,
 } from "@/constants";
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
@@ -31,7 +30,6 @@ import {
   BsClock,
   BsEnvelope,
   BsFileRichtext,
-  BsGeoAltFill,
   BsJournalText,
   BsPeople,
   BsThreeDots,
@@ -268,7 +266,7 @@ const PerusahaanPage = () => {
               icon={<CiSearch />}
             />
           </div>
-          <Button onClick={onAdd}>
+          <Button type="tonal" onClick={onAdd}>
             <div className="flex items-center gap-2">
               <FaPlus /> Tambah Perusahaan
             </div>

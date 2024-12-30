@@ -3,12 +3,12 @@ import { Container, Tables } from "@/components";
 import { Button, Select } from "../../../components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { API_URL_getjamkerja } from "@/constants";
-import { BsPencilFill } from "react-icons/bs";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import axiosAPI from "@/authentication/axiosApi";
+import { LuPencilLine } from "react-icons/lu";
 
 const JamKerjaPage = () => {
   const { slug } = useParams();
@@ -105,7 +105,7 @@ const JamKerjaPage = () => {
             )}
             <Button onClick={() => onEdit(locations[0])}>
               <div className="flex items-center gap-2">
-                <BsPencilFill /> Edit jam kerja
+                <LuPencilLine /> Edit jam kerja
               </div>
             </Button>
           </>

@@ -1,12 +1,5 @@
 import { CardDonuts } from "../../template";
-import {
-  TbBuilding,
-  TbUserCheck,
-  TbUserExclamation,
-  TbUsers,
-  TbUserX,
-} from "react-icons/tb";
-import { LuBuilding, LuUserCheck2, LuUsers2, LuUserX2 } from "react-icons/lu";
+import { LuBuilding, LuUserCheck, LuUsers, LuUserX } from "react-icons/lu";
 import { Container, Tables } from "@/components";
 import { useState, useEffect } from "react";
 import moment from "moment";
@@ -191,21 +184,21 @@ const DashboardPage = () => {
       >
         <CardDonuts
           title="Jumlah Pegawai"
-          icon={<LuUsers2 />}
+          icon={<LuUsers />}
           dataSeries={totalPegawai}
           dataLabels={["Laki Laki", "Perempuan"]}
           dataColor={["#36AE7C", "#EB5353"]}
         />
         <CardDonuts
           title={"Status Pegawai"}
-          icon={<LuUsers2 />}
+          icon={<LuUsers />}
           dataSeries={statusPegawai}
           dataLabels={["Permanen", "Kontrak", "Percobaan"]}
           dataColor={["#36AE7C", "#F9D923", "#EB5353"]}
         />
         <CardDonuts
           title="Kehadiran Pegawai"
-          icon={<LuUsers2 />}
+          icon={<LuUsers />}
           dataSeries={kehadiranPegawai}
           dataLabels={["Hadir", "Alfa", "Cuti"]}
           dataColor={["#36AE7C", "#EB5353", "#FF8AAE"]}
@@ -227,7 +220,7 @@ const DashboardPage = () => {
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
               <span className="text-xl">
-                <LuUserCheck2 />
+                <LuUserCheck />
               </span>
               <span>Presensi Pegawai</span>
             </div>
@@ -302,7 +295,7 @@ const DashboardPage = () => {
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
               <span className="text-xl">
-                <LuUserX2 />
+                <LuUserX />
               </span>
               <span>Absensi Pegawai</span>
             </div>
