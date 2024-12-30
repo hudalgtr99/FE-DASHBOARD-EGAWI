@@ -197,9 +197,9 @@ const Header = ({ setSideOpen }) => {
                     </Avatar>
                   ) : (
                     <Avatar color="primary">
-                      {loading
+                      {loading && user
                         ? ""
-                        : user.nama.substring(0, 2).toUpperCase()}
+                        : user?.nama?.substring(0, 2).toUpperCase()}
                     </Avatar>
                   )}
                 </Badge>
@@ -213,31 +213,31 @@ const Header = ({ setSideOpen }) => {
                 ) : (
                   <Link to="/profile" className="flex gap-2 items-center">
                     <div className="w-fit">
-                    {user?.photo ? (
-                    <Avatar color="primary" className="object-cover">
-                      {loading ? (
-                        ""
+                      {user?.photo ? (
+                        <Avatar color="primary" className="object-cover">
+                          {loading ? (
+                            ""
+                          ) : (
+                            <img
+                              src={user?.photo}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                        </Avatar>
                       ) : (
-                        <img
-                          src={user?.photo}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
+                        <Avatar color="primary">
+                          {loading && user
+                            ? ""
+                            : user?.nama?.substring(0, 2).toUpperCase()}
+                        </Avatar>
                       )}
-                    </Avatar>
-                  ) : (
-                    <Avatar color="primary">
-                      {loading
-                        ? ""
-                        : user.nama.substring(0, 2).toUpperCase()}
-                    </Avatar>
-                  )}
                     </div>
                     <div>
                       <div className="text-sm font-semibold whitespace-nowrap line-clamp-1">
-                        {user.nama}
+                        {user?.nama}
                       </div>
-                      <div className="text-xs line-clamp-1">{user.email}</div>
+                      <div className="text-xs line-clamp-1">{user?.email}</div>
                     </div>
                   </Link>
                 )}
@@ -245,18 +245,14 @@ const Header = ({ setSideOpen }) => {
               <div className="p-2 font-medium border-b dark:border-base-500">
                 <Link to={"/profile"}>
                   <List prefix={<TbUser />} density="loose">
-                    <div className="line-clamp-1">
-                    {user?.groups?.name}
-                    </div>
+                    <div className="line-clamp-1">{user?.groups?.name}</div>
                   </List>
                 </Link>
               </div>
-              {user.perusahaan && (
+              {user?.perusahaan && (
                 <div className="p-2 font-medium border-b dark:border-base-500">
                   <List prefix={<TbBuilding />} density="loose">
-                    <div className=" line-clamp-1">
-                    {user.perusahaan.nama}
-                    </div>
+                    <div className=" line-clamp-1">{user?.perusahaan.nama}</div>
                   </List>
                 </div>
               )}

@@ -54,7 +54,7 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
       );
     })
     .catch((error) => {
-      showToast("error", error.response.data.messages);
+      showToast("error", error?.response?.data?.messages);
       dispatch(
         userReducer({
           type: type,
@@ -154,7 +154,7 @@ export const loginUser = (dispatch, data) => {
       return response.data;
     })
     .catch((error) => {
-      showToast("error", error.response.data.detail);
+      showToast("error", error?.response?.data?.detail);
       dispatch(
         authReducer({
           type: "LOGIN_USER",

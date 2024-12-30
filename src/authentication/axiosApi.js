@@ -28,14 +28,11 @@ axiosAPI.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const access = getCookie("casnet")
-    const refresh = getCookie("srehfre")
-    const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      if (
-        !access &&
-        !refresh
-      ) {
+    const access = getCookie("casnet");
+    const refresh = getCookie("srehfre");
+    const originalRequest = error?.config;
+    if (error?.response?.status === 401 && !originalRequest._retry) {
+      if (!access && !refresh) {
         handleLogout();
       }
       originalRequest._retry = true;

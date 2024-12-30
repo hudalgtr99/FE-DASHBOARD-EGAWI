@@ -39,16 +39,20 @@ export function decrypted(encrypted) {
 }
 
 export function convertJSON(data) {
-  return JSON.parse(data.replaceAll("'", '"'));
+  return JSON.parse(data?.replaceAll("'", '"'));
 }
 
 export function errorMessage(error) {
-  if (error.response && error.response.data && error.response.data.messages) {
-    return error.response.data.messages;
-  } else if (error.response && error.response.statusText) {
-    return error.response.statusText;
+  if (
+    error?.response &&
+    error?.response?.data &&
+    error?.response?.data?.messages
+  ) {
+    return error?.response?.data?.messages;
+  } else if (error?.response && error?.response?.statusText) {
+    return error?.response?.statusText;
   }
-  return error.message;
+  return error?.message;
 }
 
 export const status = {
@@ -171,7 +175,7 @@ export const getData = (reducers, data, url, type) => {
 
   axiosAPI({
     method: "GET",
-    url: url + data.param,
+    url: url + data?.param,
   })
     .then((response) => {
       dispatch(
@@ -179,7 +183,7 @@ export const getData = (reducers, data, url, type) => {
           type: type,
           payload: {
             loading: false,
-            data: response.data,
+            data: response?.data,
             errorMessage: false,
           },
         })
@@ -218,14 +222,14 @@ export const getData = (reducers, data, url, type) => {
 //     data: data,
 //   })
 //     .then((response) => {
-//       if (response.data.status === 201) {
+//       if (response?.data?.status === 201) {
 //         Swal.fire({
 //           icon: "error",
 //           title: "Oops...",
 //           customClass: {
 //             container: "z-[99999]",
 //           },
-//           text: response.data.messages,
+//           text: response?.data?.messages,
 //         });
 //       } else {
 //         Swal.fire({
@@ -234,7 +238,7 @@ export const getData = (reducers, data, url, type) => {
 //           customClass: {
 //             container: "z-[99999]",
 //           },
-//           text: response.data.messages,
+//           text: response?.data?.messages,
 //           showConfirmButton: false,
 //           timer: 1500,
 //         });
@@ -244,7 +248,7 @@ export const getData = (reducers, data, url, type) => {
 //           type: type,
 //           payload: {
 //             loading: false,
-//             data: response.data,
+//             data: response?.data,
 //           },
 //         })
 //       );
@@ -293,10 +297,10 @@ export const addData = (reducers, data, url, type) => {
   })
     .then((response) => {
       // Menangani respons
-      if (response.data.status === 201) {
-        showToast("error", response.data.messages);
+      if (response?.data?.status === 201) {
+        showToast("error", response?.data?.messages);
       } else {
-        showToast("success", response.data.messages);
+        showToast("success", response?.data?.messages);
       }
 
       // Dispatch data dari respons
@@ -305,17 +309,20 @@ export const addData = (reducers, data, url, type) => {
           type: type,
           payload: {
             loading: false,
-            data: response.data,
+            data: response?.data,
           },
         })
       );
 
       // Kembalikan respons
-      return response.data; // Mengembalikan data respons
+      return response?.data; // Mengembalikan data respons
     })
     .catch((error) => {
       // Menangani error
-      showToast("error", error.response?.data?.messages || "Terjadi kesalahan.");
+      showToast(
+        "error",
+        error?.response?.data?.messages || "Terjadi kesalahan."
+      );
 
       // Dispatch error state
       dispatch(
@@ -350,31 +357,31 @@ export const updateData = (reducers, data, url, type, method = "PUT") => {
 
     axiosAPI({
       method: method,
-      url: `${url}${data.pk || "datalainnya"}`, // Menambahkan pk ke URL
+      url: `${url}${data?.pk || "datalainnya"}`, // Menambahkan pk ke URL
       timeout: 120000,
       data: data,
     })
       .then((response) => {
-        if (response.data.status === 201) {
-          showToast("error", response.data.messages); // Toast error
-          reject(response.data); // Reject dengan data respons
+        if (response?.data?.status === 201) {
+          showToast("error", response?.data?.messages); // Toast error
+          reject(response?.data); // Reject dengan data respons
         } else {
-          showToast("success", response.data.messages); // Toast success
+          showToast("success", response?.data?.messages); // Toast success
           dispatch(
             redux({
               type: type,
               payload: {
                 loading: false,
-                data: response.data,
+                data: response?.data,
               },
             })
           );
-          resolve(response.data); 
+          resolve(response?.data);
         }
       })
       .catch((error) => {
-        console.log("error",)
-        showToast("error", error.response.data.messages); // Toast error
+        console.log("error");
+        showToast("error", error?.response?.data?.messages); // Toast error
         dispatch(
           redux({
             type: type,
@@ -388,8 +395,6 @@ export const updateData = (reducers, data, url, type, method = "PUT") => {
       });
   });
 };
-
-
 
 export const addFormData = (reducers, data, url, type) => {
   const { dispatch, redux } = reducers;
@@ -417,18 +422,18 @@ export const addFormData = (reducers, data, url, type) => {
   })
     .then((response) => {
       let payload = {};
-      if (response.data.status === 201) {
-        showToast("error", response.data.messages); // Tampilkan notifikasi error
+      if (response?.data?.status === 201) {
+        showToast("error", response?.data?.messages); // Tampilkan notifikasi error
         payload = {
           loading: false,
           data: false,
-          error: response.data.messages,
+          error: response?.data?.messages,
         };
       } else {
-        showToast("success", response.data.messages); // Tampilkan notifikasi success
+        showToast("success", response?.data?.messages); // Tampilkan notifikasi success
         payload = {
           loading: false,
-          data: response.data,
+          data: response?.data,
           error: false,
         };
       }
@@ -442,7 +447,10 @@ export const addFormData = (reducers, data, url, type) => {
       );
     })
     .catch((error) => {
-      showToast("error", error.response?.data?.messages || "Terjadi kesalahan."); // Tampilkan notifikasi error
+      showToast(
+        "error",
+        error?.response?.data?.messages || "Terjadi kesalahan."
+      ); // Tampilkan notifikasi error
       dispatch(
         redux({
           type: type,
@@ -455,7 +463,6 @@ export const addFormData = (reducers, data, url, type) => {
       );
     });
 };
-
 
 export const updateFormData = (reducers, data, url, type, pk) => {
   const { dispatch, redux } = reducers;
@@ -476,23 +483,23 @@ export const updateFormData = (reducers, data, url, type, pk) => {
     data: data,
   })
     .then((response) => {
-      if (response.data.status === 201) {
-        showToast("error", response.data.messages); 
+      if (response?.data?.status === 201) {
+        showToast("error", response?.data?.messages);
       } else {
-        showToast("success", response.data.messages); 
+        showToast("success", response?.data?.messages);
       }
       dispatch(
         redux({
           type: type,
           payload: {
             loading: false,
-            data: response.data,
+            data: response?.data,
           },
         })
       );
     })
     .catch((error) => {
-      showToast("error", error.response?.data?.detail || "Terjadi kesalahan."); 
+      showToast("error", error?.response?.data?.detail || "Terjadi kesalahan.");
       dispatch(
         redux({
           type: type,
@@ -539,10 +546,10 @@ export const deleteData = (reducers, pk, url, type) => {
       })
         .then((response) => {
           // Menampilkan pesan menggunakan showToast
-          if (response.data.status === 201) {
-            showToast("error", response.data.messages); // Menampilkan pesan error
+          if (response?.data?.status === 201) {
+            showToast("error", response?.data?.messages); // Menampilkan pesan error
           } else {
-            showToast("success", response.data.messages); // Menampilkan pesan sukses
+            showToast("success", response?.data?.messages); // Menampilkan pesan sukses
           }
 
           // Mengirimkan data terbaru ke Redux
@@ -550,13 +557,13 @@ export const deleteData = (reducers, pk, url, type) => {
             redux({
               type: type,
               payload: {
-                data: response.data,
+                data: response?.data,
               },
             })
           );
         })
         .catch((error) => {
-          showToast("error", error.message || "Terjadi kesalahan");
+          showToast("error", error?.message || "Terjadi kesalahan");
 
           dispatch(
             redux({

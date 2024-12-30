@@ -1,4 +1,5 @@
-const localhost = `http://127.0.0.1:8000`;
+// const localhost = `http://127.0.0.1:8000`;
+const localhost = `http://192.168.1.14:8001`;
 const apiURL = `/api`;
 
 // export const baseurl = `https://api.kepegawaian.qnn.co.id`;
@@ -144,7 +145,7 @@ export const API_URL_getjamkerja = `${baseurl}/getjamkerja/`;
 export const API_URL_editjamkerja = `${baseurl}/editjamkerja/`;
 // end lokasi absen
 
-// grup 
+// grup
 export const API_URL_getroles = `${baseurl}/roles/`;
 // end group
 
