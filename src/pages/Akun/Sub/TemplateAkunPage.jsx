@@ -27,6 +27,7 @@ import { FaFileExcel } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { Checkbox } from "../../../components";
+import { LuKeyRound, LuPencil } from "react-icons/lu";
 
 const TemplateAkun = ({ getapiakun, activeTab }) => {
   const {
@@ -243,13 +244,13 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
   const [actions] = useState([
     {
       name: "Edit",
-      icon: icons.fiedit,
+      icon: <LuPencil />,
       color: "success",
       func: onEdit,
     },
     {
       name: "Change Password",
-      icon: icons.fakey,
+      icon: <LuKeyRound />,
       color: "warning",
       func: onChange,
     },
