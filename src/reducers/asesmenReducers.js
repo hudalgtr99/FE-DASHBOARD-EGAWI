@@ -14,6 +14,7 @@ export const asesmenReducers = createSlice({
     getIzinDitolakError: false,
     updatePengajuanResult: false,
     updatePengajuanLoading: false,
+    updatePengajuanError: false,
   },
   reducers: {
     pengajuanIzinReducer: (state, action) => {
@@ -45,6 +46,7 @@ export const asesmenReducers = createSlice({
             ...state,
             updatePengajuanResult: payload.data,
             updatePengajuanLoading: payload.loading,
+            updatePengajuanError: payload.errorMessage,
           };
         default:
           return state;

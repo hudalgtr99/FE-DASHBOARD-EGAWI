@@ -2,15 +2,11 @@ import React, { Fragment, useEffect, useState } from "react";
 import { TabsOld } from "@/components"; // Ensure this component handles accessibility
 import TerimaSub from "./Sub/TerimaSub";
 import TolakSub from "./Sub/TolakSub";
-import ValidasiIzinSub from "./Sub/ValidasiSub";
+import ValidasiIzinSub from "./Sub/ValidasiIzinSub";
 
 const CutiPage = () => {
   const tabNames = ["Validasi Cuti", "Cuti Diterima", "Cuti Ditolak"];
-  const tabContents = [
-    <ValidasiIzinSub />,
-    <TerimaSub />,
-    <TolakSub />,
-  ];
+  const tabContents = [<ValidasiIzinSub />, <TerimaSub />, <TolakSub />];
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -36,7 +32,10 @@ const CutiPage = () => {
         onTabChange={handleTabChange}
       >
         {tabContents.map((content, index) => (
-          <div key={index} style={{ display: index === activeTab ? "block" : "none" }}>
+          <div
+            key={index}
+            style={{ display: index === activeTab ? "block" : "none" }}
+          >
             {content}
           </div>
         ))}
