@@ -1,5 +1,5 @@
-const localhost = `http://127.0.0.1:8000`;
-// const localhost = `http://192.168.1.14:8001`;
+// const localhost = `http://127.0.0.1:8000`;
+const localhost = `http://192.168.1.14:8001`;
 const apiURL = `/api`;
 
 // export const baseurl = `https://api.kepegawaian.qnn.co.id`;
