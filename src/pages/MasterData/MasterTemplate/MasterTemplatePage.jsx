@@ -8,7 +8,7 @@ import {
   PulseLoading,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
 import { Checkbox, Select } from "../../../components";
+import { LuPencil } from "react-icons/lu";
 
 export default function MasterTemplate() {
   const navigate = useNavigate();
@@ -306,7 +307,7 @@ export default function MasterTemplate() {
                             onClick={() => onEdit(item)}
                             className="cursor-pointer"
                           >
-                            <FaEdit />
+                            <LuPencil />
                           </Button>
                         </Tooltip>
                       </div>

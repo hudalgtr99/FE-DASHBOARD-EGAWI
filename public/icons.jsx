@@ -74,7 +74,7 @@ import {
 } from "react-icons/ai";
 import { CiTrash } from "react-icons/ci";
 import { BsPencil } from "react-icons/bs";
-import { LuActivity, LuBuilding, LuCalendarDays, LuClipboardList, LuDatabase, LuFileText, LuHeartHandshake, LuLayoutDashboard, LuUnplug, LuUsers, LuUsers2,LuNewspaper } from "react-icons/lu";
+import { LuActivity, LuBuilding, LuCalendarDays, LuClipboardList, LuDatabase, LuFileText, LuHeartHandshake, LuLayoutDashboard, LuUnplug, LuUsers,LuNewspaper } from "react-icons/lu";
 
 export const icons = {
   aitwotoneapi: <AiTwotoneApi />,
@@ -152,7 +152,7 @@ export const icons = {
   luhearthandshake: <LuHeartHandshake />,
   lufiletext: <LuFileText />,
   luunplug: <LuUnplug />,
-  luusers2: <LuUsers2 />,
+  luusers2: <LuUsers />,
   luCalendarDays: <LuCalendarDays /> ,
   luNewspaper: <LuNewspaper />
 };

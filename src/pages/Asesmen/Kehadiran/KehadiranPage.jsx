@@ -116,7 +116,7 @@ const KehadiranPage = () => {
     {
       name: "Detail",
       icon: icons.aifilleye,
-      color: "text-blue-500",
+      color: "info",
       func: doDetail,
     },
   ]);
@@ -221,13 +221,16 @@ const KehadiranPage = () => {
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (
                         <Tooltip key={action.name} tooltip={action.name}>
-                          <div
+                          <Button
+                            color={action.color}
+                            size={30}
+                            variant="tonal"
                             key={action.name}
                             onClick={() => action.func(item)}
-                            className={`${action.color} cursor-pointer`}
+                            className={`cursor-pointer`}
                           >
                             {action.icon}
-                          </div>
+                          </Button>
                         </Tooltip>
                       ))}
                     </div>
