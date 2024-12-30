@@ -12,16 +12,19 @@ import {
   Popover,
   Tooltip,
 } from "@/components";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "@/actions/auth";
 import { authReducer } from "@/reducers/authReducers";
 import { fetchUserDetails } from "@/constants/user";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = ({ setSideOpen }) => {
   const { themeSkin, navbarType, colorMode, themeColor } =
     useContext(ThemeContext);
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
 
   const { logoutUserResult } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -74,6 +77,43 @@ const Header = ({ setSideOpen }) => {
             className="cursor-pointer block lg:hidden"
           >
             <HiOutlineMenu className="text-2xl" />
+          </div>
+          <div className="hidden lg:flex items-center gap-2 text-base">
+            <span className="font-[400]">
+              <Link
+                to="/"
+                className={
+                  location.pathname === "/" ? "font-bold" : "font-[400] text-base-200"
+                }
+              >
+                Home
+              </Link>
+            </span>
+            {pathSegments.map((segment, index) => {
+              const url = `/${pathSegments.slice(0, index + 1).join("/")}`;
+
+              return (
+                <div key={url} className="flex items-center gap-2">
+                  <MdOutlineKeyboardArrowRight className="text-lg" />
+                  <span
+                    className={
+                      index === pathSegments.length - 1
+                        ? "cursor-pointer font-bold"
+                        : "cursor-pointer font-[400] text-base-200"
+                    }
+                  >
+                    {index === pathSegments.length - 1 ? (
+                      segment.charAt(0).toUpperCase() + segment.slice(1) // Capitalize the last segment
+                    ) : (
+                      <Link to={url} className="">
+                        {segment.charAt(0).toUpperCase() + segment.slice(1)}{" "}
+                        {/* Capitalize each segment */}
+                      </Link>
+                    )}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
