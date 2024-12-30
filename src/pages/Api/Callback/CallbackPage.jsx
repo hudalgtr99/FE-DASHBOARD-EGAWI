@@ -1,16 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {
-  addData,
-  deleteData,
-  getData,
-} from '@/actions';
-import { callbackReducer } from '@/reducers/apiReducers';
-import {
-  API_URL_edelcallback,
-  API_URL_getcallback,
-} from '@/constants';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addData, deleteData, getData } from "@/actions";
+import { callbackReducer } from "@/reducers/apiReducers";
+import { API_URL_edelcallback, API_URL_getcallback } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
@@ -20,10 +13,10 @@ import {
   Limit,
   TextField,
   Tooltip,
-} from '@/components';
-import { debounce } from 'lodash'; // Import lodash debounce
-import { FaPlus } from 'react-icons/fa';
-import { CiSearch } from 'react-icons/ci';
+} from "@/components";
+import { debounce } from "lodash"; // Import lodash debounce
+import { FaPlus } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 
 const CallbackPage = () => {
   const {
@@ -57,7 +50,7 @@ const CallbackPage = () => {
   };
 
   const onAdd = () => {
-    navigate('/callback/form');
+    navigate("/callback/form");
   };
 
   const onEdit = (item) => {
@@ -77,7 +70,11 @@ const CallbackPage = () => {
 
   const fetchData = (searchValue = search) => {
     const param = searchValue
-      ? { param: `?search=${searchValue}&limit=${limit}&offset=${pageActive * limit}` }
+      ? {
+          param: `?search=${searchValue}&limit=${limit}&offset=${
+            pageActive * limit
+          }`,
+        }
       : { param: `?limit=${limit}&offset=${pageActive * limit}` };
 
     getData(
@@ -103,13 +100,13 @@ const CallbackPage = () => {
     {
       name: "Edit",
       icon: icons.bspencil,
-      color: "text-green-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
       icon: icons.citrash,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -127,9 +124,9 @@ const CallbackPage = () => {
 
   const dataWithIndex = getCallbackResult.results
     ? getCallbackResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
     : [];
 
   return (
@@ -164,11 +161,15 @@ const CallbackPage = () => {
           <Tables.Body>
             {getCallbackLoading ? (
               <tr>
-                <td colSpan="7" className="text-center">Loading...</td>
+                <td colSpan="7" className="text-center">
+                  Loading...
+                </td>
               </tr>
             ) : getCallbackError ? (
               <tr>
-                <td colSpan="7" className="text-center">Error loading data</td>
+                <td colSpan="7" className="text-center">
+                  Error loading data
+                </td>
               </tr>
             ) : dataWithIndex.length ? (
               dataWithIndex.map((item) => (
@@ -182,13 +183,16 @@ const CallbackPage = () => {
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (
                         <Tooltip key={action.name} tooltip={action.name}>
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={action.color}
                             key={action.name}
                             onClick={() => action.func(item)}
-                            className={`${action.color} cursor-pointer`}
+                            className={`cursor-pointer`}
                           >
                             {action.icon}
-                          </div>
+                          </Button>
                         </Tooltip>
                       ))}
                     </div>
@@ -197,7 +201,9 @@ const CallbackPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">Tidak ada data yang tersedia</td>
+                <td colSpan="7" className="text-center">
+                  Tidak ada data yang tersedia
+                </td>
               </tr>
             )}
           </Tables.Body>

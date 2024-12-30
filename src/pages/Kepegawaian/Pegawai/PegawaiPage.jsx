@@ -18,6 +18,7 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
+  Checkbox,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
@@ -260,19 +261,19 @@ const AkunPage = () => {
     {
       name: "Edit",
       icon: icons.fiedit,
-      color: "text-blue-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Change Password",
       icon: icons.fakey,
-      color: "text-yellow-500",
+      color: "warning",
       func: onChange,
     },
     {
       name: "Delete",
       icon: icons.rideletebin6line,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -412,7 +413,8 @@ const AkunPage = () => {
                     </Tables.Data>
                     <Tables.Data>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
-                        <input
+                        <Checkbox
+                          color="info"
                           type="checkbox"
                           checked={item.datapribadi?.is_staff || false}
                           onChange={(e) => handleSwitch(e, item, 6)}
@@ -422,7 +424,8 @@ const AkunPage = () => {
                     </Tables.Data>
                     <Tables.Data>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
-                        <input
+                        <Checkbox
+                          color="info"
                           type="checkbox"
                           checked={item.datapribadi?.out_of_area || false}
                           onChange={(e) => handleSwitch(e, item, 7)}
@@ -434,12 +437,15 @@ const AkunPage = () => {
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
                           <Tooltip key={action.name} tooltip={action.name}>
-                            <div
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
                               onClick={() => action.func(item)}
-                              className={`${action.color} cursor-pointer`}
+                              className={`cursor-pointer`}
                             >
                               {action.icon}
-                            </div>
+                            </Button>
                           </Tooltip>
                         ))}
                       </div>

@@ -3,13 +3,7 @@ import { Fragment } from "react";
 import Chart from "react-apexcharts";
 import { Card } from "@/components";
 
-const CardDonuts = ({
-  title,
-  icon,
-  dataSeries,
-  dataLabels,
-  dataColor,
-}) => {
+const CardDonuts = ({ title, icon, dataSeries, dataLabels, dataColor }) => {
   const chartConfig = {
     series: dataSeries,
     options: {
@@ -66,9 +60,9 @@ const CardDonuts = ({
         rounded={"md"}
         variant="border"
       >
-        <div className="flex gap-1 items-center">
+        <div className="flex items-center gap-1">
           <span className="text-xl">{icon}</span>
-          <p className="text-slate-800 dark:text-gray-400">{title}</p>
+          <span>{title}</span>
         </div>
         <div className="flex justify-center py-4">
           <Chart

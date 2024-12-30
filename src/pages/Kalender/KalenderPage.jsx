@@ -88,7 +88,7 @@ const KalenderSubPage = () => {
     <div className="flex flex-col gap-6">
       <Container>
         <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center">
-          <div className="w-full sm:w-60 z-50">
+          <div className="w-full sm:w-60">
             <Select
               options={perusahaanOptions}
               placeholder="Filter perusahaan"

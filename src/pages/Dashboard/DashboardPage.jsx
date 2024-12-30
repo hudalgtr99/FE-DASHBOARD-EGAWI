@@ -6,7 +6,8 @@ import {
   TbUsers,
   TbUserX,
 } from "react-icons/tb";
-import { Container, Limit, Tables } from "@/components";
+import { LuBuilding, LuUserCheck2, LuUsers2, LuUserX2 } from "react-icons/lu";
+import { Container, Tables } from "@/components";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import axiosAPI from "@/authentication/axiosApi";
@@ -149,7 +150,6 @@ const DashboardPage = () => {
           res.data.kehadiranPegawai["Hadir"] || 0,
           res.data.kehadiranPegawai["Alfa"] || 0,
           res.data.kehadiranPegawai["Cuti"] || 0,
-          res.data.kehadiranPegawai["Libur"] || 0,
         ]);
         setTotalPegawai([
           res.data.totalPegawai["laki laki"] || 0,
@@ -191,21 +191,21 @@ const DashboardPage = () => {
       >
         <CardDonuts
           title="Jumlah Pegawai"
-          icon={<TbUsers />}
+          icon={<LuUsers2 />}
           dataSeries={totalPegawai}
           dataLabels={["Laki Laki", "Perempuan"]}
           dataColor={["#36AE7C", "#EB5353"]}
         />
         <CardDonuts
           title={"Status Pegawai"}
-          icon={<TbUserExclamation />}
+          icon={<LuUsers2 />}
           dataSeries={statusPegawai}
           dataLabels={["Permanen", "Kontrak", "Percobaan"]}
           dataColor={["#36AE7C", "#F9D923", "#EB5353"]}
         />
         <CardDonuts
           title="Kehadiran Pegawai"
-          icon={<TbUserCheck />}
+          icon={<LuUsers2 />}
           dataSeries={kehadiranPegawai}
           dataLabels={["Hadir", "Alfa", "Cuti"]}
           dataColor={["#36AE7C", "#EB5353", "#FF8AAE"]}
@@ -213,7 +213,7 @@ const DashboardPage = () => {
         {!jwt.perusahaan && (
           <CardDonuts
             title={"Jumlah Perusahaan"}
-            icon={<TbBuilding />}
+            icon={<LuBuilding />}
             dataSeries={totalPerusahaan}
             dataLabels={["perusahaan"]}
             dataColor={["#187498", "#EB72A0"]}
@@ -227,7 +227,7 @@ const DashboardPage = () => {
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
               <span className="text-xl">
-                <TbUserCheck />
+                <LuUserCheck2 />
               </span>
               <span>Presensi Pegawai</span>
             </div>
@@ -302,7 +302,7 @@ const DashboardPage = () => {
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
               <span className="text-xl">
-                <TbUserX />
+                <LuUserX2 />
               </span>
               <span>Absensi Pegawai</span>
             </div>

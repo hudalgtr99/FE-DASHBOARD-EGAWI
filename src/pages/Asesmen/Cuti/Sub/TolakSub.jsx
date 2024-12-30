@@ -1,17 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {
-  addData,
-  deleteData,
-  getData,
-  updateData,
-} from '@/actions';
-import { pengajuanIzinReducer } from '@/reducers/asesmenReducers';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addData, deleteData, getData, updateData } from "@/actions";
+import { pengajuanIzinReducer } from "@/reducers/asesmenReducers";
 import {
   API_URL_getdatapengajuancuti,
   API_URL_responsepengajuan,
-} from '@/constants';
+} from "@/constants";
 import { icons } from "../../../../../public/icons";
 import {
   Button,
@@ -21,8 +16,8 @@ import {
   Limit,
   TextField,
   Tooltip,
-} from '@/components';
-import { CiSearch } from 'react-icons/ci';
+} from "@/components";
+import { CiSearch } from "react-icons/ci";
 
 const TolakSub = () => {
   const {
@@ -43,11 +38,11 @@ const TolakSub = () => {
   const [offset, setOffset] = useState(0);
 
   const onTerima = (item) => {
-    navigate('/validasiizin/form', { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
+    navigate("/validasiizin/form", { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
   };
 
   const onTolak = (item) => {
-    navigate('/validasiizin/form', { state: { id: item.pk, status: 3 } }); // Adjust path and state as needed
+    navigate("/validasiizin/form", { state: { id: item.pk, status: 3 } }); // Adjust path and state as needed
   };
 
   const doSearch = (e) => {
@@ -61,9 +56,18 @@ const TolakSub = () => {
   };
 
   const handleFilterDate = (newFilter) => {
-    const param = search === ""
-      ? { param: "?date-month=" + newFilter + "&limit=" + limit }
-      : { param: "?search=" + search + "&date-month=" + newFilter + "&limit=" + limit };
+    const param =
+      search === ""
+        ? { param: "?date-month=" + newFilter + "&limit=" + limit }
+        : {
+            param:
+              "?search=" +
+              search +
+              "&date-month=" +
+              newFilter +
+              "&limit=" +
+              limit,
+          };
     setFilter(newFilter);
     get(param);
   };
@@ -73,7 +77,7 @@ const TolakSub = () => {
       // Ensure the default values for search and status
       const queryParams = {
         search: search || "",
-        status: "1",  // Default to status 1 if not provided
+        status: "1", // Default to status 1 if not provided
         ...param,
       };
 
@@ -98,25 +102,25 @@ const TolakSub = () => {
     const param =
       search === ""
         ? {
-          param:
-            "?date-month=" +
-            filter +
-            "&status=1&limit=" +
-            limit +
-            "&offset=" +
-            offset,
-        }
+            param:
+              "?date-month=" +
+              filter +
+              "&status=1&limit=" +
+              limit +
+              "&offset=" +
+              offset,
+          }
         : {
-          param:
-            "?search=" +
-            search +
-            "&date-month=" +
-            filter +
-            "&status=1&limit=" +
-            limit +
-            "&offset=" +
-            offset,
-        };
+            param:
+              "?search=" +
+              search +
+              "&date-month=" +
+              filter +
+              "&status=1&limit=" +
+              limit +
+              "&offset=" +
+              offset,
+          };
 
     get(param);
     setOffset(offset);
@@ -128,14 +132,14 @@ const TolakSub = () => {
       search === ""
         ? { param: "?date-month=" + filter + "&status=1&limit=" + e }
         : {
-          param:
-            "?search=" +
-            search +
-            "&date-month=" +
-            filter +
-            "&status=1&limit=" +
-            limit,
-        };
+            param:
+              "?search=" +
+              search +
+              "&date-month=" +
+              filter +
+              "&status=1&limit=" +
+              limit,
+          };
     get(param);
     setLimit(e);
     setPageActive(0);
@@ -163,13 +167,13 @@ const TolakSub = () => {
     {
       name: "terima",
       icon: icons.mdcheckcircle,
-      color: "text-green-500",
+      color: "success",
       func: onTerima,
     },
     {
       name: "tolak",
       icon: icons.riclosecirclefill,
-      color: "text-red-500",
+      color: "danger",
       func: onTolak,
     },
   ]);
@@ -184,34 +188,34 @@ const TolakSub = () => {
       const param =
         search === ""
           ? {
-            param:
-              "?date-month=" +
-              filter +
-              "&status=1&limit=" +
-              limit +
-              "&offset=" +
-              offset,
-          }
+              param:
+                "?date-month=" +
+                filter +
+                "&status=1&limit=" +
+                limit +
+                "&offset=" +
+                offset,
+            }
           : {
-            param:
-              "?search=" +
-              search +
-              "&date-month=" +
-              filter +
-              "&status=1&limit=" +
-              limit +
-              "&offset=" +
-              offset,
-          };
+              param:
+                "?search=" +
+                search +
+                "&date-month=" +
+                filter +
+                "&status=1&limit=" +
+                limit +
+                "&offset=" +
+                offset,
+            };
       fetchData(param);
     }
   }, [updatePengajuanResult, dispatch]);
 
   const dataWithIndex = getIzinValidasiResult?.results?.length
     ? getIzinValidasiResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
     : [];
 
   return (
@@ -268,12 +272,15 @@ const TolakSub = () => {
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (
                         <Tooltip key={action.name} tooltip={action.name}>
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={action.color}
                             onClick={() => action.func(item)}
-                            className={`${action.color} cursor-pointer`}
+                            className={`cursor-pointer`}
                           >
                             {action.icon}
-                          </div>
+                          </Button>
                         </Tooltip>
                       ))}
                     </div>
@@ -289,9 +296,8 @@ const TolakSub = () => {
             )}
           </Tables.Body>
         </Tables>
-        <div className="flex justify-between items-center mt-4">
-          <Limit limit={limit} setLimit={setLimit} onChange={handleSelect} />
-          {/* <Pagination
+        <div className="flex justify-end items-center mt-4">
+          <Pagination
             totalCount={getIzinValidasiResult.count}
             pageSize={limit}
             currentPage={pageActive + 1}
@@ -301,7 +307,7 @@ const TolakSub = () => {
             rounded="md"
             variant="flat"
             size="md"
-          /> */}
+          />
         </div>
       </Container>
     </div>

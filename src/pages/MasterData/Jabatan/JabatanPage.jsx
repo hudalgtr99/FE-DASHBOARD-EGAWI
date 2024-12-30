@@ -165,13 +165,13 @@ const JabatanSub = () => {
     {
       name: "Edit",
       icon: icons.bspencil,
-      color: "text-green-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
       icon: icons.citrash,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -179,11 +179,9 @@ const JabatanSub = () => {
   useEffect(() => {
     const param = slug
       ? {
-          param: `?perusahaan=${
-            slug
-          }&limit=${limit}&search=${search || ""}&offset=${
-            pageActive * limit
-          }`,
+          param: `?perusahaan=${slug}&limit=${limit}&search=${
+            search || ""
+          }&offset=${pageActive * limit}`,
         }
       : {
           param: `?limit=${limit}&search=${search || ""}&offset=${
@@ -191,7 +189,7 @@ const JabatanSub = () => {
           }`,
         };
     get(param);
-}, [limit, pageActive, search, slug, get]);
+  }, [limit, pageActive, search, slug, get]);
   useEffect(() => {
     if (
       addJabatanResult ||
@@ -296,13 +294,16 @@ const JabatanSub = () => {
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
                           <Tooltip key={action.name} tooltip={action.name}>
-                            <div
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
                               key={action.name}
                               onClick={() => action.func(item)}
                               className={`${action.color} cursor-pointer`}
                             >
                               {action.icon}
-                            </div>
+                            </Button>
                           </Tooltip>
                         ))}
                       </div>

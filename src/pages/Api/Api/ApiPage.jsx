@@ -1,17 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {
-  addData,
-  deleteData,
-  getData,
-} from '@/actions';
-import { apiReducer } from '@/reducers/apiReducers';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addData, deleteData, getData } from "@/actions";
+import { apiReducer } from "@/reducers/apiReducers";
 import {
   API_URL_changekey,
   API_URL_edelapiclient,
   API_URL_getapiclient,
-} from '@/constants';
+} from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
@@ -21,18 +17,14 @@ import {
   Limit,
   TextField,
   Tooltip,
-} from '@/components';
-import { debounce } from 'lodash'; // Import lodash debounce
-import { FaPlus } from 'react-icons/fa';
-import { CiSearch } from 'react-icons/ci';
+} from "@/components";
+import { debounce } from "lodash"; // Import lodash debounce
+import { FaPlus } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 
 const ApiPage = () => {
-  const {
-    getApiResult,
-    getApiLoading,
-    getApiError,
-    deleteApiResult,
-  } = useSelector((state) => state.api);
+  const { getApiResult, getApiLoading, getApiError, deleteApiResult } =
+    useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -45,7 +37,11 @@ const ApiPage = () => {
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = value
-        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        ? {
+            param: `?search=${value}&limit=${limit}&offset=${
+              pageActive * limit
+            }`,
+          }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
     }, 300),
@@ -60,14 +56,14 @@ const ApiPage = () => {
   };
 
   const onAdd = () => {
-    navigate('/api/form');
+    navigate("/api/form");
   };
 
   const onEdit = (item) => {
     navigate(`/api/form/${item.id}`, {
       state: {
         item,
-      }
+      },
     });
   };
 
@@ -130,25 +126,25 @@ const ApiPage = () => {
     {
       name: "Detail",
       icon: icons.aifilleye,
-      color: "text-grey-700",
+      color: "info",
       func: onDetail,
     },
     {
       name: "Change-Key",
       icon: icons.fakey,
-      color: "text-yellow-500",
+      color: "warning",
       func: onChangeKey,
     },
     {
       name: "Edit",
       icon: icons.fiedit,
-      color: "text-blue-500",
+      color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
       icon: icons.rideletebin6line,
-      color: "text-red-500",
+      color: "danger",
       func: doDelete,
     },
   ]);
@@ -165,9 +161,9 @@ const ApiPage = () => {
 
   const dataWithIndex = getApiResult?.results
     ? getApiResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
     : [];
 
   return (
@@ -203,11 +199,15 @@ const ApiPage = () => {
           <Tables.Body>
             {getApiLoading ? (
               <tr>
-                <td colSpan="7" className="text-center">Loading...</td>
+                <td colSpan="7" className="text-center">
+                  Loading...
+                </td>
               </tr>
             ) : getApiError ? (
               <tr>
-                <td colSpan="7" className="text-center">Error loading data</td>
+                <td colSpan="7" className="text-center">
+                  Error loading data
+                </td>
               </tr>
             ) : dataWithIndex.length ? (
               dataWithIndex.map((item) => (
@@ -222,13 +222,16 @@ const ApiPage = () => {
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (
                         <Tooltip key={action.name} tooltip={action.name}>
-                          <div
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={action.color}
                             key={action.name}
                             onClick={() => action.func(item)}
-                            className={`${action.color} cursor-pointer`}
+                            className={`cursor-pointer`}
                           >
                             {action.icon}
-                          </div>
+                          </Button>
                         </Tooltip>
                       ))}
                     </div>
@@ -237,7 +240,9 @@ const ApiPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">Tidak ada data yang tersedia</td>
+                <td colSpan="7" className="text-center">
+                  Tidak ada data yang tersedia
+                </td>
               </tr>
             )}
           </Tables.Body>
@@ -247,11 +252,21 @@ const ApiPage = () => {
         {detail && (
           <div className="mt-8 bg-gray-100 p-4 rounded-md shadow-md">
             <h2 className="text-xl font-bold">Detail View</h2>
-            <p><strong>Nama Client:</strong> {detail.nama_client}</p>
-            <p><strong>Keterangan:</strong> {detail.keterangan}</p>
-            <p><strong>Perusahaan Access:</strong> {detail.perusahaan}</p>
-            <p><strong>API Access:</strong> {detail.api}</p>
-            <p><strong>Active:</strong> {detail.is_active ? "Yes" : "No"}</p>
+            <p>
+              <strong>Nama Client:</strong> {detail.nama_client}
+            </p>
+            <p>
+              <strong>Keterangan:</strong> {detail.keterangan}
+            </p>
+            <p>
+              <strong>Perusahaan Access:</strong> {detail.perusahaan}
+            </p>
+            <p>
+              <strong>API Access:</strong> {detail.api}
+            </p>
+            <p>
+              <strong>Active:</strong> {detail.is_active ? "Yes" : "No"}
+            </p>
             <Button onClick={() => setDetail(null)} className="mt-4">
               Close
             </Button>

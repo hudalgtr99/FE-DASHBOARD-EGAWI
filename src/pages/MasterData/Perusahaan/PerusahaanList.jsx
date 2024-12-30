@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { deleteData, getData, updateData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import {
-  API_URL_edelperusahaan,
   API_URL_getperusahaan_withPaginations,
   API_URL_changeactivedata,
 } from "@/constants";
@@ -14,7 +13,7 @@ import {
   Container,
   Pagination,
   Tables,
-  Limit,
+  Checkbox,
   TextField,
   Tooltip,
   PulseLoading,
@@ -35,10 +34,10 @@ import {
   BsGeoAltFill,
   BsJournalText,
   BsPeople,
-  BsPersonCheck,
   BsThreeDots,
 } from "react-icons/bs";
 import { Popover } from "../../../components";
+import { LuPencil, LuMapPin } from "react-icons/lu";
 
 const PerusahaanPage = () => {
   const {
@@ -126,8 +125,8 @@ const PerusahaanPage = () => {
   const [actions] = useState([
     {
       name: "Edit",
-      icon: icons.bspencil,
-      color: "text-green-500",
+      icon: <LuPencil />,
+      color: "success",
       slug: "",
       func: onEdit,
     },
@@ -135,57 +134,57 @@ const PerusahaanPage = () => {
   const [menu] = useState([
     {
       name: "Lokasi absen",
-      icon: <BsGeoAltFill />,
-      color: "text-blue-500", 
+      icon: <LuMapPin />,
+      color: "success",
       slug: "masterdata/lokasi-absen",
       func: toMenu,
     },
     {
       name: "Jabatan",
       icon: <BsAward />,
-      color: "text-yellow-500",
+      color: "warning",
       slug: "masterdata/jabatan",
       func: toMenu,
     },
     {
       name: "Jam kerja",
       icon: <BsClock />,
-      color: "text-purple-500",
+      color: "#8b5cf6",
       slug: "masterdata/jam-kerja",
       func: toMenu,
     },
     {
       name: "Daftar pegawai",
       icon: <BsPeople />,
-      color: "text-teal-500",
+      color: "#14b8a6",
       slug: "kepegawaian/pegawai",
       func: toMenu,
     },
     {
       name: "Daftar tugas",
       icon: <BsJournalText />,
-      color: "text-orange-500", 
+      color: "#f97316",
       slug: "kepegawaian/penugasan",
       func: toMenu,
     },
     {
       name: "Template surat",
       icon: <BsFileRichtext />,
-      color: "text-indigo-500",
+      color: "#6366f1",
       slug: "masterdata/master-template",
       func: toMenu,
     },
     {
       name: "Surat penugasan",
       icon: <BsEnvelope />,
-      color: "text-red-500", 
+      color: "danger",
       slug: "kepegawaian/surat-penugasan",
       func: toMenu,
     },
     {
       name: "Kalender",
       icon: <BsCalendar2Date />,
-      color: "text-green-500", 
+      color: "#22c55e",
       slug: "kalender",
       func: toMenu,
     },
@@ -302,8 +301,9 @@ const PerusahaanPage = () => {
                     <Tables.Data>{item.alamat}</Tables.Data>
                     <Tables.Data center>
                       <label className="flex items-center justify-center gap-2 cursor-pointer">
-                        <input
+                        <Checkbox
                           type="checkbox"
+                          color="info"
                           checked={item.is_active ? true : false}
                           onChange={(e) => handleActive(e, item)}
                           className="toggle-switch"
@@ -314,12 +314,15 @@ const PerusahaanPage = () => {
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action, i) => (
                           <Tooltip key={i} tooltip={action.name}>
-                            <div
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={`${action.color}`}
                               onClick={() => action.func(item, action.slug)}
-                              className={`${action.color} cursor-pointer`}
+                              className={`cursor-pointer`}
                             >
                               {action.icon}
-                            </div>
+                            </Button>
                           </Tooltip>
                         ))}
                         <div className="flex items-center justify-center gap-2">
@@ -327,27 +330,41 @@ const PerusahaanPage = () => {
                             placement="right"
                             button={
                               <Tooltip tooltip="Menu">
-                                <div className="cursor-pointer">
-                                <BsThreeDots size={20} />
-                              </div>
+                                <Button
+                                  size={30}
+                                  variant="tonal"
+                                  color="info"
+                                  className="cursor-pointer"
+                                >
+                                  <BsThreeDots size={20} />
+                                </Button>
                               </Tooltip>
                             }
                           >
                             <div className="rounded text-sm shadow-lg flex flex-col gap-3 max-h-[8.5rem] overflow-y-scroll">
                               {menu.map((action, i) => (
-                                <div
-                                  onClick={() => action.func(item, action.slug)}
-                                  className="flex gap-2 items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
+                                <Button
+                                  size="md"
+                                  variant="text"
+                                  color={action.color}
+                                  key={i}
                                 >
                                   <div
-                                    className={`text-base ${action.color} cursor-pointer`}
+                                    onClick={() =>
+                                      action.func(item, action.slug)
+                                    }
+                                    className="flex gap-2 items-center"
                                   >
-                                    {action.icon}
+                                    <div
+                                      className={`text-base ${action.color} cursor-pointer`}
+                                    >
+                                      {action.icon}
+                                    </div>
+                                    <h2 className="text-xs whitespace-nowrap font-medium">
+                                      {action.name}
+                                    </h2>
                                   </div>
-                                  <h2 className="text-xs whitespace-nowrap font-medium">
-                                    {action.name}
-                                  </h2>
-                                </div>
+                                </Button>
                               ))}
                             </div>
                           </Popover>
