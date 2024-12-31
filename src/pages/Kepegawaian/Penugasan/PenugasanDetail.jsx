@@ -17,7 +17,7 @@ import {
 } from "react-icons/lu";
 import { API_URL_getdetailtugas } from "../../../constants";
 import axiosAPI from "@/authentication/axiosApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 
 const PenugasanDetail = () => {
@@ -30,6 +30,7 @@ const PenugasanDetail = () => {
   });
   const { pk } = useParams();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const statuses = [
     { label: "Menunggu Persetujuan", value: 0, color: "#f59e0b" },
     { label: "Proses", value: 1, color: "info" },
@@ -146,7 +147,7 @@ const PenugasanDetail = () => {
         variant={"gradient"}
       >
         <div className="flex justify-between items-start">
-          <Button size={30} color="white">
+          <Button onClick={() => navigate("/kepegawaian/penugasan")} size={30} color="white">
             <LuArrowLeft style={{ color: themeColor }} />
           </Button>
           <img
