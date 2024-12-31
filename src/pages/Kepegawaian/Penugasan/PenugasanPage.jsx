@@ -119,7 +119,7 @@ const PenugasanPage = () => {
     });
   };
   const doDetail = (item) => {
-    navigate(`/kepegawaian/penugasan/detail/${item?.slug}`);
+    navigate(`/kepegawaian/penugasan/${item?.slug}`);
   };
 
   const doDelete = (item) => {

@@ -90,3 +90,8 @@ input:-webkit-autofill:active {
 .ckeditor-container {
   margin-top: 0 !important;
 }
+
+/* Tailwind CSS dengan variabel custom */
+.sm\\:before {
+  background-color: var(--themeColor);
+}

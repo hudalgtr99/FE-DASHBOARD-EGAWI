@@ -193,7 +193,7 @@ const Router = () => {
           />
           {/* <Route path="/kepegawaian/penugasan/detail/:pk" element={<PenugasanPDF />} /> */}
           <Route
-            path="/kepegawaian/penugasan/detail/:pk"
+            path="/kepegawaian/penugasan/:pk"
             element={<PenugasanDetail />}
           />
 

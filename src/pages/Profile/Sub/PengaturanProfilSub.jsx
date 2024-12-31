@@ -3,14 +3,14 @@ import { Container } from "@/components";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { fetchUserDetails } from "@/constants/user";
 import { jwtDecode } from "jwt-decode";
-import { FileInput, TextField } from "../../../components";
+import { FileInput, PulseLoading, TextField } from "../../../components";
 import { BsPencil } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 
 const PengaturanProfilSub = () => {
   const [data, setData] = useState(null);
   const [auth, setAuth] = useState({});
-    const location = useLocation();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,7 +39,11 @@ const PengaturanProfilSub = () => {
   }, [fetchData]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <PulseLoading />
+      </div>
+    );
   }
 
   const {
