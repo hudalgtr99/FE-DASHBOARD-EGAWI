@@ -83,37 +83,55 @@ const Header = ({ setSideOpen }) => {
               <Link
                 to="/"
                 className={
-                  location.pathname === "/" ? "font-bold" : "font-[400] text-base-200"
+                  location.pathname === "/"
+                    ? "font-bold"
+                    : "font-[400] text-base-200"
                 }
               >
                 Home
               </Link>
             </span>
-            {pathSegments.map((segment, index) => {
-              const url = `/${pathSegments.slice(0, index + 1).join("/")}`;
+            {(() => {
+              // Buat salinan dari pathSegments untuk diubah
+              const updatedPathSegments = [...pathSegments];
 
-              return (
-                <div key={url} className="flex items-center gap-2">
-                  <MdOutlineKeyboardArrowRight className="text-lg" />
-                  <span
-                    className={
-                      index === pathSegments.length - 1
-                        ? "cursor-pointer font-bold"
-                        : "cursor-pointer font-[400] text-base-200"
-                    }
-                  >
-                    {index === pathSegments.length - 1 ? (
-                      segment.charAt(0).toUpperCase() + segment.slice(1) // Capitalize the last segment
-                    ) : (
-                      <Link to={url} className="">
-                        {segment.charAt(0).toUpperCase() + segment.slice(1)}{" "}
-                        {/* Capitalize each segment */}
-                      </Link>
-                    )}
-                  </span>
-                </div>
-              );
-            })}
+              // Hapus segmen pertama jika itu adalah 'api'
+              if (updatedPathSegments[0] === "api") {
+                updatedPathSegments.shift(); // Hapus segmen pertama yang adalah 'api'
+              }
+
+              return updatedPathSegments.map((segment, index) => {
+                const url = `/${updatedPathSegments
+                  .slice(0, index + 1)
+                  .join("/")}`;
+                const hiddenSegments = ["masterdata", "kepegawaian", "asesmen"];
+
+                if (hiddenSegments.includes(segment)) {
+                  return null; // Jangan render elemen jika segmen termasuk dalam daftar yang disembunyikan
+                }
+
+                return (
+                  <div key={url} className="flex items-center gap-2">
+                    <MdOutlineKeyboardArrowRight className="text-lg" />
+                    <span
+                      className={
+                        index === updatedPathSegments.length - 1
+                          ? "font-bold cursor-default"
+                          : "cursor-pointer font-[400] text-base-200"
+                      }
+                    >
+                      {index === updatedPathSegments.length - 1 ? (
+                        segment.charAt(0).toUpperCase() + segment.slice(1)
+                      ) : (
+                        <Link to={url} className="">
+                          {segment.charAt(0).toUpperCase() + segment.slice(1)}{" "}
+                        </Link>
+                      )}
+                    </span>
+                  </div>
+                );
+              });
+            })()}
           </div>
         </div>
 
