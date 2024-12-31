@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { addData, deleteData, getData, updateData } from "@/actions";
+import { useNavigate, useParams } from "react-router-dom";
+import { getData } from "@/actions";
 import { pengajuanIzinReducer } from "@/reducers/asesmenReducers";
 import {
   API_URL_getdatapengajuancuti,
@@ -13,20 +13,22 @@ import {
   Container,
   Pagination,
   Tables,
-  Limit,
   TextField,
   Tooltip,
 } from "@/components";
 import { CiSearch } from "react-icons/ci";
 import moment from "moment";
-import { Modal } from "../../../../components";
+import { Modal, Select } from "../../../../components";
+import { updateFormData } from "../../../../actions";
+import { isAuthenticated } from "../../../../authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../../../../context/AuthContext";
 
 const ValidasiIzinSub = () => {
   const { getIzinValidasiResult, updatePengajuanResult } = useSelector(
     (state) => state.asesmen
   );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -34,16 +36,22 @@ const ValidasiIzinSub = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState(moment(new Date()).format("YYYY-MM"));
   const [offset, setOffset] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalApproved, setShowModalApproved] = useState(false);
+  const [showModalReject, setShowModalReject] = useState(false);
+  const [catatanDisetujui, setCatatanDisetujui] = useState("");
+  const [catatanDitolak, setCatatanDitolak] = useState("");
+  const [detail, setDetail] = useState("");
+  const [jwt, setJwt] = useState({});
 
   const onTerima = (item) => {
     console.log(item);
-    setShowModal(true);
-    // navigate("/validasiizin/form", { state: { id: item.pk, status: 2 } }); // Adjust path and state as needed
+    setDetail(item);
+    setShowModalApproved(true);
   };
 
   const onTolak = (item) => {
-    navigate("/validasiizin/form", { state: { id: item.pk, status: 3 } }); // Adjust path and state as needed
+    setDetail(item);
+    setShowModalReject(true);
   };
 
   const doSearch = (e) => {
@@ -164,6 +172,48 @@ const ValidasiIzinSub = () => {
     [filter, limit, get]
   );
 
+  const approvedHandle = async () => {
+    const formData = new FormData();
+    formData.append("pk", detail?.pk);
+    formData.append("catatan", catatanDisetujui);
+    formData.append("status", 2);
+    try {
+      const data = updateFormData(
+        { dispatch, redux: pengajuanIzinReducer },
+        formData,
+        API_URL_responsepengajuan,
+        "UPDATE_PENGAJUAN",
+        detail?.pk
+      );
+    } catch (e) {
+      console.log(e);
+    }
+    setCatatanDisetujui("");
+    setCatatanDitolak("");
+    setDetail("");
+  };
+
+  const rejectHandle = () => {
+    const formData = new FormData();
+    formData.append("pk", detail?.pk);
+    formData.append("catatan", catatanDitolak);
+    formData.append("status", 3);
+    try {
+      const data = updateFormData(
+        { dispatch, redux: pengajuanIzinReducer },
+        values,
+        API_URL_responsepengajuan,
+        "UPDATE_PENGAJUAN",
+        detail?.pk
+      );
+    } catch (e) {
+      console.log(e);
+    }
+    setCatatanDisetujui("");
+    setCatatanDitolak("");
+    setDetail("");
+  };
+
   const [actions] = useState([
     {
       name: "terima",
@@ -184,6 +234,7 @@ const ValidasiIzinSub = () => {
       fetchData();
     }
   }, [filter, limit]);
+
   useEffect(() => {
     if (updatePengajuanResult) {
       const param =
@@ -219,17 +270,48 @@ const ValidasiIzinSub = () => {
       }))
     : [];
 
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setperusahaanOptions] = useState([]);
+  const { slug } = useParams();
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setperusahaanOptions(options);
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
+    }
+  }, [loadingPerusahaan]);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
+
   return (
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full sm:w-60">
+          <div className="w-full flex flex-row gap-4 sm:w-[25rem]">
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
+            {!jwt.perusahaan && (
+              <Select
+                options={perusahaanOptions}
+                placeholder="Filter perusahaan"
+                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+              />
+            )}
           </div>
           <div className="w-full sm:w-60">
             <TextField
@@ -263,7 +345,7 @@ const ValidasiIzinSub = () => {
                   <Tables.Data>{item.created_at}</Tables.Data>
                   <Tables.Data>{item.user.first_name}</Tables.Data>
                   <Tables.Data>{item.jeniscuti.jenis}</Tables.Data>
-                  <Tables.Data>{item.alasan_cuti}</Tables.Data>
+                  <Tables.Data>{item.catatan_cuti}</Tables.Data>
                   <Tables.Data>{item.tgl_cuti}</Tables.Data>
                   <Tables.Data>{item.lama_cuti}</Tables.Data>
                   <Tables.Data>{item.catatan}</Tables.Data>
@@ -312,17 +394,56 @@ const ValidasiIzinSub = () => {
         </div>
       </Container>
 
-      {/* Modal  */}
+      {/* Modal Approved  */}
       <Modal
-        show={showModal}
-        setShow={setShowModal}
-        width="sm"
+        show={showModalApproved}
+        setShow={setShowModalApproved}
+        width="md"
         btnClose={true}
         persistent={false}
       >
         <div className="text-lg font-normal p-5">
-          <div className="mb-3 font-semibold">List penerima</div>
-          <div className="flex flex-col gap-1">oke</div>
+          <div className="mb-3 font-semibold">Catatan Disetujui </div>
+          <TextField
+            required
+            type="text"
+            placeholder="Tuliskan catatan disetujuinya ..."
+            value={catatanDisetujui}
+            onChange={(e) => setCatatanDisetujui(e.target.value)}
+          />
+          <div className="flex flex-row justify-end gap-5 mt-4">
+            <Button color="base" onClick={() => setShowModalApproved(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => approvedHandle()}>Approve</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal Reject  */}
+      <Modal
+        show={showModalReject}
+        setShow={setShowModalReject}
+        width="md"
+        btnClose={true}
+        persistent={false}
+      >
+        <div className="text-lg font-normal p-5">
+          <div className="mb-3 font-semibold">Catatan Ditolak </div>
+          <TextField
+            type="text"
+            placeholder="Tuliskan catatan ditolaknya ..."
+            value={catatanDitolak}
+            onChange={(e) => setCatatanDitolak(e.target.value)}
+          />
+          <div className="flex flex-row justify-end gap-5 mt-4">
+            <Button color="base" onClick={() => setShowModalApproved(false)}>
+              Cancel
+            </Button>
+            <Button color="danger" onClick={() => rejectHandle()}>
+              Reject
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>
