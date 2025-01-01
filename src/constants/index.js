@@ -1,5 +1,5 @@
 // const localhost = `http://127.0.0.1:8000`;
-const localhost = `http://192.168.1.14:8001`;
+const localhost = `http://192.168.1.7:8001`;
 const apiURL = `/api`;
 
 // export const baseurl = `https://api.kepegawaian.qnn.co.idd`;
@@ -166,3 +166,7 @@ export const API_URL_edelsurattugas = `${baseurl}/edelsurattugas/`;
 // start import data pribadi pegawai
 export const API_URL_importdatapribadipegawai = `${baseurl}/importdatapribadipegawai/`;
 // end import data pribadi pegawai
+
+//Lembur
+export const API_URL_lembur = `${baseurl}/lembur/`;
+export const API_URL_reimbursement = `${baseurl}/reimbursement/`;

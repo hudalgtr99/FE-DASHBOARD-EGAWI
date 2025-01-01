@@ -1,13 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { TabsOld } from "@/components"; // Ensure this component handles accessibility
-import ValidasiLemburSub from "./Sub/ValidasiLemburSub";
+import ValidasiReimbursementSub from "./Sub/ValidasiReimbursementSub";
 
-const LemburPage = () => {
-  const tabNames = ["Validasi Lembur", "Lembur Diterima", "Lembur Ditolak"];
+const ReimbursementPage = () => {
+  const tabNames = [
+    "Validasi Reimbursement",
+    "Reimbursement Diterima",
+    "Reimbursement Ditolak",
+  ];
   const tabContents = [
-    <ValidasiLemburSub type={"validasi_lembur"} />,
-    <ValidasiLemburSub type={"lembur_diterima"} />,
-    <ValidasiLemburSub type={"lembur_ditolak"} />,
+    <ValidasiReimbursementSub type={"validasi_reimbursement"} />,
+    <ValidasiReimbursementSub type={"reimbursement_diterima"} />,
+    <ValidasiReimbursementSub type={"reimbursement_ditolak"} />,
   ];
 
   const [activeTab, setActiveTab] = useState(0);
@@ -46,4 +50,4 @@ const LemburPage = () => {
   );
 };
 
-export default LemburPage;
+export default ReimbursementPage;

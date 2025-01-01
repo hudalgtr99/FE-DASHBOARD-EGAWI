@@ -1,12 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { TabsOld } from "@/components"; // Ensure this component handles accessibility
-import TerimaSub from "./Sub/TerimaSub";
-import TolakSub from "./Sub/TolakSub";
 import ValidasiIzinSub from "./Sub/ValidasiIzinSub";
 
 const CutiPage = () => {
   const tabNames = ["Validasi Cuti", "Cuti Diterima", "Cuti Ditolak"];
-  const tabContents = [<ValidasiIzinSub />, <TerimaSub />, <TolakSub />];
+  const tabContents = [
+    <ValidasiIzinSub type={"validasi_cuti"} />,
+    <ValidasiIzinSub type={"cuti_diterima"} />,
+    <ValidasiIzinSub type={"cuti_ditolak"} />,
+  ];
 
   const [activeTab, setActiveTab] = useState(0);
 

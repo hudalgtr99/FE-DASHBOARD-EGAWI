@@ -1,12 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getData } from "@/actions";
 import { pengajuanIzinReducer } from "@/reducers/asesmenReducers";
-import {
-  API_URL_getdatapengajuancuti,
-  API_URL_responsepengajuan,
-} from "@/constants";
 import { icons } from "../../../../../public/icons";
 import {
   Button,
@@ -23,11 +19,12 @@ import { updateFormData } from "../../../../actions";
 import { isAuthenticated } from "../../../../authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../../../context/AuthContext";
-import { baseurl } from "../../../../constants";
+import { API_URL_lembur, baseurl } from "../../../../constants";
+import { lemburReducer } from "@/reducers/lemburReducers";
 
-const ValidasiIzinSub = ({ type }) => {
-  const { getIzinValidasiResult, updatePengajuanResult } = useSelector(
-    (state) => state.asesmen
+const ValidasiLemburSub = ({ type }) => {
+  const { getLemburResult, addLemburResult } = useSelector(
+    (state) => state.lembur
   );
   const dispatch = useDispatch();
 
@@ -70,7 +67,7 @@ const ValidasiIzinSub = ({ type }) => {
         "&type=" +
         type +
         "&perusahaan=" +
-        selectedPerusahaan,
+        selectedPerusahaan?.value,
     });
   };
 
@@ -86,7 +83,7 @@ const ValidasiIzinSub = ({ type }) => {
               "&type=" +
               type +
               "&perusahaan=" +
-              selectedPerusahaan,
+              selectedPerusahaan?.value,
           }
         : {
             param:
@@ -99,7 +96,7 @@ const ValidasiIzinSub = ({ type }) => {
               "&type=" +
               type +
               "&perusahaan=" +
-              selectedPerusahaan,
+              selectedPerusahaan?.value,
           };
     setFilter(newFilter);
     get(param);
@@ -115,10 +112,10 @@ const ValidasiIzinSub = ({ type }) => {
       };
 
       getData(
-        { dispatch, redux: pengajuanIzinReducer },
+        { dispatch, redux: lemburReducer },
         queryParams,
-        API_URL_getdatapengajuancuti,
-        "GET_IZIN_VALIDASI"
+        API_URL_lembur,
+        "GET_LEMBUR"
       );
     },
     [dispatch, search]
@@ -145,7 +142,7 @@ const ValidasiIzinSub = ({ type }) => {
               "&type=" +
               type +
               "&perusahaan=" +
-              selectedPerusahaan,
+              selectedPerusahaan?.value,
           }
         : {
             param:
@@ -160,7 +157,7 @@ const ValidasiIzinSub = ({ type }) => {
               "&type=" +
               type +
               "&perusahaan=" +
-              selectedPerusahaan,
+              selectedPerusahaan?.value,
           };
 
     get(param);
@@ -217,11 +214,11 @@ const ValidasiIzinSub = ({ type }) => {
                 "&type=" +
                 type +
                 "&perusahaan=" +
-                selectedPerusahaan,
+                selectedPerusahaan?.value,
             }
       );
     },
-    [filter, limit, get, type]
+    [filter, limit, get, type, addLemburResult]
   );
 
   const clearFormModalHandle = () => {
@@ -234,15 +231,15 @@ const ValidasiIzinSub = ({ type }) => {
 
   const approvedHandle = async () => {
     const formData = new FormData();
-    formData.append("pk", detail?.id);
-    formData.append("catatan", catatanDisetujui);
-    formData.append("status", 2);
+    formData.append("id", detail?.id);
+    formData.append("note", catatanDisetujui);
+    formData.append("status", 1);
     try {
       const data = updateFormData(
-        { dispatch, redux: pengajuanIzinReducer },
+        { dispatch, redux: lemburReducer },
         formData,
-        API_URL_responsepengajuan,
-        "UPDATE_PENGAJUAN",
+        API_URL_lembur,
+        "ADD_LEMBUR",
         detail?.id
       );
     } catch (e) {
@@ -252,17 +249,16 @@ const ValidasiIzinSub = ({ type }) => {
   };
 
   const rejectHandle = () => {
-    console.log(detail);
     const formData = new FormData();
-    formData.append("pk", detail?.id);
-    formData.append("catatan", catatanDitolak);
-    formData.append("status", 3);
+    formData.append("id", detail?.id);
+    formData.append("note", catatanDitolak);
+    formData.append("status", 2);
     try {
       const data = updateFormData(
-        { dispatch, redux: pengajuanIzinReducer },
+        { dispatch, redux: lemburReducer },
         formData,
-        API_URL_responsepengajuan,
-        "UPDATE_PENGAJUAN",
+        API_URL_lembur,
+        "ADD_LEMBUR",
         detail?.id
       );
     } catch (e) {
@@ -290,10 +286,10 @@ const ValidasiIzinSub = ({ type }) => {
     if (type && filter && limit > 0) {
       fetchData();
     }
-  }, [filter, limit, type, updatePengajuanResult]);
+  }, [filter, limit, type, addLemburResult]);
 
-  const dataWithIndex = getIzinValidasiResult?.results?.length
-    ? getIzinValidasiResult.results.map((item, index) => ({
+  const dataWithIndex = getLemburResult?.results?.length
+    ? getLemburResult.results.map((item, index) => ({
         ...item,
         index: pageActive * limit + index + 1,
       }))
@@ -356,13 +352,11 @@ const ValidasiIzinSub = ({ type }) => {
               <Tables.Header>No</Tables.Header>
               <Tables.Header>Tanggal Pengajuan</Tables.Header>
               <Tables.Header>Nama</Tables.Header>
-              <Tables.Header>Jenis Cuti</Tables.Header>
-              <Tables.Header>Alasan Cuti</Tables.Header>
-              <Tables.Header>Tanggal Cuti</Tables.Header>
-              <Tables.Header>Lama Cuti/Hari</Tables.Header>
+              <Tables.Header>Judul Lembur</Tables.Header>
+              <Tables.Header>Deskripsi Lembur</Tables.Header>
               <Tables.Header>Catatan</Tables.Header>
               <Tables.Header>File</Tables.Header>
-              {type === "validasi_cuti" && (
+              {type === "validasi_lembur" && (
                 <Tables.Header center>Actions</Tables.Header>
               )}
             </tr>
@@ -370,15 +364,15 @@ const ValidasiIzinSub = ({ type }) => {
           <Tables.Body>
             {dataWithIndex.length > 0 ? (
               dataWithIndex.map((item) => (
-                <Tables.Row key={item?.id}>
+                <Tables.Row key={item?.pk}>
                   <Tables.Data>{item?.index}</Tables.Data>
-                  <Tables.Data>{item?.created_at}</Tables.Data>
-                  <Tables.Data>{item?.user.first_name}</Tables.Data>
-                  <Tables.Data>{item?.jeniscuti.jenis}</Tables.Data>
-                  <Tables.Data>{item?.alasan_cuti}</Tables.Data>
-                  <Tables.Data>{item?.tgl_cuti}</Tables.Data>
-                  <Tables.Data>{item?.lama_cuti}</Tables.Data>
-                  <Tables.Data>{item?.catatan}</Tables.Data>
+                  <Tables.Data>
+                    {moment(item?.created_at).format("DD-MM-YYYY")}
+                  </Tables.Data>
+                  <Tables.Data>{item?.employee_detail?.first_name}</Tables.Data>
+                  <Tables.Data>{item?.title}</Tables.Data>
+                  <Tables.Data>{item?.description}</Tables.Data>
+                  <Tables.Data>{item?.note}</Tables.Data>
                   <Tables.Data>
                     <button
                       title="Klik untuk pratinjau"
@@ -398,7 +392,7 @@ const ValidasiIzinSub = ({ type }) => {
                       )}
                     </button>
                   </Tables.Data>
-                  {type === "validasi_cuti" && (
+                  {type === "validasi_lembur" && (
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
@@ -430,7 +424,7 @@ const ValidasiIzinSub = ({ type }) => {
         </Tables>
         <div className="flex justify-between items-center mt-4">
           <Pagination
-            totalCount={getIzinValidasiResult.count}
+            totalCount={getLemburResult.count}
             pageSize={limit}
             currentPage={pageActive + 1}
             onPageChange={handlePageClick}
@@ -530,4 +524,4 @@ const ValidasiIzinSub = ({ type }) => {
   );
 };
 
-export default ValidasiIzinSub;
+export default ValidasiLemburSub;

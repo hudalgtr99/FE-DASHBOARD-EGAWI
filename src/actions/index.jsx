@@ -499,7 +499,12 @@ export const updateFormData = (reducers, data, url, type, pk) => {
       );
     })
     .catch((error) => {
-      showToast("error", error?.response?.data?.detail || "Terjadi kesalahan.");
+      showToast(
+        "error",
+        error?.response?.data?.detail ||
+          error?.response?.data?.messages ||
+          "Terjadi kesalahan."
+      );
       dispatch(
         redux({
           type: type,

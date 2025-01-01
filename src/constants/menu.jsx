@@ -18,6 +18,8 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
 import SuratPenugasanPage from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
+import LemburPage from "../pages/Asesmen/Lembur/LemburPage";
+import ReimbursementPage from "../pages/Asesmen/Reimbursement/ReimbursementPage";
 
 let jwt = null; // Initialize jwt variable
 
@@ -161,6 +163,20 @@ export const menu = [
         name: "cuti",
         title: "Cuti",
         element: <CutiPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/asesmen/lembur",
+        name: "lembur",
+        title: "Lembur",
+        element: <LemburPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/asesmen/reimbursement",
+        name: "reimbursement",
+        title: "Reimbursement",
+        element: <ReimbursementPage />,
         sub: [],
       },
     ],

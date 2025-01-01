@@ -13,6 +13,8 @@ import tugasReducers from "./penugasanReducers";
 import apiReducers from "./apiReducers";
 import lokasiAbsen from "./lokasiAbsenReducers";
 import jamKerja from "./jamKerjaReducers";
+import lembur from "./lemburReducers";
+import reimbursement from "./reimbursementReducers";
 
 export default configureStore({
   reducer: {
@@ -30,5 +32,7 @@ export default configureStore({
     tugas: tugasReducers,
     absen: lokasiAbsen,
     jam_kerja: jamKerja,
+    lembur: lembur,
+    reimbursement: reimbursement,
   },
 });
