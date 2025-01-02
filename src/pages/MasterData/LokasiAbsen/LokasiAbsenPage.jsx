@@ -25,7 +25,7 @@ import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import { Select } from "../../../components";
 
-const PerusahaanPage = () => {
+const LokasiAbsenPage = () => {
   const {
     getperusahaanResult,
     getperusahaanLoading,
@@ -33,40 +33,11 @@ const PerusahaanPage = () => {
     deleteperusahaanResult,
   } = useSelector((state) => state.perusahaan);
   const { slug } = useParams();
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setperusahaanOptions] = useState([]);
 
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
-
-  useEffect(() => {
-    if (!loadingPerusahaan) {
-      const options = perusahaan.map((opt) => ({
-        value: opt.slug,
-        label: opt.nama,
-      }));
-      setperusahaanOptions(options);
-      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
-      console.log(perusahaan);
-    }
-  }, [loadingPerusahaan]);
-
-  const handleSelect = (selectedOption) => {
-    console.log(selectedOption);
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-
-    // Menyiapkan parameter pencarian dan perusahaan
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
@@ -180,19 +151,19 @@ const PerusahaanPage = () => {
   ]);
 
   useEffect(() => {
-    const param = slug
-      ? {
-          param: `?perusahaan=${slug}&limit=${limit}&search=${
-            search || ""
-          }&offset=${pageActive * limit}`,
-        }
-      : {
-          param: `?limit=${limit}&search=${search || ""}&offset=${
-            pageActive * limit
-          }`,
-        };
-    get(param);
-  }, [limit, pageActive, search, slug, get]);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian berdasarkan kondisi slug
+    const param = selectedPerusahaan
+      ? `?search=${search || ""}&perusahaan=${
+          selectedPerusahaan?.value || ""
+        }&limit=${limit}&offset=${offset}`
+      : `?limit=${limit}&search=${
+          search || ""
+        }&offset=${offset}`;
+
+    get({ param });
+  }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
 
   useEffect(() => {
     if (addperusahaanResult || deleteperusahaanResult) {
@@ -230,25 +201,13 @@ const PerusahaanPage = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div
-            className={`w-full flex gap-2 ${
-              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
-            }`}
-          >
+          <div className={`w-full flex gap-2 sm:w-60`}>
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
-            {!jwt.perusahaan && (
-              <Select
-                options={perusahaanOptions}
-                placeholder="Filter perusahaan"
-                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
-              />
-            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">
@@ -257,7 +216,7 @@ const PerusahaanPage = () => {
           </Button>
         </div>
 
-        {getperusahaanLoading || loadingPerusahaan ? (
+        {getperusahaanLoading ? (
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -338,4 +297,4 @@ const PerusahaanPage = () => {
   );
 };
 
-export default PerusahaanPage;
+export default LokasiAbsenPage;

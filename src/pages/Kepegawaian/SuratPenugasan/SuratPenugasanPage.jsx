@@ -21,7 +21,6 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
-import { Select } from "../../../components";
 import { LuPencil, LuPrinter, LuTrash2 } from "react-icons/lu";
 
 const SuratPenugasanPage = () => {
@@ -41,22 +40,7 @@ const SuratPenugasanPage = () => {
   const [printData, setPrintData] = useState("");
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
-  const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setperusahaanOptions] = useState([]);
-
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
-
-  useEffect(() => {
-    if (!loadingPerusahaan) {
-      const options = perusahaan.map((opt) => ({
-        value: opt.slug,
-        label: opt.nama,
-      }));
-      setperusahaanOptions(options);
-      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
-      console.log(perusahaan);
-    }
-  }, [loadingPerusahaan]);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -64,21 +48,6 @@ const SuratPenugasanPage = () => {
       setJwt(jwtDecode(token));
     }
   }, []);
-
-  const handleSelect = (selectedOption) => {
-    console.log(selectedOption);
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-
-    // Menyiapkan parameter pencarian dan perusahaan
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -157,20 +126,18 @@ const SuratPenugasanPage = () => {
   };
 
   useEffect(() => {
-    const param = slug
-      ? {
-          param: `?perusahaan=${slug}&limit=${limit}&search=${
-            search || ""
-          }&offset=${pageActive * limit}`,
-        }
-      : {
-          param: `?limit=${limit}&search=${search || ""}&offset=${
-            pageActive * limit
-          }`,
-        };
-    get(param);
-  }, [limit, pageActive, search, slug, get]);
+    const offset = pageActive * limit;
 
+    // Menyiapkan parameter pencarian berdasarkan kondisi slug
+    const param = selectedPerusahaan?.value
+      ? `?search=${search || ""}&perusahaan=${
+          selectedPerusahaan?.value || ""
+        }&limit=${limit}&offset=${offset}`
+      : `?limit=${limit}&search=${search || ""}&offset=${offset}`;
+
+    get({ param });
+  }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
+  
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
       const param = search
@@ -290,25 +257,13 @@ const SuratPenugasanPage = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div
-            className={`w-full flex gap-2 ${
-              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
-            }`}
-          >
+          <div className={`w-full flex gap-2 sm:w-60`}>
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
-            {!jwt.perusahaan && (
-              <Select
-                options={perusahaanOptions}
-                placeholder="Filter perusahaan"
-                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
-              />
-            )}
           </div>
           <Button onClick={() => onAdd()}>
             <div className="flex items-center gap-2">
@@ -363,7 +318,7 @@ const SuratPenugasanPage = () => {
                           <Button
                             size={30}
                             variant="tonal"
-                            color={'info'}
+                            color={"info"}
                             onClick={() => onPrint(i)}
                             className="cursor-pointer"
                           >
@@ -374,7 +329,7 @@ const SuratPenugasanPage = () => {
                           <Button
                             size={30}
                             variant="tonal"
-                            color={'success'}
+                            color={"success"}
                             onClick={() => onEdit(item)}
                             className="cursor-pointer"
                           >
@@ -385,7 +340,7 @@ const SuratPenugasanPage = () => {
                           <Button
                             size={30}
                             variant="tonal"
-                            color={'danger'}
+                            color={"danger"}
                             onClick={() => doDelete(item)}
                             className="cursor-pointer"
                           >

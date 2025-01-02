@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { divisiReducers } from "@/reducers/organReducers";
 import {
@@ -22,11 +22,10 @@ import {
 import { debounce } from "lodash"; // Import lodash debounce
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import axiosAPI from "@/authentication/axiosApi";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
-import { data } from "autoprefixer";
+import { useAuth } from "../../../../context/AuthContext";
 
 const DivisiSub = () => {
   const {
@@ -37,8 +36,7 @@ const DivisiSub = () => {
   } = useSelector((state) => state.organ); // reducer departemen gabisa, jadi pakai departemen
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   // States & Variables
   const [limit, setLimit] = useState(10);
@@ -46,28 +44,13 @@ const DivisiSub = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true); // Loading state
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
+  const {slug} = useParams();
 
   useEffect(() => {
     if (isAuthenticated()) {
       const token = isAuthenticated();
       setJwt(jwtDecode(token));
     }
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosAPI.get(API_URL_getperusahaan);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
-    };
-    fetchData();
   }, []);
 
   const debouncedSearch = useCallback(
@@ -93,11 +76,11 @@ const DivisiSub = () => {
     setPageActive(0);
   };
 
-  const onAdd = () => navigate("/masterdata/organization/departemen/form");
+  const onAdd = () => navigate("/masterdata/departemen/form");
 
   const onEdit = (item) => {
     (item.perusahaan = item.perusahaan.id),
-      navigate(`/masterdata/organization/departemen/form/${item.slug}`, {
+      navigate(`/masterdata/departemen/form/${item.slug}`, {
         state: { item },
       });
   };
@@ -141,53 +124,44 @@ const DivisiSub = () => {
     setPageActive(page - 1);
   };
 
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
-
-  const [actions] = useState([
-    {
-      name: "Edit",
-      icon: icons.bspencil,
-      color: "text-green-500",
-      func: onEdit,
-    },
-    {
-      name: "Delete",
-      icon: icons.citrash,
-      color: "text-red-500",
-      func: doDelete,
-    },
-  ]);
-
   useEffect(() => {
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian berdasarkan kondisi slug
     const param = selectedPerusahaan
-      ? {
-          param: `?perusahaan=${
-            selectedPerusahaan.value
-          }&limit=${limit}&offset=${pageActive * limit}`,
-        }
-      : { param: `?limit=${limit}&offset=${pageActive * limit}` };
-    get(param);
-  }, [limit, pageActive, search, selectedPerusahaan, get]);
+      ? `?search=${search || ""}&perusahaan=${
+          selectedPerusahaan?.value || ""
+        }&limit=${limit}&offset=${offset}`
+      : `?limit=${limit}&search=${search || ""}&offset=${offset}`;
+
+    get({ param });
+  }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
 
   useEffect(() => {
     if (addDivisiResult || deleteDivisiResult) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
-        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          };
       get(param);
     }
-  }, [addDivisiResult, deleteDivisiResult, selectedPerusahaan,search, limit, pageActive, get]); // reducer departemen gabisa, jadi pakai departemen
+  }, [
+    addDivisiResult,
+    deleteDivisiResult,
+    selectedPerusahaan,
+    search,
+    limit,
+    pageActive,
+    get,
+  ]); // reducer departemen gabisa, jadi pakai departemen
 
   const dataDepartemen = getDivisiResult.results
     ? getDivisiResult.results.map((item, index) => ({
@@ -200,25 +174,13 @@ const DivisiSub = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div
-            className={`w-full flex gap-2 ${
-              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
-            }`}
-          >
+          <div className={`w-full flex gap-2 sm:w-60`}>
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
-            {!jwt.perusahaan && (
-              <Select
-                options={perusahaanOptions}
-                placeholder="Filter perusahaan"
-                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
-              />
-            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">

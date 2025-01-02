@@ -26,6 +26,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import {
   BsAward,
+  BsBriefcase,
   BsCalendar2Date,
   BsClock,
   BsEnvelope,
@@ -36,6 +37,7 @@ import {
 } from "react-icons/bs";
 import { Popover } from "../../../components";
 import { LuPencil, LuMapPin } from "react-icons/lu";
+import { useAuth } from "../../../context/AuthContext";
 
 const PerusahaanPage = () => {
   const {
@@ -51,15 +53,7 @@ const PerusahaanPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const token = isAuthenticated();
-      setJwt(jwtDecode(token));
-    }
-  }, []);
+  const { perusahaanOptions, updateSelectedPerusahaan } = useAuth();
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -117,6 +111,13 @@ const PerusahaanPage = () => {
   };
 
   const toMenu = (item, url) => {
+    // Cari perusahaan berdasarkan slug
+    const perusahaan = perusahaanOptions.find((opt) => opt.value === item.slug);
+  
+    // Perbarui selectedPerusahaan
+    updateSelectedPerusahaan(perusahaan || null);
+  
+    // Navigasi ke URL yang sesuai
     navigate(`/${url}/${item.slug}`);
   };
 
@@ -138,6 +139,13 @@ const PerusahaanPage = () => {
       func: toMenu,
     },
     {
+      name: "Jam kerja",
+      icon: <BsClock />,
+      color: "#8b5cf6",
+      slug: "masterdata/jam-kerja",
+      func: toMenu,
+    },
+    {
       name: "Jabatan",
       icon: <BsAward />,
       color: "warning",
@@ -145,10 +153,10 @@ const PerusahaanPage = () => {
       func: toMenu,
     },
     {
-      name: "Jam kerja",
-      icon: <BsClock />,
-      color: "#8b5cf6",
-      slug: "masterdata/jam-kerja",
+      name: "Departemen",
+      icon: <BsBriefcase />,
+      color: "#d946ef",
+      slug: "masterdata/departemen",
       func: toMenu,
     },
     {

@@ -196,7 +196,7 @@ const perusahaanForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
-            onClick={() => navigate("/masterdata/perusahaan")}
+            onClick={() => navigate("/perusahaan")}
           >
             <IoMdReturnLeft />
           </button>

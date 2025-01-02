@@ -123,6 +123,18 @@ const PenugasanForm = () => {
           Yup.ref("start_date"),
           "Tanggal Selesai harus diisi setelah Tanggal Mulai"
         ),
+      file_pendukung: Yup.mixed().test(
+        "fileSize",
+        "File size is too large. Maximum size is 5MB.",
+        (value) => {
+          if (!value || typeof value === "string") {
+            // Bisa null atau string, tidak perlu validasi ukuran
+            return true;
+          }
+          // Validasi ukuran file jika ada file yang diunggah
+          return value.size <= 5242880;
+        }
+      ),
     }),
     onSubmit: async (values) => {
       // Create FormData and append values
@@ -155,7 +167,7 @@ const PenugasanForm = () => {
             id,
             { headers: { "Content-Type": "multipart/form-data" } } // Add headers here
           );
-          navigate(sessionStorage.getItem("url") || "/kepegawaian/penugasan");
+          // navigate(sessionStorage.getItem("url") || "/kepegawaian/penugasan");
           sessionStorage.removeItem("url");
         } else {
           console.error("ID is undefined for updating the task.");
@@ -301,10 +313,13 @@ const PenugasanForm = () => {
           </label>
           <FileInput
             height={70}
-            accept={{ "application/pdf": [] }}
+            accept={{
+              "image/jpeg": [],
+              "image/png": [],
+              "application/pdf": [],
+            }}
             maxFiles={1}
             minSize={0}
-            maxSize={2097152}
             multiple={false}
             value={
               formik.values.file_pendukung ? [formik.values.file_pendukung] : []
@@ -313,6 +328,9 @@ const PenugasanForm = () => {
               formik.setFieldValue("file_pendukung", files[0] || null);
             }}
           />
+          {formik.touched.file_pendukung && formik.errors.file_pendukung && (
+            <div className="leading-none tracking-wide mt-1 text-danger-500 text-xs">{formik.errors.file_pendukung}</div>
+          )}
         </div>
 
         <TextField

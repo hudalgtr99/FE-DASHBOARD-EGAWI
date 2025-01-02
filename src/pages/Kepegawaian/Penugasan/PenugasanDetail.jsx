@@ -1,8 +1,15 @@
-import { Avatar, Button, Card, Container } from "../../../components";
+import {
+  Avatar,
+  Button,
+  Card,
+  Container,
+  PulseLoading,
+} from "../../../components";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useContext, useEffect, useState } from "react";
 import {
   LuArrowDown,
+  LuArrowDownUp,
   LuArrowLeft,
   LuArrowRight,
   LuArrowUp,
@@ -10,7 +17,7 @@ import {
 } from "react-icons/lu";
 import { API_URL_getdetailtugas } from "../../../constants";
 import axiosAPI from "@/authentication/axiosApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 
 const PenugasanDetail = () => {
@@ -18,11 +25,12 @@ const PenugasanDetail = () => {
   const [detail, setDetail] = useState([]);
   const [progress, setProgress] = useState({
     daysRemaining: 0,
-    percentage: 0,
     totalDuration: 0,
   });
+  const [statusTugas, setStatusTugas] = useState(0);
   const { pk } = useParams();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const statuses = [
     { label: "Menunggu Persetujuan", value: 0, color: "#f59e0b" },
     { label: "Proses", value: 1, color: "info" },
@@ -79,7 +87,6 @@ const PenugasanDetail = () => {
       if (today < startDate) {
         setProgress({
           daysRemaining: Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)),
-          percentage: 0, // Belum dimulai
           totalDuration: totalDays, // Total durasi proyek
         });
         return;
@@ -87,7 +94,6 @@ const PenugasanDetail = () => {
       if (today > endDate) {
         setProgress({
           daysRemaining: 0,
-          percentage: 100, // Sudah selesai
           totalDuration: totalDays, // Total durasi proyek
         });
         return;
@@ -95,20 +101,45 @@ const PenugasanDetail = () => {
 
       const daysPassed = (today - startDate) / (1000 * 60 * 60 * 24);
       const daysRemaining = Math.ceil(totalDays - daysPassed);
-      const progressPercentage = (daysPassed / totalDays) * 100;
 
       setProgress({
         daysRemaining: daysRemaining,
-        percentage: progressPercentage.toFixed(2), // Maksimal 2 desimal
         totalDuration: totalDays, // Total durasi proyek
       });
     };
 
+    const StatusTugas = () => {
+      switch (detail.status) {
+        case 0:
+          setStatusTugas(0);
+          break;
+        case 1:
+          setStatusTugas(50);
+          break;
+        case 2:
+          setStatusTugas(75);
+          break;
+        case 3:
+          setStatusTugas(100);
+          break;
+        case 4:
+          setStatusTugas(0);
+          break;
+        default:
+          break;
+      }
+    };
+
+    StatusTugas();
     calculateProgress();
   }, [detail]);
 
   if (!loading) {
-    return null;
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <PulseLoading />
+      </div>
+    );
   }
 
   const statusObject = statuses.find(
@@ -127,10 +158,20 @@ const PenugasanDetail = () => {
     : "Unknown Prioritas";
 
   return (
+    console.log(statusTugas),
     <div className="flex flex-col gap-4">
-      <Card density={"loose"} onClick={false} reverse={true} variant={"gradient"}>
+      <Card
+        density={"loose"}
+        onClick={false}
+        reverse={true}
+        variant={"gradient"}
+      >
         <div className="flex justify-between items-start">
-          <Button size={30} color="white">
+          <Button
+            onClick={() => navigate("/kepegawaian/penugasan")}
+            size={30}
+            color="white"
+          >
             <LuArrowLeft style={{ color: themeColor }} />
           </Button>
           <img
@@ -146,14 +187,15 @@ const PenugasanDetail = () => {
             <div class="text-sm font-bold">Progress Tugas</div>
             <div class="relative h-3 bg-gray-300 rounded-full">
               <div
-                class={`absolute top-0 left-0 h-3 bg-green-400 rounded-full progress-bar w-[${progress.percentage}%]`}
+                class="absolute top-0 left-0 h-3 bg-green-400 rounded-full"
+                style={{ width: `${statusTugas}%` }}
               ></div>
             </div>
             <div class="text-sm font-semibold">
               {progress.daysRemaining <= 0
                 ? "Sudah Selesai"
                 : progress.daysRemaining + " Hari Lagi"}{" "}
-              <span class="float-right">{progress.percentage}%</span>
+              <span class="float-right">{statusTugas}%</span>
             </div>
           </div>
         </div>
@@ -164,7 +206,9 @@ const PenugasanDetail = () => {
             <LuClipboardList className="text-xl" />
             <p className="text-base font-bold">Informasi</p>
           </div>
-          <Button disabled color={statusObject?.color}>{statusLabel}</Button>
+          <Button disabled color={statusObject?.color}>
+            {statusLabel}
+          </Button>
         </div>
         <ProfileHeader
           pengirim
@@ -172,10 +216,8 @@ const PenugasanDetail = () => {
           nama={detail?.pengirim.nama}
         />
 
-        <div className="flex flex-col gap-2 items-start ml-[1.2rem] -my-2">
-          <div className="h-3 w-[3px] bg-base-200 dark:bg-base-200 rounded-md"></div>
-          <div className="h-3 w-[3px] bg-base-200 dark:bg-base-200 rounded-md"></div>
-          <div className="h-3 w-[3px] bg-base-200 dark:bg-base-200 rounded-md"></div>
+        <div className="flex flex-col gap-2 items-start ml-[.7rem] -my-2">
+          <LuArrowDownUp className="text-gray-400 text-lg"></LuArrowDownUp>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -211,20 +253,90 @@ const PenugasanDetail = () => {
         <div className="flex flex-col gap-2">
           <p className="text-base font-bold">Lampiran</p>
           {detail.file ? (
-            <iframe
-              src={detail?.file}
-              frameborder="0"
-              height={400}
-              className="w-full"
-            ></iframe>
-          ) : "-"}
+            detail.file.endsWith(".pdf") ? (
+              <iframe
+                src={detail?.file}
+                frameborder="0"
+                height={400}
+                className="w-full"
+              ></iframe>
+            ) : (
+              <img
+                src={detail?.file}
+                alt="file preview"
+                className="w-full object-contain max-w-[500px]"
+              />
+            )
+          ) : (
+            <div className="flex w-1/3 h-[50px] justify-center items-center border-2 border-gray-300 dark:border-gray-700 rounded-md">
+              No data
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 h-fit">
+          <p className="text-base font-bold">Riwayat</p>
+          <div className="ml-1">
+            <TimelineContainer>
+              {/* First Timeline Item */}
+              <div className="flex flex-col">
+                <Timeline />
+                <TimelineBody
+                  date="20-Desember-2022 - 22-Desember-2022"
+                  title="Judul Riwayat"
+                  description="Lorem ipsum dolor, sit amet consectetur adipisicing elit."
+                />
+              </div>
+
+              {/* Second Timeline Item */}
+              <div className="flex flex-col">
+                <Timeline />
+                <TimelineBody
+                  date="20-Desember-2022 - 22-Desember-2022"
+                  title="Judul Riwayat"
+                  description="Lorem ipsum dolor, sit amet consectetur adipisicing elit."
+                />
+              </div>
+
+              {/* Third Timeline Item */}
+              <div className="flex flex-col">
+                <Timeline />
+                <TimelineBody
+                  date="20-Desember-2022 - 22-Desember-2022"
+                  title="Judul Riwayat"
+                  description="Lorem ipsum dolor, sit amet consectetur adipisicing elit."
+                />
+              </div>
+            </TimelineContainer>
+          </div>
         </div>
       </Container>
     </div>
   );
 };
 
-import React from "react";
+// TimelineContainer Component (For Timeline Structure)
+const TimelineContainer = ({ children }) => (
+  <div className="flex flex-col gap-4 mx-4 sm:flex-row">
+    <div className="flex-1 sm:w-9/12">
+      <div className="relative px-4 sm:space-y-8 sm:before:absolute sm:before:top-2 sm:before:bottom-0 sm:before:w-0.5 sm:before:-left-3 before:bg-gray-500 dark:before:bg-gray-400">
+        {children}
+      </div>
+    </div>
+  </div>
+);
+
+// TimelineBody Component (For Title, Description, and Date)
+const TimelineBody = ({ date, title, description }) => (
+  <div className="flex flex-col items-start gap-1 text-justify max-w-[50%] flex-wrap break-words mt-2">
+    <p className="text-xs">{date}</p>
+    <p className="text-sm font-bold">{title}</p>
+    <p className="text-sm">{description}</p>
+  </div>
+);
+
+const Timeline = () => (
+  <div className="sm:relative sm:before:absolute sm:before:top-2 sm:before:w-4 sm:before:h-4 sm:before:rounded-full sm:before:left-[-35px] sm:before:z-[1] before:bg-gray-500 dark:before:bg-gray-400" />
+);
 
 const ProfileHeader = ({ image, nama, pengirim = false }) => {
   return (

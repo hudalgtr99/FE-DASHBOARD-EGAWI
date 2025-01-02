@@ -28,6 +28,7 @@ import { jwtDecode } from "jwt-decode";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { Checkbox } from "../../../components";
 import { LuKeyRound, LuPencil } from "react-icons/lu";
+import { useAuth } from "../../../context/AuthContext";
 
 const TemplateAkun = ({ getapiakun, activeTab }) => {
   const {
@@ -45,35 +46,17 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
-  const [jwt, setJwt] = useState({});
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const token = isAuthenticated();
-      setJwt(jwtDecode(token));
-    }
-  }, []);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Start with the base URL for the API
-        let url = API_URL_getperusahaan;
 
-        // Add the active parameter if needed
         if (activeTab === "0") {
           url += "?active=true";
         } else if (activeTab === "1") {
           url += "?active=false";
         }
-
-        const response = await axiosAPI.get(url);
-        const options = response.data.map((item) => ({
-          value: item.slug,
-          label: item.nama,
-        }));
-        setPerusahaanOptions(options);
       } catch (error) {
         console.error("Error fetching perusahaan data:", error);
       }
@@ -155,18 +138,6 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
 
     get(param);
     setPageActive(page - 1);
-  };
-
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
   };
 
   const handleSwitch = (e, item, index) => {
@@ -262,16 +233,12 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
     },
   ]);
 
-  // console.log(JSON.stringify(dataWithIndex))
-
   return (
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
           <div
-            className={`w-full flex gap-2 ${
-              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
-            }`}
+            className={`w-full flex gap-2 sm:w-60`}
           >
             <TextField
               onChange={doSearch}
@@ -279,14 +246,6 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
               value={search}
               icon={<CiSearch />}
             />
-            {!jwt.perusahaan && (
-              <Select
-                options={perusahaanOptions}
-                placeholder="Filter perusahaan"
-                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
-              />
-            )}
           </div>
           <div className="flex gap-2 items-center">
             {/* <Tooltip tooltip="Import Pegawai">

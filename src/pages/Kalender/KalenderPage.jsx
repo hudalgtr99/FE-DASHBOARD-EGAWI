@@ -6,12 +6,7 @@ import { API_URL_getkalender } from "@/constants";
 import { useSelector } from "react-redux";
 import axiosAPI from "@/authentication/axiosApi";
 import moment from "moment";
-import { Button, Container } from "../../components";
-import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
-import { Select } from "@/components";
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { FaCalendarAlt } from "react-icons/fa";
 
 const KalenderSubPage = () => {
   const { pk } = useParams();
@@ -20,43 +15,12 @@ const KalenderSubPage = () => {
   const calendarRef = useRef(null);
   const [kalender, setKalender] = useState([]);
 
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-  const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
-
-  // Fetch perusahaan options and set selectedPerusahaan
-  useEffect(() => {
-    if (!loadingPerusahaan) {
-      const options = perusahaan.map((opt) => ({
-        value: opt.slug,
-        label: opt.nama,
-      }));
-      setPerusahaanOptions(options);
-      // Set selectedPerusahaan if pk exists, otherwise default to first perusahaan
-      setSelectedPerusahaan(
-        options.find((opt) => opt?.value === pk) || options[0]
-      );
-    }
-  }, [loadingPerusahaan, pk]);
-
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-  };
-
-  // Decode JWT token if authenticated
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const token = isAuthenticated();
-      setJwt(jwtDecode(token));
-    }
-  }, []);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   // Fetch events based on selectedPerusahaan or pk
   const getEvent = async (month_year = false) => {
     const params = month_year ? { "month-year": month_year } : {};
-    const perusahaanSlug = selectedPerusahaan ? selectedPerusahaan.value : pk;
+    const perusahaanSlug = selectedPerusahaan ? selectedPerusahaan.value : null;
 
     // Request based on selectedPerusahaan or pk
     const response = await axiosAPI.get(
@@ -80,34 +44,22 @@ const KalenderSubPage = () => {
     }
   }, [addKalenderResult]);
 
-  const onDetail = (selectedPerusahaan) => {
-    navigate(`${selectedPerusahaan ? `/kalender/list/${selectedPerusahaan}` : "/kalender/list"}`);
+  const onDetail = () => {
+    navigate("/kalender/list");
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <Container>
-        <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center">
-          <div className="w-full sm:w-60">
-            <Select
-              options={perusahaanOptions}
-              placeholder="Filter perusahaan"
-              onChange={handleSelect}
-              value={selectedPerusahaan}
-              disabled={perusahaanOptions.length === 1}
-            />
-          </div>
-          <Button onClick={() => onDetail(selectedPerusahaan?.value)}>
-            <div className="flex items-center gap-2">
-            <FaCalendarAlt /> Data Kalender
-            </div>
-          </Button>
-        </div>
-      </Container>
       <div className="p-6 bg-white dark:bg-base-600 rounded-lg shadow-lg calendar-wrapper">
         <FullCalendar
           ref={calendarRef}
           customButtons={{
+            data_kalender: {
+              text: "Data Kalender",
+              click: () => {
+                onDetail();
+              },
+            },
             prev: {
               click: () => {
                 const calendarApi = calendarRef.current.getApi();
@@ -137,9 +89,9 @@ const KalenderSubPage = () => {
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           headerToolbar={{
-            left: "today",
+            left: "prev next today",
             center: "title",
-            right: "prev next",
+            right: "data_kalender",
           }}
           eventColor="#FF2300"
           events={kalender}
