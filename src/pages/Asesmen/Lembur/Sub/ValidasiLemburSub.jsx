@@ -22,6 +22,7 @@ import { useAuth } from "../../../../context/AuthContext";
 import { API_URL_lembur, baseurl } from "../../../../constants";
 import { lemburReducer } from "@/reducers/lemburReducers";
 import SelectMonthYear from "../../../../components/atoms/SelectMonthYear";
+import getFileIcon from "../../../../utils/getFileIcon";
 
 const ValidasiLemburSub = ({ type }) => {
   const { getLemburResult, addLemburResult } = useSelector(
@@ -376,9 +377,9 @@ const ValidasiLemburSub = ({ type }) => {
                           style={{ width: "auto", height: 40 }}
                         />
                       ) : (
-                        <span>
-                          {item?.file?.split(".").pop().toUpperCase()}
-                        </span> // Menampilkan ekstensi file
+                        <div className="flex justify-start">
+                          {getFileIcon(item?.file)}
+                        </div>
                       )}
                     </button>
                   </Tables.Data>

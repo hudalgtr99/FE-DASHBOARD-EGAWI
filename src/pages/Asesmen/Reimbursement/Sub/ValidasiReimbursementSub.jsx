@@ -21,6 +21,8 @@ import { useAuth } from "../../../../context/AuthContext";
 import { API_URL_reimbursement, baseurl } from "../../../../constants";
 import { reimbursementReducer } from "@/reducers/reimbursementReducers";
 import SelectMonthYear from "../../../../components/atoms/SelectMonthYear";
+import { AiFillFilePdf } from "react-icons/ai";
+import getFileIcon from "../../../../utils/getFileIcon";
 
 const ValidasiReimbursementSub = ({ type }) => {
   const { getReimbursementResult, addReimbursementResult } = useSelector(
@@ -363,23 +365,34 @@ const ValidasiReimbursementSub = ({ type }) => {
                   <Tables.Data>{item?.description}</Tables.Data>
                   <Tables.Data>{item?.note}</Tables.Data>
                   <Tables.Data>
-                    <button
-                      title="Klik untuk pratinjau"
-                      onClick={() => handlePreviewFile(item?.file)}
-                    >
-                      {isImage(item?.file) ? (
-                        <img
-                          src={`${baseurl}${item?.file}`}
-                          alt={item?.file}
-                          className="rounded"
-                          style={{ width: "auto", height: 40 }}
-                        />
-                      ) : (
-                        <span>
-                          {item?.file?.split(".").pop().toUpperCase()}
-                        </span> // Menampilkan ekstensi file
-                      )}
-                    </button>
+                    {Array.isArray(item?.reimbursement_files) &&
+                    item?.reimbursement_files.length > 0 ? (
+                      <div className="flex flex-col justify-start gap-2">
+                        {item?.reimbursement_files?.map((val, i) => (
+                          <button
+                            key={i}
+                            className="flex justify-start"
+                            title="Klik untuk pratinjau"
+                            onClick={() => handlePreviewFile(val?.file)}
+                          >
+                            {isImage(val?.file) ? (
+                              <img
+                                src={`${baseurl}${val?.file}`}
+                                alt={val?.file}
+                                className="rounded"
+                                style={{ width: "auto", height: 40 }}
+                              />
+                            ) : (
+                              <div className="flex justify-start">
+                                {getFileIcon(val?.file)}
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <>Tidak Ada File</>
+                    )}
                   </Tables.Data>
                   {type === "validasi_reimbursement" && (
                     <Tables.Data center>

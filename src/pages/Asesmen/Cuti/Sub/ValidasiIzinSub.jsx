@@ -25,6 +25,7 @@ import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../../../context/AuthContext";
 import { baseurl } from "../../../../constants";
 import SelectMonthYear from "../../../../components/atoms/SelectMonthYear";
+import getFileIcon from "../../../../utils/getFileIcon";
 // import { MonthPicker, MonthInput } from "react-lite-month-picker";
 
 const ValidasiIzinSub = ({ type }) => {
@@ -381,9 +382,9 @@ const ValidasiIzinSub = ({ type }) => {
                           style={{ width: "auto", height: 40 }}
                         />
                       ) : (
-                        <span>
-                          {item?.file?.split(".").pop().toUpperCase()}
-                        </span> // Menampilkan ekstensi file
+                        <div className="flex justify-start">
+                          {getFileIcon(item?.file)}
+                        </div>
                       )}
                     </button>
                   </Tables.Data>
