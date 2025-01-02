@@ -9,7 +9,6 @@ import {
   Container,
   Pagination,
   Tables,
-  Select,
   TextField,
   Tooltip,
   PulseLoading,
@@ -43,24 +42,8 @@ const JabatanSub = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-  const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setperusahaanOptions] = useState([]);
-
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
-
-  useEffect(() => {
-    if (!loadingPerusahaan) {
-      const options = perusahaan.map((opt) => ({
-        value: opt.slug,
-        label: opt.nama,
-      }));
-      setperusahaanOptions(options);
-      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || "");
-      console.log(perusahaan);
-    }
-  }, [loadingPerusahaan]);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
+  const [jwt, setJwt] = useState({});
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -68,21 +51,6 @@ const JabatanSub = () => {
       setJwt(jwtDecode(token));
     }
   }, []);
-
-  const handleSelect = (selectedOption) => {
-    console.log(selectedOption);
-    setSelectedPerusahaan(selectedOption);
-    const offset = pageActive * limit;
-
-    // Menyiapkan parameter pencarian dan perusahaan
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedOption?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-  };
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -177,19 +145,21 @@ const JabatanSub = () => {
   ]);
 
   useEffect(() => {
-    const param = slug
-      ? {
-          param: `?perusahaan=${slug}&limit=${limit}&search=${
-            search || ""
-          }&offset=${pageActive * limit}`,
-        }
-      : {
-          param: `?limit=${limit}&search=${search || ""}&offset=${
-            pageActive * limit
-          }`,
-        };
-    get(param);
-  }, [limit, pageActive, search, slug, get]);
+    const offset = pageActive * limit;
+
+    // Menyiapkan parameter pencarian berdasarkan kondisi slug
+    const param = selectedPerusahaan?.value
+      ? `?search=${search || ""}&perusahaan=${
+          selectedPerusahaan?.value || ""
+        }&limit=${limit}&offset=${offset}`
+      : 
+        `?limit=${limit}&search=${
+          search || ""
+        }&offset=${offset}`;
+
+    get({ param });
+  }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
+
   useEffect(() => {
     if (
       addJabatanResult ||
@@ -232,25 +202,13 @@ const JabatanSub = () => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div
-            className={`w-full flex gap-2 ${
-              jwt.perusahaan ? "sm:w-60" : "sm:w-1/2"
-            }`}
-          >
+          <div className={`w-full flex gap-2 sm:w-60`}>
             <TextField
               onChange={doSearch}
               placeholder="Search"
               value={search}
               icon={<CiSearch />}
             />
-            {!jwt.perusahaan && (
-              <Select
-                options={perusahaanOptions}
-                placeholder="Filter perusahaan"
-                onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-                value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
-              />
-            )}
           </div>
           <Button onClick={onAdd}>
             <div className="flex items-center gap-2">

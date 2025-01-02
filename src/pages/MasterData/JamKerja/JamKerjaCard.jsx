@@ -1,109 +1,156 @@
-import { useCallback, useEffect, useState } from "react";
-import JamKerjaPage from "./JamKerjaPage";
-import { fetchUserDetails } from "@/constants/user";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { Container, Tables } from "@/components";
+import { Button, Select } from "../../../components";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { API_URL_getjamkerja } from "@/constants";
+
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "@/context/AuthContext";
 import axiosAPI from "@/authentication/axiosApi";
-import { API_URL_getperusahaan } from "@/constants";
-import { Container, TextField } from "@/components";
-import { CiSearch } from "react-icons/ci";
-import { Link } from "react-router-dom";
-import PulseLoader from "react-spinners/PulseLoader";
-import { ThemeContext } from "@/context/ThemeContext";
-import { useContext } from "react";
-import { FaExclamation } from "react-icons/fa";
-import { Button, CardImage as Card } from "../../../components";
+import { LuPencilLine } from "react-icons/lu";
 
-export default function KalenderPage() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { deleteperusahaanResult } = useSelector((state) => state.perusahaan);
-  const dispatch = useDispatch();
-  const { themeColor } = useContext(ThemeContext);
+const JamKerjaPage = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const [locations, setLocations] = useState([]);
+  const location = useLocation();
+  const [jwt, setJwt] = useState({});
+  const { perusahaan, loadingPerusahaan } = useAuth();
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
-  const [card, setCard] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // State untuk pencarian
-
-  const fetchData2 = useCallback(async () => {
-    const response = await axiosAPI.get(API_URL_getperusahaan);
-    setCard(response.data);
-  }, []);
-
+  // Decode JWT and set the JWT state
   useEffect(() => {
-    fetchData2();
-  }, []);
-
-  useEffect(() => {
-    if (deleteperusahaanResult) {
-      fetchData();
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
     }
-  }, [deleteperusahaanResult, dispatch]);
+  }, []);
 
+  // Set perusahaan options when loading is complete
+  useEffect(() => {
+    if (!loadingPerusahaan) {
+      const options = perusahaan.map((opt) => ({
+        value: opt.slug,
+        label: opt.nama,
+      }));
+      setPerusahaanOptions(options);
+      // Set the selectedPerusahaan if slug is available
+      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || null);
+    }
+  }, [loadingPerusahaan, perusahaan, slug]);
+
+  // Fetch data based on selectedPerusahaan or slug
   const fetchData = useCallback(async () => {
-    const userData = await fetchUserDetails();
-    if (userData) {
-      setUser(userData);
+    try {
+      const currentSlug = selectedPerusahaan ? selectedPerusahaan.value : slug;
+      const response = currentSlug
+        ? await axiosAPI.get(`${API_URL_getjamkerja}${currentSlug}/`)
+        : await axiosAPI.get(API_URL_getjamkerja);
+
+      setLocations(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    setLoading(false);
-  }, []);
+  }, [selectedPerusahaan, slug]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, selectedPerusahaan, slug]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-[80vh]">
-        <PulseLoader size={13} color={themeColor} loading={loading} />
-      </div>
-    );
-  }
+  const daysOfWeek = [
+    "senin",
+    "selasa",
+    "rabu",
+    "kamis",
+    "jumat",
+    "sabtu",
+    "minggu",
+  ];
 
-  // Filter card berdasarkan searchTerm
-  const filteredCard = card.filter((item) =>
-    item.nama.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Handle perusahaan selection
+  const handleSelect = (selectedOption) => {
+    setSelectedPerusahaan(selectedOption);
+  };
+
+  // Edit functionality
+  const onEdit = (item) => {
+    sessionStorage.setItem("url", location.pathname);
+    navigate(`/masterdata/jam-kerja/form/${item.slug}`, {
+      state: {
+        item, // Pass the entire item object as state
+      },
+    });
+  };
 
   return (
-    <>
-      {user && user?.groups[0]?.name === "Super Admin" ? (
-        <>
-          <div>
-            <Container>
-              <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center">
-                <div className="w-full sm:w-60">
-                  <TextField
-                    placeholder="Search"
-                    icon={<CiSearch />}
-                    value={searchTerm} // Bind value dengan state
-                    onChange={(e) => setSearchTerm(e.target.value)} // Update state saat input berubah
-                  />
-                </div>
-              </div>
-            </Container>
-            {filteredCard.length > 0 ? (
-              <div className="grid grid-cols-5 gap-3 mt-6">
-                {filteredCard.map((item) => (
-                  <Card
-                    key={item.pk}
-                    image={item.image}
-                    nama={item.nama}
-                    pk={item.pk}
-                    to={`/masterdata/jam-kerja/${item.slug}`}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 justify-center items-center h-[60vh]">
-                <FaExclamation className="text-3xl" />
-                <p className="font-bold">Tidak ada data yang tersedia</p>
+    <div>
+      <Container>
+        <div
+          className={`mb-4 flex flex-col sm:flex-row justify-center ${
+            !jwt.perusahaan ? "sm:justify-between" : "sm:justify-end"
+          } items-center gap-4`}
+        >
+          <>
+            {!jwt.perusahaan && (
+              <div className={`w-full sm:w-60`}>
+                <Select
+                  options={perusahaanOptions}
+                  placeholder="Filter perusahaan"
+                  onChange={handleSelect} // Trigger handleSelect when the value changes
+                  value={selectedPerusahaan} // Show the selected perusahaan
+                />
               </div>
             )}
-          </div>
-        </>
-      ) : (
-        <JamKerjaPage />
-      )}
-    </>
+            <Button onClick={() => onEdit(locations[0])}>
+              <div className="flex items-center gap-2">
+                <LuPencilLine /> Edit jam kerja
+              </div>
+            </Button>
+          </>
+        </div>
+        {locations.length > 0 && (
+          <Tables>
+            <Tables.Head>
+              <tr>
+                <Tables.Header>No</Tables.Header>
+                {!jwt.perusahaan && (
+                  <Tables.Header>Nama perusahaan</Tables.Header>
+                )}
+                <Tables.Header>Hari Kerja</Tables.Header>
+                <Tables.Header>Jam Masuk</Tables.Header>
+                <Tables.Header>Jam Keluar</Tables.Header>
+              </tr>
+            </Tables.Head>
+            <Tables.Body>
+              {locations.map((item, index) => {
+                return daysOfWeek.map((day, i) => (
+                  <Tables.Row key={`${index}-${day}`}>
+                    <Tables.Data>{i + 1}</Tables.Data>
+                    {!jwt.perusahaan && <Tables.Data>{item.nama}</Tables.Data>}
+                    <Tables.Data>
+                      {day.charAt(0).toUpperCase() + day.slice(1)}
+                    </Tables.Data>
+                    <Tables.Data>
+                      {item.jadwal[day].masuk === "00:00"
+                        ? "libur"
+                        : item.jadwal[day].masuk}
+                    </Tables.Data>
+                    <Tables.Data>
+                      {item.jadwal[day].keluar === "00:00"
+                        ? "libur"
+                        : item.jadwal[day].keluar}
+                    </Tables.Data>
+                  </Tables.Row>
+                ));
+              })}
+            </Tables.Body>
+          </Tables>
+        )}
+      </Container>
+    </div>
   );
-}
+};
+
+export default JamKerjaPage;

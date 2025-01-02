@@ -176,7 +176,8 @@ const DashboardPage = () => {
     : [];
 
   return (
-    <div className="flex flex-col md:gap-6">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col md:gap-6">
       <div
         className={`grid ${
           jwt.perusahaan ? "md:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-4"
@@ -259,7 +260,7 @@ const DashboardPage = () => {
                   ) : (
                     <tr>
                       <td colSpan="4" className="text-center">
-                        Tidak ada data yang tersedia
+                        Tidak ada data hari ini
                       </td>
                     </tr>
                   )}
@@ -336,7 +337,7 @@ const DashboardPage = () => {
                   ) : (
                     <tr>
                       <td colSpan="4" className="text-center">
-                        Tidak ada data yang tersedia
+                        Tidak ada data hari ini
                       </td>
                     </tr>
                   )}
@@ -367,6 +368,7 @@ const DashboardPage = () => {
           )}
         </Container>
       </div>
+    </div>
     </div>
   );
 };

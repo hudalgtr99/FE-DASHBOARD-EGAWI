@@ -25,9 +25,9 @@ const PenugasanDetail = () => {
   const [detail, setDetail] = useState([]);
   const [progress, setProgress] = useState({
     daysRemaining: 0,
-    percentage: 0,
     totalDuration: 0,
   });
+  const [statusTugas, setStatusTugas] = useState(0);
   const { pk } = useParams();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -87,7 +87,6 @@ const PenugasanDetail = () => {
       if (today < startDate) {
         setProgress({
           daysRemaining: Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)),
-          percentage: 0, // Belum dimulai
           totalDuration: totalDays, // Total durasi proyek
         });
         return;
@@ -95,7 +94,6 @@ const PenugasanDetail = () => {
       if (today > endDate) {
         setProgress({
           daysRemaining: 0,
-          percentage: 100, // Sudah selesai
           totalDuration: totalDays, // Total durasi proyek
         });
         return;
@@ -103,15 +101,36 @@ const PenugasanDetail = () => {
 
       const daysPassed = (today - startDate) / (1000 * 60 * 60 * 24);
       const daysRemaining = Math.ceil(totalDays - daysPassed);
-      const progressPercentage = (daysPassed / totalDays) * 100;
 
       setProgress({
         daysRemaining: daysRemaining,
-        percentage: progressPercentage.toFixed(2), // Maksimal 2 desimal
         totalDuration: totalDays, // Total durasi proyek
       });
     };
 
+    const StatusTugas = () => {
+      switch (detail.status) {
+        case 0:
+          setStatusTugas(0);
+          break;
+        case 1:
+          setStatusTugas(50);
+          break;
+        case 2:
+          setStatusTugas(75);
+          break;
+        case 3:
+          setStatusTugas(100);
+          break;
+        case 4:
+          setStatusTugas(0);
+          break;
+        default:
+          break;
+      }
+    };
+
+    StatusTugas();
     calculateProgress();
   }, [detail]);
 
@@ -139,6 +158,7 @@ const PenugasanDetail = () => {
     : "Unknown Prioritas";
 
   return (
+    console.log(statusTugas),
     <div className="flex flex-col gap-4">
       <Card
         density={"loose"}
@@ -147,7 +167,11 @@ const PenugasanDetail = () => {
         variant={"gradient"}
       >
         <div className="flex justify-between items-start">
-          <Button onClick={() => navigate("/kepegawaian/penugasan")} size={30} color="white">
+          <Button
+            onClick={() => navigate("/kepegawaian/penugasan")}
+            size={30}
+            color="white"
+          >
             <LuArrowLeft style={{ color: themeColor }} />
           </Button>
           <img
@@ -164,14 +188,14 @@ const PenugasanDetail = () => {
             <div class="relative h-3 bg-gray-300 rounded-full">
               <div
                 class="absolute top-0 left-0 h-3 bg-green-400 rounded-full"
-                style={{ width: `${progress.percentage}%` }}
+                style={{ width: `${statusTugas}%` }}
               ></div>
             </div>
             <div class="text-sm font-semibold">
               {progress.daysRemaining <= 0
                 ? "Sudah Selesai"
                 : progress.daysRemaining + " Hari Lagi"}{" "}
-              <span class="float-right">{progress.percentage}%</span>
+              <span class="float-right">{statusTugas}%</span>
             </div>
           </div>
         </div>

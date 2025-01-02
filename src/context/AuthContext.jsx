@@ -10,6 +10,8 @@ export const AuthProvider = ({ children }) => {
   const [perusahaan, setPerusahaan] = useState(null);
   const [loadingPerusahaan, setLoadingPerusahaan] = useState(true);
   const [errorPerusahaan, setErrorPerusahaan] = useState(null);
+  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
     const fetchPerusahaan = async () => {
@@ -17,6 +19,16 @@ export const AuthProvider = ({ children }) => {
         setLoadingPerusahaan(true);
         const response = await axiosAPI.get(API_URL_getperusahaan);
         setPerusahaan(response.data);
+
+        // Mengatur options berdasarkan data perusahaan
+        const options = [
+          { value: null, label: "Semua" },
+          ...response.data.map((opt) => ({
+            value: opt.slug,
+            label: opt.nama,
+          })),
+        ];
+        setPerusahaanOptions(options);
       } catch (err) {
         setErrorPerusahaan(err.message);
       } finally {
@@ -27,8 +39,21 @@ export const AuthProvider = ({ children }) => {
     fetchPerusahaan();
   }, []); // Hanya dipanggil sekali saat render pertama
 
+  const updateSelectedPerusahaan = (option) => {
+    setSelectedPerusahaan(option);
+  };
+
   return (
-    <AuthContext.Provider value={{ perusahaan, loadingPerusahaan, errorPerusahaan }}>
+    <AuthContext.Provider
+      value={{
+        perusahaan,
+        loadingPerusahaan,
+        errorPerusahaan,
+        perusahaanOptions,
+        selectedPerusahaan,
+        updateSelectedPerusahaan,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -11,6 +11,7 @@ import {
   List,
   Popover,
   Tooltip,
+  Select,
 } from "@/components";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import moment from "moment";
@@ -19,6 +20,9 @@ import { logoutUser } from "@/actions/auth";
 import { authReducer } from "@/reducers/authReducers";
 import { fetchUserDetails } from "@/constants/user";
 import { Link, useLocation } from "react-router-dom";
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = ({ setSideOpen }) => {
   const { themeSkin, navbarType, colorMode, themeColor } =
@@ -30,6 +34,17 @@ const Header = ({ setSideOpen }) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true); // State untuk loading
+  const [jwt, setJwt] = useState({}); // Initialize jwt variable
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
+
+  const { perusahaanOptions, selectedPerusahaan, updateSelectedPerusahaan } =
+    useAuth();
 
   const fetchData = useCallback(async () => {
     setLoading(true); // Set loading menjadi true sebelum mengambil data
@@ -61,6 +76,10 @@ const Header = ({ setSideOpen }) => {
       dispatch(authReducer({ type: "LOGOUT_USER", payload: { data: false } }));
     }
   }, [logoutUserResult, dispatch]);
+
+  const handleSelect = (selectedOption) => {
+    updateSelectedPerusahaan(selectedOption);
+  };
 
   return (
     <header
@@ -137,6 +156,16 @@ const Header = ({ setSideOpen }) => {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center">
+            {!jwt.perusahaan && (
+              <div className="w-60 mr-3">
+                <Select
+                  options={perusahaanOptions}
+                  placeholder="Filter perusahaan"
+                  onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
+                  value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+                />
+              </div>
+            )}
             {/* Dark Mode */}
             <Tooltip
               tooltip={colorMode === "light" ? "Dark Mode" : "Light Mode"}

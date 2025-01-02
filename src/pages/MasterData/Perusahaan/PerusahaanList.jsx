@@ -36,6 +36,7 @@ import {
 } from "react-icons/bs";
 import { Popover } from "../../../components";
 import { LuPencil, LuMapPin } from "react-icons/lu";
+import { useAuth } from "../../../context/AuthContext";
 
 const PerusahaanPage = () => {
   const {
@@ -51,15 +52,7 @@ const PerusahaanPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const token = isAuthenticated();
-      setJwt(jwtDecode(token));
-    }
-  }, []);
+  const { perusahaanOptions, updateSelectedPerusahaan } = useAuth();
 
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -117,6 +110,13 @@ const PerusahaanPage = () => {
   };
 
   const toMenu = (item, url) => {
+    // Cari perusahaan berdasarkan slug
+    const perusahaan = perusahaanOptions.find((opt) => opt.value === item.slug);
+  
+    // Perbarui selectedPerusahaan
+    updateSelectedPerusahaan(perusahaan || null);
+  
+    // Navigasi ke URL yang sesuai
     navigate(`/${url}/${item.slug}`);
   };
 

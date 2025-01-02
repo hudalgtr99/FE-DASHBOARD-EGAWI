@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Tables } from "@/components";
-import { Button, Select } from "../../../components";
+import { Button } from "../../../components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { API_URL_getjamkerja } from "@/constants";
 
@@ -16,9 +16,7 @@ const JamKerjaPage = () => {
   const [locations, setLocations] = useState([]);
   const location = useLocation();
   const [jwt, setJwt] = useState({});
-  const { perusahaan, loadingPerusahaan } = useAuth();
-  const [perusahaanOptions, setPerusahaanOptions] = useState([]);
-  const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   // Decode JWT and set the JWT state
   useEffect(() => {
@@ -27,19 +25,6 @@ const JamKerjaPage = () => {
       setJwt(jwtDecode(token));
     }
   }, []);
-
-  // Set perusahaan options when loading is complete
-  useEffect(() => {
-    if (!loadingPerusahaan) {
-      const options = perusahaan.map((opt) => ({
-        value: opt.slug,
-        label: opt.nama,
-      }));
-      setPerusahaanOptions(options);
-      // Set the selectedPerusahaan if slug is available
-      setSelectedPerusahaan(options.find((opt) => opt?.value === slug) || null);
-    }
-  }, [loadingPerusahaan, perusahaan, slug]);
 
   // Fetch data based on selectedPerusahaan or slug
   const fetchData = useCallback(async () => {
@@ -69,11 +54,6 @@ const JamKerjaPage = () => {
     "minggu",
   ];
 
-  // Handle perusahaan selection
-  const handleSelect = (selectedOption) => {
-    setSelectedPerusahaan(selectedOption);
-  };
-
   // Edit functionality
   const onEdit = (item) => {
     sessionStorage.setItem("url", location.pathname);
@@ -84,31 +64,19 @@ const JamKerjaPage = () => {
     });
   };
 
+  let counter = 1; 
+
   return (
     <div>
       <Container>
         <div
-          className={`mb-4 flex flex-col sm:flex-row justify-center ${
-            !jwt.perusahaan ? "sm:justify-between" : "sm:justify-end"
-          } items-center gap-4`}
+          className={`mb-4 flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-4`}
         >
-          <>
-            {!jwt.perusahaan && (
-              <div className={`w-full sm:w-60`}>
-                <Select
-                  options={perusahaanOptions}
-                  placeholder="Filter perusahaan"
-                  onChange={handleSelect} // Trigger handleSelect when the value changes
-                  value={selectedPerusahaan} // Show the selected perusahaan
-                />
-              </div>
-            )}
             <Button onClick={() => onEdit(locations[0])}>
               <div className="flex items-center gap-2">
                 <LuPencilLine /> Edit jam kerja
               </div>
             </Button>
-          </>
         </div>
         {locations.length > 0 && (
           <Tables>
@@ -124,27 +92,27 @@ const JamKerjaPage = () => {
               </tr>
             </Tables.Head>
             <Tables.Body>
-              {locations.map((item, index) => {
-                return daysOfWeek.map((day, i) => (
-                  <Tables.Row key={`${index}-${day}`}>
-                    <Tables.Data>{i + 1}</Tables.Data>
-                    {!jwt.perusahaan && <Tables.Data>{item.nama}</Tables.Data>}
-                    <Tables.Data>
-                      {day.charAt(0).toUpperCase() + day.slice(1)}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {item.jadwal[day].masuk === "00:00"
-                        ? "libur"
-                        : item.jadwal[day].masuk}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {item.jadwal[day].keluar === "00:00"
-                        ? "libur"
-                        : item.jadwal[day].keluar}
-                    </Tables.Data>
-                  </Tables.Row>
-                ));
-              })}
+            {locations.map((item, index) => {
+  return daysOfWeek.map((day) => (
+    <Tables.Row key={`${index}-${day}`}>
+      <Tables.Data>{counter++}</Tables.Data> {/* Gunakan counter dan increment */}
+      {!jwt.perusahaan && <Tables.Data>{item.nama}</Tables.Data>}
+      <Tables.Data>
+        {day.charAt(0).toUpperCase() + day.slice(1)}
+      </Tables.Data>
+      <Tables.Data>
+        {item.jadwal[day].masuk === "00:00"
+          ? "libur"
+          : item.jadwal[day].masuk}
+      </Tables.Data>
+      <Tables.Data>
+        {item.jadwal[day].keluar === "00:00"
+          ? "libur"
+          : item.jadwal[day].keluar}
+      </Tables.Data>
+    </Tables.Row>
+  ));
+})}
             </Tables.Body>
           </Tables>
         )}
