@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import Chart from "react-apexcharts";
 import { Card } from "@/components";
 
-const CardDonuts = ({ title, icon, dataSeries, dataLabels, dataColor }) => {
+const CardDonuts = ({ title, icon, dataSeries, dataLabels, dataColor, noDataText }) => {
   const chartConfig = {
     series: dataSeries,
     options: {
@@ -21,16 +21,23 @@ const CardDonuts = ({ title, icon, dataSeries, dataLabels, dataColor }) => {
         show: false,
       },
       noData: {
-        text: "No Data Available",
+        text: noDataText ? noDataText : "Tidak Ada Data",
         align: "center",
         verticalAlign: "middle",
         offsetX: 0,
         offsetY: -30,
         style: {
-          fontSize: "20px",
-          color: "dark:text-white",
+          fontSize: "16px",
+          fontWeight: "600",
+          color: "#6b7280", // Slate gray color
+          background: "#f3f4f6", // Light gray background
+          padding: "10px 20px", // Padding for better readability
+          borderRadius: "8px", // Rounded corners for modern look
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow effect
+          textAlign: "center", // Center text
         },
       },
+      
       labels: dataLabels,
       colors: dataColor,
       responsive: [
