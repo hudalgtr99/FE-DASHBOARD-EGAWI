@@ -48,6 +48,7 @@ import {
   LokasiAbsen,
   JamKerja,
   PegawaiPage,
+  DepartemenPage,
 } from "@/pages";
 
 import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePage";
@@ -106,11 +107,11 @@ const Router = () => {
 
           {/* Organ */}
           <Route
-            path="/masterdata/organization/departemen/form"
+            path="/masterdata/departemen/form"
             element={<DepartemenSubForm />}
           />
           <Route
-            path="/masterdata/organization/departemen/form/:pk"
+            path="/masterdata/departemen/form/:pk"
             element={<DepartemenSubForm />}
           />
           <Route
@@ -282,6 +283,10 @@ const Router = () => {
               <Route
                 path="/masterdata/jam-kerja/:slug"
                 element={<JamKerjaPage />}
+              />
+              <Route
+                path="/masterdata/departemen/:slug"
+                element={<DepartemenPage />}
               />
               <Route
                 path="/kepegawaian/penugasan/:slug"

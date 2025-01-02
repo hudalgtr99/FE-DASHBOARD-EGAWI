@@ -26,6 +26,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import {
   BsAward,
+  BsBriefcase,
   BsCalendar2Date,
   BsClock,
   BsEnvelope,
@@ -138,6 +139,13 @@ const PerusahaanPage = () => {
       func: toMenu,
     },
     {
+      name: "Jam kerja",
+      icon: <BsClock />,
+      color: "#8b5cf6",
+      slug: "masterdata/jam-kerja",
+      func: toMenu,
+    },
+    {
       name: "Jabatan",
       icon: <BsAward />,
       color: "warning",
@@ -145,10 +153,10 @@ const PerusahaanPage = () => {
       func: toMenu,
     },
     {
-      name: "Jam kerja",
-      icon: <BsClock />,
-      color: "#8b5cf6",
-      slug: "masterdata/jam-kerja",
+      name: "Departemen",
+      icon: <BsBriefcase />,
+      color: "#d946ef",
+      slug: "masterdata/departemen",
       func: toMenu,
     },
     {

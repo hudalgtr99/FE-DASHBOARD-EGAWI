@@ -16,6 +16,7 @@ const Pegawai = ({ onTabChange }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [jabatanOptions, setJabatanOptions] = useState([]);
+  const [departemenOptions, setDepartemenOptions] = useState([]);
   const [isLanjut, setIsLanjut] = useState(false);
   const isEdit = pk && pk !== "add";
 
@@ -24,6 +25,12 @@ const Pegawai = ({ onTabChange }) => {
       const response = await axiosAPI.get(API_URL_getmasterpegawai);
       setJabatanOptions(
         response.data.jabatan.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
+      setDepartemenOptions(
+        response.data.departemen.map((item) => ({
           value: item.pk,
           label: item.nama,
         }))
@@ -41,16 +48,18 @@ const Pegawai = ({ onTabChange }) => {
     initialValues: {
       user_id: initialData?.user_id || "",
       id_pegawai: initialData?.id_pegawai || "",
-      jabatan_id: initialData?.jabatan_id || initialData?.jabatan?.id || "", 
+      jabatan_id: initialData?.jabatan_id || initialData?.jabatan?.id || "",
       tgl_bergabung: initialData?.tgl_bergabung || "",
       tgl_resign: initialData?.tgl_resign || "",
       status: initialData?.status || "",
+      departemen_id: initialData?.departemen_id || initialData?.departemen?.id || "",
     },
     validationSchema: Yup.object().shape({
       id_pegawai: Yup.string().required("ID Pegawai wajib diisi"),
-      jabatan_id: Yup.string().required("Jabatan wajib diisi"), 
+      jabatan_id: Yup.string().required("Jabatan wajib diisi"),
       tgl_bergabung: Yup.date().required("Tanggal Bergabung wajib diisi"),
       status: Yup.string().required("Status wajib diisi"),
+      departemen_id: Yup.string().required("Departemen wajib diisi"),
     }),
     onSubmit: async (values) => {
       const updatedValues = {
@@ -166,7 +175,7 @@ const Pegawai = ({ onTabChange }) => {
               />
             </div>
             <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
-              {/* <Select
+              <Select
                 required
                 label="Departemen"
                 name="departemen_id"
@@ -188,7 +197,7 @@ const Pegawai = ({ onTabChange }) => {
                     : ""
                 }
               />
-              <Select
+              {/*  <Select
                 required
                 label="Divisi"
                 name="divisi_id"

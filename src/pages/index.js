@@ -2,6 +2,7 @@ import Dashboard from "../pages/Dashboard/DashboardPage";
 import Kemitraan from "../pages/Kemitraan/KemitraanPage";
 import Dokumentasi from "../pages/Dokumentasi/DokumentasiPage";
 import KalenderPage from "../pages/Kalender/KalenderPage";
+import DepartemenPage from "./MasterData/Organization/Sub/DepartemenSub";
 import OrganPage from "./MasterData/Organization/OrganizationPage";
 // import perusahaanPage from "./MasterData/Perusahaan/perusahaanPage";
 import LokasiAbsen from "../pages/MasterData/LokasiAbsen/LokasiAbsenPage";
@@ -45,4 +46,5 @@ export {
 	JamKerja,
 	Kemitraan,
 	Dokumentasi,
+	DepartemenPage
 };

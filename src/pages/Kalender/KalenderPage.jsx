@@ -6,12 +6,7 @@ import { API_URL_getkalender } from "@/constants";
 import { useSelector } from "react-redux";
 import axiosAPI from "@/authentication/axiosApi";
 import moment from "moment";
-import { Button, Container } from "../../components";
-import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
-import { Select } from "@/components";
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { FaCalendarAlt } from "react-icons/fa";
 
 const KalenderSubPage = () => {
   const { pk } = useParams();
@@ -49,27 +44,22 @@ const KalenderSubPage = () => {
     }
   }, [addKalenderResult]);
 
-  const onDetail = (selectedPerusahaan) => {
-    navigate(`${selectedPerusahaan ? `/kalender/list/${selectedPerusahaan}` : "/kalender/list"}`);
+  const onDetail = () => {
+    navigate("/kalender/list");
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <Container>
-        <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center">
-          <div className="w-full sm:w-60">
-          </div>
-          <Button onClick={() => onDetail(selectedPerusahaan?.value)}>
-            <div className="flex items-center gap-2">
-            <FaCalendarAlt /> Data Kalender
-            </div>
-          </Button>
-        </div>
-      </Container>
       <div className="p-6 bg-white dark:bg-base-600 rounded-lg shadow-lg calendar-wrapper">
         <FullCalendar
           ref={calendarRef}
           customButtons={{
+            data_kalender: {
+              text: "Data Kalender",
+              click: () => {
+                onDetail();
+              },
+            },
             prev: {
               click: () => {
                 const calendarApi = calendarRef.current.getApi();
@@ -99,9 +89,9 @@ const KalenderSubPage = () => {
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           headerToolbar={{
-            left: "today",
+            left: "prev next today",
             center: "title",
-            right: "prev next",
+            right: "data_kalender",
           }}
           eventColor="#FF2300"
           events={kalender}

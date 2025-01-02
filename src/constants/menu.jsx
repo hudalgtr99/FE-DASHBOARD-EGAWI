@@ -13,6 +13,7 @@ import {
   PenugasanPage,
   LokasiAbsen,
   JamKerja,
+  DepartemenPage
 } from "@/pages";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
@@ -65,13 +66,13 @@ export const menu = [
         element: <JabatanPage />,
         sub: [],
       },
-      // {
-      //   menuLink: "masterdata/organization",
-      //   name: "organization",
-      //   title: "Organization",
-      //   element: <OrganPage />,
-      //   sub: [],
-      // },
+      {
+        menuLink: "masterdata/departemen",
+        name: "departemen",
+        title: "Departemen",
+        element: <DepartemenPage />,
+        sub: [],
+      },
       {
         menuLink: "masterdata/jam-kerja",
         name: "jam kerja",
