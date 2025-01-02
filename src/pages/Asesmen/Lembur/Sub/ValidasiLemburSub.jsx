@@ -21,6 +21,7 @@ import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../../../context/AuthContext";
 import { API_URL_lembur, baseurl } from "../../../../constants";
 import { lemburReducer } from "@/reducers/lemburReducers";
+import SelectMonthYear from "../../../../components/atoms/SelectMonthYear";
 
 const ValidasiLemburSub = ({ type }) => {
   const { getLemburResult, addLemburResult } = useSelector(
@@ -32,7 +33,7 @@ const ValidasiLemburSub = ({ type }) => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState(moment(new Date()).format("YYYY-MM"));
+  const [filter, setFilter] = useState(null);
   const [offset, setOffset] = useState(0);
   const [showModalApproved, setShowModalApproved] = useState(false);
   const [showModalReject, setShowModalReject] = useState(false);
@@ -72,33 +73,37 @@ const ValidasiLemburSub = ({ type }) => {
   };
 
   const handleFilterDate = (newFilter) => {
+    let dateFilter = newFilter;
+    if (newFilter === "YYYY-MM") {
+      dateFilter = null;
+    }
     const param =
       search === ""
         ? {
             param:
               "?date-month=" +
-              newFilter +
+              dateFilter +
               "&limit=" +
               limit +
               "&type=" +
               type +
               "&perusahaan=" +
-              selectedPerusahaan?.value,
+              selectedPerusahaan,
           }
         : {
             param:
               "?search=" +
               search +
               "&date-month=" +
-              newFilter +
+              dateFilter +
               "&limit=" +
               limit +
               "&type=" +
               type +
               "&perusahaan=" +
-              selectedPerusahaan?.value,
+              selectedPerusahaan,
           };
-    setFilter(newFilter);
+    setFilter(dateFilter);
     get(param);
   };
 
@@ -121,13 +126,8 @@ const ValidasiLemburSub = ({ type }) => {
     [dispatch, search]
   );
 
-  const handlePageClick = (e) => {
-    const offset = e.selected * limit;
-
-    if (offset < 0 || limit <= 0) {
-      console.error("Invalid pagination parameters");
-      return;
-    }
+  const handlePageClick = (page) => {
+    const offset = (page - 1) * limit;
 
     const param =
       search === ""
@@ -162,7 +162,7 @@ const ValidasiLemburSub = ({ type }) => {
 
     get(param);
     setOffset(offset);
-    setPageActive(e.selected);
+    setPageActive(page - 1);
   };
 
   const isImage = (fileName) => {
@@ -195,12 +195,6 @@ const ValidasiLemburSub = ({ type }) => {
 
   const fetchData = useCallback(
     async (param = false) => {
-      // Check if the date-month (filter) is valid and the limit is greater than 0
-      if (!filter || filter.split("-").length !== 2 || limit <= 0) {
-        console.error("Invalid filter or limit");
-        return;
-      }
-
       // Fetch data only when the filter and limit are valid
       get(
         param
@@ -283,7 +277,7 @@ const ValidasiLemburSub = ({ type }) => {
   ]);
 
   useEffect(() => {
-    if (type && filter && limit > 0) {
+    if (type && limit > 0) {
       fetchData();
     }
   }, [filter, limit, type, addLemburResult]);
@@ -339,11 +333,7 @@ const ValidasiLemburSub = ({ type }) => {
             )}
           </div>
           <div className="w-full sm:w-60">
-            <TextField
-              type="month"
-              value={filter}
-              onChange={(e) => handleFilterDate(e.target.value)}
-            />
+            <SelectMonthYear onChange={(date) => handleFilterDate(date)} />
           </div>
         </div>
         <Tables>

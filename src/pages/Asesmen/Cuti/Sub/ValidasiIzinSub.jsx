@@ -24,6 +24,8 @@ import { isAuthenticated } from "../../../../authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../../../context/AuthContext";
 import { baseurl } from "../../../../constants";
+import SelectMonthYear from "../../../../components/atoms/SelectMonthYear";
+// import { MonthPicker, MonthInput } from "react-lite-month-picker";
 
 const ValidasiIzinSub = ({ type }) => {
   const { getIzinValidasiResult, updatePengajuanResult } = useSelector(
@@ -35,8 +37,7 @@ const ValidasiIzinSub = ({ type }) => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState(moment(new Date()).format("YYYY-MM"));
-  const [offset, setOffset] = useState(0);
+  const [filter, setFilter] = useState(null);
   const [showModalApproved, setShowModalApproved] = useState(false);
   const [showModalReject, setShowModalReject] = useState(false);
   const [showModalFile, setShowModalFile] = useState(false);
@@ -75,12 +76,16 @@ const ValidasiIzinSub = ({ type }) => {
   };
 
   const handleFilterDate = (newFilter) => {
+    let dateFilter = newFilter;
+    if (newFilter === "YYYY-MM") {
+      dateFilter = null;
+    }
     const param =
       search === ""
         ? {
             param:
               "?date-month=" +
-              newFilter +
+              dateFilter +
               "&limit=" +
               limit +
               "&type=" +
@@ -93,7 +98,7 @@ const ValidasiIzinSub = ({ type }) => {
               "?search=" +
               search +
               "&date-month=" +
-              newFilter +
+              dateFilter +
               "&limit=" +
               limit +
               "&type=" +
@@ -101,7 +106,7 @@ const ValidasiIzinSub = ({ type }) => {
               "&perusahaan=" +
               selectedPerusahaan,
           };
-    setFilter(newFilter);
+    setFilter(dateFilter);
     get(param);
   };
 
@@ -124,13 +129,8 @@ const ValidasiIzinSub = ({ type }) => {
     [dispatch, search]
   );
 
-  const handlePageClick = (e) => {
-    const offset = e.selected * limit;
-
-    if (offset < 0 || limit <= 0) {
-      console.error("Invalid pagination parameters");
-      return;
-    }
+  const handlePageClick = (page) => {
+    const offset = (page - 1) * limit;
 
     const param =
       search === ""
@@ -164,8 +164,7 @@ const ValidasiIzinSub = ({ type }) => {
           };
 
     get(param);
-    setOffset(offset);
-    setPageActive(e.selected);
+    setPageActive(page - 1);
   };
 
   const isImage = (fileName) => {
@@ -198,12 +197,6 @@ const ValidasiIzinSub = ({ type }) => {
 
   const fetchData = useCallback(
     async (param = false) => {
-      // Check if the date-month (filter) is valid and the limit is greater than 0
-      if (!filter || filter.split("-").length !== 2 || limit <= 0) {
-        console.error("Invalid filter or limit");
-        return;
-      }
-
       // Fetch data only when the filter and limit are valid
       get(
         param
@@ -287,7 +280,7 @@ const ValidasiIzinSub = ({ type }) => {
   ]);
 
   useEffect(() => {
-    if (type && filter && limit > 0) {
+    if (type && limit > 0) {
       fetchData();
     }
   }, [filter, limit, type, updatePengajuanResult]);
@@ -305,8 +298,8 @@ const ValidasiIzinSub = ({ type }) => {
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
 
   useEffect(() => {
-    if (!loadingPerusahaan) {
-      const options = perusahaan.map((opt) => ({
+    if (!loadingPerusahaan && perusahaan) {
+      const options = perusahaan?.map((opt) => ({
         value: opt.slug,
         label: opt.nama,
       }));
@@ -342,12 +335,8 @@ const ValidasiIzinSub = ({ type }) => {
               />
             )}
           </div>
-          <div className="w-full sm:w-60">
-            <TextField
-              type="month"
-              value={filter}
-              onChange={(e) => handleFilterDate(e.target.value)}
-            />
+          <div className="">
+            <SelectMonthYear onChange={(date) => handleFilterDate(date)} />
           </div>
         </div>
         <Tables>
@@ -373,7 +362,7 @@ const ValidasiIzinSub = ({ type }) => {
                 <Tables.Row key={item?.id}>
                   <Tables.Data>{item?.index}</Tables.Data>
                   <Tables.Data>{item?.created_at}</Tables.Data>
-                  <Tables.Data>{item?.user.first_name}</Tables.Data>
+                  <Tables.Data>{item?.user?.first_name}</Tables.Data>
                   <Tables.Data>{item?.jeniscuti.jenis}</Tables.Data>
                   <Tables.Data>{item?.alasan_cuti}</Tables.Data>
                   <Tables.Data>{item?.tgl_cuti}</Tables.Data>
