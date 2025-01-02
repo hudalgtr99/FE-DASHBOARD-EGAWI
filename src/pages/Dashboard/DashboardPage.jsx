@@ -43,6 +43,8 @@ const DashboardPage = () => {
   const [kehadiranPegawai, setKehadiranPegawai] = useState([]);
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
+  console.log(statusPegawai);
+
   const [filterValue, setFilterValue] = useState(
     moment(new Date()).format("YYYY-MM-DD")
   );
@@ -81,18 +83,16 @@ const DashboardPage = () => {
   };
 
   const fetchData = (date, selectedPerusahaan) => {
-
     // Fetch presensi data
     try {
       const param = {
         param: `?date=${date}&limit=${limitPresensi}&offset=${offset}&perusahaan=${
-        selectedPerusahaan?.value || ""
-      }`,
+          selectedPerusahaan?.value || ""
+        }`,
       };
       getPresensi(param);
       getAbsensi(param);
-    } catch {
-    } 
+    } catch {}
   };
 
   const handleSelectPresensi = (newLimit) => {
@@ -141,7 +141,11 @@ const DashboardPage = () => {
     fetchData(date, selectedPerusahaan); // Fetch data for both presensi and absensi
 
     axiosAPI
-      .get(`${API_URL_getdatadashboard}?date=${date}&perusahaan=${selectedPerusahaan?.value || ""}`)
+      .get(
+        `${API_URL_getdatadashboard}?date=${date}&perusahaan=${
+          selectedPerusahaan?.value || ""
+        }`
+      )
       .then((res) => {
         setKehadiranPegawai([
           res.data.kehadiranPegawai["Hadir"] || 0,
@@ -169,6 +173,14 @@ const DashboardPage = () => {
       });
   }, [filterValue, limitPresensi, limitAbsensi, offset, selectedPerusahaan]); // Add offset to dependencies
 
+  const isEqualArray = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  useEffect(() => {
+    if (isEqualArray(kehadiranPegawai, [0, 0, 0])) setKehadiranPegawai([]);
+    if (isEqualArray(statusPegawai, [0, 0, 0])) setStatusPegawai([]);
+    if (isEqualArray(totalPerusahaan, [0, 0])) setTotalPerusahaan([]);
+    if (isEqualArray(totalPegawai, [0, 0])) setTotalPegawai([]);
+  }, [kehadiranPegawai, statusPegawai, totalPerusahaan, totalPegawai]);
+
   const AbsensiWithIndex = getDataAbsensiResult.results
     ? getDataAbsensiResult.results.map((item, index) => ({
         ...item,
@@ -184,12 +196,12 @@ const DashboardPage = () => {
     : [];
 
   if (dashboardLoading) {
-      return (
-        <div className="flex justify-center items-center h-[80vh]">
-          <PulseLoading />
-        </div>
-      );
-    }
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <PulseLoading />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
