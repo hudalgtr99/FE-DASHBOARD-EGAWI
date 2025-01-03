@@ -4,11 +4,14 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react()],
-	resolve: {
-		alias: {
-			// eslint-disable-next-line no-undef
-			"@": path.resolve(__dirname, "./src"),
-		},
-	},
+  plugins: [react()],
+  resolve: {
+    alias: {
+      // eslint-disable-next-line no-undef
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  define: {
+    "process.env": process.env, // jika butuh akses variabel di runtime
+  },
 });
