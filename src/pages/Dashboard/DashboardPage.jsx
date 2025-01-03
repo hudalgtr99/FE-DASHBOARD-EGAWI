@@ -283,7 +283,7 @@ const DashboardPage = () => {
                     {PresensiWithIndex.length > 0 ? (
                       PresensiWithIndex.map((item, index) => (
                         <Tables.Row key={index}>
-                          <Tables.Data>{index + 1}</Tables.Data>
+                          <Tables.Data>{item?.index}</Tables.Data>
                           <Tables.Data>{item.nama}</Tables.Data>
                           <Tables.Data>{item.tanggal}</Tables.Data>
                           <Tables.Data>{item.keterangan}</Tables.Data>
@@ -359,7 +359,7 @@ const DashboardPage = () => {
                     {AbsensiWithIndex.length > 0 ? (
                       AbsensiWithIndex.map((item, index) => (
                         <Tables.Row key={index}>
-                          <Tables.Data>{index + 1}</Tables.Data>
+                          <Tables.Data>{item?.index}</Tables.Data>
                           <Tables.Data>{item.nama}</Tables.Data>
                           <Tables.Data>{item.tanggal}</Tables.Data>
                           <Tables.Data>{item.keterangan}</Tables.Data>
