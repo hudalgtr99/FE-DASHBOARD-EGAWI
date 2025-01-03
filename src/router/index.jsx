@@ -273,38 +273,38 @@ const Router = () => {
           {jwt && jwt.level === "Super Admin" && (
             <>
               <Route
-                path="/masterdata/lokasi-absen/:slug"
+                path="/perusahaan/lokasi-absen/:slug"
                 element={<LokasiAbsen />}
               />
               <Route
-                path="/masterdata/jabatan/:slug"
+                path="/perusahaan/jabatan/:slug"
                 element={<JabatanPage />}
               />
               <Route
-                path="/masterdata/jam-kerja/:slug"
+                path="/perusahaan/jam-kerja/:slug"
                 element={<JamKerjaPage />}
               />
               <Route
-                path="/masterdata/departemen/:slug"
+                path="/perusahaan/departemen/:slug"
                 element={<DepartemenPage />}
               />
               <Route
-                path="/kepegawaian/penugasan/:slug"
+                path="/perusahaan/penugasan/:slug"
                 element={<PenugasanPage />}
               />
               <Route
-                path="/kepegawaian/pegawai/:slug"
+                path="/perusahaan/pegawai/:slug"
                 element={<PegawaiPage />}
               />
               <Route
-                path="/kepegawaian/surat-penugasan/:slug"
+                path="/perusahaan/surat-penugasan/:slug"
                 element={<SuratPenugasanPage />}
               />
               <Route
-                path="/masterdata/master-template/:slug"
+                path="/perusahaan/master-template/:slug"
                 element={<MasterTemplate />}
               />
-              <Route path="/kalender/:pk" element={<KalenderPage />} />
+              <Route path="/perusahaan/kalender/:pk" element={<KalenderPage />} />
             </>
           )}
           <Route
