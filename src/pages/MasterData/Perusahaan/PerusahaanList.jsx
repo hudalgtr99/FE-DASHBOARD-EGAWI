@@ -118,7 +118,7 @@ const PerusahaanPage = () => {
     updateSelectedPerusahaan(perusahaan || null);
   
     // Navigasi ke URL yang sesuai
-    navigate(`/${url}/${item.slug}`);
+    navigate(`/perusahaan/${url}/${item.slug}`);
   };
 
   const [actions] = useState([
@@ -135,56 +135,56 @@ const PerusahaanPage = () => {
       name: "Lokasi absen",
       icon: <LuMapPin />,
       color: "success",
-      slug: "masterdata/lokasi-absen",
+      slug: "lokasi-absen",
       func: toMenu,
     },
     {
       name: "Jam kerja",
       icon: <BsClock />,
       color: "#8b5cf6",
-      slug: "masterdata/jam-kerja",
+      slug: "jam-kerja",
       func: toMenu,
     },
     {
       name: "Jabatan",
       icon: <BsAward />,
       color: "warning",
-      slug: "masterdata/jabatan",
+      slug: "jabatan",
       func: toMenu,
     },
     {
       name: "Departemen",
       icon: <BsBriefcase />,
       color: "#d946ef",
-      slug: "masterdata/departemen",
+      slug: "departemen",
       func: toMenu,
     },
     {
       name: "Daftar pegawai",
       icon: <BsPeople />,
       color: "#14b8a6",
-      slug: "kepegawaian/pegawai",
+      slug: "pegawai",
       func: toMenu,
     },
     {
       name: "Daftar tugas",
       icon: <BsJournalText />,
       color: "#f97316",
-      slug: "kepegawaian/penugasan",
+      slug: "penugasan",
       func: toMenu,
     },
     {
       name: "Template surat",
       icon: <BsFileRichtext />,
       color: "#6366f1",
-      slug: "masterdata/master-template",
+      slug: "master-template",
       func: toMenu,
     },
     {
       name: "Surat penugasan",
       icon: <BsEnvelope />,
       color: "danger",
-      slug: "kepegawaian/surat-penugasan",
+      slug: "surat-penugasan",
       func: toMenu,
     },
     {
