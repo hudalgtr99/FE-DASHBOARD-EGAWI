@@ -132,17 +132,17 @@ const PerusahaanPage = () => {
   ]);
   const [menu] = useState([
     {
-      name: "Lokasi absen",
-      icon: <LuMapPin />,
-      color: "success",
-      slug: "lokasi-absen",
-      func: toMenu,
-    },
-    {
       name: "Jam kerja",
       icon: <BsClock />,
       color: "#8b5cf6",
       slug: "jam-kerja",
+      func: toMenu,
+    },
+    {
+      name: "Lokasi absen",
+      icon: <LuMapPin />,
+      color: "success",
+      slug: "lokasi-absen",
       func: toMenu,
     },
     {
