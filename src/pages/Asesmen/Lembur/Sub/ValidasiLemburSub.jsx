@@ -343,9 +343,11 @@ const ValidasiLemburSub = ({ type }) => {
               <Tables.Header>No</Tables.Header>
               <Tables.Header>Tanggal Pengajuan</Tables.Header>
               <Tables.Header>Nama</Tables.Header>
-              <Tables.Header>Judul Lembur</Tables.Header>
-              <Tables.Header>Deskripsi Lembur</Tables.Header>
-              <Tables.Header>Catatan</Tables.Header>
+              <Tables.Header>Judul</Tables.Header>
+              <Tables.Header>Deskripsi</Tables.Header>
+              {type !== "validasi_lembur" && (
+                <Tables.Header>Catatan</Tables.Header>
+              )}
               <Tables.Header>File</Tables.Header>
               {type === "validasi_lembur" && (
                 <Tables.Header center>Actions</Tables.Header>
@@ -363,7 +365,9 @@ const ValidasiLemburSub = ({ type }) => {
                   <Tables.Data>{item?.employee_detail?.first_name}</Tables.Data>
                   <Tables.Data>{item?.title}</Tables.Data>
                   <Tables.Data>{item?.description}</Tables.Data>
-                  <Tables.Data>{item?.note}</Tables.Data>
+                  {type !== "validasi_lembur" && (
+                    <Tables.Data>{item?.note}</Tables.Data>
+                  )}
                   <Tables.Data>
                     <button
                       title="Klik untuk pratinjau"

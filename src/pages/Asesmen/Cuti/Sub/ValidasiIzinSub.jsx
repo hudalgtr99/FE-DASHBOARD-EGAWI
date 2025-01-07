@@ -350,7 +350,9 @@ const ValidasiIzinSub = ({ type }) => {
               <Tables.Header>Alasan Cuti</Tables.Header>
               <Tables.Header>Tanggal Cuti</Tables.Header>
               <Tables.Header>Lama Cuti/Hari</Tables.Header>
-              <Tables.Header>Catatan</Tables.Header>
+              {type !== "validasi_cuti" && (
+                <Tables.Header>Catatan</Tables.Header>
+              )}
               <Tables.Header>File</Tables.Header>
               {type === "validasi_cuti" && (
                 <Tables.Header center>Actions</Tables.Header>
@@ -368,7 +370,9 @@ const ValidasiIzinSub = ({ type }) => {
                   <Tables.Data>{item?.alasan_cuti}</Tables.Data>
                   <Tables.Data>{item?.tgl_cuti}</Tables.Data>
                   <Tables.Data>{item?.lama_cuti}</Tables.Data>
-                  <Tables.Data>{item?.catatan}</Tables.Data>
+                  {type !== "validasi_cuti" && (
+                    <Tables.Data>{item?.catatan}</Tables.Data>
+                  )}
                   <Tables.Data>
                     <button
                       title="Klik untuk pratinjau"
