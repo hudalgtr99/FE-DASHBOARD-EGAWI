@@ -75,13 +75,17 @@ export const menu = [
         element: <DepartemenPage />,
         sub: [],
       },
-      {
-        menuLink: "masterdata/jam-kerja",
-        name: "jam kerja",
-        title: "Jam kerja",
-        element: <JamKerja />,
-        sub: [],
-      },
+      ...(jwt && jwt.level !== "Super Admin"
+        ? [
+            {
+              menuLink: "masterdata/jam-kerja",
+              name: "jam kerja",
+              title: "Jam kerja",
+              element: <JamKerja />,
+              sub: [],
+            },
+          ]
+        : []),
       {
         menuLink: "/masterdata/master-template",
         name: "master template",
