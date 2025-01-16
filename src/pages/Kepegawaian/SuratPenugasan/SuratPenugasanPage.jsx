@@ -61,7 +61,7 @@ const SuratPenugasanPage = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
@@ -137,7 +137,7 @@ const SuratPenugasanPage = () => {
 
     get({ param });
   }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
-  
+
   useEffect(() => {
     if (addTugasResult || deleteTugasResult) {
       const param = search

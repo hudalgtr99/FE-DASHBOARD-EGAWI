@@ -30,9 +30,8 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 
 const PenugasanPage = () => {
-  const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } = useSelector(
-    (state) => state.tugas
-  );
+  const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =
+    useSelector((state) => state.tugas);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -55,7 +54,7 @@ const PenugasanPage = () => {
 
   // Debounce search function
   const debouncedSearch = useCallback(
-    debounce((value) => fetchTugas(value), 300),
+    debounce((value) => fetchTugas(value), 1500),
     [limit]
   );
 

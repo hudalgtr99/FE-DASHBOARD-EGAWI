@@ -3,7 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { divisiReducers } from "@/reducers/organReducers";
-import { API_URL_edeldivisi, API_URL_getdivisi, API_URL_getperusahaan } from "@/constants";
+import {
+  API_URL_edeldivisi,
+  API_URL_getdivisi,
+  API_URL_getperusahaan,
+} from "@/constants";
 import { icons } from "../../../../../public/icons";
 import {
   Button,
@@ -77,7 +81,7 @@ const DivisiSub = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
@@ -179,11 +183,27 @@ const DivisiSub = () => {
     if (addDivisiResult || deleteDivisiResult) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
-        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          };
       get(param);
     }
-  }, [addDivisiResult, deleteDivisiResult, selectedPerusahaan, search, limit, pageActive, get]);
+  }, [
+    addDivisiResult,
+    deleteDivisiResult,
+    selectedPerusahaan,
+    search,
+    limit,
+    pageActive,
+    get,
+  ]);
 
   const dataDevisi = getDivisiResult.results
     ? getDivisiResult.results.map((item, index) => ({

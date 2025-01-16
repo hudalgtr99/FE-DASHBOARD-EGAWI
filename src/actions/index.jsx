@@ -18,8 +18,8 @@ export const showToast = (type, message) => {
 };
 
 export function encrypted(plainText) {
-  var key = CryptoJS.enc.Utf8.parse("_secret_hrdapps_");
-  var iv = CryptoJS.enc.Utf8.parse("I__1234567890__V");
+  var key = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_KEY_ENCRYPT);
+  var iv = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_IV_ENCRYPT);
   var encrypted = CryptoJS.AES.encrypt(JSON.stringify(plainText), key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
@@ -28,14 +28,23 @@ export function encrypted(plainText) {
 }
 
 export function decrypted(encrypted) {
-  var key = CryptoJS.enc.Utf8.parse("_secret_hrdapps_");
-  var iv = CryptoJS.enc.Utf8.parse("I__1234567890__V");
+  var key = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_KEY_ENCRYPT);
+  var iv = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_IV_ENCRYPT);
   var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
   });
   decrypted = decrypted.toString(CryptoJS.enc.Utf8);
   return decrypted;
+}
+
+export function encodeURL(url) {
+  return encodeURIComponent(url);
+}
+
+// Fungsi untuk mendecode URL
+export function decodeURL(encodedUrl) {
+  return decodeURIComponent(encodedUrl);
 }
 
 export function convertJSON(data) {

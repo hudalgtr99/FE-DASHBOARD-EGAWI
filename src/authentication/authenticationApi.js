@@ -5,7 +5,7 @@ export function setNewHeaders(response) {
   Cookies.set("srehfre", response.refresh, { expires: 3 });
   Cookies.set("casnet", response.access, { expires: 3 });
 }
-  
+
 // eslint-disable-next-line
 export const logout = () => {
   localStorage.clear();
@@ -31,6 +31,5 @@ export function getToken() {
     return casnet;
   }
   decoded = decrypted(casnet);
-  return decoded
+  return decoded;
 }
-

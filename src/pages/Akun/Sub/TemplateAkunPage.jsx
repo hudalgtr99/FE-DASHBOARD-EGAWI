@@ -51,7 +51,6 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         if (activeTab === "0") {
           url += "?active=true";
         } else if (activeTab === "1") {
@@ -77,7 +76,7 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
@@ -237,9 +236,7 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div
-            className={`w-full flex gap-2 sm:w-60`}
-          >
+          <div className={`w-full flex gap-2 sm:w-60`}>
             <TextField
               onChange={doSearch}
               placeholder="Search"

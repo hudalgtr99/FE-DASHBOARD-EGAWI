@@ -59,7 +59,7 @@ const PenugasanPage = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 

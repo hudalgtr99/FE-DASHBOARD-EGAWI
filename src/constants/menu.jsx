@@ -13,7 +13,7 @@ import {
   PenugasanPage,
   LokasiAbsen,
   JamKerja,
-  DepartemenPage
+  DepartemenPage,
 } from "@/pages";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";

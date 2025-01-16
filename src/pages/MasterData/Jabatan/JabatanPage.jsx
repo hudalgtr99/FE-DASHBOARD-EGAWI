@@ -21,6 +21,11 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
+import { encodeURL, encrypted } from "../../../actions";
+import encBase64url from "crypto-js/enc-base64url";
+import { TbMessageCircleQuestion, TbQuestionMark } from "react-icons/tb";
+import { FaCircleQuestion } from "react-icons/fa6";
+import KewenanganModal from "../../../components/molecules/KewenanganModal";
 
 const JabatanSub = () => {
   const {
@@ -41,6 +46,7 @@ const JabatanSub = () => {
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
+  const [showKewenanganModal, setShowKewenanganModal] = useState(false);
   const [search, setSearch] = useState("");
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const [jwt, setJwt] = useState({});
@@ -64,7 +70,7 @@ const JabatanSub = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
@@ -87,7 +93,8 @@ const JabatanSub = () => {
 
   const onEdit = (item) => {
     sessionStorage.setItem("url", location.pathname);
-    navigate(`/masterdata/jabatan/form/${item?.slug}`, {
+
+    navigate(`/masterdata/jabatan/form/${encodeURL(encrypted(item?.pk))}`, {
       state: {
         item,
       },
@@ -97,7 +104,7 @@ const JabatanSub = () => {
   const doDelete = (item) => {
     deleteData(
       { dispatch, redux: jabatanReducers },
-      item.slug,
+      item.pk,
       API_URL_edeljabatan,
       "DELETE_JABATAN"
     );
@@ -152,10 +159,7 @@ const JabatanSub = () => {
       ? `?search=${search || ""}&perusahaan=${
           selectedPerusahaan?.value || ""
         }&limit=${limit}&offset=${offset}`
-      : 
-        `?limit=${limit}&search=${
-          search || ""
-        }&offset=${offset}`;
+      : `?limit=${limit}&search=${search || ""}&offset=${offset}`;
 
     get({ param });
   }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
@@ -230,8 +234,16 @@ const JabatanSub = () => {
                   <Tables.Header>Nama perusahaan</Tables.Header>
                 )}
                 <Tables.Header>Nama Jabatan</Tables.Header>
-                <Tables.Header>Level</Tables.Header>
-                <Tables.Header>Keterangan</Tables.Header>
+                <Tables.Header>
+                  <button
+                    className="flex flex-row gap-2 items-center"
+                    onClick={() => setShowKewenanganModal(!showKewenanganModal)}
+                  >
+                    Tingkat Kewenangan{" "}
+                    <FaCircleQuestion size={15} color="orange" />
+                  </button>
+                </Tables.Header>
+                {/* <Tables.Header>Keterangan</Tables.Header> */}
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
@@ -246,8 +258,8 @@ const JabatanSub = () => {
                       </Tables.Data>
                     )}
                     <Tables.Data>{item?.nama}</Tables.Data>
-                    <Tables.Data>{item?.level}</Tables.Data>
-                    <Tables.Data>{item?.keterangan}</Tables.Data>
+                    <Tables.Data>{item?.level_display} </Tables.Data>
+                    {/* <Tables.Data>{item?.keterangan}</Tables.Data> */}
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
@@ -293,6 +305,10 @@ const JabatanSub = () => {
           />
         </div>
       </Container>
+      <KewenanganModal
+        showModal={showKewenanganModal}
+        setShowModal={setShowKewenanganModal}
+      />
     </div>
   );
 };

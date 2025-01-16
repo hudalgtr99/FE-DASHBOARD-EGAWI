@@ -44,7 +44,7 @@ const DivisiSub = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true); // Loading state
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
-  const {slug} = useParams();
+  const { slug } = useParams();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -65,7 +65,7 @@ const DivisiSub = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 

@@ -1,18 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   addData,
   deleteData,
   getData,
   handleInputError,
   updateData,
-} from '@/actions';
-import { tunjanganReducer } from '@/reducers/tunjanganReducers';
-import {
-  API_URL_edeltunjangan,
-  API_URL_gettunjangan,
-} from '@/constants';
+} from "@/actions";
+import { tunjanganReducer } from "@/reducers/tunjanganReducers";
+import { API_URL_edeltunjangan, API_URL_gettunjangan } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
   Button,
@@ -22,10 +19,10 @@ import {
   Limit,
   TextField,
   Tooltip,
-} from '@/components';
-import { debounce } from 'lodash'; // Import lodash debounce
-import { FaPlus } from 'react-icons/fa';
-import { CiSearch } from 'react-icons/ci';
+} from "@/components";
+import { debounce } from "lodash"; // Import lodash debounce
+import { FaPlus } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 
 const TunjanganPage = () => {
   const {
@@ -45,10 +42,14 @@ const TunjanganPage = () => {
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = value
-        ? { param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}` }
+        ? {
+            param: `?search=${value}&limit=${limit}&offset=${
+              pageActive * limit
+            }`,
+          }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive]
   );
 
@@ -60,14 +61,14 @@ const TunjanganPage = () => {
   };
 
   const onAdd = () => {
-    navigate('/tunjangan/form');
+    navigate("/tunjangan/form");
   };
 
   const onEdit = (item) => {
     navigate(`/tunjangan/form/${item.pk}`, {
       state: {
         item,
-      }
+      },
     });
   };
 
@@ -127,16 +128,14 @@ const TunjanganPage = () => {
   ]);
 
   useEffect(() => {
-    const param = { param: "?limit=" + limit + "&offset=" + pageActive * limit };
+    const param = {
+      param: "?limit=" + limit + "&offset=" + pageActive * limit,
+    };
     get(param);
   }, [limit, pageActive, get]);
 
   useEffect(() => {
-    if (
-      addTunjanganResult ||
-      addTunjanganLoading ||
-      deleteTunjanganResult
-    ) {
+    if (addTunjanganResult || addTunjanganLoading || deleteTunjanganResult) {
       const offset = pageActive * limit;
       const param = search
         ? { param: `?search=${search}&limit=${limit}&offset=${offset}` }
@@ -155,9 +154,9 @@ const TunjanganPage = () => {
 
   const dataWithIndex = getTunjanganResult.results
     ? getTunjanganResult.results.map((item, index) => ({
-      ...item,
-      index: pageActive * limit + index + 1,
-    }))
+        ...item,
+        index: pageActive * limit + index + 1,
+      }))
     : [];
 
   return (

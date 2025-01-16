@@ -29,50 +29,50 @@ const KalenderPage = () => {
     addKalenderResult,
     deleteKalenderResult,
   } = useSelector((state) => state.kalender);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { pk } = useParams();
-  
+
   // States & Variables
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  
+
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const [jwt, setJwt] = useState({});
-  
+
   useEffect(() => {
     if (isAuthenticated()) {
       const token = isAuthenticated();
       setJwt(jwtDecode(token));
     }
   }, []);
-  
+
   const debouncedSearch = useCallback(
     debounce((value) => {
       const param = {
         param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
       };
-  
+
       // Add perusahaan parameter if selected
       if (selectedPerusahaan) {
         param.param += `&perusahaan=${selectedPerusahaan.value}`;
       }
-  
+
       fetchKalenderData(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Include selectedPerusahaan as a dependency
   );
-  
+
   const handleSearch = (e) => {
     const { value } = e.target;
     setSearch(value);
     debouncedSearch(value);
     setPageActive(0);
   };
-  
+
   const handleAdd = (item) => {
     navigate(
       "/kalender/form",
@@ -87,7 +87,7 @@ const KalenderPage = () => {
     );
     sessionStorage.setItem("url", location.pathname);
   };
-  
+
   const handleEdit = (data) => {
     const item = {
       ...data,
@@ -98,7 +98,7 @@ const KalenderPage = () => {
     });
     sessionStorage.setItem("url", location.pathname);
   };
-  
+
   const handleDelete = (item) => {
     deleteData(
       { dispatch, redux: kalenderReducer },
@@ -107,7 +107,7 @@ const KalenderPage = () => {
       "DELETE_KALENDER"
     );
   };
-  
+
   const fetchKalenderData = useCallback(
     (param) => {
       getData(
@@ -119,26 +119,28 @@ const KalenderPage = () => {
     },
     [dispatch]
   );
-  
+
   const handlePageChange = (page) => {
     const offset = (page - 1) * limit;
     const param = search
       ? `?search=${search}&limit=${limit}&offset=${offset}`
       : `?limit=${limit}&offset=${offset}`;
-  
+
     fetchKalenderData({ param });
     setPageActive(page - 1);
   };
-  
+
   useEffect(() => {
     const offset = pageActive * limit;
     const param = selectedPerusahaan?.value
-      ? `?search=${search || ""}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}`
+      ? `?search=${search || ""}&perusahaan=${
+          selectedPerusahaan?.value || ""
+        }&limit=${limit}&offset=${offset}`
       : `?limit=${limit}&search=${search || ""}&offset=${offset}`;
-  
+
     fetchKalenderData({ param });
   }, [limit, pageActive, selectedPerusahaan, search, fetchKalenderData]);
-  
+
   useEffect(() => {
     if (addKalenderResult || deleteKalenderResult) {
       const param = search
@@ -154,7 +156,7 @@ const KalenderPage = () => {
     pageActive,
     fetchKalenderData,
   ]);
-  
+
   const dataWithIndex =
     getKalenderResult?.results?.map((item, index) => ({
       ...item,

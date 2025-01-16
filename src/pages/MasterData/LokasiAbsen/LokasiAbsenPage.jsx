@@ -64,7 +64,7 @@ const LokasiAbsenPage = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
@@ -158,9 +158,7 @@ const LokasiAbsenPage = () => {
       ? `?search=${search || ""}&perusahaan=${
           selectedPerusahaan?.value || ""
         }&limit=${limit}&offset=${offset}`
-      : `?limit=${limit}&search=${
-          search || ""
-        }&offset=${offset}`;
+      : `?limit=${limit}&search=${search || ""}&offset=${offset}`;
 
     get({ param });
   }, [slug, selectedPerusahaan, limit, pageActive, search, get]);

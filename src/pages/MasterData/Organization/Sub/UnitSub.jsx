@@ -45,7 +45,7 @@ const UnitSub = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
@@ -86,7 +86,7 @@ const UnitSub = () => {
       }
 
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 
@@ -195,8 +195,16 @@ const UnitSub = () => {
     ) {
       const offset = pageActive * limit;
       const param = search
-        ? { param: `?search=${search}&perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` }
-        : { param: `?perusahaan=${selectedPerusahaan?.value || ""}&limit=${limit}&offset=${offset}` };
+        ? {
+            param: `?search=${search}&perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          }
+        : {
+            param: `?perusahaan=${
+              selectedPerusahaan?.value || ""
+            }&limit=${limit}&offset=${offset}`,
+          };
       get(param);
     }
   }, [
@@ -206,7 +214,7 @@ const UnitSub = () => {
     deleteDepartemenResult,
     deleteDivisiResult,
     deleteUnitResult,
-    selectedPerusahaan, 
+    selectedPerusahaan,
     search,
     limit,
     pageActive,

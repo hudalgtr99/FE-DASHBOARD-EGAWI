@@ -13,6 +13,9 @@ import {
   API_URL_getperusahaan,
 } from "@/constants";
 import axiosAPI from "@/authentication/axiosApi";
+import { decodeURL, decrypted } from "../../../actions";
+import KewenanganModal from "../../../components/molecules/KewenanganModal";
+import { FaCircleQuestion } from "react-icons/fa6";
 
 const JabatanSubForm = () => {
   const { pk } = useParams();
@@ -21,6 +24,13 @@ const JabatanSubForm = () => {
   const dispatch = useDispatch();
   const { addJabatanLoading } = useSelector((state) => state.strata);
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
+  const [levelOptions] = useState([
+    { value: 1, label: "Tingkat 1: Penuh" },
+    { value: 2, label: "Tingkat 2: Tinggi" },
+    { value: 3, label: "Tingkat 3: Menengah" },
+    { value: 4, label: "Tingkat 4: Dasar" },
+  ]);
+  const [showKewenanganModal, setShowKewenanganModal] = useState(false);
   const isEdit = pk && pk !== "add";
 
   useEffect(() => {
@@ -75,7 +85,7 @@ const JabatanSubForm = () => {
       if (isEdit) {
         const data = await updateData(
           { dispatch, redux: jabatanReducers },
-          { pk: pk, ...values },
+          { pk: decodeURL(decrypted(pk)), ...values },
           API_URL_edeljabatan,
           "ADD_JABATAN"
         );
@@ -106,7 +116,7 @@ const JabatanSubForm = () => {
     },
   });
 
-  console.log(state?.item)
+  console.log(state?.item);
 
   return (
     <div>
@@ -159,26 +169,32 @@ const JabatanSubForm = () => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.nama ? formik.errors.nama : ""}
               />
-            </div>
-            <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
-              <TextField
-                required
-                label="Level Jabatan"
-                name="level"
-                type="number"
-                value={formik.values.level}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.level ? formik.errors.level : ""}
-              />
-              <TextArea
-                label="Keterangan"
-                name="keterangan"
-                value={formik.values.keterangan}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.keterangan ? formik.errors.keterangan : ""}
-              />
+
+              <div className="w-full">
+                <button
+                  type="button"
+                  className="flex flex-row gap-2 items-center"
+                  onClick={() => setShowKewenanganModal(!showKewenanganModal)}
+                >
+                  Tingkat Kewenangan{" "}
+                  <FaCircleQuestion size={15} color="orange" />
+                </button>
+                <Select
+                  label=""
+                  name="level"
+                  value={
+                    levelOptions.find(
+                      (option) => option.value === formik.values.level
+                    ) || null
+                  }
+                  onChange={(option) => {
+                    formik.setFieldValue("level", option ? option.value : "");
+                  }}
+                  options={levelOptions}
+                  error={formik.touched.level ? formik.errors.level : ""}
+                  disabled={levelOptions.length === 1}
+                />
+              </div>
             </div>
             <div className="mt-6 flex justify-end">
               <Button loading={addJabatanLoading} type="submit">
@@ -188,6 +204,10 @@ const JabatanSubForm = () => {
           </form>
         </div>
       </Container>
+      <KewenanganModal
+        showModal={showKewenanganModal}
+        setShowModal={setShowKewenanganModal}
+      />
     </div>
   );
 };

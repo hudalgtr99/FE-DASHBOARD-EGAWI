@@ -65,7 +65,7 @@ const PerusahaanPage = () => {
           }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive]
   );
 
@@ -113,10 +113,10 @@ const PerusahaanPage = () => {
   const toMenu = (item, url) => {
     // Cari perusahaan berdasarkan slug
     const perusahaan = perusahaanOptions.find((opt) => opt.value === item.slug);
-  
+
     // Perbarui selectedPerusahaan
     updateSelectedPerusahaan(perusahaan || null);
-  
+
     // Navigasi ke URL yang sesuai
     navigate(`/perusahaan/${url}/${item.slug}`);
   };

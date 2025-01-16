@@ -72,7 +72,7 @@ const KehadiranPage = () => {
             }&date-month=${filter}`,
           };
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive, filter, get]
   );
 

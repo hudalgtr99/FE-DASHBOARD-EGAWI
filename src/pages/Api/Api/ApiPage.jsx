@@ -44,7 +44,7 @@ const ApiPage = () => {
           }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
-    }, 300),
+    }, 1500),
     [limit, pageActive]
   );
 
