@@ -86,6 +86,7 @@ import {
   LuUnplug,
   LuUsers,
   LuNewspaper,
+  LuDollarSign,
 } from "react-icons/lu";
 
 export const icons = {
@@ -167,4 +168,5 @@ export const icons = {
   luusers2: <LuUsers />,
   luCalendarDays: <LuCalendarDays />,
   luNewspaper: <LuNewspaper />,
+  LuDollarSign: <LuDollarSign />,
 };

@@ -21,6 +21,9 @@ import MasterTemplate from "../pages/MasterData/MasterTemplate/MasterTemplatePag
 import SuratPenugasanPage from "../pages/Kepegawaian/SuratPenugasan/SuratPenugasanPage";
 import LemburPage from "../pages/Asesmen/Lembur/LemburPage";
 import ReimbursementPage from "../pages/Asesmen/Reimbursement/ReimbursementPage";
+import { JobdeskPegawaiPage } from "../pages";
+import MasterGajiPage from "@/pages/Payroll/MasterGaji/MasterGaji";
+import { LuDollarSign } from "react-icons/lu";
 
 let jwt = null; // Initialize jwt variable
 
@@ -110,6 +113,13 @@ export const menu = [
         sub: [],
       },
       {
+        menuLink: "/kepegawaian/jobdeskpegawai",
+        name: "jobdesk pegawai",
+        title: "Jobdesk Pegawai",
+        element: <JobdeskPegawaiPage />,
+        sub: [],
+      },
+      {
         menuLink: "/kepegawaian/penugasan",
         name: "penugasan pekerjaan",
         title: "Penugasan Pekerjaan",
@@ -132,23 +142,22 @@ export const menu = [
       // },
     ],
   },
-  // {
-  //   icon: icons.luNewspaper,
-  //   menuLink: "suratPenugasan",
-  //   name: "surat penugasan",
-  //   title: "Surat Penugasan",
-  //   element: null, // Change to null if there's no component to render
-  //   sub: [
-  //     {
-  //       icon: icons.luSmartHome,
-  //       menuLink: "/surat-penugasan/master-template",
-  //       name: "master template",
-  //       title: "Master Template",
-  //       element: <MasterTemplate />,
-  //       sub: [],
-  //     },
-  //   ],
-  // },
+  {
+    icon: <LuDollarSign />,
+    menuLink: "payroll",
+    name: "payroll",
+    title: "Payroll",
+    element: null, // Change to null if there's no component to render
+    sub: [
+      {
+        menuLink: "/payroll/mastergaji",
+        name: "mastergaji",
+        title: "Master Gaji",
+        element: <MasterGajiPage />,
+        sub: [],
+      },
+    ],
+  },
   {
     icon: icons.luclipboardlist,
     menuLink: "asesmen",
@@ -186,22 +195,6 @@ export const menu = [
       },
     ],
   },
-  // {
-  //   icon: icons.luhearthandshake,
-  //   menuLink: "/kemitraan",
-  //   name: "kemitraan",
-  //   title: "Kemitraan",
-  //   element: <Kemitraan />,
-  //   sub: [],
-  // },
-  // {
-  //   icon: icons.lufiletext,
-  //   menuLink: "/dokumentasi",
-  //   name: "dokumentasi",
-  //   title: "Dokumentasi",
-  //   element: <Dokumentasi />,
-  //   sub: [],
-  // },
   ...(jwt && jwt.level === "Super Admin"
     ? [
         {

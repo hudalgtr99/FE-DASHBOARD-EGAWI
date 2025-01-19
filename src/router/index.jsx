@@ -62,6 +62,8 @@ if (isAuthenticated()) {
   jwt = jwtDecode(token);
 }
 import SlipGaji from "@/pages/MasterData/Gaji/SlipGaji";
+import FormJobdeskPegawaiPage from "../pages/Kepegawaian/JobdeskPegawai/FormJobdeskPegawaiPage";
+import FormMasterGajiPage from "@/pages/Payroll/MasterGaji/FormMasterGaji";
 
 const Router = () => {
   return (
@@ -136,6 +138,24 @@ const Router = () => {
           <Route
             path="/kepegawaian/pegawai/form/:pk"
             element={<PegawaiForm />}
+          />
+          {/* Jobdesk Pegawai */}
+          <Route
+            path="/kepegawaian/jobdeskpegawai/form"
+            element={<FormJobdeskPegawaiPage />}
+          />
+          <Route
+            path="/kepegawaian/jobdeskpegawai/form/:pk"
+            element={<FormJobdeskPegawaiPage />}
+          />
+          {/* Master Gaji */}
+          <Route
+            path="/payroll/mastergaji/form"
+            element={<FormMasterGajiPage />}
+          />
+          <Route
+            path="/payroll/mastergaji/form/:pk"
+            element={<FormMasterGajiPage />}
           />
 
           {/* <Route path="/profile/" /> */}
@@ -304,7 +324,10 @@ const Router = () => {
                 path="/perusahaan/master-template/:slug"
                 element={<MasterTemplate />}
               />
-              <Route path="/perusahaan/kalender/:pk" element={<KalenderPage />} />
+              <Route
+                path="/perusahaan/kalender/:pk"
+                element={<KalenderPage />}
+              />
             </>
           )}
           <Route

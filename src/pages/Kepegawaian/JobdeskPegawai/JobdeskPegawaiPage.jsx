@@ -1,8 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_edeluser, API_URL_datapegawaijobdesk } from "@/constants";
+import { deleteData, encrypted_id, getData, updateData } from "@/actions";
+import { userReducer } from "@/reducers/authReducers";
+import {
+  API_URL_edeluser,
+  API_URL_datapegawaijobdesk,
+  API_URL_changeactive,
+  API_URL_changeoutofarea,
+} from "@/constants";
+import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
@@ -11,6 +18,7 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
+  Checkbox,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";

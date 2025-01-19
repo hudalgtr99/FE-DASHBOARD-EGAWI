@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_edeluser, API_URL_datapegawaijobdesk } from "@/constants";
+import { API_URL_edeluser, API_URL_salary } from "@/constants";
 import {
   Button,
   Container,
@@ -14,26 +14,22 @@ import {
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
-import { FaFileExcel, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { jwtDecode } from "jwt-decode";
-import Swal from "sweetalert2";
 import { AuthContext, useAuth } from "@/context/AuthContext";
 import { LuEye, LuPencil } from "react-icons/lu";
-import { jobdeskPegawaiReducer } from "../../../reducers/jobdeskPegawaiReducers";
 import { Modal } from "../../../components";
 import axiosAPI from "../../../authentication/axiosApi";
-import { set } from "date-fns";
 import moment from "moment";
+import { masterGajiReducer } from "@/reducers/masterGajiReducers";
 
-const JobdeskPegawaiPage = () => {
+const MasterGajiPage = () => {
   const {
-    getJobdeskPegawaiResult,
-    addJobdeskPegawaiResult,
-    deleteJobdeskPegawaiResult,
-    getJobdeskPegawaiLoading,
-  } = useSelector((state) => state.jobdeskpegawai);
+    getMasterGajiResult,
+    addMasterGajiResult,
+    deleteMasterGajiResult,
+    getMasterGajiLoading,
+  } = useSelector((state) => state.mastergaji);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,7 +44,7 @@ const JobdeskPegawaiPage = () => {
   const { slug } = useParams();
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const [detailJobdesk, setDetailJobdesk] = useState("");
+  const [detailGaji, setDetailGaji] = useState("");
 
   const { jwt } = useContext(AuthContext);
 
@@ -77,7 +73,7 @@ const JobdeskPegawaiPage = () => {
 
   const onEdit = (item) => {
     // Store the item in localStorage
-    navigate(`/kepegawaian/jobdeskpegawai/form/${encrypted_id(item.id)}`);
+    navigate(`/payroll/mastergaji/form/${encrypted_id(item.id)}`);
   };
 
   const onShow = (item) => {
@@ -87,7 +83,7 @@ const JobdeskPegawaiPage = () => {
 
   const doDelete = (item) => {
     deleteData(
-      { dispatch, redux: jobdeskPegawaiReducer },
+      { dispatch, redux: masterGajiReducer },
       item.id,
       API_URL_edeluser,
       "DELETE_AKUN"
@@ -97,12 +93,11 @@ const JobdeskPegawaiPage = () => {
   const get = useCallback(
     async (param) => {
       await getData(
-        { dispatch, redux: jobdeskPegawaiReducer },
+        { dispatch, redux: masterGajiReducer },
         param,
-        API_URL_datapegawaijobdesk,
-        "GET_JOBDESKPEGAWAI"
+        API_URL_salary,
+        "GET_MASTERGAJI"
       );
-
       setLoading(false);
     },
     [dispatch]
@@ -111,12 +106,12 @@ const JobdeskPegawaiPage = () => {
   const getDetail = async (id) => {
     setLoadingModal(true);
     try {
-      const res = await axiosAPI.get(`${API_URL_datapegawaijobdesk}${id}`);
-      setDetailJobdesk(res.data);
+      const res = await axiosAPI.get(`${API_URL_salary}${id}`);
+      setDetailGaji(res.data);
     } catch (error) {
       alert(
         error.response.data.error ||
-          "Terjadi Kesalahan saat mengambil detail jobdesk pegawai"
+          "Terjadi Kesalahan saat mengambil detail gaji pegawai"
       );
     }
     setLoadingModal(false);
@@ -150,7 +145,7 @@ const JobdeskPegawaiPage = () => {
   }, [slug, selectedPerusahaan, limit, pageActive, get]);
 
   useEffect(() => {
-    if (addJobdeskPegawaiResult || deleteJobdeskPegawaiResult) {
+    if (addMasterGajiResult || deleteMasterGajiResult) {
       const param = search
         ? {
             param: `?search=${search}&perusahaan=${
@@ -165,16 +160,16 @@ const JobdeskPegawaiPage = () => {
       get(param);
     }
   }, [
-    addJobdeskPegawaiResult,
-    deleteJobdeskPegawaiResult,
+    addMasterGajiResult,
+    deleteMasterGajiResult,
     search,
     limit,
     pageActive,
     get,
   ]);
 
-  const dataWithIndex = getJobdeskPegawaiResult.results
-    ? getJobdeskPegawaiResult.results.map((item, index) => ({
+  const dataWithIndex = getMasterGajiResult.results
+    ? getMasterGajiResult.results.map((item, index) => ({
         ...item,
         index: pageActive * limit + index + 1,
       }))
@@ -196,7 +191,7 @@ const JobdeskPegawaiPage = () => {
   ]);
 
   const onAdd = () => {
-    navigate(`/kepegawaian/jobdeskpegawai/form`);
+    navigate(`/payroll/mastergaji/form`);
   };
 
   return (
@@ -214,12 +209,12 @@ const JobdeskPegawaiPage = () => {
           <div className="flex gap-2 items-center">
             <Button onClick={onAdd}>
               <div className="flex items-center gap-2">
-                <FaPlus /> Tambah Jobdesk Pegawai
+                <FaPlus /> Tambah Gaji Dasar Pegawai
               </div>
             </Button>
           </div>
         </div>
-        {getJobdeskPegawaiLoading ? ( // Show loading indicator if loading is true
+        {getMasterGajiLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -228,14 +223,13 @@ const JobdeskPegawaiPage = () => {
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
-                {/* <Tables.Header>Id pegawai</Tables.Header> */}
                 {jwt?.level === "Super Admin" && (
                   <Tables.Header>Nama perusahaan</Tables.Header>
                 )}
                 <Tables.Header>Id Pegawai</Tables.Header>
                 <Tables.Header>Nama Pegawai</Tables.Header>
                 <Tables.Header>Jabatan</Tables.Header>
-                <Tables.Header>Jobdesk</Tables.Header>
+                <Tables.Header>Gaji</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
@@ -251,10 +245,10 @@ const JobdeskPegawaiPage = () => {
                     )}
                     <Tables.Data>{item?.id_pegawai || "belum ada"}</Tables.Data>
                     <Tables.Data>
-                      {item?.first_name || "Nama tidak tersedia"}
+                      {item?.employee_name || "Nama tidak tersedia"}
                     </Tables.Data>
                     <Tables.Data>{item?.jabatan_pegawai || "-"}</Tables.Data>
-                    <Tables.Data>{item?.total_jobdesk}</Tables.Data>
+                    <Tables.Data>{item?.amount}</Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
@@ -286,7 +280,7 @@ const JobdeskPegawaiPage = () => {
         )}
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getJobdeskPegawaiResult.count} // Total items count from the API result
+            totalCount={getMasterGajiResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler
@@ -308,100 +302,38 @@ const JobdeskPegawaiPage = () => {
       >
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
-            Detail Jobdesk
+            Detail Gaji
           </h2>
           <ul className="space-y-4">
             <li className="flex justify-between">
               <span className="font-medium">ID:</span>
-              <span className="text-gray-700">{detailJobdesk?.id}</span>
+              <span className="text-gray-700">{detailGaji?.id}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Nama:</span>
-              <span className="text-gray-700">{detailJobdesk?.first_name}</span>
+              <span className="text-gray-700">{detailGaji?.employee_name}</span>
             </li>
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
                 <span className="text-gray-700">
-                  {detailJobdesk?.nama_perusahaan}
+                  {detailGaji?.nama_perusahaan}
                 </span>
               </li>
             )}
             <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-700">{detailJobdesk?.id_pegawai}</span>
+              <span className="text-gray-700">{detailGaji?.id_pegawai}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
               <span className="text-gray-700">
-                {detailJobdesk?.jabatan_pegawai}
+                {detailGaji?.jabatan_pegawai}
               </span>
             </li>
             <li className="flex justify-between">
-              <span className="font-medium">Total Jobdesk:</span>
-              <span className="text-gray-700">
-                {detailJobdesk?.total_jobdesk}
-              </span>
-            </li>
-            <li>
-              <span className="font-medium">Detail Jobdesk:</span>
-              <ul className="mt-2 space-y-2">
-                {detailJobdesk?.jobdesk_details?.length > 0 ? (
-                  detailJobdesk?.jobdesk_details?.map((jobdesk, index) => (
-                    <li
-                      key={index}
-                      className="border border-gray-300 p-4 rounded-md bg-gray-50"
-                    >
-                      <h3 className="font-semibold">{jobdesk?.title}</h3>
-                      <p className="text-gray-600">{jobdesk?.description}</p>
-                      <div className="mt-2">
-                        <span className="font-medium">Tanggal:</span>{" "}
-                        <span className="text-gray-700">
-                          {moment(jobdesk?.date).format("DD MMMM YYYY")}
-                        </span>
-                      </div>
-                      {/* <div className="mt-1">
-                        <span className="font-medium">Prioritas:</span>{" "}
-                        <span className="text-gray-700">
-                          {jobdesk?.priority_display}
-                        </span>
-                      </div> */}
-                      <div className="mt-1">
-                        <span className="font-medium">Periode Pekerjaan:</span>{" "}
-                        <span className="text-gray-700">
-                          {jobdesk?.recurrence_display}
-                        </span>
-                      </div>
-                      {/* <div className="mt-1">
-                        <span className="font-medium">Status:</span>{" "}
-                        <span className="text-gray-700">
-                          {jobdesk?.is_completed ? "Selesai" : "Belum Selesai"}
-                        </span>
-                      </div> */}
-                      <div className="mt-1">
-                        <span className="font-medium">Dibuat Oleh:</span>{" "}
-                        <span className="text-gray-700">
-                          {jobdesk?.created_by_firstname}
-                        </span>
-                      </div>
-                      {/* <div className="mt-1">
-                        <span className="font-medium">Dibuat Pada:</span>{" "}
-                        <span className="text-gray-700">
-                          {new Date(jobdesk?.created_at).toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="mt-1">
-                        <span className="font-medium">Diupdate Pada:</span>{" "}
-                        <span className="text-gray-700">
-                          {new Date(jobdesk?.updated_at).toLocaleString()}
-                        </span>
-                      </div> */}
-                    </li>
-                  ))
-                ) : (
-                  <div className="text-center">Tidak ada detail Jobdesk</div>
-                )}
-              </ul>
+              <span className="font-medium">Gaji:</span>
+              <span className="text-gray-700">{detailGaji?.amount}</span>
             </li>
           </ul>
         </div>
@@ -410,4 +342,4 @@ const JobdeskPegawaiPage = () => {
   );
 };
 
-export default JobdeskPegawaiPage;
+export default MasterGajiPage;

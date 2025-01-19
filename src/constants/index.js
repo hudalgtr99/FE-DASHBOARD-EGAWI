@@ -40,6 +40,7 @@ export const API_URL_responsepengajuan = `${baseurl}/responsepengajuan/`;
 //=== kepegegawaian ===
 export const API_URL_getpegawai = `${baseurl}/getpegawai/`;
 export const API_URL_getdatapegawai = `${baseurl}/getdatapegawai/`;
+export const API_URL_getdatapegawaiall = `${baseurl}/getdatapegawaiall/`;
 export const API_URL_gettugas = `${baseurl}/gettugas/`;
 export const API_URL_createtugas = `${baseurl}/createtugas/`;
 export const API_URL_getriwayattugas = `${baseurl}/getriwayattugas/`;
@@ -104,6 +105,7 @@ export const API_URL_edelpotongan = `${baseurl}/edelpotongan/`;
 
 // === perusahaan ===
 export const API_URL_getperusahaan = `${baseurl}/getperusahaan/`;
+export const API_URL_getdataperusahaanall = `${baseurl}/getdataperusahaanall/`;
 export const API_URL_changeactivedata = `${baseurl}/active/`;
 export const API_URL_getperusahaan_withPaginations = `${baseurl}/getperusahaanwithpaginations/`;
 export const API_URL_createperusahaan = `${baseurl}/createperusahaan/`;
@@ -169,3 +171,10 @@ export const API_URL_importdatapribadipegawai = `${baseurl}/importdatapribadipeg
 //Lembur
 export const API_URL_lembur = `${baseurl}/lembur/`;
 export const API_URL_reimbursement = `${baseurl}/reimbursement/`;
+
+//Jobdesk
+export const API_URL_jobdesk = `${baseurl}/jobdesk/`;
+export const API_URL_datapegawaijobdesk = `${baseurl}/datapegawaijobdesk/`;
+
+//salary
+export const API_URL_salary = `${baseurl}/salary/`;

@@ -15,6 +15,8 @@ import lokasiAbsen from "./lokasiAbsenReducers";
 import jamKerja from "./jamKerjaReducers";
 import lembur from "./lemburReducers";
 import reimbursement from "./reimbursementReducers";
+import jobdeskPegawaiReducers from "./jobdeskPegawaiReducers";
+import masterGajiReducers from "./masterGajiReducers";
 
 export default configureStore({
   reducer: {
@@ -34,5 +36,7 @@ export default configureStore({
     jam_kerja: jamKerja,
     lembur: lembur,
     reimbursement: reimbursement,
+    jobdeskpegawai: jobdeskPegawaiReducers,
+    mastergaji: masterGajiReducers,
   },
 });

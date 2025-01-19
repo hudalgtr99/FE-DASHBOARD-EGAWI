@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axiosAPI from "@/authentication/axiosApi";
 import { API_URL_getperusahaan } from "@/constants";
+import { encodeURL, encrypted } from "../actions";
+import { isAuthenticated } from "@/authentication/authenticationApi";
+import { jwtDecode } from "jwt-decode";
 
 // Membuat Context
 export const AuthContext = createContext();
@@ -12,6 +15,14 @@ export const AuthProvider = ({ children }) => {
   const [errorPerusahaan, setErrorPerusahaan] = useState(null);
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
   const [selectedPerusahaan, setSelectedPerusahaan] = useState(null);
+  const [jwt, setJwt] = useState(null);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const token = isAuthenticated();
+      setJwt(jwtDecode(token));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPerusahaan = async () => {
@@ -24,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         const options = [
           { value: null, label: "Semua" },
           ...response.data.map((opt) => ({
-            value: opt.slug,
+            value: encodeURL(encrypted(opt.id)),
             label: opt.nama,
           })),
         ];
@@ -46,6 +57,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        jwt,
         perusahaan,
         loadingPerusahaan,
         errorPerusahaan,

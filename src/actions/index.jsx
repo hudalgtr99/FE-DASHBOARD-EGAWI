@@ -47,6 +47,18 @@ export function decodeURL(encodedUrl) {
   return decodeURIComponent(encodedUrl);
 }
 
+export function encrypted_id(id) {
+  var enkripsi = encrypted(id);
+  var encodeurl_enkripsi = encodeURL(enkripsi);
+  return encodeurl_enkripsi;
+}
+
+export function decrypted_id(encrypt_id) {
+  var decodeurl = decodeURL(encrypt_id);
+  var decodeurl_decrypt = decrypted(decodeurl);
+  return decodeurl_decrypt;
+}
+
 export function convertJSON(data) {
   return JSON.parse(data?.replaceAll("'", '"'));
 }
@@ -212,77 +224,6 @@ export const getData = (reducers, data, url, type) => {
     });
 };
 
-// export const addData = (reducers, data, url, type) => {
-//   const { dispatch, redux } = reducers;
-//   dispatch(
-//     redux({
-//       type: type,
-//       payload: {
-//         loading: true,
-//         data: false,
-//       },
-//     })
-//   );
-
-//   axiosAPI({
-//     method: "POST",
-//     url: url,
-//     timeout: 120000,
-//     data: data,
-//   })
-//     .then((response) => {
-//       if (response?.data?.status === 201) {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Oops...",
-//           customClass: {
-//             container: "z-[99999]",
-//           },
-//           text: response?.data?.messages,
-//         });
-//       } else {
-//         Swal.fire({
-//           icon: "success",
-//           title: "Good job!",
-//           customClass: {
-//             container: "z-[99999]",
-//           },
-//           text: response?.data?.messages,
-//           showConfirmButton: false,
-//           timer: 1500,
-//         });
-//       }
-//       dispatch(
-//         redux({
-//           type: type,
-//           payload: {
-//             loading: false,
-//             data: response?.data,
-//           },
-//         })
-//       );
-//     })
-//     .catch((error) => {
-//       Swal.fire({
-//         icon: "error",
-//         title: "Oops...",
-//         customClass: {
-//           container: "z-[99999]",
-//         },
-//         text: error,
-//       });
-//       dispatch(
-//         redux({
-//           type: type,
-//           payload: {
-//             loading: false,
-//             data: false,
-//           },
-//         })
-//       );
-//     });
-// };
-
 export const addData = (reducers, data, url, type) => {
   const { dispatch, redux } = reducers;
 
@@ -298,19 +239,18 @@ export const addData = (reducers, data, url, type) => {
   );
 
   // Kembalikan promise dari axios
-  return axiosAPI({
+  axiosAPI({
     method: "POST",
     url: url,
     timeout: 120000,
     data: data,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   })
     .then((response) => {
       // Menangani respons
-      if (response?.data?.status === 201) {
-        showToast("error", response?.data?.messages);
-      } else {
-        showToast("success", response?.data?.messages);
-      }
+      showToast("success", response?.data?.messages || response?.data?.message);
 
       // Dispatch data dari respons
       dispatch(
@@ -328,10 +268,53 @@ export const addData = (reducers, data, url, type) => {
     })
     .catch((error) => {
       // Menangani error
-      showToast(
-        "error",
-        error?.response?.data?.messages || "Terjadi kesalahan."
-      );
+
+      if (error.request.status === 401) {
+        showToast(
+          "The user session has expired, please log in again. 3 seconds for redirection..."
+        );
+        Logout();
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 3000);
+        return;
+      }
+
+      if (error.response.data && error.response.status !== 500) {
+        // Jika respons mengandung data objek, tampilkan sebagai daftar
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          customClass: {
+            container: "z-[99999]",
+          },
+          html: `
+          <div>
+            <ul>
+              ${(() => {
+                const entries = Object.entries(error.response.data);
+                return entries
+                  .map(([key, value]) => {
+                    if (entries.length === 1) {
+                      return `<li>${value}</li>`;
+                    } else {
+                      return `<li><strong>${key}</strong>: ${value}</li>`;
+                    }
+                  })
+                  .join("");
+              })()}
+            </ul>
+          </div>
+        `,
+        });
+      } else {
+        // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          text: error.message,
+        });
+      }
 
       // Dispatch error state
       dispatch(
@@ -369,28 +352,74 @@ export const updateData = (reducers, data, url, type, method = "PUT") => {
       url: `${url}${data?.pk || "datalainnya"}`, // Menambahkan pk ke URL
       timeout: 120000,
       data: data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
       .then((response) => {
-        if (response?.data?.status === 201) {
-          showToast("error", response?.data?.messages); // Toast error
-          reject(response?.data); // Reject dengan data respons
-        } else {
-          showToast("success", response?.data?.messages); // Toast success
-          dispatch(
-            redux({
-              type: type,
-              payload: {
-                loading: false,
-                data: response?.data,
-              },
-            })
-          );
-          resolve(response?.data);
-        }
+        showToast(
+          "success",
+          response?.data?.messages || response?.data?.message
+        ); // Toast success
+        dispatch(
+          redux({
+            type: type,
+            payload: {
+              loading: false,
+              data: response?.data,
+            },
+          })
+        );
+        resolve(response?.data);
       })
       .catch((error) => {
-        console.log("error");
-        showToast("error", error?.response?.data?.messages); // Toast error
+        if (error.request.status === 401) {
+          showToast(
+            "The user session has expired, please log in again. 3 seconds for redirection..."
+          );
+          Logout();
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 3000);
+          return;
+        }
+
+        if (error.response.data && error.response.status !== 500) {
+          // Jika respons mengandung data objek, tampilkan sebagai daftar
+          Swal.fire({
+            icon: "error",
+            title: "Oops sorry...",
+            customClass: {
+              container: "z-[99999]",
+            },
+            html: `
+          <div>
+            <ul>
+              ${(() => {
+                const entries = Object.entries(error.response.data);
+                return entries
+                  .map(([key, value]) => {
+                    if (entries.length === 1) {
+                      return `<li>${value}</li>`;
+                    } else {
+                      return `<li><strong>${key}</strong>: ${value}</li>`;
+                    }
+                  })
+                  .join("");
+              })()}
+            </ul>
+          </div>
+        `,
+          });
+        } else {
+          // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+          Swal.fire({
+            icon: "error",
+            title: "Oops sorry...",
+            text: error.message,
+          });
+        }
+
         dispatch(
           redux({
             type: type,
@@ -431,21 +460,13 @@ export const addFormData = (reducers, data, url, type) => {
   })
     .then((response) => {
       let payload = {};
-      if (response?.data?.status === 201) {
-        showToast("error", response?.data?.messages); // Tampilkan notifikasi error
-        payload = {
-          loading: false,
-          data: false,
-          error: response?.data?.messages,
-        };
-      } else {
-        showToast("success", response?.data?.messages); // Tampilkan notifikasi success
-        payload = {
-          loading: false,
-          data: response?.data,
-          error: false,
-        };
-      }
+
+      showToast("success", response?.data?.messages || response?.data?.message); // Tampilkan notifikasi success
+      payload = {
+        loading: false,
+        data: response?.data,
+        error: false,
+      };
 
       // Dispatch hasil ke state
       dispatch(
@@ -454,12 +475,55 @@ export const addFormData = (reducers, data, url, type) => {
           payload: payload,
         })
       );
+      return response?.data;
     })
     .catch((error) => {
-      showToast(
-        "error",
-        error?.response?.data?.messages || "Terjadi kesalahan."
-      ); // Tampilkan notifikasi error
+      if (error.request.status === 401) {
+        showToast(
+          "The user session has expired, please log in again. 3 seconds for redirection..."
+        );
+        Logout();
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 3000);
+        return;
+      }
+
+      if (error.response.data && error.response.status !== 500) {
+        // Jika respons mengandung data objek, tampilkan sebagai daftar
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          customClass: {
+            container: "z-[99999]",
+          },
+          html: `
+        <div>
+          <ul>
+            ${(() => {
+              const entries = Object.entries(error.response.data);
+              return entries
+                .map(([key, value]) => {
+                  if (entries.length === 1) {
+                    return `<li>${value}</li>`;
+                  } else {
+                    return `<li><strong>${key}</strong>: ${value}</li>`;
+                  }
+                })
+                .join("");
+            })()}
+          </ul>
+        </div>
+      `,
+        });
+      } else {
+        // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          text: error.message,
+        });
+      }
       dispatch(
         redux({
           type: type,
@@ -470,6 +534,7 @@ export const addFormData = (reducers, data, url, type) => {
           },
         })
       );
+      throw error;
     });
 };
 
@@ -492,11 +557,8 @@ export const updateFormData = (reducers, data, url, type, pk) => {
     data: data,
   })
     .then((response) => {
-      if (response?.data?.status === 201) {
-        showToast("error", response?.data?.messages);
-      } else {
-        showToast("success", response?.data?.messages);
-      }
+      showToast("success", response?.data?.messages || response?.data?.message);
+
       dispatch(
         redux({
           type: type,
@@ -506,14 +568,55 @@ export const updateFormData = (reducers, data, url, type, pk) => {
           },
         })
       );
+      return response?.data;
     })
     .catch((error) => {
-      showToast(
-        "error",
-        error?.response?.data?.detail ||
-          error?.response?.data?.messages ||
-          "Terjadi kesalahan."
-      );
+      if (error.request.status === 401) {
+        showToast(
+          "The user session has expired, please log in again. 3 seconds for redirection..."
+        );
+        Logout();
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 3000);
+        return;
+      }
+
+      if (error.response.data && error.response.status !== 500) {
+        // Jika respons mengandung data objek, tampilkan sebagai daftar
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          customClass: {
+            container: "z-[99999]",
+          },
+          html: `
+        <div>
+          <ul>
+            ${(() => {
+              const entries = Object.entries(error.response.data);
+              return entries
+                .map(([key, value]) => {
+                  if (entries.length === 1) {
+                    return `<li>${value}</li>`;
+                  } else {
+                    return `<li><strong>${key}</strong>: ${value}</li>`;
+                  }
+                })
+                .join("");
+            })()}
+          </ul>
+        </div>
+      `,
+        });
+      } else {
+        // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          text: error.message,
+        });
+      }
       dispatch(
         redux({
           type: type,
@@ -523,6 +626,7 @@ export const updateFormData = (reducers, data, url, type, pk) => {
           },
         })
       );
+      throw error;
     });
 };
 
@@ -560,11 +664,11 @@ export const deleteData = (reducers, pk, url, type) => {
       })
         .then((response) => {
           // Menampilkan pesan menggunakan showToast
-          if (response?.data?.status === 201) {
-            showToast("error", response?.data?.messages); // Menampilkan pesan error
-          } else {
-            showToast("success", response?.data?.messages); // Menampilkan pesan sukses
-          }
+
+          showToast(
+            "success",
+            response?.data?.messages || response?.data?.message
+          ); // Menampilkan pesan sukses
 
           // Mengirimkan data terbaru ke Redux
           dispatch(
@@ -577,8 +681,52 @@ export const deleteData = (reducers, pk, url, type) => {
           );
         })
         .catch((error) => {
-          showToast("error", error?.message || "Terjadi kesalahan");
+          if (error.request.status === 401) {
+            showToast(
+              "The user session has expired, please log in again. 3 seconds for redirection..."
+            );
+            Logout();
+            setTimeout(() => {
+              window.location.href = "/login";
+            }, 3000);
+            return;
+          }
 
+          if (error.response.data && error.response.status !== 500) {
+            // Jika respons mengandung data objek, tampilkan sebagai daftar
+            Swal.fire({
+              icon: "error",
+              title: "Oops sorry...",
+              customClass: {
+                container: "z-[99999]",
+              },
+              html: `
+            <div>
+              <ul>
+                ${(() => {
+                  const entries = Object.entries(error.response.data);
+                  return entries
+                    .map(([key, value]) => {
+                      if (entries.length === 1) {
+                        return `<li>${value}</li>`;
+                      } else {
+                        return `<li><strong>${key}</strong>: ${value}</li>`;
+                      }
+                    })
+                    .join("");
+                })()}
+              </ul>
+            </div>
+          `,
+            });
+          } else {
+            // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+            Swal.fire({
+              icon: "error",
+              title: "Oops sorry...",
+              text: error.message,
+            });
+          }
           dispatch(
             redux({
               type: type,

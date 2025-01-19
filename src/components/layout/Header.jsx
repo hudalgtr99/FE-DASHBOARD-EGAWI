@@ -119,10 +119,20 @@ const Header = ({ setSideOpen }) => {
                 updatedPathSegments.shift(); // Hapus segmen pertama yang adalah 'api'
               }
 
-              return updatedPathSegments.map((segment, index) => {
-                const url = `/${updatedPathSegments
+              // Temukan indeks dari 'form'
+              const formIndex = updatedPathSegments.indexOf("form");
+
+              // Ambil segmen sampai dan termasuk 'form'
+              const segmentsToDisplay =
+                formIndex !== -1
+                  ? updatedPathSegments.slice(0, formIndex + 1) // Menyertakan 'form'
+                  : updatedPathSegments;
+
+              return segmentsToDisplay.map((segment, index) => {
+                const url = `/${segmentsToDisplay
                   .slice(0, index + 1)
                   .join("/")}`;
+
                 const hiddenSegments = ["masterdata", "kepegawaian", "asesmen"];
 
                 if (hiddenSegments.includes(segment)) {
@@ -134,12 +144,12 @@ const Header = ({ setSideOpen }) => {
                     <MdOutlineKeyboardArrowRight className="text-lg" />
                     <span
                       className={
-                        index === updatedPathSegments.length - 1
+                        index === segmentsToDisplay.length - 1
                           ? "font-bold cursor-default"
                           : "cursor-pointer font-[400] text-base-200"
                       }
                     >
-                      {index === updatedPathSegments.length - 1 ? (
+                      {index === segmentsToDisplay.length - 1 ? (
                         segment.charAt(0).toUpperCase() + segment.slice(1)
                       ) : (
                         <Link to={url} className="">
