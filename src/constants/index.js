@@ -178,3 +178,19 @@ export const API_URL_datapegawaijobdesk = `${baseurl}/datapegawaijobdesk/`;
 
 //salary
 export const API_URL_salary = `${baseurl}/salary/`;
+//delegation
+export const API_URL_delegation = `${baseurl}/delegation/`;
+//task proyek
+export const API_URL_task = `${baseurl}/task/`;
+//todo proyek
+export const API_URL_todotask = `${baseurl}/todotask/`;
+//subtodotask
+export const API_URL_subtodotask = `${baseurl}/subtodotask/`;
+//pengaturan Gaji
+export const API_URL_settingsalary = `${baseurl}/settingsalary/`;
+//type potongan
+export const API_URL_deductiontypes = `${baseurl}/deductiontypes/`;
+//type pendapatan
+export const API_URL_incometypes = `${baseurl}/incometypes/`;
+//type component
+export const API_URL_settingcomponentsalary = `${baseurl}/settingcomponentsalary/`;

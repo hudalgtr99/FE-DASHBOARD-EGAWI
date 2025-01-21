@@ -2,7 +2,11 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_edeluser, API_URL_salary } from "@/constants";
+import {
+  API_URL_delegation,
+  API_URL_edeluser,
+  API_URL_task,
+} from "@/constants";
 import {
   Button,
   Container,
@@ -11,26 +15,22 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
+  Modal,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa";
 
 import { AuthContext, useAuth } from "@/context/AuthContext";
-import { LuEye, LuPencil } from "react-icons/lu";
-import { Modal } from "../../../components";
-import axiosAPI from "../../../authentication/axiosApi";
-import moment from "moment";
-import { masterGajiReducer } from "@/reducers/masterGajiReducers";
-import formatRupiah from "@/utils/formatRupiah";
+import { LuEye, LuInfo, LuListCheck, LuPencil } from "react-icons/lu";
+import { delegationReducer } from "@/reducers/delegationReducers";
+import axiosAPI from "@/authentication/axiosApi";
+import { taskReducer } from "@/reducers/taskReducers";
+import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
 
-const MasterGajiPage = () => {
-  const {
-    getMasterGajiResult,
-    addMasterGajiResult,
-    deleteMasterGajiResult,
-    getMasterGajiLoading,
-  } = useSelector((state) => state.mastergaji);
+const DaftarProyekPage = () => {
+  const { getTaskResult, addTaskResult, deleteTaskResult, getTaskLoading } =
+    useSelector((state) => state.task);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const MasterGajiPage = () => {
   const { slug } = useParams();
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const [detailGaji, setDetailGaji] = useState("");
+  const [detailTask, setDetailTask] = useState("");
 
   const { jwt } = useContext(AuthContext);
 
@@ -72,51 +72,24 @@ const MasterGajiPage = () => {
     setPageActive(0);
   };
 
-  const onEdit = (item) => {
-    // Store the item in localStorage
-    navigate(`/payroll/mastergaji/form/${encrypted_id(item.id)}`);
-  };
-
-  const onShow = (item) => {
-    getDetail(item?.id);
-    setShowModal(true);
-  };
-
-  const doDelete = (item) => {
-    deleteData(
-      { dispatch, redux: masterGajiReducer },
-      item.id,
-      API_URL_edeluser,
-      "DELETE_AKUN"
-    );
+  const onDetail = (item) => {
+    navigate(`/manajementugas/daftarproyek/detail`, {
+      state: { pk: item?.id },
+    });
   };
 
   const get = useCallback(
     async (param) => {
       await getData(
-        { dispatch, redux: masterGajiReducer },
+        { dispatch, redux: taskReducer },
         param,
-        API_URL_salary,
-        "GET_MASTERGAJI"
+        API_URL_task,
+        "GET_TASK"
       );
       setLoading(false);
     },
     [dispatch]
   );
-
-  const getDetail = async (id) => {
-    setLoadingModal(true);
-    try {
-      const res = await axiosAPI.get(`${API_URL_salary}${id}`);
-      setDetailGaji(res.data);
-    } catch (error) {
-      alert(
-        error.response.data.error ||
-          "Terjadi Kesalahan saat mengambil detail gaji pegawai"
-      );
-    }
-    setLoadingModal(false);
-  };
 
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
@@ -146,7 +119,7 @@ const MasterGajiPage = () => {
   }, [slug, selectedPerusahaan, limit, pageActive, get]);
 
   useEffect(() => {
-    if (addMasterGajiResult || deleteMasterGajiResult) {
+    if (addTaskResult || deleteTaskResult) {
       const param = search
         ? {
             param: `?search=${search}&perusahaan=${
@@ -160,17 +133,10 @@ const MasterGajiPage = () => {
           };
       get(param);
     }
-  }, [
-    addMasterGajiResult,
-    deleteMasterGajiResult,
-    search,
-    limit,
-    pageActive,
-    get,
-  ]);
+  }, [addTaskResult, deleteTaskResult, search, limit, pageActive, get]);
 
-  const dataWithIndex = getMasterGajiResult.results
-    ? getMasterGajiResult.results.map((item, index) => ({
+  const dataWithIndex = getTaskResult.results
+    ? getTaskResult.results.map((item, index) => ({
         ...item,
         index: pageActive * limit + index + 1,
       }))
@@ -178,21 +144,15 @@ const MasterGajiPage = () => {
 
   const [actions] = useState([
     {
-      name: "Show",
-      icon: <LuEye />,
+      name: "Detail",
+      icon: <LuInfo />,
       color: "primary",
-      func: onShow,
-    },
-    {
-      name: "Edit",
-      icon: <LuPencil />,
-      color: "success",
-      func: onEdit,
+      func: onDetail,
     },
   ]);
 
   const onAdd = () => {
-    navigate(`/payroll/mastergaji/form`);
+    navigate(`/manajementugas/daftarproyek/form`);
   };
 
   return (
@@ -210,12 +170,12 @@ const MasterGajiPage = () => {
           <div className="flex gap-2 items-center">
             <Button onClick={onAdd}>
               <div className="flex items-center gap-2">
-                <FaPlus /> Tambah Gaji Dasar Pegawai
+                <FaPlus /> Tambah Proyek
               </div>
             </Button>
           </div>
         </div>
-        {getMasterGajiLoading ? ( // Show loading indicator if loading is true
+        {getTaskLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -227,48 +187,77 @@ const MasterGajiPage = () => {
                 {jwt?.level === "Super Admin" && (
                   <Tables.Header>Nama perusahaan</Tables.Header>
                 )}
-                <Tables.Header>Id Pegawai</Tables.Header>
-                <Tables.Header>Nama Pegawai</Tables.Header>
-                <Tables.Header>Jabatan</Tables.Header>
-                <Tables.Header>Gaji</Tables.Header>
+                <Tables.Header>Nama Pembuat</Tables.Header>
+                <Tables.Header>Judul</Tables.Header>
+                <Tables.Header>Deskripsi</Tables.Header>
+                <Tables.Header>Progres</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
             <Tables.Body>
               {dataWithIndex.length > 0 ? (
-                dataWithIndex.map((item) => (
-                  <Tables.Row key={item.id}>
-                    <Tables.Data>{item.index || "-"}</Tables.Data>
-                    {jwt?.level === "Super Admin" && (
+                dataWithIndex.map((item) => {
+                  const completionPercentage =
+                    item?.todotask_total > 0
+                      ? Math.round(
+                          (item?.todotask_completed / item?.todotask_total) *
+                            100
+                        )
+                      : 0;
+
+                  return (
+                    <Tables.Row key={item.id}>
+                      <Tables.Data>{item.index || "-"}</Tables.Data>
+                      {jwt?.level === "Super Admin" && (
+                        <Tables.Data>{item?.company_name || "N/A"}</Tables.Data>
+                      )}
                       <Tables.Data>
-                        {item?.nama_perusahaan || "N/A"}
+                        {item?.createdbydetail?.first_name || "belum ada"}
                       </Tables.Data>
-                    )}
-                    <Tables.Data>{item?.id_pegawai || "belum ada"}</Tables.Data>
-                    <Tables.Data>
-                      {item?.employee_name || "Nama tidak tersedia"}
-                    </Tables.Data>
-                    <Tables.Data>{item?.jabatan_pegawai || "-"}</Tables.Data>
-                    <Tables.Data>{formatRupiah(item?.amount)}</Tables.Data>
-                    <Tables.Data center>
-                      <div className="flex items-center justify-center gap-2">
-                        {actions.map((action) => (
-                          <Tooltip key={action.name} tooltip={action.name}>
-                            <Button
-                              size={30}
-                              variant="tonal"
-                              color={action.color}
-                              onClick={() => action.func(item)}
-                              className={`cursor-pointer`}
-                            >
-                              {action.icon}
-                            </Button>
-                          </Tooltip>
-                        ))}
-                      </div>
-                    </Tables.Data>
-                  </Tables.Row>
-                ))
+                      <Tables.Data>
+                        {capitalizeFirstLetter(item?.title) ||
+                          "Nama tidak tersedia"}
+                      </Tables.Data>
+                      <Tables.Data>
+                        {capitalizeFirstLetter(item?.description) || "-"}
+                      </Tables.Data>
+                      <Tables.Data className="relative flex items-center space-x-2">
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div
+                            className="h-2.5 rounded-full"
+                            style={{
+                              width: `${completionPercentage}%`,
+                              backgroundColor:
+                                completionPercentage >= 100
+                                  ? "#4CAF50"
+                                  : "#2196F3",
+                            }}
+                          ></div>
+                        </div>
+                        <div className="text-sm font-medium text-gray-700">
+                          {completionPercentage}%
+                        </div>
+                      </Tables.Data>
+                      <Tables.Data center>
+                        <div className="flex items-center justify-center gap-2">
+                          {actions.map((action) => (
+                            <Tooltip key={action.name} tooltip={action.name}>
+                              <Button
+                                size={30}
+                                variant="tonal"
+                                color={action.color}
+                                onClick={() => action.func(item)}
+                                className={`cursor-pointer`}
+                              >
+                                {action.icon}
+                              </Button>
+                            </Tooltip>
+                          ))}
+                        </div>
+                      </Tables.Data>
+                    </Tables.Row>
+                  );
+                })
               ) : (
                 <Tables.Row>
                   <td colSpan="9" className="text-center">
@@ -281,7 +270,7 @@ const MasterGajiPage = () => {
         )}
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getMasterGajiResult.count} // Total items count from the API result
+            totalCount={getTaskResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler
@@ -303,39 +292,32 @@ const MasterGajiPage = () => {
       >
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
-            Detail Gaji
+            Detail Calon Tugas
           </h2>
+          {/* <div>Fitur Sedang dibuat</div> */}
           <ul className="space-y-4">
-            <li className="flex justify-between">
-              <span className="font-medium">ID:</span>
-              <span className="text-gray-800">{detailGaji?.id}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">{detailGaji?.employee_name}</span>
-            </li>
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
                 <span className="text-gray-800">
-                  {detailGaji?.nama_perusahaan}
+                  {detailTask?.company_name}
                 </span>
               </li>
             )}
             <li className="flex justify-between">
+              <span className="font-medium">Nama:</span>
+              <span className="text-gray-800">
+                {detailTask?.createdbydetail?.first_name}
+              </span>
+            </li>
+            <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">{detailGaji?.id_pegawai}</span>
+              <span className="text-gray-800">{detailTask?.id_pegawai}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
               <span className="text-gray-800">
-                {detailGaji?.jabatan_pegawai}
-              </span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Gaji:</span>
-              <span className="text-gray-800">
-                {formatRupiah(detailGaji?.amount)}
+                {detailTask?.jabatan_pegawai}
               </span>
             </li>
           </ul>
@@ -345,4 +327,4 @@ const MasterGajiPage = () => {
   );
 };
 
-export default MasterGajiPage;
+export default DaftarProyekPage;

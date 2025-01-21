@@ -121,7 +121,6 @@ const Header = ({ setSideOpen }) => {
 
               // Temukan indeks dari 'form'
               const formIndex = updatedPathSegments.indexOf("form");
-
               // Ambil segmen sampai dan termasuk 'form'
               const segmentsToDisplay =
                 formIndex !== -1
@@ -133,7 +132,12 @@ const Header = ({ setSideOpen }) => {
                   .slice(0, index + 1)
                   .join("/")}`;
 
-                const hiddenSegments = ["masterdata", "kepegawaian", "asesmen"];
+                const hiddenSegments = [
+                  "masterdata",
+                  "kepegawaian",
+                  "asesmen",
+                  "manajementugas",
+                ];
 
                 if (hiddenSegments.includes(segment)) {
                   return null; // Jangan render elemen jika segmen termasuk dalam daftar yang disembunyikan

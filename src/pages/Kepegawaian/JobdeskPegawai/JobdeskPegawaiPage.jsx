@@ -321,33 +321,33 @@ const JobdeskPegawaiPage = () => {
           <ul className="space-y-4">
             <li className="flex justify-between">
               <span className="font-medium">ID:</span>
-              <span className="text-gray-700">{detailJobdesk?.id}</span>
+              <span className="text-gray-800">{detailJobdesk?.id}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Nama:</span>
-              <span className="text-gray-700">{detailJobdesk?.first_name}</span>
+              <span className="text-gray-800">{detailJobdesk?.first_name}</span>
             </li>
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
-                <span className="text-gray-700">
+                <span className="text-gray-800">
                   {detailJobdesk?.nama_perusahaan}
                 </span>
               </li>
             )}
             <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-700">{detailJobdesk?.id_pegawai}</span>
+              <span className="text-gray-800">{detailJobdesk?.id_pegawai}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
-              <span className="text-gray-700">
+              <span className="text-gray-800">
                 {detailJobdesk?.jabatan_pegawai}
               </span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Total Jobdesk:</span>
-              <span className="text-gray-700">
+              <span className="text-gray-800">
                 {detailJobdesk?.total_jobdesk}
               </span>
             </li>
@@ -364,43 +364,43 @@ const JobdeskPegawaiPage = () => {
                       <p className="text-gray-600">{jobdesk?.description}</p>
                       <div className="mt-2">
                         <span className="font-medium">Tanggal:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {moment(jobdesk?.date).format("DD MMMM YYYY")}
                         </span>
                       </div>
                       {/* <div className="mt-1">
                         <span className="font-medium">Prioritas:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {jobdesk?.priority_display}
                         </span>
                       </div> */}
                       <div className="mt-1">
                         <span className="font-medium">Periode Pekerjaan:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {jobdesk?.recurrence_display}
                         </span>
                       </div>
                       {/* <div className="mt-1">
                         <span className="font-medium">Status:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {jobdesk?.is_completed ? "Selesai" : "Belum Selesai"}
                         </span>
                       </div> */}
                       <div className="mt-1">
                         <span className="font-medium">Dibuat Oleh:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {jobdesk?.created_by_firstname}
                         </span>
                       </div>
                       {/* <div className="mt-1">
                         <span className="font-medium">Dibuat Pada:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {new Date(jobdesk?.created_at).toLocaleString()}
                         </span>
                       </div>
                       <div className="mt-1">
                         <span className="font-medium">Diupdate Pada:</span>{" "}
-                        <span className="text-gray-700">
+                        <span className="text-gray-800">
                           {new Date(jobdesk?.updated_at).toLocaleString()}
                         </span>
                       </div> */}

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_edeluser, API_URL_salary } from "@/constants";
+import { API_URL_delegation, API_URL_edeluser } from "@/constants";
 import {
   Button,
   Container,
@@ -11,6 +11,7 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
+  Modal,
 } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
@@ -18,19 +19,17 @@ import { FaPlus } from "react-icons/fa";
 
 import { AuthContext, useAuth } from "@/context/AuthContext";
 import { LuEye, LuPencil } from "react-icons/lu";
-import { Modal } from "../../../components";
-import axiosAPI from "../../../authentication/axiosApi";
-import moment from "moment";
-import { masterGajiReducer } from "@/reducers/masterGajiReducers";
-import formatRupiah from "@/utils/formatRupiah";
+import { delegationReducer } from "@/reducers/delegationReducers";
+import axiosAPI from "@/authentication/axiosApi";
+import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
 
-const MasterGajiPage = () => {
+const DaftarCalonTugasPage = () => {
   const {
-    getMasterGajiResult,
-    addMasterGajiResult,
-    deleteMasterGajiResult,
-    getMasterGajiLoading,
-  } = useSelector((state) => state.mastergaji);
+    getDelegationResult,
+    addDelegationResult,
+    deleteDelegationResult,
+    getDelegationLoading,
+  } = useSelector((state) => state.delegation);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,7 +44,7 @@ const MasterGajiPage = () => {
   const { slug } = useParams();
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const [detailGaji, setDetailGaji] = useState("");
+  const [detailDelegation, setDetailDelegation] = useState("");
 
   const { jwt } = useContext(AuthContext);
 
@@ -74,7 +73,7 @@ const MasterGajiPage = () => {
 
   const onEdit = (item) => {
     // Store the item in localStorage
-    navigate(`/payroll/mastergaji/form/${encrypted_id(item.id)}`);
+    navigate(`/manajementugas/daftarcalontugas/form/${encrypted_id(item.id)}`);
   };
 
   const onShow = (item) => {
@@ -84,7 +83,7 @@ const MasterGajiPage = () => {
 
   const doDelete = (item) => {
     deleteData(
-      { dispatch, redux: masterGajiReducer },
+      { dispatch, redux: delegationReducer },
       item.id,
       API_URL_edeluser,
       "DELETE_AKUN"
@@ -94,10 +93,10 @@ const MasterGajiPage = () => {
   const get = useCallback(
     async (param) => {
       await getData(
-        { dispatch, redux: masterGajiReducer },
+        { dispatch, redux: delegationReducer },
         param,
-        API_URL_salary,
-        "GET_MASTERGAJI"
+        API_URL_delegation,
+        "GET_DELEGATION"
       );
       setLoading(false);
     },
@@ -107,12 +106,12 @@ const MasterGajiPage = () => {
   const getDetail = async (id) => {
     setLoadingModal(true);
     try {
-      const res = await axiosAPI.get(`${API_URL_salary}${id}`);
-      setDetailGaji(res.data);
+      const res = await axiosAPI.get(`${API_URL_delegation}${id}`);
+      setDetailDelegation(res.data);
     } catch (error) {
       alert(
-        error.response.data.error ||
-          "Terjadi Kesalahan saat mengambil detail gaji pegawai"
+        error?.response?.data?.error ||
+          "Terjadi Kesalahan saat mengambil detail calon tugas"
       );
     }
     setLoadingModal(false);
@@ -146,7 +145,7 @@ const MasterGajiPage = () => {
   }, [slug, selectedPerusahaan, limit, pageActive, get]);
 
   useEffect(() => {
-    if (addMasterGajiResult || deleteMasterGajiResult) {
+    if (addDelegationResult || deleteDelegationResult) {
       const param = search
         ? {
             param: `?search=${search}&perusahaan=${
@@ -161,16 +160,16 @@ const MasterGajiPage = () => {
       get(param);
     }
   }, [
-    addMasterGajiResult,
-    deleteMasterGajiResult,
+    addDelegationResult,
+    deleteDelegationResult,
     search,
     limit,
     pageActive,
     get,
   ]);
 
-  const dataWithIndex = getMasterGajiResult.results
-    ? getMasterGajiResult.results.map((item, index) => ({
+  const dataWithIndex = getDelegationResult.results
+    ? getDelegationResult.results.map((item, index) => ({
         ...item,
         index: pageActive * limit + index + 1,
       }))
@@ -183,16 +182,10 @@ const MasterGajiPage = () => {
       color: "primary",
       func: onShow,
     },
-    {
-      name: "Edit",
-      icon: <LuPencil />,
-      color: "success",
-      func: onEdit,
-    },
   ]);
 
   const onAdd = () => {
-    navigate(`/payroll/mastergaji/form`);
+    navigate(`/manajementugas/daftarcalontugas/form`);
   };
 
   return (
@@ -210,12 +203,12 @@ const MasterGajiPage = () => {
           <div className="flex gap-2 items-center">
             <Button onClick={onAdd}>
               <div className="flex items-center gap-2">
-                <FaPlus /> Tambah Gaji Dasar Pegawai
+                <FaPlus /> Tambah Calon Tugas
               </div>
             </Button>
           </div>
         </div>
-        {getMasterGajiLoading ? ( // Show loading indicator if loading is true
+        {getDelegationLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -227,10 +220,10 @@ const MasterGajiPage = () => {
                 {jwt?.level === "Super Admin" && (
                   <Tables.Header>Nama perusahaan</Tables.Header>
                 )}
-                <Tables.Header>Id Pegawai</Tables.Header>
-                <Tables.Header>Nama Pegawai</Tables.Header>
+                <Tables.Header>Nama Pembuat</Tables.Header>
                 <Tables.Header>Jabatan</Tables.Header>
-                <Tables.Header>Gaji</Tables.Header>
+                <Tables.Header>Judul</Tables.Header>
+                <Tables.Header>Deskripsi</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
@@ -240,16 +233,21 @@ const MasterGajiPage = () => {
                   <Tables.Row key={item.id}>
                     <Tables.Data>{item.index || "-"}</Tables.Data>
                     {jwt?.level === "Super Admin" && (
-                      <Tables.Data>
-                        {item?.nama_perusahaan || "N/A"}
-                      </Tables.Data>
+                      <Tables.Data>{item?.company_name || "N/A"}</Tables.Data>
                     )}
-                    <Tables.Data>{item?.id_pegawai || "belum ada"}</Tables.Data>
                     <Tables.Data>
-                      {item?.employee_name || "Nama tidak tersedia"}
+                      {item?.createdbydetail?.first_name || "belum ada"}
                     </Tables.Data>
-                    <Tables.Data>{item?.jabatan_pegawai || "-"}</Tables.Data>
-                    <Tables.Data>{formatRupiah(item?.amount)}</Tables.Data>
+                    <Tables.Data>
+                      {item?.jabatan_pegawai || "belum ada"}
+                    </Tables.Data>
+                    <Tables.Data>
+                      {capitalizeFirstLetter(item?.title) ||
+                        "Nama tidak tersedia"}
+                    </Tables.Data>
+                    <Tables.Data>
+                      {capitalizeFirstLetter(item?.description) || "-"}
+                    </Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
                         {actions.map((action) => (
@@ -281,7 +279,7 @@ const MasterGajiPage = () => {
         )}
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getMasterGajiResult.count} // Total items count from the API result
+            totalCount={getDelegationResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler
@@ -303,46 +301,69 @@ const MasterGajiPage = () => {
       >
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
-            Detail Gaji
+            Detail Calon Tugas
           </h2>
+          {/* <div>Fitur Sedang dibuat</div> */}
           <ul className="space-y-4">
-            <li className="flex justify-between">
-              <span className="font-medium">ID:</span>
-              <span className="text-gray-800">{detailGaji?.id}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">{detailGaji?.employee_name}</span>
-            </li>
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
                 <span className="text-gray-800">
-                  {detailGaji?.nama_perusahaan}
+                  {detailDelegation?.company_name}
                 </span>
               </li>
             )}
             <li className="flex justify-between">
+              <span className="font-medium">Nama:</span>
+              <span className="text-gray-800">
+                {detailDelegation?.createdbydetail?.first_name}
+              </span>
+            </li>
+            <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">{detailGaji?.id_pegawai}</span>
+              <span className="text-gray-800">
+                {detailDelegation?.id_pegawai}
+              </span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
               <span className="text-gray-800">
-                {detailGaji?.jabatan_pegawai}
-              </span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Gaji:</span>
-              <span className="text-gray-800">
-                {formatRupiah(detailGaji?.amount)}
+                {detailDelegation?.jabatan_pegawai}
               </span>
             </li>
           </ul>
+          <div className="mt-4  bg-white rounded-lg shadow-md">
+            <div className="font-medium text-gray-800 mb-2">
+              Departemen Yang Akan Ditunjukan:
+            </div>
+            <div className="space-y-2">
+              {detailDelegation.departemen_details &&
+                detailDelegation.departemen_details.map((value, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition duration-200"
+                  >
+                    <div className="flex-shrink-0">
+                      <svg
+                        className="w-6 h-6 text-blue-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
+                        <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm0 10a4 4 0 110-8 4 4 0 010 8z" />
+                      </svg>
+                    </div>
+                    <div className="ml-3 text-gray-800">
+                      {value?.departemen?.nama}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       </Modal>
     </div>
   );
 };
 
-export default MasterGajiPage;
+export default DaftarCalonTugasPage;

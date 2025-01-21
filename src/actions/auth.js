@@ -7,6 +7,7 @@ import { API_URL_signin } from "../constants";
 import { logout, setNewHeaders } from "../authentication/authenticationApi";
 import axiosAPI from "../authentication/axiosApi";
 import Swal from "sweetalert2";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export const showToast = (type, message) => {
   toast[type](message, {
@@ -193,4 +194,84 @@ export const logoutUser = (dispatch) => {
       })
     );
   }
+};
+
+// Menggunakan React Query
+export const useGetData = (endpoint, queryKey, params = {}, options = {}) => {
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
+      const headers = {};
+
+      const response = await axiosAPI.get(endpoint, {
+        params: params,
+        headers: headers,
+      });
+      return response.data;
+    },
+    throwOnError: (error) => {
+      if (error.response && error.response.status === 401) {
+        logout(); // Jika token tidak valid atau kedaluwarsa, logout
+      }
+    },
+    ...options,
+  });
+};
+
+export const usePostData = (endpoint) => {
+  return useMutation({
+    mutationFn: async (data) => {
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+
+      const response = await axiosAPI.post(endpoint, data, {
+        headers: headers,
+      });
+      return response.data;
+    },
+    throwOnError: (error) => {
+      if (error.response && error.response.status === 401) {
+        logout();
+      }
+    },
+  });
+};
+
+export const usePutData = (endpoint) => {
+  return useMutation({
+    mutationFn: async (data) => {
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+
+      const response = await axiosAPI.put(endpoint, data, {
+        headers: headers,
+      });
+      return response.data;
+    },
+    throwOnError: (error) => {
+      if (error.response && error.response.status === 401) {
+        logout();
+      }
+    },
+  });
+};
+
+export const useDeleteData = (endpoint) => {
+  return useMutation({
+    mutationFn: async (id) => {
+      const headers = {};
+
+      const response = await axiosAPI.delete(`${endpoint}${id}/`, {
+        headers: headers,
+      });
+      return response.data;
+    },
+    throwOnError: (error) => {
+      if (error.response && error.response.status === 401) {
+        logout();
+      }
+    },
+  });
 };

@@ -17,6 +17,10 @@ import lembur from "./lemburReducers";
 import reimbursement from "./reimbursementReducers";
 import jobdeskPegawaiReducers from "./jobdeskPegawaiReducers";
 import masterGajiReducers from "./masterGajiReducers";
+import delegationReducers from "./delegationReducers";
+import taskReducers from "./taskReducers";
+import todoTaskReducers from "./todoTaskReducers";
+import subTodoTaskReducers from "./subTodoTaskReducers";
 
 export default configureStore({
   reducer: {
@@ -38,5 +42,9 @@ export default configureStore({
     reimbursement: reimbursement,
     jobdeskpegawai: jobdeskPegawaiReducers,
     mastergaji: masterGajiReducers,
+    delegation: delegationReducers,
+    task: taskReducers,
+    todotask: todoTaskReducers,
+    subtodotask: subTodoTaskReducers,
   },
 });

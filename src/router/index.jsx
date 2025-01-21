@@ -64,6 +64,8 @@ if (isAuthenticated()) {
 import SlipGaji from "@/pages/MasterData/Gaji/SlipGaji";
 import FormJobdeskPegawaiPage from "../pages/Kepegawaian/JobdeskPegawai/FormJobdeskPegawaiPage";
 import FormMasterGajiPage from "@/pages/Payroll/MasterGaji/FormMasterGaji";
+import FormCalonTugasPage from "@/pages/ManajemenTugas/DaftarCalonTugas/FormCalonTugasPage";
+import DetailProyekPage from "@/pages/ManajemenTugas/DaftarProyek/DetailProyekPage";
 
 const Router = () => {
   return (
@@ -156,6 +158,25 @@ const Router = () => {
           <Route
             path="/payroll/mastergaji/form/:pk"
             element={<FormMasterGajiPage />}
+          />
+          {/* Master Gaji */}
+          <Route
+            path="/manajementugas/daftarcalontugas/form"
+            element={<FormCalonTugasPage />}
+          />
+          <Route
+            path="/manajementugas/daftarcalontugas/form/:pk"
+            element={<FormCalonTugasPage />}
+          />
+
+          {/* Master Gaji */}
+          <Route
+            path="/manajementugas/daftarproyek/detail"
+            element={<DetailProyekPage />}
+          />
+          <Route
+            path="/manajementugas/daftarproyek/detail/:pk"
+            element={<DetailProyekPage />}
           />
 
           {/* <Route path="/profile/" /> */}

@@ -23,7 +23,10 @@ import LemburPage from "../pages/Asesmen/Lembur/LemburPage";
 import ReimbursementPage from "../pages/Asesmen/Reimbursement/ReimbursementPage";
 import { JobdeskPegawaiPage } from "../pages";
 import MasterGajiPage from "@/pages/Payroll/MasterGaji/MasterGaji";
-import { LuDollarSign } from "react-icons/lu";
+import { LuDollarSign, LuFolder } from "react-icons/lu";
+import DaftarCalonTugasPage from "@/pages/ManajemenTugas/DaftarCalonTugas/DaftarCalonTugasPage";
+import DaftarProyekPage from "@/pages/ManajemenTugas/DaftarProyek/DaftarProyekPage";
+import KomponenGaji from "@/pages/Payroll/PengaturanGaji/KomponenGaji";
 
 let jwt = null; // Initialize jwt variable
 
@@ -119,13 +122,13 @@ export const menu = [
         element: <JobdeskPegawaiPage />,
         sub: [],
       },
-      {
-        menuLink: "/kepegawaian/penugasan",
-        name: "penugasan pekerjaan",
-        title: "Penugasan Pekerjaan",
-        element: <PenugasanPage />,
-        sub: [],
-      },
+      // {
+      //   menuLink: "/kepegawaian/penugasan",
+      //   name: "penugasan pekerjaan",
+      //   title: "Penugasan Pekerjaan",
+      //   element: <PenugasanPage />,
+      //   sub: [],
+      // },
       {
         menuLink: "/kepegawaian/surat-penugasan",
         name: "surat penugasan",
@@ -154,6 +157,13 @@ export const menu = [
         name: "mastergaji",
         title: "Master Gaji",
         element: <MasterGajiPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/payroll/komponengaji",
+        name: "komponengaji",
+        title: "Komponen Gaji",
+        element: <KomponenGaji />,
         sub: [],
       },
     ],
@@ -195,36 +205,29 @@ export const menu = [
       },
     ],
   },
-  ...(jwt && jwt.level === "Super Admin"
-    ? [
-        {
-          icon: icons.luunplug,
-          menuLink: "api",
-          name: "api",
-          title: "API",
-          isSuperAdmin: true,
-          element: null, // Change to null if there's no component to render
-          sub: [
-            {
-              icon: icons.luSmartHome,
-              menuLink: "/api/api",
-              name: "api",
-              title: "Api",
-              element: <ApiPage />,
-              sub: [],
-            },
-            {
-              icon: icons.luSmartHome,
-              menuLink: "/api/callback",
-              name: "callback",
-              title: "Callback",
-              element: <CallbackPage />,
-              sub: [],
-            },
-          ],
-        },
-      ]
-    : []),
+  {
+    icon: <LuFolder />,
+    menuLink: "manajementugas",
+    name: "manajementugas",
+    title: "Manajemen Tugas",
+    element: null, // Change to null if there's no component to render
+    sub: [
+      {
+        menuLink: "/manajementugas/daftarcalontugas",
+        name: "daftarcalontugas",
+        title: "Daftar Calon Tugas",
+        element: <DaftarCalonTugasPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/manajementugas/daftarproyek",
+        name: "daftarproyek",
+        title: "Daftar Proyek",
+        element: <DaftarProyekPage />,
+        sub: [],
+      },
+    ],
+  },
 
   {
     icon: icons.luusers2,
