@@ -26,7 +26,8 @@ import MasterGajiPage from "@/pages/Payroll/MasterGaji/MasterGaji";
 import { LuDollarSign, LuFolder } from "react-icons/lu";
 import DaftarCalonTugasPage from "@/pages/ManajemenTugas/DaftarCalonTugas/DaftarCalonTugasPage";
 import DaftarProyekPage from "@/pages/ManajemenTugas/DaftarProyek/DaftarProyekPage";
-import KomponenGaji from "@/pages/Payroll/PengaturanGaji/KomponenGaji";
+import KomponenGaji from "@/pages/Payroll/KomponenGaji/KomponenGaji";
+import PayrollGajiPage from "@/pages/Payroll/Payroll/PayrollGajiPage";
 
 let jwt = null; // Initialize jwt variable
 
@@ -164,6 +165,13 @@ export const menu = [
         name: "komponengaji",
         title: "Komponen Gaji",
         element: <KomponenGaji />,
+        sub: [],
+      },
+      {
+        menuLink: "/payroll/payrollgaji",
+        name: "payrollgaji",
+        title: "Payroll Gaji",
+        element: <PayrollGajiPage />,
         sub: [],
       },
     ],

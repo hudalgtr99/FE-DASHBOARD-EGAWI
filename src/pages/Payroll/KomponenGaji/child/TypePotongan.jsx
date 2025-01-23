@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
@@ -25,10 +25,13 @@ import { CiSearch } from "react-icons/ci";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
 import { API_URL_deductiontypes } from "@/constants";
+import { AuthContext, useAuth } from "@/context/AuthContext";
 
 const TypePotongan = () => {
   const [showModal, setShowModal] = useState(false);
   const [pk, setPk] = useState("");
+  const { jwt } = useContext(AuthContext);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   const [queryParams, setQueryParams] = useState({
     limit: 10,
@@ -47,7 +50,7 @@ const TypePotongan = () => {
 
   const getIncomeTypesApi = useGetData(
     API_URL_deductiontypes,
-    ["decutiontypes", queryParams],
+    ["decutiontypes", queryParams, selectedPerusahaan],
     {
       limit: queryParams.limit,
       offset: queryParams.offset,
@@ -56,6 +59,7 @@ const TypePotongan = () => {
           ? `-${queryParams.sortColumn}`
           : queryParams.sortColumn,
       search: queryParams.search,
+      perusahaan: selectedPerusahaan?.value,
     }
   );
 

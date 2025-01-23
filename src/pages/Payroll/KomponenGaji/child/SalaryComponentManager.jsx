@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { Button, Modal, Select, Tables, TextField } from "@/components";
 import {
@@ -19,6 +19,8 @@ import { SyncLoader } from "react-spinners";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
 import CurrencyInput from "@/components/atoms/CurrencyInput";
+import formatRupiah from "@/utils/formatRupiah";
+import { AuthContext, useAuth } from "@/context/AuthContext";
 
 const JenisOption = [
   { label: "Pendapatan", value: "income" },
@@ -32,9 +34,31 @@ const StatusOption = [
   { label: "Aktif", value: 1 },
   { label: "Non Active", value: 0 },
 ];
+const tableHeadSuperadmin = [
+  { title: "No", field: "id" },
+  { title: "Perusahaan", field: "" },
+  { title: "Jenis", field: "" },
+  { title: "Nama", field: "" },
+  { title: "Tetap/Presentasi", field: "" },
+  { title: "Nilai Potongan/Tambahan", field: "" },
+  { title: "Status", field: "" },
+  { title: "Action", field: "" },
+];
+
+const tableHead = [
+  { title: "No", field: "id" },
+  { title: "Jenis", field: "" },
+  { title: "Nama", field: "" },
+  { title: "Tetap/Presentasi", field: "" },
+  { title: "Nilai Potongan/Tambahan", field: "" },
+  { title: "Status", field: "" },
+  { title: "Action", field: "" },
+];
 
 const SalaryComponentManager = () => {
   const [showModal, setShowModal] = useState(false);
+  const { jwt } = useContext(AuthContext);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
   const [pk, setPk] = useState("");
   const [listOptionPendapatan, setListOptionPendapatan] = useState([]);
   const [listOptionPemotongan, setListOptionPemotongan] = useState([]);
@@ -47,19 +71,9 @@ const SalaryComponentManager = () => {
     sortOrder: "",
   });
 
-  const tableHead = [
-    { title: "No", field: "id" },
-    { title: "Jenis", field: "" },
-    { title: "Nama", field: "" },
-    { title: "Tetap/Presentasi", field: "" },
-    { title: "Nilai Potongan/Tambahan", field: "" },
-    { title: "Status", field: "" },
-    { title: "Action", field: "" },
-  ];
-
   const getSettingComponentSalary = useGetData(
     API_URL_settingcomponentsalary,
-    ["ettingcomponentsalary", queryParams],
+    ["ettingcomponentsalary", queryParams, selectedPerusahaan],
     {
       limit: queryParams.limit,
       offset: queryParams.offset,
@@ -68,12 +82,13 @@ const SalaryComponentManager = () => {
           ? `-${queryParams.sortColumn}`
           : queryParams.sortColumn,
       search: queryParams.search,
+      perusahaan: selectedPerusahaan?.value,
     }
   );
 
   const getIncomeTypes = useGetData(
     API_URL_incometypes,
-    ["incometypes", queryParams],
+    ["incometypes", queryParams, selectedPerusahaan],
     {
       limit: queryParams.limit,
       offset: queryParams.offset,
@@ -82,12 +97,13 @@ const SalaryComponentManager = () => {
           ? `-${queryParams.sortColumn}`
           : queryParams.sortColumn,
       search: queryParams.search,
+      perusahaan: selectedPerusahaan?.value,
     }
   );
 
   const getDeductionTypes = useGetData(
     API_URL_deductiontypes,
-    ["deductiontypes", queryParams],
+    ["deductiontypes", queryParams, selectedPerusahaan],
     {
       limit: queryParams.limit,
       offset: queryParams.offset,
@@ -96,6 +112,7 @@ const SalaryComponentManager = () => {
           ? `-${queryParams.sortColumn}`
           : queryParams.sortColumn,
       search: queryParams.search,
+      peruasahaan: selectedPerusahaan?.value,
     }
   );
 
@@ -158,7 +175,6 @@ const SalaryComponentManager = () => {
           },
           onError: (error) => {
             console.log(error);
-            showToast(error.message, "warning");
           },
         });
       }
@@ -278,9 +294,9 @@ const SalaryComponentManager = () => {
     <div className="w-full bg-white">
       <div>
         {/* Content */}
-        <div className=" shadow rounded-lg border p-2">
+        <div className="rounded-lg p-2">
           {/* Title Data  */}
-          <div className="font-bold mb-4">Komponen Gaji Wajib</div>
+          <div className="font-bold mb-4">Otomatis Menerapkan Komponen</div>
           {/* Search dan Tambah Data  */}
           <div className="w-full justify-start flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 bg-white p-1 rounded-lg gap-4">
             <button
@@ -291,24 +307,45 @@ const SalaryComponentManager = () => {
             </button>
           </div>
           {/* Konten Data  */}
-          <div className=" custom-scroll">
+          <div className="">
             <Tables>
               <Tables.Head>
-                <tr className="border-b-2 border-gray-200">
-                  {tableHead.map((item, itemIdx) => (
-                    <th
-                      key={itemIdx}
-                      className="p-2 text-sm whitespace-nowrap"
-                      onClick={() => {
-                        item.field && handleSort(item.field);
-                      }}
-                    >
-                      <span className="flex text-center items-center gap-2 justify-center">
-                        {item.title}
-                        {item.field && renderSortIcon(item.field)}
-                      </span>
-                    </th>
-                  ))}
+                <tr>
+                  {jwt?.level === "Super Admin" ? (
+                    <>
+                      {tableHeadSuperadmin.map((item, itemIdx) => (
+                        <Tables.Header
+                          key={itemIdx}
+                          className="p-2 text-sm whitespace-nowrap"
+                          onClick={() => {
+                            item.field && handleSort(item.field);
+                          }}
+                        >
+                          <span className="flex">
+                            {item.title}
+                            {item.field && renderSortIcon(item.field)}
+                          </span>
+                        </Tables.Header>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {tableHead.map((item, itemIdx) => (
+                        <Tables.Header
+                          key={itemIdx}
+                          className="p-2 text-sm whitespace-nowrap"
+                          onClick={() => {
+                            item.field && handleSort(item.field);
+                          }}
+                        >
+                          <span className="flex">
+                            {item.title}
+                            {item.field && renderSortIcon(item.field)}
+                          </span>
+                        </Tables.Header>
+                      ))}
+                    </>
+                  )}
                 </tr>
               </Tables.Head>
               <Tables.Body>
@@ -355,32 +392,36 @@ const SalaryComponentManager = () => {
                 {getSettingComponentSalary.data &&
                   getSettingComponentSalary.data?.results?.map(
                     (item, itemIdx) => (
-                      <tr
-                        key={itemIdx}
-                        className="border-b border-gray-200 text-sm hover:bg-white/60 transition-all"
-                      >
-                        <td className="p-2 text-center whitespace-nowrap">
+                      <Tables.Row key={itemIdx}>
+                        <Tables.Data className="p-2 text-center whitespace-nowrap">
                           {itemIdx + queryParams.offset + 1}
-                        </td>
-                        <td className="p-2 text-center">
+                        </Tables.Data>
+                        {jwt.level === "Super Admin" && (
+                          <Tables.Data className="p-2 text-center">
+                            {item.perusahaan_name}
+                          </Tables.Data>
+                        )}
+                        <Tables.Data className="p-2 text-center">
                           {item.type_component_display}
-                        </td>
-                        <td className="p-2 text-center whitespace-nowrap">
+                        </Tables.Data>
+                        <Tables.Data className="p-2 text-center whitespace-nowrap">
                           {item.type_component === "income" &&
                             item.income_type_name}
                           {item.type_component === "deduction" &&
                             item.deduction_type_name}
-                        </td>
-                        <td className="p-2 text-center whitespace-nowrap">
+                        </Tables.Data>
+                        <Tables.Data className="p-2 text-center whitespace-nowrap">
                           {item.fixed_presentase_display}
-                        </td>
-                        <td className="p-2 text-center whitespace-nowrap">
-                          {item.value}
-                        </td>
-                        <td className="p-2 text-center whitespace-nowrap">
+                        </Tables.Data>
+                        <Tables.Data className="p-2 text-center whitespace-nowrap">
+                          {item.fixed_presentase_display === "Tetap"
+                            ? formatRupiah(item.value)
+                            : `${item.value}%`}
+                        </Tables.Data>
+                        <Tables.Data className="p-2 text-center whitespace-nowrap">
                           {item.status_display}
-                        </td>
-                        <td className="p-2 text-center whitespace-nowrap">
+                        </Tables.Data>
+                        <Tables.Data className="p-2 text-center whitespace-nowrap">
                           <div className="flex justify-center">
                             {action.map((action, actionIdx) => (
                               <button
@@ -393,8 +434,8 @@ const SalaryComponentManager = () => {
                               </button>
                             ))}
                           </div>
-                        </td>
-                      </tr>
+                        </Tables.Data>
+                      </Tables.Row>
                     )
                   )}
               </Tables.Body>

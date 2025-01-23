@@ -1,37 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, Modal, Tables, TextField } from "@/components";
-import { useDispatch } from "react-redux";
-import { API_URL_incometypes } from "@/constants";
-import * as Yup from "yup";
-import {
-  useDeleteData,
-  useGetData,
-  usePostData,
-  usePutData,
-} from "@/actions/auth";
-import { debounce } from "lodash";
-import {
-  BiEdit,
-  BiSearch,
-  BiSortDown,
-  BiSortUp,
-  BiTrash,
-} from "react-icons/bi";
-import CompPagination from "@/components/atoms/CompPagination";
-import { SyncLoader } from "react-spinners";
-import { CiSearch } from "react-icons/ci";
-import { showSweetAlert } from "@/utils/showSweetAlert";
-import { showToast } from "@/utils/showToast";
+import { Button, Container, Modal } from "@/components";
 import TypePendapatan from "./child/TypePendapatan";
 import TypePotongan from "./child/TypePotongan";
 import { IoCogSharp } from "react-icons/io5";
 import SalaryComponentManager from "./child/SalaryComponentManager";
 
 const KomponenGaji = () => {
-  const navigate = useNavigate();
   const [showModalPendapatan, setShowModalPendapatan] = useState(false);
   const [showModalPemotongan, setShowModalPemotongan] = useState(false);
 
@@ -49,7 +23,7 @@ const KomponenGaji = () => {
               >
                 <div className="flex gap-1 items-center">
                   <IoCogSharp />
-                  Pengaturan Tipe Pemotongan
+                  Komponen Tipe Pemotongan
                 </div>
               </Button>
               <Button
@@ -59,7 +33,7 @@ const KomponenGaji = () => {
               >
                 <div className="flex gap-1 items-center">
                   <IoCogSharp />
-                  Pengaturan Tipe Pendapatan
+                  Komponen Tipe Pendapatan
                 </div>
               </Button>
             </div>

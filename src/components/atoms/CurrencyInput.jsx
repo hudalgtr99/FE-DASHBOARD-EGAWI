@@ -22,9 +22,9 @@ const CurrencyInput = ({ label, name, value, onChange }) => {
   }, [value]);
 
   return (
-    <div className="mb-4">
+    <div className="">
       <label className="block text-sm font-medium text-gray-800">{label}</label>
-      <div className="relative mt-1">
+      <div className="relative">
         <span className="absolute left-0 top-0 text-gray-500 bg-gray-200 h-full px-1 py-1 flex items-center rounded">
           Rp.
         </span>

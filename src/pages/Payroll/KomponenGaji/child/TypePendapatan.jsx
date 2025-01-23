@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
@@ -25,10 +25,13 @@ import { SyncLoader } from "react-spinners";
 import { CiSearch } from "react-icons/ci";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
+import { AuthContext, useAuth } from "@/context/AuthContext";
 
 const TypePendapatan = () => {
   const [showModal, setShowModal] = useState(false);
   const [pk, setPk] = useState("");
+  const { jwt } = useContext(AuthContext);
+  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
   const [queryParams, setQueryParams] = useState({
     limit: 10,
@@ -47,7 +50,7 @@ const TypePendapatan = () => {
 
   const getIncomeTypesApi = useGetData(
     API_URL_incometypes,
-    ["incometypes", queryParams],
+    ["incometypes", queryParams, selectedPerusahaan],
     {
       limit: queryParams.limit,
       offset: queryParams.offset,
@@ -56,6 +59,7 @@ const TypePendapatan = () => {
           ? `-${queryParams.sortColumn}`
           : queryParams.sortColumn,
       search: queryParams.search,
+      perusahaan: selectedPerusahaan?.value,
     }
   );
 

@@ -21,6 +21,7 @@ import delegationReducers from "./delegationReducers";
 import taskReducers from "./taskReducers";
 import todoTaskReducers from "./todoTaskReducers";
 import subTodoTaskReducers from "./subTodoTaskReducers";
+import payrollReducers from "./payrollReducers";
 
 export default configureStore({
   reducer: {
@@ -46,5 +47,6 @@ export default configureStore({
     task: taskReducers,
     todotask: todoTaskReducers,
     subtodotask: subTodoTaskReducers,
+    payroll: payrollReducers,
   },
 });

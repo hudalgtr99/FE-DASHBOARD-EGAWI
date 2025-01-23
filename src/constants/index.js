@@ -194,3 +194,5 @@ export const API_URL_deductiontypes = `${baseurl}/deductiontypes/`;
 export const API_URL_incometypes = `${baseurl}/incometypes/`;
 //type component
 export const API_URL_settingcomponentsalary = `${baseurl}/settingcomponentsalary/`;
+// payroll
+export const API_URL_payroll = `${baseurl}/payroll/`;

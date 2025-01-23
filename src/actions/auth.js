@@ -254,6 +254,42 @@ export const usePutData = (endpoint) => {
       if (error.response && error.response.status === 401) {
         logout();
       }
+
+      if (error.response.data && error.response.status !== 500) {
+        // Jika respons mengandung data objek, tampilkan sebagai daftar
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          customClass: {
+            container: "z-[99999]",
+          },
+          html: `
+        <div>
+          <ul>
+            ${(() => {
+              const entries = Object.entries(error.response.data);
+              return entries
+                .map(([key, value]) => {
+                  if (entries.length === 1) {
+                    return `<li>${value}</li>`;
+                  } else {
+                    return `<li><strong>${key}</strong>: ${value}</li>`;
+                  }
+                })
+                .join("");
+            })()}
+          </ul>
+        </div>
+      `,
+        });
+      } else {
+        // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+        Swal.fire({
+          icon: "error",
+          title: "Oops sorry...",
+          text: error.message,
+        });
+      }
     },
   });
 };
