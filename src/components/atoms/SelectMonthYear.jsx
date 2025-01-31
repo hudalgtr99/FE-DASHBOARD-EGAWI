@@ -1,94 +1,74 @@
 import moment from "moment";
 import React, { useState } from "react";
-import { IoRefresh } from "react-icons/io5";
+import { IoChevronDown, IoChevronBack, IoChevronForward, IoCalendarClearOutline } from "react-icons/io5";
 
 const SelectMonthYear = ({ onChange }) => {
-  const [year, setYear] = useState(moment().format("YYYY"));
-  const [month, setMonth] = useState("");
+  const months = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+  ];
+
+  const currentYear = moment().format("YYYY");
+  const currentMonthIndex = parseInt(moment().format("M"), 10) - 1; 
+
+  const [year, setYear] = useState(currentYear);
+  const [month, setMonth] = useState(months[currentMonthIndex]);
+  const [isOpen, setIsOpen] = useState(false); 
 
   const handleYearChange = (e) => {
     const selectedYear = parseInt(e.target.value, 10);
     setYear(selectedYear);
-    if (month) {
-      onChange(`${selectedYear}-${month.toString().padStart(2, "0")}`);
-    }
+    onChange(`${selectedYear}-${(months.indexOf(month) + 1).toString().padStart(2, "0")}`);
   };
 
-  const handleMonthChange = (e) => {
-    const selectedMonth = e.target.value;
+
+  const handleMonthSelect = (selectedMonth) => {
     setMonth(selectedMonth);
-    if (year) {
-      onChange(`${year}-${selectedMonth.toString().padStart(2, "0")}`);
-    }
+    setIsOpen(false); 
+    onChange(`${year}-${(months.indexOf(selectedMonth) + 1).toString().padStart(2, "0")}`);
   };
-
-  const handleReset = () => {
-    setMonth("");
-    setYear(moment().format("YYYY"));
-    if (year) {
-      onChange(`YYYY-MM`);
-    }
-  };
-
-  const years = Array.from(
-    { length: 100 },
-    (_, i) => new Date().getFullYear() - 50 + i
-  );
-  const months = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
 
   return (
-    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-      {/* Month Selector */}
-      <select
-        value={month}
-        onChange={handleMonthChange}
-        style={{ padding: "5px", fontSize: "14px" }}
+    <div className="relative w-64">
+      <div
+        className="w-full flex justify-between items-center px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
       >
-        <option value="" disabled>
-          Pilih Bulan
-        </option>
-        {months.map((m, index) => (
-          <option
-            key={index + 1}
-            value={(index + 1).toString().padStart(2, "0")}
-          >
-            {m}
-          </option>
-        ))}
-      </select>
+        <IoCalendarClearOutline className="w-5 h-5 mr-2" />
+        {month} {year}
+        <IoChevronDown className="w-5 h-5" />
+      </div>
 
-      {/* Year Selector */}
-      <select
-        value={year}
-        onChange={handleYearChange}
-        style={{ padding: "5px", fontSize: "14px" }}
-      >
-        <option value="" disabled>
-          Pilih Tahun
-        </option>
-        {years.map((y) => (
-          <option key={y} value={y}>
-            {y}
-          </option>
-        ))}
-      </select>
+      {isOpen && (
+        <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
+          <div className="flex justify-between items-center px-4 py-2 border-b">
+          <button onClick={() => setYear(year - 1)} className="p-2 rounded-md hover:bg-gray-200">
+            <IoChevronBack className="w-5 h-5" />
+          </button>
+          <input
+            type="number"
+            value={year}
+            onChange={handleYearChange}
+            className="w-16 text-center text-[14px] border rounded-md p-[5px]"
+          />
+          <button onClick={() => setYear(year + 1)} className="p-2 rounded-md hover:bg-gray-200">
+            <IoChevronForward className="w-5 h-5" />
+          </button>
 
-      <button onClick={() => handleReset()}>
-        <IoRefresh />
-      </button>
+          </div>
+          <div className="grid grid-cols-3 gap-1 p-2 max-h-60 overflow-y-auto">
+            {months.map((monthName) => (
+              <button
+                key={monthName}
+                onClick={() => handleMonthSelect(monthName)}
+                className={`text-center text-[14px] p-[5px] rounded-lg ${month === monthName ? "bg-blue-500 text-white" : "hover:bg-gray-100"}`}  
+              >
+                {monthName}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
