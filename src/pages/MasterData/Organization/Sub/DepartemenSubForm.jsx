@@ -13,30 +13,14 @@ import {
   API_URL_edeldepartemen,
   API_URL_getperusahaan,
 } from "@/constants";
-import { fetchUserDetails } from "@/constants/user";
 
 const DepartemenSubForm = () => {
-  const { addDivisiLoading } = useSelector(
-    (state) => state.organ
-  ); // reducer departemen gabisa, jadi pakai departemen
+  const { addDivisiLoading } = useSelector((state) => state.organ); // reducer departemen gabisa, jadi pakai departemen
   const { pk } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [perusahaanOptions, setperusahaanOptions] = useState([]);
-  const [user, setUser] = useState([]);
-
-  const fetchData = useCallback(async () => {
-    const userData = await fetchUserDetails();
-    if (userData) {
-      setUser(userData.datapribadi);
-      // console.log(userData);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,11 +49,15 @@ const DepartemenSubForm = () => {
     initialValues: {
       nama: state?.item?.nama || "",
       nama_singkatan: state?.item?.nama_singkatan || "",
-      perusahaan: state?.item?.perusahaan || "", 
+      perusahaan: state?.item?.perusahaan || "",
     },
     validationSchema: Yup.object().shape({
-      nama: Yup.string().required("Nama Departemen wajib diisi").max(255, "Nama Departemen harus kurang dari 255 karakter"),
-      nama_singkatan: Yup.string().required("Nama Singkatan wajib diisi").max(5, "Nama Singkatan harus kurang dari 6 karakter"),
+      nama: Yup.string()
+        .required("Nama Departemen wajib diisi")
+        .max(255, "Nama Departemen harus kurang dari 255 karakter"),
+      nama_singkatan: Yup.string()
+        .required("Nama Singkatan wajib diisi")
+        .max(5, "Nama Singkatan harus kurang dari 6 karakter"),
       perusahaan: Yup.mixed().required("perusahaan wajib diisi"), // Accept any type, including numbers
     }),
     onSubmit: async (values) => {
@@ -85,7 +73,7 @@ const DepartemenSubForm = () => {
             API_URL_edeldepartemen,
             "ADD_DIVISI"
           );
-          if(data && !addDivisiLoading){
+          if (data && !addDivisiLoading) {
             navigate("/masterdata/departemen");
           }
         } else {
@@ -95,7 +83,7 @@ const DepartemenSubForm = () => {
             API_URL_createdepartemen,
             "ADD_DIVISI"
           );
-          if(data && !addDivisiLoading){
+          if (data && !addDivisiLoading) {
             navigate("/masterdata/departemen");
           }
         }
@@ -103,7 +91,6 @@ const DepartemenSubForm = () => {
         console.error("Error in form submission: ", error);
       }
     },
-    
   });
 
   return (
@@ -144,7 +131,7 @@ const DepartemenSubForm = () => {
                 onChange={formik.handleChange}
                 onBlur={(e) => formik.handleBlur}
                 error={formik.touched.nama ? formik.errors.nama : ""}
-                />
+              />
               <TextField
                 required
                 label="Nama Singkatan"
@@ -152,12 +139,18 @@ const DepartemenSubForm = () => {
                 value={formik.values.nama_singkatan}
                 onChange={formik.handleChange}
                 onBlur={(e) => formik.handleBlur}
-                error={formik.touched.nama_singkatan ? formik.errors.nama_singkatan : ""}
-                />
+                error={
+                  formik.touched.nama_singkatan
+                    ? formik.errors.nama_singkatan
+                    : ""
+                }
+              />
             </div>
 
             <div className="mt-6 flex justify-end">
-              <Button loading={addDivisiLoading} type="submit">{isEdit ? "Update" : "Tambah"}</Button>
+              <Button loading={addDivisiLoading} type="submit">
+                {isEdit ? "Update" : "Tambah"}
+              </Button>
             </div>
           </form>
         </div>

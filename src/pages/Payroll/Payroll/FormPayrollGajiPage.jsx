@@ -1,53 +1,27 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Form, useNavigate, useParams } from "react-router-dom";
-import { useFormik } from "formik";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, Select, Tables } from "@/components";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Container, Tables } from "@/components";
+import { useSelector } from "react-redux";
+import { decrypted_id } from "@/actions";
 import {
-  addData,
-  addFormData,
-  decrypted_id,
-  encodeURL,
-  encrypted,
-  encrypted_id,
-  updateFormData,
-} from "@/actions";
-import {
-  API_URL_datapegawaijobdesk,
   API_URL_deductiontypes,
-  API_URL_getdatapegawaiall,
-  API_URL_getdataperusahaanall,
   API_URL_incometypes,
-  API_URL_jobdesk,
   API_URL_payroll,
-  API_URL_salary,
 } from "@/constants";
-import { IoAdd, IoAddCircle, IoAddOutline, IoTrash } from "react-icons/io5";
-import AsyncSelect from "react-select/async";
-import SelectSync from "@/components/atoms/SelectSync";
 import { AuthContext, useAuth } from "@/context/AuthContext";
-import { apiReducer } from "@/reducers/apiReducers";
-import { jobdeskPegawaiReducer } from "@/reducers/jobdeskPegawaiReducers";
 import axiosAPI from "@/authentication/axiosApi";
-import { masterGajiReducer } from "@/reducers/masterGajiReducers";
-import CurrencyInput from "@/components/atoms/CurrencyInput";
-import * as Yup from "yup";
 import formatRupiah from "@/utils/formatRupiah";
-import { FaCompactDisc, FaPencil, FaTrash, FaX } from "react-icons/fa6";
-import { useGetData } from "@/actions/auth";
-import { showSweetAlert } from "@/utils/showSweetAlert";
-import { FaSave } from "react-icons/fa";
+import { useGetData, usePostData, usePutData } from "@/actions/auth";
 import DeductionComponent from "./child/DeductionComponent";
 import IncomeComponent from "./child/IncomeComponent";
+import { showToast } from "@/utils/showToast";
 
 const FormPayrollGajiPage = () => {
   const { pk } = useParams();
   const { getMasterGajiLoading } = useSelector((state) => state.mastergaji);
   const { selectedPerusahaan } = useAuth();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [rerenderPegawai, setRerenderPegawai] = useState(true);
   const [detailPayroll, setDetailPayroll] = useState([]);
   const { jwt } = useContext(AuthContext);
 
@@ -78,73 +52,6 @@ const FormPayrollGajiPage = () => {
   const [totalDeduction, setTotalDeduction] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
 
-  const formik = useFormik({
-    initialValues: {
-      perusahaan: null,
-      employee: null,
-      amount: null,
-    },
-    validationSchema: Yup.object({
-      amount: Yup.string().required("Jumlah uang wajib diisi"),
-    }),
-    onSubmit: (values, { setSubmitting }) => {
-      // Validasi manual setiap field
-      const errors = {};
-
-      if (values.employee === null) {
-        errors.employee = "Pegawai is required";
-      }
-
-      if (Object.keys(errors).length > 0) {
-        console.log(errors);
-        formik.setErrors(errors);
-        setSubmitting(false);
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("employee", encrypted_id(values.employee?.value));
-      formData.append("amount", values.amount);
-
-      try {
-        if (pk) {
-          const dekrip_id = decrypted_id(pk);
-          updateFormData(
-            { dispatch, redux: masterGajiReducer },
-            formData,
-            API_URL_salary,
-            "UPDATE_MASTERGAJI",
-            dekrip_id
-          );
-        } else {
-          addFormData(
-            { dispatch, redux: masterGajiReducer },
-            formData,
-            API_URL_salary,
-            "ADD_MASTERGAJI"
-          );
-        }
-        navigate(-1);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
-
-  // Effect untuk memantau perubahan perusahaan untuk melakukan
-  useEffect(() => {
-    if (!pk) {
-      setRerenderPegawai(false);
-      if (formik.values.perusahaan) {
-        // Reset employee ke null ketika perusahaan berubah
-        formik.setFieldValue("employee", null);
-        setTimeout(() => {
-          setRerenderPegawai(true);
-        }, 1);
-      }
-    }
-  }, [formik.values.perusahaan]);
-
   // Jika ada Pk maka Fetching data lama
   const get = useCallback(async () => {
     if (decrypted_id(pk)) {
@@ -158,6 +65,24 @@ const FormPayrollGajiPage = () => {
       navigate(-1);
     }
   }, [pk]);
+
+  const updatePayrollApi = usePutData(API_URL_payroll + decrypted_id(pk) + "/");
+
+  const handleSubmit = () => {
+    const formData = new FormData();
+    formData.append("deductions", JSON.stringify(deductions));
+    formData.append("incomes", JSON.stringify(incomes));
+
+    updatePayrollApi.mutate(formData, {
+      onSuccess: (res) => {
+        showToast(res.message, "success", 3000);
+        navigate(-1);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
 
   useEffect(() => {
     if (detailPayroll) {
@@ -307,7 +232,7 @@ const FormPayrollGajiPage = () => {
               Batal
             </Button>
             <Button
-              onClick={() => formik.handleSubmit()}
+              onClick={() => handleSubmit()}
               loading={getMasterGajiLoading}
             >
               Simpan

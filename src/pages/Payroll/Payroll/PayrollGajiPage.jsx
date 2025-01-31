@@ -2,7 +2,11 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_edeluser, API_URL_payroll } from "@/constants";
+import {
+  API_URL_edeluser,
+  API_URL_generatepayroll,
+  API_URL_payroll,
+} from "@/constants";
 import {
   Button,
   Container,
@@ -27,9 +31,13 @@ import id from "date-fns/locale/id";
 import { format } from "date-fns";
 import moment from "moment";
 import { payrollReducer } from "@/reducers/payrollReducers";
+import { TbLoader2 } from "react-icons/tb";
+import { showToast } from "@/utils/showToast";
 
 const PayrollGajiPage = () => {
   const [periodeMonth, setPeriodeMonth] = useState(new Date());
+  const [payrollPeriod, setPayrollPeriod] = useState(null);
+  const [loadingRunPayroll, setLoadingRunPayroll] = useState(false);
 
   const {
     getPayrollResult,
@@ -87,9 +95,8 @@ const PayrollGajiPage = () => {
     navigate(`/payroll/payrollgaji/form/${encrypted_id(item.id)}`);
   };
 
-  const onShow = (item) => {
-    getDetail(item?.id);
-    setShowModal(true);
+  const onDetail = (item) => {
+    navigate(`/payroll/payrollgaji/detail/${encrypted_id(item.id)}`);
   };
 
   const doDelete = (item) => {
@@ -114,20 +121,6 @@ const PayrollGajiPage = () => {
     [dispatch]
   );
 
-  const getDetail = async (id) => {
-    setLoadingModal(true);
-    try {
-      const res = await axiosAPI.get(`${API_URL_payroll}${id}`);
-      setDetailGaji(res.data);
-    } catch (error) {
-      alert(
-        error.response.data.error ||
-          "Terjadi Kesalahan saat mengambil detail gaji pegawai"
-      );
-    }
-    setLoadingModal(false);
-  };
-
   const handlePageClick = (page) => {
     const offset = (page - 1) * limit; // Calculate the offset based on the page
 
@@ -144,6 +137,24 @@ const PayrollGajiPage = () => {
 
     get(param);
     setPageActive(page - 1);
+  };
+
+  const handleRunPayroll = async () => {
+    try {
+      setShowModal(false);
+      setLoadingRunPayroll(true);
+      const res = await axiosAPI.post(API_URL_generatepayroll, {
+        payroll_period: moment(payrollPeriod).format("YYYY-MM"),
+      });
+      showToast("Run Payroll Berhasil Dilakukan");
+    } catch (error) {
+      showToast(error);
+      console.log(error);
+      setLoadingRunPayroll(false);
+    } finally {
+      setLoadingRunPayroll(false);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -194,10 +205,10 @@ const PayrollGajiPage = () => {
 
   const [actions] = useState([
     {
-      name: "Show",
+      name: "Detail",
       icon: <LuEye />,
       color: "primary",
-      func: onShow,
+      func: onDetail,
     },
     {
       name: "Edit",
@@ -244,10 +255,15 @@ const PayrollGajiPage = () => {
           </div>
 
           <button
-            onClick={() => alert("hello")}
+            disabled={loadingRunPayroll}
+            onClick={() => setShowModal(true)}
             className="flex text-sm flex-row rounded items-center gap-2 bg-sky-500 text-white w-fit px-2 py-1 hover:bg-sky-600"
           >
-            <FaTelegramPlane />
+            {loadingRunPayroll ? (
+              <TbLoader2 className="animate-spin" />
+            ) : (
+              <FaTelegramPlane />
+            )}
             Jalankan Payroll
           </button>
         </div>
@@ -357,42 +373,31 @@ const PayrollGajiPage = () => {
       >
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
-            Detail Gaji
+            Pilih Bulan Priode Gaji
           </h2>
-          <ul className="space-y-4">
-            <li className="flex justify-between">
-              <span className="font-medium">ID:</span>
-              <span className="text-gray-800">{detailGaji?.id}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">{detailGaji?.employee_name}</span>
-            </li>
-            {jwt?.level === "Super Admin" && (
-              <li className="flex justify-between">
-                <span className="font-medium">Perusahaan:</span>
-                <span className="text-gray-800">
-                  {detailGaji?.nama_perusahaan}
-                </span>
-              </li>
-            )}
-            <li className="flex justify-between">
-              <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">{detailGaji?.id_pegawai}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Jabatan:</span>
-              <span className="text-gray-800">
-                {detailGaji?.jabatan_pegawai}
-              </span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Gaji:</span>
-              <span className="text-gray-800">
-                {formatRupiah(detailGaji?.amount)}
-              </span>
-            </li>
-          </ul>
+          <div className="flex justify-center">
+            <DatePicker
+              showIcon
+              className="border border-gray-200 text-sm w-full rounded-lg"
+              icon=<FaCalendar />
+              selected={payrollPeriod}
+              onChange={(date) => setPayrollPeriod(date)}
+              dateFormat=" MMMM yyyy"
+              showMonthYearPicker
+              showFullMonthYearPicker
+              locale={id}
+              showTwoColumnMonthYearPicker
+              placeholderText="Pilih Bulan & Tahun"
+            />
+          </div>
+          <div className="mt-4 flex flex-row justify-between">
+            <Button color="base" onClick={() => setShowModal(false)}>
+              Batal
+            </Button>
+            <Button color="primary" onClick={() => handleRunPayroll()}>
+              Submit
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

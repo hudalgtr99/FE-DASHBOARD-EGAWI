@@ -39,8 +39,8 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
     data: data,
   })
     .then((response) => {
-      if (response.data.status === 201) {
-        showToast("error", response.data.messages);
+      if (response?.data.status === 201) {
+        showToast("error", response?.data.messages);
       } else {
         showToast("success", "Foto profil berhasil diperbarui!");
       }
@@ -49,7 +49,7 @@ export const updateProfile = (dispatch, data, url, type, pk) => {
           type: type,
           payload: {
             loading: false,
-            data: response.data,
+            data: response?.data,
           },
         })
       );
@@ -86,8 +86,8 @@ export const updateAkun = (dispatch, type, data, pk, url) => {
     data: data,
   })
     .then((response) => {
-      if (response.data.status === 201) {
-        showToast("error", response.data.messages);
+      if (response?.data.status === 201) {
+        showToast("error", response?.data.messages);
       } else {
         showToast("success", "Profile berhasil diperbarui!");
       }
@@ -96,7 +96,7 @@ export const updateAkun = (dispatch, type, data, pk, url) => {
           type: type,
           payload: {
             loading: false,
-            data: response.data,
+            data: response?.data,
           },
         })
       );
@@ -140,7 +140,7 @@ export const loginUser = (dispatch, data) => {
     data: data,
   })
     .then((response) => {
-      setNewHeaders(response.data);
+      setNewHeaders(response?.data);
       showToast("success", "Login berhasil!");
 
       dispatch(
@@ -148,11 +148,11 @@ export const loginUser = (dispatch, data) => {
           type: "LOGIN_USER",
           payload: {
             loading: false,
-            data: response.data,
+            data: response?.data,
           },
         })
       );
-      return response.data;
+      return response?.data;
     })
     .catch((error) => {
       showToast("error", error?.response?.data?.detail);
@@ -207,10 +207,10 @@ export const useGetData = (endpoint, queryKey, params = {}, options = {}) => {
         params: params,
         headers: headers,
       });
-      return response.data;
+      return response?.data;
     },
     throwOnError: (error) => {
-      if (error.response && error.response.status === 401) {
+      if (error?.response && error?.response?.status === 401) {
         logout(); // Jika token tidak valid atau kedaluwarsa, logout
       }
     },
@@ -228,10 +228,10 @@ export const usePostData = (endpoint) => {
       const response = await axiosAPI.post(endpoint, data, {
         headers: headers,
       });
-      return response.data;
+      return response?.data;
     },
     throwOnError: (error) => {
-      if (error.response && error.response.status === 401) {
+      if (error?.response && error?.response?.status === 401) {
         logout();
       }
     },
@@ -248,14 +248,14 @@ export const usePutData = (endpoint) => {
       const response = await axiosAPI.put(endpoint, data, {
         headers: headers,
       });
-      return response.data;
+      return response?.data;
     },
     throwOnError: (error) => {
-      if (error.response && error.response.status === 401) {
+      if (error?.response && error?.response?.status === 401) {
         logout();
       }
 
-      if (error.response.data && error.response.status !== 500) {
+      if (error?.response?.data && error?.response?.status !== 500) {
         // Jika respons mengandung data objek, tampilkan sebagai daftar
         Swal.fire({
           icon: "error",
@@ -267,7 +267,7 @@ export const usePutData = (endpoint) => {
         <div>
           <ul>
             ${(() => {
-              const entries = Object.entries(error.response.data);
+              const entries = Object.entries(error?.response?.data);
               return entries
                 .map(([key, value]) => {
                   if (entries.length === 1) {
@@ -287,7 +287,7 @@ export const usePutData = (endpoint) => {
         Swal.fire({
           icon: "error",
           title: "Oops sorry...",
-          text: error.message,
+          text: error?.message,
         });
       }
     },
@@ -302,10 +302,10 @@ export const useDeleteData = (endpoint) => {
       const response = await axiosAPI.delete(`${endpoint}${id}/`, {
         headers: headers,
       });
-      return response.data;
+      return response?.data;
     },
     throwOnError: (error) => {
-      if (error.response && error.response.status === 401) {
+      if (error?.response && error?.response?.status === 401) {
         logout();
       }
     },

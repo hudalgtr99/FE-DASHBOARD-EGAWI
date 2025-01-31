@@ -67,6 +67,7 @@ import FormMasterGajiPage from "@/pages/Payroll/MasterGaji/FormMasterGaji";
 import FormCalonTugasPage from "@/pages/ManajemenTugas/DaftarCalonTugas/FormCalonTugasPage";
 import DetailProyekPage from "@/pages/ManajemenTugas/DaftarProyek/DetailProyekPage";
 import FormPayrollGajiPage from "@/pages/Payroll/Payroll/FormPayrollGajiPage";
+import DetailPayrollGajiPage from "@/pages/Payroll/Payroll/DetailPayrollGajiPage";
 
 const Router = () => {
   return (
@@ -168,6 +169,16 @@ const Router = () => {
           <Route
             path="/payroll/payrollgaji/form/:pk"
             element={<FormPayrollGajiPage />}
+          />
+
+          {/* Detail Payroll Gaji */}
+          <Route
+            path="/payroll/payrollgaji/detail"
+            element={<DetailPayrollGajiPage />}
+          />
+          <Route
+            path="/payroll/payrollgaji/detail/:pk"
+            element={<DetailPayrollGajiPage />}
           />
           {/* Master Gaji */}
           <Route

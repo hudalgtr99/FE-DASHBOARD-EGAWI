@@ -1,11 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Form, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, Select } from "@/components";
+import { Button, Container } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addData,
   addFormData,
   decrypted_id,
   encodeURL,
@@ -14,29 +13,16 @@ import {
   updateFormData,
 } from "@/actions";
 import {
-  API_URL_datapegawaijobdesk,
   API_URL_getdatapegawaiall,
   API_URL_getdataperusahaanall,
-  API_URL_jobdesk,
   API_URL_salary,
 } from "@/constants";
-import { IoAdd, IoAddCircle, IoAddOutline, IoTrash } from "react-icons/io5";
-import AsyncSelect from "react-select/async";
 import SelectSync from "@/components/atoms/SelectSync";
 import { AuthContext } from "@/context/AuthContext";
-import { apiReducer } from "@/reducers/apiReducers";
-import { jobdeskPegawaiReducer } from "@/reducers/jobdeskPegawaiReducers";
 import axiosAPI from "@/authentication/axiosApi";
 import { masterGajiReducer } from "@/reducers/masterGajiReducers";
 import CurrencyInput from "@/components/atoms/CurrencyInput";
 import * as Yup from "yup";
-
-const recurrenceOptions = [
-  { label: "Harian", value: "daily" },
-  { label: "Mingguan", value: "weekly" },
-  { label: "Bulanan", value: "monthly" },
-  { label: "Tahunan", value: "yearly" },
-];
 
 const FormMasterGajiPage = () => {
   const { pk } = useParams();

@@ -93,7 +93,6 @@ const TypePendapatan = () => {
           },
           onError: (error) => {
             console.log(error);
-            showToast(error.message, "warning");
           },
         });
       }

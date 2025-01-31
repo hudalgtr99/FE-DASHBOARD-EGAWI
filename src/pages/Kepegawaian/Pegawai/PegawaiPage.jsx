@@ -8,6 +8,7 @@ import {
   API_URL_getdatapegawai,
   API_URL_changeactive,
   API_URL_changeoutofarea,
+  API_URL_getakun,
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -29,6 +30,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
 import { LuKeyRound, LuPencil } from "react-icons/lu";
+import axiosAPI from "@/authentication/axiosApi";
 
 const AkunPage = () => {
   const {
@@ -81,12 +83,21 @@ const AkunPage = () => {
     setPageActive(0);
   };
 
-  const onEdit = (item) => {
-    // Store the item in localStorage
-    localStorage.setItem("editUserData", JSON.stringify(item));
-    sessionStorage.setItem("url", location.pathname);
-    sessionStorage.removeItem("activeTab");
-    navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
+  const onEdit = async (item) => {
+    try {
+      const getDataUser = await axiosAPI.get(API_URL_getakun + item.id);
+      // Store the item in localStorage
+      localStorage.setItem("editUserData", JSON.stringify(getDataUser.data));
+      sessionStorage.setItem("url", location.pathname);
+      sessionStorage.removeItem("activeTab");
+      navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
+    } catch (error) {
+      console.log(error);
+      alert(
+        error.response.data.error ||
+          "Terjadi Kesalahan saat mengambil detail pegawai"
+      );
+    }
   };
 
   const onChange = (item) => {

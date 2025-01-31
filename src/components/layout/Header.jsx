@@ -20,9 +20,7 @@ import { logoutUser } from "@/actions/auth";
 import { authReducer } from "@/reducers/authReducers";
 import { fetchUserDetails } from "@/constants/user";
 import { Link, useLocation } from "react-router-dom";
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { jwtDecode } from "jwt-decode";
-import { useAuth } from "../../context/AuthContext";
+import { AuthContext, useAuth } from "../../context/AuthContext";
 
 const Header = ({ setSideOpen }) => {
   const { themeSkin, navbarType, colorMode, themeColor } =
@@ -34,14 +32,7 @@ const Header = ({ setSideOpen }) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true); // State untuk loading
-  const [jwt, setJwt] = useState({}); // Initialize jwt variable
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const token = isAuthenticated();
-      setJwt(jwtDecode(token));
-    }
-  }, []);
+  const { jwt } = useContext(AuthContext);
 
   const { perusahaanOptions, selectedPerusahaan, updateSelectedPerusahaan } =
     useAuth();
@@ -119,6 +110,11 @@ const Header = ({ setSideOpen }) => {
                 updatedPathSegments.shift(); // Hapus segmen pertama yang adalah 'api'
               }
 
+              // Hapus segmen terakhir jika ada detail
+              if (updatedPathSegments.includes("detail")) {
+                updatedPathSegments.pop();
+              }
+
               // Temukan indeks dari 'form'
               const formIndex = updatedPathSegments.indexOf("form");
               // Ambil segmen sampai dan termasuk 'form'
@@ -137,6 +133,7 @@ const Header = ({ setSideOpen }) => {
                   "kepegawaian",
                   "asesmen",
                   "manajementugas",
+                  "payroll",
                 ];
 
                 if (hiddenSegments.includes(segment)) {
@@ -170,7 +167,7 @@ const Header = ({ setSideOpen }) => {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center">
-            {!jwt.perusahaan && (
+            {jwt && jwt?.level === "Super Admin" && (
               <div className="w-60 mr-3">
                 <Select
                   options={perusahaanOptions}

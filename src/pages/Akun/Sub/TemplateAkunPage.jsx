@@ -8,6 +8,7 @@ import {
   API_URL_changeactive,
   API_URL_changeoutofarea,
   API_URL_getperusahaan,
+  API_URL_getakun,
 } from "@/constants";
 import { icons } from "../../../../public/icons";
 import {
@@ -87,12 +88,21 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
     setPageActive(0);
   };
 
-  const onEdit = (item) => {
-    // Store the item in localStorage
-    localStorage.setItem("editUserData", JSON.stringify(item));
-    navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
-    sessionStorage.setItem("url", location.pathname);
-    sessionStorage.setItem("activeTab", activeTab);
+  const onEdit = async (item) => {
+    try {
+      const getDataUser = await axiosAPI.get(API_URL_getakun + item.id);
+      // Store the item in localStorage
+      localStorage.setItem("editUserData", JSON.stringify(getDataUser.data));
+      navigate(`/kepegawaian/pegawai/form/${item.datapribadi.no_identitas}`);
+      sessionStorage.setItem("url", location.pathname);
+      sessionStorage.setItem("activeTab", activeTab);
+    } catch (error) {
+      console.log(error);
+      alert(
+        error.response.data.error ||
+          "Terjadi Kesalahan saat mengambil detail pegawai"
+      );
+    }
   };
 
   const onChange = (item) => {
