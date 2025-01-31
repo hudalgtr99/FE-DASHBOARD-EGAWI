@@ -27,6 +27,7 @@ import id from "date-fns/locale/id";
 import { format } from "date-fns";
 import moment from "moment";
 import { payrollReducer } from "@/reducers/payrollReducers";
+import SelectMonthYear from "@/components/atoms/SelectMonthYear";
 
 const PayrollGajiPage = () => {
   const [periodeMonth, setPeriodeMonth] = useState(new Date());
@@ -66,9 +67,9 @@ const PayrollGajiPage = () => {
         param.param += `&perusahaan=${selectedPerusahaan.value}`;
       }
 
-      if (periodeMonth) {
+      if (periodeMonth instanceof Date && !isNaN(periodeMonth)) {
         param.param += `&periode=${moment(periodeMonth).format("YYYY-MM")}`;
-      }
+    } 
 
       get(param);
     }, 1500),
@@ -138,10 +139,9 @@ const PayrollGajiPage = () => {
       }&limit=${limit}&offset=${offset}`,
     };
 
-    if (periodeMonth) {
+    if (periodeMonth instanceof Date && !isNaN(periodeMonth)) {
       param.param += `&periode=${moment(periodeMonth).format("YYYY-MM")}`;
-    }
-
+  } 
     get(param);
     setPageActive(page - 1);
   };
@@ -228,18 +228,13 @@ const PayrollGajiPage = () => {
           <div>
             <label className="text-sm">Periode : </label>
             <div className="">
-              <DatePicker
-                showIcon
-                className="border border-gray-200 text-sm w-[10rem] rounded-lg"
-                icon=<FaCalendar />
-                selected={periodeMonth}
-                onChange={(date) => setPeriodeMonth(date)}
-                dateFormat=" MMMM yyyy"
-                showMonthYearPicker
-                showFullMonthYearPicker
-                locale={id}
-                showTwoColumnMonthYearPicker
-              />
+            <SelectMonthYear 
+              selected={periodeMonth}
+              onChange={(date) => {
+                  const validDate = date ? new Date(date) : null;
+                  setPeriodeMonth(validDate && !isNaN(validDate) ? validDate : null);
+              }} 
+            />       
             </div>
           </div>
 
