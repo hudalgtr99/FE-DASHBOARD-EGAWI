@@ -228,6 +228,18 @@ const PayrollGajiPage = () => {
           <div>
             <label className="text-sm">Periode : </label>
             <div className="">
+            {/* <DatePicker
+                showIcon
+                className="border border-gray-200 text-sm w-[10rem] rounded-lg"
+                icon=<FaCalendar />
+                selected={periodeMonth}
+                onChange={(date) => setPeriodeMonth(date)}
+                dateFormat=" MMMM yyyy"
+                showMonthYearPicker
+                showFullMonthYearPicker
+                locale={id}
+                showTwoColumnMonthYearPicker
+              /> */}
             <SelectMonthYear 
               selected={periodeMonth}
               onChange={(date) => {
