@@ -26,7 +26,7 @@ const SelectMonthYear = ({ onChange }) => {
   const currentYear = moment().format("YYYY");
   const currentMonthIndex = parseInt(moment().format("M"), 10) - 1;
 
-  const [year, setYear] = useState(currentYear);
+  const [year, setYear] = useState(parseInt(currentYear, 10));
   const [month, setMonth] = useState(months[currentMonthIndex]);
   const [isOpen, setIsOpen] = useState(false);
 

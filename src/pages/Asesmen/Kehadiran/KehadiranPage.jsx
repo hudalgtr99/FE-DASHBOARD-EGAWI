@@ -21,6 +21,7 @@ import { icons } from "../../../../public/icons";
 
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
+import SelectMonthYear from "@/components/atoms/SelectMonthYear";
 
 const KehadiranPage = () => {
   const { getKehadiranResult } = useSelector((state) => state.kepegawaian);
@@ -171,11 +172,7 @@ const KehadiranPage = () => {
             />
           </div>
           <div className="flex gap-4">
-            <TextField
-              type="month"
-              value={filter}
-              onChange={(e) => handleFilterDate(e.target.value)}
-            />
+          <SelectMonthYear onChange={(date) => handleFilterDate(date)} />
             <button
               className="px-3 py-2 flex items-center rounded-lg bg-[#f3f4f6] text-xs dark:bg-white/20"
               onClick={onExport}
