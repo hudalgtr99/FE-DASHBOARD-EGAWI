@@ -62,7 +62,7 @@ const KalenderPage = () => {
       }
 
       fetchKalenderData(param);
-    }, 1500),
+    }, 1000),
     [limit, pageActive, selectedPerusahaan] // Include selectedPerusahaan as a dependency
   );
 

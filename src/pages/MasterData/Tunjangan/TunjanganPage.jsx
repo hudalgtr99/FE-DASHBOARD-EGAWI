@@ -49,7 +49,7 @@ const TunjanganPage = () => {
           }
         : { param: `?limit=${limit}&offset=${pageActive * limit}` };
       get(param);
-    }, 1500),
+    }, 1000),
     [limit, pageActive]
   );
 

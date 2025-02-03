@@ -73,7 +73,7 @@ const KehadiranPage = () => {
             }&date-month=${filter}`,
           };
       get(param);
-    }, 1500),
+    }, 1000),
     [limit, pageActive, filter, get]
   );
 
@@ -172,7 +172,7 @@ const KehadiranPage = () => {
             />
           </div>
           <div className="flex gap-4">
-          <SelectMonthYear onChange={(date) => handleFilterDate(date)} />
+            <SelectMonthYear onChange={(date) => handleFilterDate(date)} />
             <button
               className="px-3 py-2 flex items-center rounded-lg bg-[#f3f4f6] text-xs dark:bg-white/20"
               onClick={onExport}

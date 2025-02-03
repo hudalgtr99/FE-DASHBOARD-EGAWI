@@ -77,7 +77,7 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
       }
 
       get(param);
-    }, 1500),
+    }, 1000),
     [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
   );
 

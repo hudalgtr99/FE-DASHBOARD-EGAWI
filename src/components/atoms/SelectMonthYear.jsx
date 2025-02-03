@@ -31,7 +31,7 @@ const SelectMonthYear = ({ onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleYearChange = (e) => {
-    const selectedYear = parseInt(e.target.value, 10);
+    const selectedYear = parseInt(e.target.value);
     setYear(selectedYear);
     onChange(
       `${selectedYear}-${(months.indexOf(month) + 1)

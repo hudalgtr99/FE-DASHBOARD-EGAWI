@@ -38,7 +38,7 @@ const CallbackPage = () => {
   const debouncedSearch = useCallback(
     debounce((value) => {
       fetchData(value);
-    }, 1500),
+    }, 1000),
     [limit, pageActive]
   );
 
