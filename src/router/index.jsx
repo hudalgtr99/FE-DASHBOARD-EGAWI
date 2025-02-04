@@ -68,6 +68,7 @@ import FormCalonTugasPage from "@/pages/ManajemenTugas/DaftarCalonTugas/FormCalo
 import DetailProyekPage from "@/pages/ManajemenTugas/DaftarProyek/DetailProyekPage";
 import FormPayrollGajiPage from "@/pages/Payroll/Payroll/FormPayrollGajiPage";
 import DetailPayrollGajiPage from "@/pages/Payroll/Payroll/DetailPayrollGajiPage";
+import FormMasterEmailPage from "@/pages/Pengaturan/MasterEmail/FormMasterEmail";
 
 const Router = () => {
   return (
@@ -160,6 +161,15 @@ const Router = () => {
           <Route
             path="/payroll/mastergaji/form/:pk"
             element={<FormMasterGajiPage />}
+          />
+          {/* Master Email  */}
+          <Route
+            path="/pengaturan/masteremail/form"
+            element={<FormMasterEmailPage />}
+          />
+          <Route
+            path="/pengaturan/masteremail/form/:pk"
+            element={<FormMasterEmailPage />}
           />
           {/* Payroll Gaji */}
           <Route

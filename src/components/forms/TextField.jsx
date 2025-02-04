@@ -269,7 +269,7 @@ const TextField = ({
           }}
           className={`mb-1 ${required && "required"}`}
         >
-          {label}
+          {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
 

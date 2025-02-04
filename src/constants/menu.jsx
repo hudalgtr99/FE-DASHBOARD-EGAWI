@@ -28,6 +28,9 @@ import DaftarCalonTugasPage from "@/pages/ManajemenTugas/DaftarCalonTugas/Daftar
 import DaftarProyekPage from "@/pages/ManajemenTugas/DaftarProyek/DaftarProyekPage";
 import KomponenGaji from "@/pages/Payroll/KomponenGaji/KomponenGaji";
 import PayrollGajiPage from "@/pages/Payroll/Payroll/PayrollGajiPage";
+import { FaCogs } from "react-icons/fa";
+import MasterEmailPage from "@/pages/Pengaturan/MasterEmail/MasterEmail";
+import DiagnosticEmail from "@/pages/Pengaturan/DiagnosticEmail/DiagnosticEmail";
 
 let jwt = null; // Initialize jwt variable
 
@@ -252,5 +255,28 @@ export const menu = [
     title: "Kalender",
     element: <KalenderPage />,
     sub: [],
+  },
+  {
+    icon: <FaCogs />,
+    menuLink: "/pengaturan",
+    name: "pengaturan",
+    title: "pengaturan",
+    element: null,
+    sub: [
+      {
+        menuLink: "/pengaturan/master-email",
+        name: "master-email",
+        title: "Master Email",
+        element: <MasterEmailPage />,
+        sub: [],
+      },
+      {
+        menuLink: "/pengaturan/diagnostic-email",
+        name: "diagnostic-email",
+        title: "Diagnostic Email",
+        element: <DiagnosticEmail />,
+        sub: [],
+      },
+    ],
   },
 ];

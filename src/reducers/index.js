@@ -22,6 +22,8 @@ import taskReducers from "./taskReducers";
 import todoTaskReducers from "./todoTaskReducers";
 import subTodoTaskReducers from "./subTodoTaskReducers";
 import payrollReducers from "./payrollReducers";
+import masterEmailReducers from "./masterEmailReducers";
+import templateReducers from "./templateReducers";
 
 export default configureStore({
   reducer: {
@@ -48,5 +50,7 @@ export default configureStore({
     todotask: todoTaskReducers,
     subtodotask: subTodoTaskReducers,
     payroll: payrollReducers,
+    masteremail: masterEmailReducers,
+    template: templateReducers,
   },
 });

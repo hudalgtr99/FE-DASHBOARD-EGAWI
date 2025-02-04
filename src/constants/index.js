@@ -2,6 +2,8 @@ const localhost = import.meta.env.VITE_BASE_URL;
 const apiURL = `/api`;
 
 // export const baseurl = `https://api.kepegawaian.qnn.co.id`;
+// export const baseurl = `http://127.0.0.1:8001`;
+
 export const baseurl = `${localhost}${apiURL}`;
 export const API_URL_signin = `${baseurl}/signin/`;
 export const API_URL_getakun = `${baseurl}/getakun/`;
@@ -178,6 +180,10 @@ export const API_URL_datapegawaijobdesk = `${baseurl}/datapegawaijobdesk/`;
 
 //salary
 export const API_URL_salary = `${baseurl}/salary/`;
+
+//master email
+export const API_URL_masteremail = `${baseurl}/master-email/`;
+
 //delegation
 export const API_URL_delegation = `${baseurl}/delegation/`;
 //task proyek

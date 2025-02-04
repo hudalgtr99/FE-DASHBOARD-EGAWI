@@ -134,6 +134,7 @@ const Header = ({ setSideOpen }) => {
                   "asesmen",
                   "manajementugas",
                   "payroll",
+                  "pengaturan",
                 ];
 
                 if (hiddenSegments.includes(segment)) {
