@@ -24,7 +24,7 @@ import { jwtDecode } from "jwt-decode";
 import SelectMonthYear from "@/components/atoms/SelectMonthYear";
 
 const KehadiranPage = () => {
-  const { getKehadiranResult } = useSelector((state) => state.kepegawaian);
+  const { getKehadiranResult,getKehadiranLoading } = useSelector((state) => state.kepegawaian);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,7 +34,6 @@ const KehadiranPage = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState(moment(new Date()).format("YYYY-MM"));
   const [firstFetch, setFirstFetch] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
 
@@ -53,7 +52,6 @@ const KehadiranPage = () => {
         API_URL_getdatakehadiran,
         "GET_KEHADIRAN"
       );
-      setLoading(false);
     },
     [dispatch]
   );
@@ -182,7 +180,7 @@ const KehadiranPage = () => {
             </button>
           </div>
         </div>
-        {loading ? ( // Show loading indicator if loading is true
+        {getKehadiranLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
