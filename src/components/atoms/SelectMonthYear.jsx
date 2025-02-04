@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   IoChevronDown,
   IoChevronBack,
@@ -30,14 +30,63 @@ const SelectMonthYear = ({ onChange }) => {
   const [month, setMonth] = useState(months[currentMonthIndex]);
   const [isOpen, setIsOpen] = useState(false);
 
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        onChange(
+          `${year}-${(months.indexOf(month) + 1).toString().padStart(2, "0")}`
+        );
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [year, month, onChange]);
+
   const handleYearChange = (e) => {
-    const selectedYear = parseInt(e.target.value);
-    setYear(selectedYear);
-    onChange(
-      `${selectedYear}-${(months.indexOf(month) + 1)
-        .toString()
-        .padStart(2, "0")}`
-    );
+    const inputYear = e.target.value.trim();
+    if (inputYear === "") {
+      setYear("");
+      return;
+    }
+    const selectedYear = parseInt(inputYear, 10);
+    if (!isNaN(selectedYear)) {
+      setYear(selectedYear);
+      onChange(
+        `${selectedYear}-${(months.indexOf(month) + 1)
+          .toString()
+          .padStart(2, "0")}`
+      );
+    }
+  };
+
+  const incrementMonth = () => {
+    setMonth((prevMonth) => {
+      const currentMonthIndex = months.indexOf(prevMonth);
+      if (currentMonthIndex === 11) {
+        setYear((prevYear) => prevYear + 1);
+        return months[0];
+      } else {
+        return months[currentMonthIndex + 1];
+      }
+    });
+  };
+
+  const decrementMonth = () => {
+    setMonth((prevMonth) => {
+      const currentMonthIndex = months.indexOf(prevMonth);
+      if (currentMonthIndex === 0) {
+        setYear((prevYear) => prevYear - 1);
+        return months[11];
+      } else {
+        return months[currentMonthIndex - 1];
+      }
+    });
   };
 
   const handleMonthSelect = (selectedMonth) => {
@@ -50,27 +99,10 @@ const SelectMonthYear = ({ onChange }) => {
     );
   };
 
-  const changeMonth = (direction) => {
-    const currentIndex = months.indexOf(month);
-    let newIndex = direction === "back" ? currentIndex - 1 : currentIndex + 1;
-
-    // Wrap around if the index goes out of bounds
-    if (newIndex < 0) {
-      newIndex = months.length - 1; // Go to December
-      setYear(parseInt(year) - 1); // Decrease year if going back from January
-    } else if (newIndex >= months.length) {
-      newIndex = 0; // Go to January
-      setYear(parseInt(year) + 1); // Increase year if going forward from December
-    }
-
-    setMonth(months[newIndex]);
-    onChange(`${year}-${(newIndex + 1).toString().padStart(2, "0")}`);
-  };
-
   return (
-    <div className="relative w-64">
+    <div className="relative w-64" ref={dropdownRef}>
       <div
-        className="w-full text-[14px] flex justify-between items-center px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 cursor-pointer"
+        className="w-full flex justify-between text-[14px] items-center px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <IoCalendarClearOutline className="w-5 h-5 mr-2" />
@@ -82,19 +114,19 @@ const SelectMonthYear = ({ onChange }) => {
         <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
           <div className="flex justify-between items-center px-4 py-2 border-b">
             <button
-              onClick={() => changeMonth("back")}
+              onClick={decrementMonth}
               className="p-2 rounded-md hover:bg-gray-200"
             >
               <IoChevronBack className="w-5 h-5" />
             </button>
             <input
               type="number"
-              value={year}
+              value={year === "" ? "" : year}
               onChange={handleYearChange}
-              className="w-20 text-center border text-[14px] rounded-md p-[5px]"
+              className="w-16 text-center border rounded-md p-[5px]"
             />
             <button
-              onClick={() => changeMonth("forward")}
+              onClick={incrementMonth}
               className="p-2 rounded-md hover:bg-gray-200"
             >
               <IoChevronForward className="w-5 h-5" />
