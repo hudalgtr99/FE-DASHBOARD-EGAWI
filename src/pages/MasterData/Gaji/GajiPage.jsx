@@ -17,6 +17,7 @@ import {
 import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const GajiPage = () => {
   const { getGajiResult, addGajiResult, deleteGajiResult } = useSelector(
@@ -106,13 +107,15 @@ const GajiPage = () => {
   const [actions] = useState([
     {
       name: "Edit",
-      icon: icons.bspencil,
+      // icon: icons.bspencil,
+      icon: <LuPencil />,
       color: "text-green-500",
       func: onEdit,
     },
     {
       name: "Delete",
-      icon: icons.citrash,
+      // icon: icons.citrash,
+      icon: <LuTrash2 />,
       color: "text-red-500",
       func: doDelete,
     },

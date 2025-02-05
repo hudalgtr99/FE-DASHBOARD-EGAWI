@@ -8,7 +8,7 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import axiosAPI from "@/authentication/axiosApi";
-import { LuPencilLine } from "react-icons/lu";
+import { LuPencil, LuPencilLine } from "react-icons/lu";
 
 const JamKerjaPage = () => {
   const { slug } = useParams();
@@ -106,6 +106,7 @@ const JamKerjaPage = () => {
             <Button onClick={() => onEdit(locations[0])}>
               <div className="flex items-center gap-2">
                 <LuPencilLine /> Edit jam kerja
+                {/* <LuPencil /> Edit jam kerja */}
               </div>
             </Button>
           </>

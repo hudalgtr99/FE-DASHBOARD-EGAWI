@@ -23,6 +23,7 @@ import moment from "moment";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
+import { LuEye, LuTrash2 } from "react-icons/lu";
 
 const PenugasanPage = () => {
   const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =
@@ -118,19 +119,22 @@ const PenugasanPage = () => {
   const [actions] = useState([
     {
       name: "Detail",
-      icon: icons.aifilleye,
+      // icon: icons.aifilleye,
+      icon: <LuEye />,
       color: "info",
       func: doDetail,
     },
     {
       name: "Edit",
-      icon: icons.bspencil,
+      // icon: icons.bspencil,
+      icon: <LuPencil />,
       color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
-      icon: icons.citrash,
+      // icon: icons.citrash,
+      icon: <LuTrash2 />,
       color: "danger",
       func: doDelete,
     },

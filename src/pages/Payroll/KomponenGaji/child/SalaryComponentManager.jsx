@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { Button, Modal, Select, Tables, TextField } from "@/components";
+import { Button, Modal, Select, Tables, TextField, Tooltip } from "@/components";
 import {
   API_URL_deductiontypes,
   API_URL_incometypes,
@@ -21,6 +21,7 @@ import { showToast } from "@/utils/showToast";
 import CurrencyInput from "@/components/atoms/CurrencyInput";
 import formatRupiah from "@/utils/formatRupiah";
 import { AuthContext, useAuth } from "@/context/AuthContext";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const JenisOption = [
   { label: "Pendapatan", value: "income" },
@@ -254,14 +255,18 @@ const SalaryComponentManager = () => {
   const action = [
     {
       name: "Edit",
-      icon: <BiEdit size={20} />,
-      color: "text-yellow-500",
+      // icon: <BiEdit size={20} />,
+      // color: "text-yellow-500",
+      icon:<LuPencil size={20} />,
+      color: "success",
       func: onEdit,
     },
     {
       name: "Hapus",
-      icon: <BiTrash size={20} />,
-      color: "text-red-500",
+      // icon: <BiTrash size={20} />,
+      // color: "text-red-500",
+      icon: <LuTrash2 size={20}  />,
+      color: "danger",
       func: onDelete,
     },
   ];
@@ -421,7 +426,9 @@ const SalaryComponentManager = () => {
                         <Tables.Data className="p-2 text-center whitespace-nowrap">
                           {item.status_display}
                         </Tables.Data>
-                        <Tables.Data className="p-2 text-center whitespace-nowrap">
+
+                        {/* <Tables.Data className=" text-center whitespace-nowrap">
+
                           <div className="flex justify-center">
                             {action.map((action, actionIdx) => (
                               <button
@@ -434,7 +441,27 @@ const SalaryComponentManager = () => {
                               </button>
                             ))}
                           </div>
+                        </Tables.Data> */}
+                        
+                        <Tables.Data center>
+                          <div className="flex items-center justify-center gap-2">
+                            {action.map((action) =>(
+                              <Tooltip key={action.name} tooltip={action.name}>
+                                <Button
+                                  size={30}
+                                  variant="tonal"
+                                  color={action.color}
+                                  key={action.name}
+                                  onClick={() => action.func(item)}
+                                  className={`${action.color} cursor-pointer`}
+                                >
+                                  {action.icon}
+                                </Button>
+                              </Tooltip>
+                            ))}
+                          </div>
                         </Tables.Data>
+
                       </Tables.Row>
                     )
                   )}

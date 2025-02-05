@@ -26,6 +26,7 @@ import { CiSearch } from "react-icons/ci";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
 import { AuthContext, useAuth } from "@/context/AuthContext";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const TypePendapatan = () => {
   const [showModal, setShowModal] = useState(false);
@@ -183,14 +184,18 @@ const TypePendapatan = () => {
   const action = [
     {
       name: "Edit",
-      icon: <BiEdit size={20} />,
-      color: "text-yellow-500",
+      // icon: <BiEdit size={20} />,
+      // color: "text-yellow-500",
+      icon: <LuPencil size={20} />,
+      color:"success",
       func: onEdit,
     },
     {
       name: "Hapus",
-      icon: <BiTrash size={20} />,
-      color: "text-red-500",
+      // icon: <BiTrash size={20} />,
+      // color: "text-red-500",
+      icon: <LuTrash2 size={20} />,
+      color:"danger",
       func: onDelete,
     },
   ];
@@ -291,7 +296,8 @@ const TypePendapatan = () => {
                       <td className="p-2 text-center whitespace-nowrap">
                         {item.description}
                       </td>
-                      <td className="p-2 text-center whitespace-nowrap">
+
+                      {/* <td className="p-2 text-center whitespace-nowrap">
                         <div className="flex justify-center">
                           {action.map((action, actionIdx) => (
                             <button
@@ -304,7 +310,25 @@ const TypePendapatan = () => {
                             </button>
                           ))}
                         </div>
-                      </td>
+                      </td> */}
+
+                      <Tables.Data center>
+                        <div className="flex items-center justify-center gap-2">
+                          {action.map((action) => (
+                            <Button
+                              key={action.name}
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
+                              onClick={() => action.func(item)}
+                              className={`${action.color} cursor-pointer`}
+                            >
+                              {action.icon}
+                            </Button>
+                          ))}
+                        </div>
+                      </Tables.Data>
+
                     </tr>
                   ))}
               </Tables.Body>

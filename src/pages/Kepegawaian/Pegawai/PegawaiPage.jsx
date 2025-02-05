@@ -29,7 +29,7 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
-import { LuKeyRound, LuPencil } from "react-icons/lu";
+import { LuKeyRound, LuPencil, LuTrash2 } from "react-icons/lu";
 import axiosAPI from "@/authentication/axiosApi";
 
 const AkunPage = () => {
@@ -250,7 +250,8 @@ const AkunPage = () => {
     },
     {
       name: "Delete",
-      icon: icons.rideletebin6line,
+      // icon: icons.rideletebin6line,
+      icon: <LuTrash2 />,
       color: "danger",
       func: doDelete,
     },
