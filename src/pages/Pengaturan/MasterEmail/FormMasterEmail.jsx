@@ -193,6 +193,7 @@ const FormMasterEmailPage = () => {
                 <TextField
                   label={"Password"}
                   name="password"
+                  type="password"
                   required={pk ? false : true}
                   value={formik.values.password}
                   onChange={(e) => {
@@ -214,6 +215,7 @@ const FormMasterEmailPage = () => {
                     <TextField
                       label={"Konfirmasi Password"}
                       name="confirm_password"
+                      type="password"
                       required
                       value={formik.values.confirm_password}
                       onChange={(e) => {

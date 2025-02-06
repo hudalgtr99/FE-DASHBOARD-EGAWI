@@ -31,6 +31,7 @@ import PayrollGajiPage from "@/pages/Payroll/Payroll/PayrollGajiPage";
 import { FaCogs } from "react-icons/fa";
 import MasterEmailPage from "@/pages/Pengaturan/MasterEmail/MasterEmail";
 import DiagnosticEmail from "@/pages/Pengaturan/DiagnosticEmail/DiagnosticEmail";
+import TemplatePage from "@/pages/Pengaturan/Templates/TemplatePage";
 
 let jwt = null; // Initialize jwt variable
 
@@ -275,6 +276,13 @@ export const menu = [
         name: "diagnostic-email",
         title: "Diagnostic Email",
         element: <DiagnosticEmail />,
+        sub: [],
+      },
+      {
+        menuLink: "/pengaturan/template-email",
+        name: "template-email",
+        title: "Template Email",
+        element: <TemplatePage />,
         sub: [],
       },
     ],

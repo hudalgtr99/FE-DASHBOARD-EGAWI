@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_edeluser, API_URL_masteremail } from "@/constants";
+import { API_URL_edeluser, API_URL_templates } from "@/constants";
 import {
   Button,
   Container,
@@ -21,15 +21,15 @@ import { LuEye, LuPencil } from "react-icons/lu";
 import { Modal } from "../../../components";
 import axiosAPI from "../../../authentication/axiosApi";
 import formatRupiah from "@/utils/formatRupiah";
-import { masterEmailReducer } from "@/reducers/masterEmailReducers";
+import { templateReducer } from "@/reducers/templateReducers";
 
 const TemplatePage = () => {
   const {
-    getMasterEmailResult,
-    addMasterEmailResult,
-    deleteMasterEmailResult,
-    getMasterEmailLoading,
-  } = useSelector((state) => state.masteremail);
+    getTemplateResult,
+    addTemplateResult,
+    deleteTemplateResult,
+    getTemplateLoading,
+  } = useSelector((state) => state.template);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ const TemplatePage = () => {
 
   const onEdit = (item) => {
     // Store the item in localStorage
-    navigate(`/pengaturan/masteremail/form/${encrypted_id(item.id)}`);
+    navigate(`/pengaturan/template-email/form/${encrypted_id(item.id)}`);
   };
 
   const onShow = (item) => {
@@ -83,7 +83,7 @@ const TemplatePage = () => {
 
   const doDelete = (item) => {
     deleteData(
-      { dispatch, redux: masterEmailReducer },
+      { dispatch, redux: templateReducer },
       item.id,
       API_URL_edeluser,
       "DELETE_AKUN"
@@ -93,10 +93,10 @@ const TemplatePage = () => {
   const get = useCallback(
     async (param) => {
       await getData(
-        { dispatch, redux: masterEmailReducer },
+        { dispatch, redux: templateReducer },
         param,
-        API_URL_masteremail,
-        "GET_MASTEREMAIL"
+        API_URL_templates,
+        "GET_TEMPLATE"
       );
       setLoading(false);
     },
@@ -106,7 +106,7 @@ const TemplatePage = () => {
   const getDetail = async (id) => {
     setLoadingModal(true);
     try {
-      const res = await axiosAPI.get(`${API_URL_masteremail}${id}`);
+      const res = await axiosAPI.get(`${API_URL_templates}${id}`);
       setDetailMasterEmail(res.data);
     } catch (error) {
       alert(
@@ -145,7 +145,7 @@ const TemplatePage = () => {
   }, [slug, selectedPerusahaan, limit, pageActive, get]);
 
   useEffect(() => {
-    if (addMasterEmailResult || deleteMasterEmailResult) {
+    if (addTemplateResult || deleteTemplateResult) {
       const param = search
         ? {
             param: `?search=${search}&perusahaan=${
@@ -159,17 +159,10 @@ const TemplatePage = () => {
           };
       get(param);
     }
-  }, [
-    addMasterEmailResult,
-    deleteMasterEmailResult,
-    search,
-    limit,
-    pageActive,
-    get,
-  ]);
+  }, [addTemplateResult, deleteTemplateResult, search, limit, pageActive, get]);
 
-  const dataWithIndex = getMasterEmailResult.results
-    ? getMasterEmailResult.results.map((item, index) => ({
+  const dataWithIndex = getTemplateResult.results
+    ? getTemplateResult.results.map((item, index) => ({
         ...item,
         index: pageActive * limit + index + 1,
       }))
@@ -191,7 +184,7 @@ const TemplatePage = () => {
   ]);
 
   const onAdd = () => {
-    navigate(`/pengaturan/masteremail/form`);
+    navigate(`/pengaturan/template-email/form`);
   };
 
   return (
@@ -214,7 +207,7 @@ const TemplatePage = () => {
             </Button>
           </div>
         </div>
-        {getMasterEmailLoading ? ( // Show loading indicator if loading is true
+        {getTemplateLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -223,10 +216,8 @@ const TemplatePage = () => {
             <Tables.Head>
               <tr>
                 <Tables.Header>No</Tables.Header>
-
+                <Tables.Header>Type</Tables.Header>
                 <Tables.Header>Name</Tables.Header>
-                <Tables.Header>Email</Tables.Header>
-                <Tables.Header>Status</Tables.Header>
                 <Tables.Header center>Actions</Tables.Header>
               </tr>
             </Tables.Head>
@@ -235,16 +226,9 @@ const TemplatePage = () => {
                 dataWithIndex.map((item) => (
                   <Tables.Row key={item.id}>
                     <Tables.Data>{item.index || "-"}</Tables.Data>
-                    <Tables.Data>{item?.name || "belum ada"}</Tables.Data>
+                    <Tables.Data>{item?.type || "belum ada"}</Tables.Data>
                     <Tables.Data>
-                      {item?.email || "Nama tidak tersedia"}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {item?.status === "Y" ? (
-                        <span className="text-green-500">Aktif</span>
-                      ) : (
-                        <span className="text-red-500">Tidak Aktif</span>
-                      )}
+                      {item?.name || "Nama tidak tersedia"}
                     </Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
@@ -277,7 +261,7 @@ const TemplatePage = () => {
         )}
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getMasterEmailResult.count} // Total items count from the API result
+            totalCount={getTemplateResult.count} // Total items count from the API result
             pageSize={limit} // Items per page (limit)
             currentPage={pageActive + 1} // Current page
             onPageChange={handlePageClick} // Page change handler
@@ -299,46 +283,29 @@ const TemplatePage = () => {
       >
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
-            Detail MasterEmail
+            Detail Template
           </h2>
-          <ul className="space-y-4">
+          <ul className="space-y-4 mb-4">
             <li className="flex justify-between">
-              <span className="font-medium">ID:</span>
-              <span className="text-gray-800">{detailMasterEmail?.id}</span>
+              <span className="font-medium">Type : </span>
+              <span className="text-gray-800">{detailMasterEmail?.type}</span>
             </li>
             <li className="flex justify-between">
-              <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">
-                {detailMasterEmail?.employee_name}
-              </span>
-            </li>
-            {jwt?.level === "Super Admin" && (
-              <li className="flex justify-between">
-                <span className="font-medium">Perusahaan:</span>
-                <span className="text-gray-800">
-                  {detailMasterEmail?.nama_perusahaan}
-                </span>
-              </li>
-            )}
-            <li className="flex justify-between">
-              <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">
-                {detailMasterEmail?.id_pegawai}
-              </span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">Jabatan:</span>
-              <span className="text-gray-800">
-                {detailMasterEmail?.jabatan_pegawai}
-              </span>
-            </li>
-            <li className="flex justify-between">
-              <span className="font-medium">MasterEmail:</span>
-              <span className="text-gray-800">
-                {formatRupiah(detailMasterEmail?.amount)}
-              </span>
+              <span className="font-medium">Name : </span>
+              <span className="text-gray-800">{detailMasterEmail?.name}</span>
             </li>
           </ul>
+          <div className="mb-4">
+            <label className="font-medium mb-2">Subject</label>
+            <p>{detailMasterEmail?.subject}</p>
+          </div>
+
+          <div>
+            <lable className="font-medium mb-2">Message</lable>
+            <div
+              dangerouslySetInnerHTML={{ __html: detailMasterEmail?.message }}
+            ></div>
+          </div>
         </div>
       </Modal>
     </div>

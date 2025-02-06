@@ -184,6 +184,9 @@ export const API_URL_salary = `${baseurl}/salary/`;
 //master email
 export const API_URL_masteremail = `${baseurl}/master-email/`;
 
+//template email
+export const API_URL_templates = `${baseurl}/templates/`;
+
 //delegation
 export const API_URL_delegation = `${baseurl}/delegation/`;
 //task proyek
