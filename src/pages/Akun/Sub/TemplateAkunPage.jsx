@@ -28,7 +28,7 @@ import { FaFileExcel } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { Checkbox } from "../../../components";
-import { LuKeyRound, LuPencil } from "react-icons/lu";
+import { LuKeyRound, LuPencil, LuTrash2 } from "react-icons/lu";
 import { useAuth } from "../../../context/AuthContext";
 
 const TemplateAkun = ({ getapiakun, activeTab }) => {
@@ -236,7 +236,8 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
     },
     {
       name: "Delete",
-      icon: icons.rideletebin6line,
+      // icon: icons.rideletebin6line,
+      icon: <LuTrash2 />,
       color: "danger",
       func: doDelete,
     },

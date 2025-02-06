@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, Modal, Tables, TextField } from "@/components";
+import { Button, Container, Modal, Tables, TextField, Tooltip } from "@/components";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import {
@@ -26,6 +26,7 @@ import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
 import { API_URL_deductiontypes } from "@/constants";
 import { AuthContext, useAuth } from "@/context/AuthContext";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const TypePotongan = () => {
   const [showModal, setShowModal] = useState(false);
@@ -187,14 +188,18 @@ const TypePotongan = () => {
   const action = [
     {
       name: "Edit",
-      icon: <BiEdit size={20} />,
-      color: "text-yellow-500",
+      // icon: <BiEdit size={20}/>,
+      // color: "text-yellow-500",
+      icon: <LuPencil size={20}/>,
+      color: "success",
       func: onEdit,
     },
     {
       name: "Hapus",
-      icon: <BiTrash size={20} />,
-      color: "text-red-500",
+      // icon: <BiTrash size={20}/>,
+      // color: "text-red-500",
+      icon: <LuTrash2 size={20}/>,
+      color: "danger",
       func: onDelete,
     },
   ];
@@ -295,7 +300,8 @@ const TypePotongan = () => {
                       <td className="p-2 text-center whitespace-nowrap">
                         {item.description}
                       </td>
-                      <td className="p-2 text-center whitespace-nowrap">
+
+                      {/* <td className="p-2 text-center whitespace-nowrap">
                         <div className="flex justify-center">
                           {action.map((action, actionIdx) => (
                             <button
@@ -308,7 +314,25 @@ const TypePotongan = () => {
                             </button>
                           ))}
                         </div>
+                      </td> */}
+
+                      <td className="p-2 text-center whitespace-nowrap">
+                        <div className="flex justify-center gap-2">
+                          {action.map((action)=>(
+                              <Button
+                                size={30}
+                                variant="tonal"
+                                color={action.color}
+                                key={action.name}
+                                onClick={() => action.func(item)}
+                                className={`${action.color} cursor-pointer`}
+                              >
+                                {action.icon}
+                              </Button>                           
+                          ))}
+                        </div>
                       </td>
+                      
                     </tr>
                   ))}
               </Tables.Body>

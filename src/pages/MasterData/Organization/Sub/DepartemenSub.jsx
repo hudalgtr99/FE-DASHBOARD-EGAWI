@@ -26,6 +26,8 @@ import { CiSearch } from "react-icons/ci";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../../../context/AuthContext";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
+
 
 const DivisiSub = () => {
   const {
@@ -124,6 +126,21 @@ const DivisiSub = () => {
     setPageActive(page - 1);
   };
 
+  const [actions] = useState([
+      {
+        name: "Edit",
+        icon: <LuPencil />,
+        color: "success",
+        func: onEdit,
+      },
+      {
+        name: "Delete",
+        icon: <LuTrash2 />,
+        color: "danger",
+        func: doDelete,
+      },
+    ]);
+
   useEffect(() => {
     const offset = pageActive * limit;
 
@@ -215,22 +232,19 @@ const DivisiSub = () => {
                     <Tables.Data>{item.nama}</Tables.Data>
                     <Tables.Data center>
                       <div className="flex items-center justify-center gap-2">
-                        <Tooltip key="edit" tooltip="Edit">
-                          <div
-                            onClick={() => onEdit(item)}
-                            className="text-green-500 cursor-pointer"
-                          >
-                            {icons.bspencil}
-                          </div>
-                        </Tooltip>
-                        <Tooltip key="delete" tooltip="Delete">
-                          <div
-                            onClick={() => doDelete(item)}
-                            className="text-red-500 cursor-pointer"
-                          >
-                            {icons.citrash}
-                          </div>
-                        </Tooltip>
+                      {actions.map((action, i) => (
+                          <Tooltip key={`${action.name}-${i}`} tooltip={action.name}>
+                            <Button
+                              size={30}
+                              variant="tonal"
+                              color={action.color}
+                              onClick={() => action.func(item)}
+                              className={`${action.color} cursor-pointer`}
+                            >
+                              {action.icon}
+                            </Button>
+                          </Tooltip>
+                        ))}
                       </div>
                     </Tables.Data>
                   </Tables.Row>

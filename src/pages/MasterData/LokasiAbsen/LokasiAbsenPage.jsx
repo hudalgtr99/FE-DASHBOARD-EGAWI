@@ -24,6 +24,7 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import { Select } from "../../../components";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const LokasiAbsenPage = () => {
   const {
@@ -138,13 +139,13 @@ const LokasiAbsenPage = () => {
   const [actions] = useState([
     {
       name: "Edit",
-      icon: icons.bspencil,
+      icon: <LuPencil />,
       color: "success",
       func: onEdit,
     },
     {
       name: "Delete",
-      icon: icons.citrash,
+      icon: <LuTrash2 />,
       color: "danger",
       func: doDelete,
     },
