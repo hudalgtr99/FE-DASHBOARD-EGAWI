@@ -153,7 +153,7 @@ const DashboardPage = () => {
           res.data.kehadiranPegawai["Cuti"] || 0,
         ]);
         setTotalPegawai([
-          res.data.totalPegawai["laki laki"] || 0,
+          res.data.totalPegawai["laki-laki"] || 0,
           res.data.totalPegawai["perempuan"] || 0,
         ]);
         setStatusPegawai([
@@ -216,7 +216,7 @@ const DashboardPage = () => {
             title="Jumlah Pegawai"
             icon={<LuUsers />}
             dataSeries={totalPegawai}
-            dataLabels={["Laki Laki", "Perempuan"]}
+            dataLabels={["Laki-laki", "Perempuan"]}
             dataColor={["#36AE7C", "#EB5353"]}
           />
           <CardDonuts
