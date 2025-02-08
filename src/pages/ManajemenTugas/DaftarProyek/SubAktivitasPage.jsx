@@ -222,7 +222,7 @@ const SubAktivitasPage = () => {
                     <div className="font-medium">
                       <div>{item?.createdby_details?.first_name}</div>
                       {/* <div>{item?.}</div> */}
-                      <div className="text-xs bg-violet-200 p-1 rounded">
+                      <div className="text-xs bg-violet-200 dark:bg-violet-300 dark:text-base-500 p-1 rounded">
                         To do : {item?.todotask_details?.title}
                       </div>
                     </div>

@@ -102,7 +102,7 @@ const SelectMonthYear = ({ onChange }) => {
   return (
     <div className="relative w-64" ref={dropdownRef}>
       <div
-        className="w-full flex justify-between text-[14px] items-center px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 cursor-pointer"
+        className="w-full flex justify-between text-[14px] items-center px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 cursor-pointer  dark:bg-base-600 dark:border-base-400 dark:text-base-200 "
         onClick={() => setIsOpen(!isOpen)}
       >
         <IoCalendarClearOutline className="w-5 h-5 mr-2" />
@@ -111,11 +111,11 @@ const SelectMonthYear = ({ onChange }) => {
       </div>
 
       {isOpen && (
-        <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
-          <div className="flex justify-between items-center px-4 py-2 border-b">
+        <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-10 dark:bg-base-600 dark:border-base-500">
+          <div className="flex justify-between items-center px-4 py-2 border-b dark:border-base-500">
             <button
               onClick={decrementMonth}
-              className="p-2 rounded-md hover:bg-gray-200"
+              className="p-2 rounded-md hover:bg-gray-200  dark:hover:bg-base-500"
             >
               <IoChevronBack className="w-5 h-5" />
             </button>
@@ -123,11 +123,11 @@ const SelectMonthYear = ({ onChange }) => {
               type="number"
               value={year === "" ? "" : year}
               onChange={handleYearChange}
-              className="w-16 text-center border rounded-md p-[5px]"
+              className="w-16 text-center border rounded-md p-[5px] dark:bg-base-600 dark:border-base-500 dark:text-base-200 "
             />
             <button
               onClick={incrementMonth}
-              className="p-2 rounded-md hover:bg-gray-200"
+              className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-base-500"
             >
               <IoChevronForward className="w-5 h-5" />
             </button>
@@ -140,7 +140,7 @@ const SelectMonthYear = ({ onChange }) => {
                 className={`text-center p-[5px] text-[14px] rounded-lg ${
                   month === monthName
                     ? "bg-blue-500 text-white"
-                    : "hover:bg-gray-100"
+                    : "hover:bg-gray-100 dark:hover:bg-base-500 dark:text-base-200"
                 }`}
               >
                 {monthName}

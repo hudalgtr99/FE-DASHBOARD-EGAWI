@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, Modal, Tables, TextField, Tooltip } from "@/components";
+import { Button, Container, Limit, Modal, Tables, TextField, Tooltip } from "@/components";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import {
@@ -205,14 +205,14 @@ const TypePotongan = () => {
   ];
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white dark:bg-base-600">
       <div>
         {/* Content */}
-        <div className=" shadow rounded-lg border p-2">
+        <div className=" shadow rounded-lg border dark:border-base-400 p-2">
           {/* Title Data  */}
           <div className="font-bold mb-4">Tipe Potongan</div>
           {/* Search dan Tambah Data  */}
-          <div className="w-full flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 bg-white p-1 rounded-lg gap-4">
+          <div className="w-full flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 dar p-1 rounded-lg gap-4">
             <TextField
               size="sm"
               onChange={(e) => onSearch(e.target.value)}
@@ -291,7 +291,7 @@ const TypePotongan = () => {
                   getIncomeTypesApi.data?.results?.map((item, itemIdx) => (
                     <tr
                       key={itemIdx}
-                      className="border-b border-gray-200 text-sm hover:bg-white/60 transition-all"
+                      className="border-b border-gray-200 text-sm hover:bg-base-400/60 transition-all"
                     >
                       <td className="p-2 text-center whitespace-nowrap">
                         {itemIdx + queryParams.offset + 1}
@@ -348,6 +348,8 @@ const TypePotongan = () => {
             limit={queryParams.limit}
             setLimit={handleSelect}
           />
+          {/* <Limit limit={queryParams.limit}
+            setLimit={handleSelect} /> */}
         </div>
       </div>
 

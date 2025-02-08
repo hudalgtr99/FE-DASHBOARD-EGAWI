@@ -266,7 +266,7 @@ const PayrollGajiPage = () => {
           <button
             disabled={loadingRunPayroll}
             onClick={() => setShowModal(true)}
-            className="flex text-sm flex-row rounded items-center gap-2 bg-sky-500 text-white w-fit px-2 py-1 hover:bg-sky-600"
+            className="flex text-[14px] flex-row rounded items-center gap-2 bg-sky-500 text-white w-fit px-2 py-1 hover:bg-sky-600"
           >
             {loadingRunPayroll ? (
               <TbLoader2 className="animate-spin" />
@@ -377,15 +377,18 @@ const PayrollGajiPage = () => {
         show={showModal}
         setShow={setShowModal}
         width="md"
+        height="md"
         btnClose={true}
         persistent={false}
       >
-        <div className="p-6 bg-white rounded-lg shadow-lg">
+        <div className="p-6 bg-white dark:bg-base-600 dark:border-base-500 dark:text-base-200 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
             Pilih Bulan Priode Gaji
           </h2>
+
           <div className="flex justify-center">
-            <DatePicker
+
+            {/* <DatePicker
               showIcon
               className="border border-gray-200 text-sm w-full rounded-lg"
               icon=<FaCalendar />
@@ -397,8 +400,20 @@ const PayrollGajiPage = () => {
               locale={id}
               showTwoColumnMonthYearPicker
               placeholderText="Pilih Bulan & Tahun"
-            />
+            /> */}
+
+              <SelectMonthYear
+                selected={periodeMonth}
+                onChange={(date) => {
+                  const validDate = date ? new Date(date) : null;
+                  setPeriodeMonth(
+                    validDate && !isNaN(validDate) ? validDate : null
+                  );
+                }}
+              />
+
           </div>
+
           <div className="mt-4 flex flex-row justify-between">
             <Button color="base" onClick={() => setShowModal(false)}>
               Batal

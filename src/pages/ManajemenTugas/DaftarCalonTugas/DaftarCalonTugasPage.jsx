@@ -299,7 +299,7 @@ const DaftarCalonTugasPage = () => {
         btnClose={true}
         persistent={false}
       >
-        <div className="p-6 bg-white rounded-lg shadow-lg">
+        <div className="p-6 bg-white dark:bg-base-600 dark:text-base-200 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
             Detail Calon Tugas
           </h2>
@@ -308,32 +308,32 @@ const DaftarCalonTugasPage = () => {
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
-                <span className="text-gray-800">
+                <span className="text-gray-800 dark:text-gray-200">
                   {detailDelegation?.company_name}
                 </span>
               </li>
             )}
             <li className="flex justify-between">
               <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">
+              <span className="text-gray-800 dark:text-gray-200">
                 {detailDelegation?.createdbydetail?.first_name}
               </span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">
+              <span className="text-gray-800 dark:text-gray-200">
                 {detailDelegation?.id_pegawai}
               </span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
-              <span className="text-gray-800">
+              <span className="text-gray-800 dark:text-gray-200">
                 {detailDelegation?.jabatan_pegawai}
               </span>
             </li>
           </ul>
-          <div className="mt-4  bg-white rounded-lg shadow-md">
-            <div className="font-medium text-gray-800 mb-2">
+          <div className="mt-4  bg-white dark:bg-base-600 rounded-lg shadow-md">
+            <div className="font-medium text-gray-800 dark:text-base-200 mb-2">
               Departemen Yang Akan Ditunjukan:
             </div>
             <div className="space-y-2">
@@ -341,7 +341,7 @@ const DaftarCalonTugasPage = () => {
                 detailDelegation.departemen_details.map((value, index) => (
                   <div
                     key={index}
-                    className="flex items-center p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition duration-200"
+                    className="flex items-center p-2 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-base-400 dark:hover:bg-base-600 transition duration-200"
                   >
                     <div className="flex-shrink-0">
                       <svg
@@ -353,7 +353,7 @@ const DaftarCalonTugasPage = () => {
                         <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm0 10a4 4 0 110-8 4 4 0 010 8z" />
                       </svg>
                     </div>
-                    <div className="ml-3 text-gray-800">
+                    <div className="ml-3 text-gray-800 dark:text-gray-200">
                       {value?.departemen?.nama}
                     </div>
                   </div>

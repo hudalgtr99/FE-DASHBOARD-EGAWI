@@ -120,7 +120,7 @@ const DetailProyekPage = () => {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <button
-          className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+          className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-gray-500 text-gray-200 dark:bg-gray-200 dark:text-gray-500 rounded-full shadow hover:shadow-lg transition-all"
           onClick={() => navigate(-1)}
         >
           <IoMdReturnLeft />
@@ -135,8 +135,8 @@ const DetailProyekPage = () => {
               onClick={() => setTabActive(item.value)}
               className={`${
                 tabActive === item.value &&
-                "border-b-2 border-blue-700 text-blue-700"
-              }  hover:bg-gray-200 active:bg-gray-300`}
+                "border-b-2 border-blue-700 text-blue-700 dark:border-blue-400 dark:text-blue-400"
+              }  hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-700`}
             >
               <div className="p-2">{item.label}</div>
             </button>
@@ -152,7 +152,7 @@ const DetailProyekPage = () => {
             <div className="flex flex-row gap-2 mb-2">
               {detailProyek?.departemen_details?.map((item, index) => {
                 return (
-                  <div key={index} className="bg-green-100 p-1.5 rounded">
+                  <div key={index} className="bg-green-100 dark:bg-green-300 dark:text-base-500 p-1.5 rounded">
                     {item?.departemen?.nama}
                   </div>
                 );
@@ -183,7 +183,7 @@ const DetailProyekPage = () => {
               left_day={detailProyek?.day_left}
             />
 
-            <div className="bg-white w-full shadow rounded h-[50vh] overflow-y-auto">
+            <div className="bg-white dark:bg-base-600 dark:text-base-200 w-full shadow rounded h-[50vh] overflow-y-auto">
               <div className="border-b">
                 <div className="p-4">Riwayat Aktivitas</div>
               </div>

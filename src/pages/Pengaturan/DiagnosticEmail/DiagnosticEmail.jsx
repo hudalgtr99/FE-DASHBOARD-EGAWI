@@ -100,7 +100,7 @@ const DiagnosticEmail = () => {
         )}
         <hr></hr>
         <form onSubmit={formik.handleSubmit}>
-          <div className="h-auto w-auto px-4 mt-4 bg-neutral dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-600 object-left">
+          <div className="h-auto w-auto px-4 mt-4 bg-neutral dark:bg-base-600 border-b border-neutral-200 dark:border-neutral-600 object-left">
             <div className="mt-4 grid grid-cols-4 gap-4">
               <div>
                 <label className="font-semibold">
@@ -114,7 +114,8 @@ const DiagnosticEmail = () => {
                   name="email"
                   value={formik.values.email}
                   onChange={formik.handleChange}
-                  className="block w-full md:w-1/2 lg:w-1/2 rounded-md border border-gray-500 bg-white py-2 px-2 text-gray-900 shadow-sm focus:ring-1 focus:ring-inset focus:ring-blue-400 sm:text-sm sm:leading-6"
+                  className="block w-full md:w-1/2 lg:w-1/2 rounded-md border border-gray-500 bg-white py-2 px-2 text-gray-900 shadow-sm focus:ring-1 focus:ring-inset focus:ring-blue-400
+                  dark:bg-base-500 dark:text-base-200 sm:text-sm sm:leading-6"
                 >
                   <option value={""}>Select</option>
                   {getMasterEmailResult.results &&
@@ -142,9 +143,11 @@ const DiagnosticEmail = () => {
                   type="email"
                   name="to"
                   id="to"
+                  placeholder="Tulis alamat email tujuan..."
                   value={formik.values.to}
                   onChange={formik.handleChange}
-                  className="block w-full md:w-1/2 lg:w-1/2 rounded-md border border-gray-500 bg-white py-1.5 px-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-1 focus:ring-blue-400 sm:text-sm sm:leading-6"
+                  className="block w-full md:w-1/2 lg:w-1/2 rounded-md border border-gray-500 bg-white py-1.5 px-2 text-gray-900 shadow-sm placeholder:text-gray-600 focus:ring-1 focus:ring-inset focus:ring-blue-400
+                  dark:bg-base-600 dark:text-gray-200 sm:text-sm sm:leading-6"
                 />
                 {formik.touched.to && formik.errors.to && (
                   <div className="text-red-500 dark:text-red-300 text-xs">
@@ -164,9 +167,12 @@ const DiagnosticEmail = () => {
                   type="text"
                   name="title"
                   id="title"
+                  placeholder="Subjek email Anda..."
                   value={formik.values.title}
                   onChange={formik.handleChange}
-                  className="block w-full md:w-1/2 lg:w-1/2 rounded-md border border-gray-500 bg-white py-1.5 px-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-1 focus:ring-blue-400 sm:text-sm sm:leading-6"
+                  className="block w-full md:w-1/2 lg:w-1/2 rounded-md border border-gray-500 bg-white py-1.5 px-2 text-gray-900 shadow-sm placeholder:text-gray-600 focus:ring-1 focus:ring-blue-400
+                  dark:bg-base-600 dark:text-gray-200
+                  sm:text-sm sm:leading-6" 
                 />
                 {formik.touched.title && formik.errors.title && (
                   <div className="text-red-500 dark:text-red-300 text-xs">
