@@ -317,7 +317,7 @@ const ValidasiLemburSub = ({ type }) => {
     <div>
       <Container>
         <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className="w-full flex flex-row gap-4 sm:w-[25rem]">
+          <div className="w-full flex flex-row flex-wrap sm:flex-nowrap gap-4 sm:w-[25rem]">
             <TextField
               onChange={doSearch}
               placeholder="Search"

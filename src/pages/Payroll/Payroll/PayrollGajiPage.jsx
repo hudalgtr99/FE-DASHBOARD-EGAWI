@@ -225,7 +225,7 @@ const PayrollGajiPage = () => {
   return (
     <div>
       <Container>
-        <div className="flex flex-row items-center gap-4 justify-between">
+        <div className="flex flex-row flex-wrap md:flex-nowrap items-center gap-4 justify-between">
           {/* <div className="flex flex-row items-center gap-4">
             <button
               onClick={() => alert("hello")}

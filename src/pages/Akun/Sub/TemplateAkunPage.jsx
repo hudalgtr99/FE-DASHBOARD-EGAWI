@@ -49,21 +49,21 @@ const TemplateAkun = ({ getapiakun, activeTab }) => {
   const [loading, setLoading] = useState(true);
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (activeTab === "0") {
-          url += "?active=true";
-        } else if (activeTab === "1") {
-          url += "?active=false";
-        }
-      } catch (error) {
-        console.error("Error fetching perusahaan data:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       if (activeTab === "0") {
+  //         url += "?active=true";
+  //       } else if (activeTab === "1") {
+  //         url += "?active=false";
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching perusahaan data:", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []); // Add activeTab as a dependency to refetch on tab change
+  //   fetchData();
+  // }, []); // Add activeTab as a dependency to refetch on tab change
 
   const debouncedSearch = useCallback(
     debounce((value) => {

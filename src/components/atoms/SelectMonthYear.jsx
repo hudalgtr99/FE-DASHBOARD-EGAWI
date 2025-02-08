@@ -36,9 +36,6 @@ const SelectMonthYear = ({ onChange }) => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
-        onChange(
-          `${year}-${(months.indexOf(month) + 1).toString().padStart(2, "0")}`
-        );
       }
     };
 

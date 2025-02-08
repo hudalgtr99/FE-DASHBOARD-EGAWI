@@ -169,7 +169,7 @@ const Header = ({ setSideOpen }) => {
         <div className="flex items-center gap-4">
           <div className="flex items-center">
             {jwt && jwt?.level === "Super Admin" && (
-              <div className="w-60 mr-3">
+              <div className=" hidden md:block w-60 mr-3">
                 <Select
                   options={perusahaanOptions}
                   placeholder="Filter perusahaan"
