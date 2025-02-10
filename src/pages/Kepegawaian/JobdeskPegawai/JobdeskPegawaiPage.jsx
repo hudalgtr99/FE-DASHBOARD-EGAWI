@@ -314,40 +314,40 @@ const JobdeskPegawaiPage = () => {
         btnClose={true}
         persistent={false}
       >
-        <div className="p-6 bg-white rounded-lg shadow-lg">
+        <div className="p-6 bg-white dark:bg-base-600 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">
             Detail Jobdesk
           </h2>
           <ul className="space-y-4">
             <li className="flex justify-between">
               <span className="font-medium">ID:</span>
-              <span className="text-gray-800">{detailJobdesk?.id}</span>
+              <span className="text-gray-800 dark:text-base-100">{detailJobdesk?.id}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">{detailJobdesk?.first_name}</span>
+              <span className="text-gray-800  dark:text-base-100">{detailJobdesk?.first_name}</span>
             </li>
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
-                <span className="text-gray-800">
+                <span className="text-gray-800  dark:text-base-100">
                   {detailJobdesk?.nama_perusahaan}
                 </span>
               </li>
             )}
             <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">{detailJobdesk?.id_pegawai}</span>
+              <span className="text-gray-800  dark:text-base-100">{detailJobdesk?.id_pegawai}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
-              <span className="text-gray-800">
+              <span className="text-gray-800  dark:text-base-100">
                 {detailJobdesk?.jabatan_pegawai}
               </span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Total Jobdesk:</span>
-              <span className="text-gray-800">
+              <span className="text-gray-800  dark:text-base-100">
                 {detailJobdesk?.total_jobdesk}
               </span>
             </li>
@@ -358,13 +358,13 @@ const JobdeskPegawaiPage = () => {
                   detailJobdesk?.jobdesk_details?.map((jobdesk, index) => (
                     <li
                       key={index}
-                      className="border border-gray-300 p-4 rounded-md bg-gray-50"
+                      className="border border-gray-300 p-4 rounded-md bg-gray-50 dark:bg-base-500 dark:border-base-300"
                     >
                       <h3 className="font-semibold">{jobdesk?.title}</h3>
-                      <p className="text-gray-600">{jobdesk?.description}</p>
+                      <p className="text-gray-600  dark:text-base-200">{jobdesk?.description}</p>
                       <div className="mt-2">
                         <span className="font-medium">Tanggal:</span>{" "}
-                        <span className="text-gray-800">
+                        <span className="text-gray-800 dark:text-base-100">
                           {moment(jobdesk?.date).format("DD MMMM YYYY")}
                         </span>
                       </div>
@@ -376,7 +376,7 @@ const JobdeskPegawaiPage = () => {
                       </div> */}
                       <div className="mt-1">
                         <span className="font-medium">Periode Pekerjaan:</span>{" "}
-                        <span className="text-gray-800">
+                        <span className="text-gray-800 dark:text-base-100">
                           {jobdesk?.recurrence_display}
                         </span>
                       </div>
@@ -388,7 +388,7 @@ const JobdeskPegawaiPage = () => {
                       </div> */}
                       <div className="mt-1">
                         <span className="font-medium">Dibuat Oleh:</span>{" "}
-                        <span className="text-gray-800">
+                        <span className="text-gray-800 dark:text-base-100">
                           {jobdesk?.created_by_firstname}
                         </span>
                       </div>

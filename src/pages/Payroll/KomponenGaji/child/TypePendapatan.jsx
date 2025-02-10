@@ -201,14 +201,14 @@ const TypePendapatan = () => {
   ];
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white dark:bg-base-600">
       <div>
         {/* Content */}
-        <div className=" shadow rounded-lg border p-2">
+        <div className=" shadow rounded-lg border dark:border-base-400 p-2">
           {/* Title Data  */}
           <div className="font-bold mb-4">Tipe Pendapatan</div>
           {/* Search dan Tambah Data  */}
-          <div className="w-full flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 bg-white p-1 rounded-lg gap-4">
+          <div className="w-full flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 dark:text-base-200 p-1 rounded-lg gap-4">
             <TextField
               size="sm"
               onChange={(e) => onSearch(e.target.value)}
@@ -225,7 +225,7 @@ const TypePendapatan = () => {
           <div className=" custom-scroll">
             <Tables>
               <Tables.Head>
-                <tr className="border-b-2 border-gray-200">
+                <tr className="border-b-2 border-base-400">
                   {tableHead.map((item, itemIdx) => (
                     <th
                       key={itemIdx}
@@ -287,7 +287,7 @@ const TypePendapatan = () => {
                   getIncomeTypesApi.data?.results?.map((item, itemIdx) => (
                     <tr
                       key={itemIdx}
-                      className="border-b border-gray-200 text-sm hover:bg-white/60 transition-all"
+                      className="border-b border-base-400 text-sm hover:bg-base-400/60 transition-all"
                     >
                       <td className="p-2 text-center whitespace-nowrap">
                         {itemIdx + queryParams.offset + 1}
@@ -344,6 +344,8 @@ const TypePendapatan = () => {
             limit={queryParams.limit}
             setLimit={handleSelect}
           />
+          {/* <Limit limit={queryParams.limit}
+            setLimit={handleSelect} /> */}
         </div>
       </div>
 

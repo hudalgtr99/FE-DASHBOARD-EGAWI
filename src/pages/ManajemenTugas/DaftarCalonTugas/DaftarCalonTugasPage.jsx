@@ -211,7 +211,7 @@ const DaftarCalonTugasPage = () => {
                         <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm0 10a4 4 0 110-8 4 4 0 010 8z" />
                       </svg>
                     </div>
-                    <div className="ml-3 text-gray-800">
+                    <div className="ml-3 text-gray-800 dark:text-gray-200">
                       {value?.departemen?.nama}
                     </div>
                   </div>

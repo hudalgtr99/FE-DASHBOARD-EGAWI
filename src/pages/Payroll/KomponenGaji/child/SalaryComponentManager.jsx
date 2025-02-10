@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { Button, Modal, Select, Tables, TextField, Tooltip } from "@/components";
+import { Button, Limit, Modal, Select, Tables, TextField, Tooltip } from "@/components";
 import {
   API_URL_deductiontypes,
   API_URL_incometypes,
@@ -296,14 +296,14 @@ const SalaryComponentManager = () => {
   }, [getDeductionTypes.data]);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white dark:bg-base-600">
       <div>
         {/* Content */}
         <div className="rounded-lg p-2">
           {/* Title Data  */}
           <div className="font-bold mb-4">Otomatis Menerapkan Komponen</div>
           {/* Search dan Tambah Data  */}
-          <div className="w-full justify-start flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 bg-white p-1 rounded-lg gap-4">
+          <div className="w-full justify-start flex flex-row flex-wrap sm:flex-nowrap items-center text-gray-600 bg-white dark:bg-base-600 p-1 rounded-lg gap-4">
             <button
               className="text-xs whitespace-nowrap font-medium px-3 py-2 bg-green-500 text-white rounded-lg shadow hover:shadow-lg transition-all"
               onClick={() => onAdd()}
@@ -474,10 +474,12 @@ const SalaryComponentManager = () => {
               getSettingComponentSalary.data?.count > 0
                 ? getSettingComponentSalary.data?.count
                 : 0
-            }
+            }  
             limit={queryParams.limit}
             setLimit={handleSelect}
           />
+          {/* <Limit limit={queryParams.limit}
+            setLimit={handleSelect} /> */}
         </div>
       </div>
 

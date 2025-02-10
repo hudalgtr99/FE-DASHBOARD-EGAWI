@@ -26,6 +26,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { apiReducer } from "@/reducers/apiReducers";
 import { jobdeskPegawaiReducer } from "@/reducers/jobdeskPegawaiReducers";
 import axiosAPI from "@/authentication/axiosApi";
+import { LuTrash2 } from "react-icons/lu";
 
 const recurrenceOptions = [
   { label: "Harian", value: "daily" },
@@ -354,7 +355,7 @@ const FormJobdeskPegawaiPage = () => {
                       type="button"
                       onClick={() => removeJobdesk(index)}
                     >
-                      <IoTrash color="red" size={25} />
+                      <LuTrash2 color="red" size={20} />
                     </button>
                   </div>
                 </div>

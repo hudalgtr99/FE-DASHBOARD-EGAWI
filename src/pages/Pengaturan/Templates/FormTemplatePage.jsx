@@ -135,7 +135,7 @@ const FormTemplatePage = () => {
       <Container>
         <div className="flex items-center gap-2 mb-4">
           <button
-            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white rounded-full shadow hover:shadow-lg transition-all"
+            className="text-xs md:text-sm whitespace-nowrap font-medium p-2 bg-[#BABCBD] text-white dark:bg-gray-500 dark:text-gray-200 rounded-full shadow hover:shadow-lg transition-all"
             onClick={() => navigate(-1)}
           >
             <IoMdReturnLeft />
@@ -146,7 +146,7 @@ const FormTemplatePage = () => {
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} onKeyDown={handleKeyDown}>
-            <div className="h-auto w-auto px-4 bg-neutral dark:bg-neutral-800  dark:border-neutral-600 object-left">
+            <div className="h-auto w-auto px-4 bg-neutral dark:bg-base-600  dark:border-base-500 object-left">
               <div className="mt-4 grid grid-cols-12 gap-3 mb-4">
                 <div className="col-span-full md:col-span-6 mb-1.5">
                   <TextField
