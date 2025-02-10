@@ -167,7 +167,7 @@ const Header = ({ setSideOpen }) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             {jwt && jwt?.level === "Super Admin" && (
               <div className=" hidden md:block w-60 mr-3">
                 <Select
@@ -192,10 +192,10 @@ const Header = ({ setSideOpen }) => {
               spacing={20}
               rounded="md"
               button={
-                <ButtonRipple className="p-2 rounded-full transition-[background] hover:bg-neutral-200 dark:hover:bg-base-500">
+                <ButtonRipple className="rounded-full transition-[background] hover:bg-neutral-200 dark:hover:bg-base-500">
                   <Badge
                     hidden
-                    size="xl"
+                    size="2xl"
                     placement="top-end"
                     skidding={8}
                     color="success"
