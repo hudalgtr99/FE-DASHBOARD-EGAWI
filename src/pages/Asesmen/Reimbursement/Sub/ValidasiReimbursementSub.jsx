@@ -393,34 +393,36 @@ const ValidasiReimbursementSub = ({ type }) => {
                     <Tables.Data>{item?.note ? item?.note : "-"}</Tables.Data>
                   )}
                   <Tables.Data>
-                    {Array.isArray(item?.reimbursement_files) &&
-                    item?.reimbursement_files.length > 0 ? (
-                      <div className="flex flex-col justify-start gap-2">
-                        {item?.reimbursement_files?.map((val, i) => (
-                          <button
-                            key={i}
-                            className="flex justify-start"
-                            title="Klik untuk pratinjau"
-                            onClick={() => handlePreviewFile(val?.file)}
-                          >
-                            {isImage(val?.file) ? (
-                              <img
-                                src={`${baseurl}${val?.file}`}
-                                alt={val?.file}
-                                className="rounded"
-                                style={{ width: "auto", height: 40 }}
-                              />
-                            ) : (
-                              <div className="flex justify-start">
-                                {getFileIcon(val?.file)}
-                              </div>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <>Tidak Ada File</>
-                    )}
+                    <div className="flex flex-row gap-4">
+                      {Array.isArray(item?.reimbursement_files) &&
+                      item?.reimbursement_files.length > 0 ? (
+                        <div className="flex flex-row justify-start gap-2">
+                          {item?.reimbursement_files?.map((val, i) => (
+                            <button
+                              key={i}
+                              className="flex justify-start"
+                              title="Klik untuk pratinjau"
+                              onClick={() => handlePreviewFile(val?.file)}
+                            >
+                              {isImage(val?.file) ? (
+                                <img
+                                  src={`${baseurl}${val?.file}`}
+                                  alt={val?.file}
+                                  className="rounded"
+                                  style={{ width: "auto", height: 40 }}
+                                />
+                              ) : (
+                                <div className="flex justify-start h-40">
+                                  {getFileIcon(val?.file)}
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <>Tidak Ada File</>
+                      )}
+                    </div>
                   </Tables.Data>
                   {type === "validasi_reimbursement" && (
                     <Tables.Data center>

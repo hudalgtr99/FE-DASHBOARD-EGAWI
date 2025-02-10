@@ -257,34 +257,38 @@ export const menu = [
     element: <KalenderPage />,
     sub: [],
   },
-  {
-    icon: <FaCogs />,
-    menuLink: "/pengaturan",
-    name: "pengaturan",
-    title: "pengaturan",
-    element: null,
-    sub: [
-      {
-        menuLink: "/pengaturan/master-email",
-        name: "master-email",
-        title: "Master Email",
-        element: <MasterEmailPage />,
-        sub: [],
-      },
-      {
-        menuLink: "/pengaturan/diagnostic-email",
-        name: "diagnostic-email",
-        title: "Diagnostic Email",
-        element: <DiagnosticEmail />,
-        sub: [],
-      },
-      {
-        menuLink: "/pengaturan/template-email",
-        name: "template-email",
-        title: "Template Email",
-        element: <TemplatePage />,
-        sub: [],
-      },
-    ],
-  },
+  ...(jwt && jwt.level === "Super Admin"
+    ? [
+        {
+          icon: <FaCogs />,
+          menuLink: "/pengaturan",
+          name: "pengaturan",
+          title: "pengaturan",
+          element: null,
+          sub: [
+            {
+              menuLink: "/pengaturan/master-email",
+              name: "master-email",
+              title: "Master Email",
+              element: <MasterEmailPage />,
+              sub: [],
+            },
+            {
+              menuLink: "/pengaturan/diagnostic-email",
+              name: "diagnostic-email",
+              title: "Diagnostic Email",
+              element: <DiagnosticEmail />,
+              sub: [],
+            },
+            {
+              menuLink: "/pengaturan/template-email",
+              name: "template-email",
+              title: "Template Email",
+              element: <TemplatePage />,
+              sub: [],
+            },
+          ],
+        },
+      ]
+    : []),
 ];
