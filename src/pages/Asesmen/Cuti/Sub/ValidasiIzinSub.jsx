@@ -267,13 +267,13 @@ const ValidasiIzinSub = ({ type }) => {
 
   const [actions] = useState([
     {
-      name: "terima",
+      name: "Terima",
       icon: icons.mdcheckcircle,
       color: "success",
       func: onTerima,
     },
     {
-      name: "tolak",
+      name: "Tolak",
       icon: icons.riclosecirclefill,
       color: "danger",
       func: onTolak,

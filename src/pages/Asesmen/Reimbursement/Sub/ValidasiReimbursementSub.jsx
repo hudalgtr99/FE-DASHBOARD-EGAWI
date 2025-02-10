@@ -280,19 +280,19 @@ const ValidasiReimbursementSub = ({ type }) => {
 
   const [actions] = useState([
     {
-      name: "detail",
+      name: "Detail",
       icon: icons.aifilleye,
       color: "primary",
       func: onDetail,
     },
     {
-      name: "terima",
+      name: "Terima",
       icon: icons.mdcheckcircle,
       color: "success",
       func: onTerima,
     },
     {
-      name: "tolak",
+      name: "Tolak",
       icon: icons.riclosecirclefill,
       color: "danger",
       func: onTolak,
