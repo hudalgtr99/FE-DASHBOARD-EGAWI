@@ -281,9 +281,19 @@ const Router = () => {
             path="/kepegawaian/penugasan/:pk"
             element={<PenugasanDetail />}
           />
+          <Route
+            path="/manajemen-tugas/daftar-calon-tugas/form"
+            element={<FormCalonTugasPage />}
+          />
 
           {/* Tunjangan */}
           <Route path="/tunjangan/form" element={<TunjanganForm />} />
+
+          {/* manajementugas */}
+          <Route
+            path="manajemen-tugas/daftar-proyek/detail"
+            element={<DetailProyekPage />}
+          />
 
           {/* Potongan */}
           <Route path="/potongan/form" element={<PotonganForm />} />

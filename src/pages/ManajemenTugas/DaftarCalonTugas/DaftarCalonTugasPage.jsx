@@ -1,347 +1,205 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteData, encrypted_id, getData } from "@/actions";
-import { API_URL_delegation, API_URL_edeluser } from "@/constants";
-import {
-  Button,
-  Container,
-  Pagination,
-  Tables,
-  TextField,
-  Tooltip,
-  PulseLoading,
-  Modal,
-} from "@/components";
-import { debounce } from "lodash"; // Import lodash debounce
-import { CiSearch } from "react-icons/ci";
-import { FaPlus } from "react-icons/fa";
-
-import { AuthContext, useAuth } from "@/context/AuthContext";
-import { LuEye, LuPencil } from "react-icons/lu";
+import { useCallback, useContext, useEffect, useState } from "react";
+import DaftarCalonTugasTable from "./DaftarCalonTugasTable";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getData } from "@/actions";
+import { API_URL_delegation } from "@/constants";
 import { delegationReducer } from "@/reducers/delegationReducers";
-import axiosAPI from "@/authentication/axiosApi";
-import { capitalizeFirstLetter } from "@/utils/capitalizeFirstLetter";
+import { TbEye, TbPencil } from "react-icons/tb";
+import { Modal } from "@/components";
+import { AuthContext, useAuth } from "@/context/AuthContext";
+import { toQueryString } from "@/utils/toQueryString";
 
 const DaftarCalonTugasPage = () => {
-  const {
-    getDelegationResult,
-    addDelegationResult,
-    deleteDelegationResult,
-    getDelegationLoading,
-  } = useSelector((state) => state.delegation);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // States & Variables
-  const [limit, setLimit] = useState(10);
-  const [pageActive, setPageActive] = useState(0);
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [loadingModal, setLoadingModal] = useState(false);
-  const { slug } = useParams();
-  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
-  const [showModal, setShowModal] = useState(false);
-  const [detailDelegation, setDetailDelegation] = useState("");
+  const { state } = useLocation();
 
   const { jwt } = useContext(AuthContext);
+  const { selectedPerusahaan } = useAuth();
 
-  const debouncedSearch = useCallback(
-    debounce((value) => {
-      const param = {
-        param: `?search=${value}&limit=${limit}&offset=${pageActive * limit}`,
-      };
+  const [delegations, setDelegations] = useState(null);
 
-      // Jika perusahaan dipilih, tambahkan parameter perusahaan ke dalam query string
-      if (selectedPerusahaan) {
-        param.param += `&perusahaan=${selectedPerusahaan.value}`;
-      }
-
-      get(param);
-    }, 1000),
-    [limit, pageActive, selectedPerusahaan] // Tambahkan selectedPerusahaan sebagai dependency
+  const [modal, setModal] = useState(false);
+  const [firstFetch, setFirstFetch] = useState(false);
+  const [limit, setLimit] = useState(state?.fetch?.limit || 10);
+  const [pageActive, setPageActive] = useState(
+    state?.fetch?.offset ? Math.ceil(state?.fetch?.offset / limit) + 1 : 1
   );
+  const [search, setSearch] = useState(state?.fetch?.search || "");
 
-  const doSearch = (e) => {
+  const handleSearch = (e) => {
     const { value } = e.target;
     setSearch(value);
-    debouncedSearch(value);
-    setPageActive(0);
+    setLimit(10);
+    setPageActive(1);
   };
 
-  const onEdit = (item) => {
-    // Store the item in localStorage
-    navigate(`/manajementugas/daftarcalontugas/form/${encrypted_id(item.id)}`);
+  const handlePageClick = (e) => {
+    const offset = (e - 1) * limit;
+    const param = {};
+    if (search !== "") {
+      param.search = search;
+    }
+    param.offset = offset;
+    param.limit = limit;
+    get(param);
+    setPageActive(e);
   };
 
-  const onShow = (item) => {
-    getDetail(item?.id);
-    setShowModal(true);
+  const handleSelect = (e) => {
+    const param = {};
+    if (search !== "") {
+      param.search = search;
+    }
+    param.limit = e;
+    get(param);
+    setLimit(e);
+    setPageActive(1);
   };
 
-  const doDelete = (item) => {
-    deleteData(
-      { dispatch, redux: delegationReducer },
-      item.id,
-      API_URL_edeluser,
-      "DELETE_AKUN"
-    );
+  const handleAdd = () => {
+    navigate("/manajemen-tugas/daftar-calon-tugas/form");
+  };
+
+  const handleView = (item) => {
+    setModal(true);
+    setDelegations(item);
+  };
+
+  const handleEdit = (item) => {
+    navigate("/manajemen-tugas/daftar-calon-tugas/form", {
+      state: item,
+    });
   };
 
   const get = useCallback(
     async (param) => {
-      await getData(
+      navigate("", { state: { fetch: params } });
+
+      const queryString = toQueryString(param);
+      const fullUrl = `${API_URL_delegation}?${queryString}`;
+
+      getData(
         { dispatch, redux: delegationReducer },
-        param,
-        API_URL_delegation,
+        "",
+        fullUrl,
         "GET_DELEGATION"
       );
-      setLoading(false);
     },
-    [dispatch]
+    [dispatch] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  const getDetail = async (id) => {
-    setLoadingModal(true);
-    try {
-      const res = await axiosAPI.get(`${API_URL_delegation}${id}`);
-      setDetailDelegation(res.data);
-    } catch (error) {
-      alert(
-        error?.response?.data?.error ||
-          "Terjadi Kesalahan saat mengambil detail calon tugas"
-      );
-    }
-    setLoadingModal(false);
-  };
+  const fetchData = useCallback(
+    async (param) => {
+      let params = { ...param };
+      const fetch = state?.fetch;
 
-  const handlePageClick = (page) => {
-    const offset = (page - 1) * limit; // Calculate the offset based on the page
+      if (fetch?.search) {
+        params.search = fetch.search;
+      }
+      if (fetch?.limit) {
+        params.limit = fetch.limit;
+      }
+      if (fetch?.offset) {
+        params.offset = fetch.offset;
+      }
+      if (fetch?.perusahaan) {
+        params.perusahaan = fetch.perusahaan;
+      }
 
-    // Menyiapkan parameter pencarian dan perusahaan
-    const param = {
-      param: `?search=${search || ""}&perusahaan=${
-        selectedPerusahaan?.value || ""
-      }&limit=${limit}&offset=${offset}`,
-    };
-
-    get(param);
-    setPageActive(page - 1);
-  };
+      setFirstFetch(true);
+      get(params);
+    },
+    [get] // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   useEffect(() => {
-    const offset = pageActive * limit;
-
-    // Menyiapkan parameter pencarian berdasarkan kondisi slug
-    const param = selectedPerusahaan?.value
-      ? `?search=${search || ""}&perusahaan=${
-          selectedPerusahaan?.value || ""
-        }&limit=${limit}&offset=${offset}`
-      : `?limit=${limit}&search=${search || ""}&offset=${offset}`;
-
-    get({ param });
-  }, [slug, selectedPerusahaan, limit, pageActive, get]);
+    fetchData({ limit, perusahaan: selectedPerusahaan?.value });
+  }, [selectedPerusahaan]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (addDelegationResult || deleteDelegationResult) {
-      const param = search
-        ? {
-            param: `?search=${search}&perusahaan=${
-              selectedPerusahaan?.value || ""
-            }&limit=${limit}&offset=${pageActive * limit}`,
-          }
-        : {
-            param: `?perusahaan=${
-              selectedPerusahaan?.value || ""
-            }&limit=${limit}&offset=${pageActive * limit}`,
-          };
-      get(param);
+    if (firstFetch) {
+      const getData = setTimeout(() => {
+        get({ search: search });
+      }, 500);
+      return () => clearTimeout(getData);
     }
-  }, [
-    addDelegationResult,
-    deleteDelegationResult,
-    search,
-    limit,
-    pageActive,
-    get,
-  ]);
+  }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const dataWithIndex = getDelegationResult.results
-    ? getDelegationResult.results.map((item, index) => ({
-        ...item,
-        index: pageActive * limit + index + 1,
-      }))
-    : [];
-
-  const [actions] = useState([
+  const [action] = useState([
     {
       name: "Show",
-      icon: <LuEye />,
-      color: "primary",
-      func: onShow,
+      color: "info",
+      icon: <TbEye className="text-xl" />,
+      func: handleView,
+      show: true,
+    },
+    {
+      name: "Edit",
+      color: "warning",
+      icon: <TbPencil className="text-xl" />,
+      func: handleEdit,
+      show: true,
     },
   ]);
 
-  const onAdd = () => {
-    navigate(`/manajementugas/daftarcalontugas/form`);
-  };
-
   return (
-    <div>
-      <Container>
-        <div className="mb-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-          <div className={`w-full flex gap-2 sm:w-60`}>
-            <TextField
-              onChange={doSearch}
-              placeholder="Search"
-              value={search}
-              icon={<CiSearch />}
-            />
-          </div>
-          <div className="flex gap-2 items-center">
-            <Button onClick={onAdd}>
-              <div className="flex items-center gap-2">
-                <FaPlus /> Tambah Calon Tugas
-              </div>
-            </Button>
-          </div>
-        </div>
-        {getDelegationLoading ? ( // Show loading indicator if loading is true
-          <div className="flex justify-center py-4">
-            <PulseLoading />
-          </div>
-        ) : (
-          <Tables>
-            <Tables.Head>
-              <tr>
-                <Tables.Header>No</Tables.Header>
-                {jwt?.level === "Super Admin" && (
-                  <Tables.Header>Nama perusahaan</Tables.Header>
-                )}
-                <Tables.Header>Nama Pembuat</Tables.Header>
-                <Tables.Header>Jabatan</Tables.Header>
-                <Tables.Header>Judul</Tables.Header>
-                <Tables.Header>Deskripsi</Tables.Header>
-                <Tables.Header center>Actions</Tables.Header>
-              </tr>
-            </Tables.Head>
-            <Tables.Body>
-              {dataWithIndex.length > 0 ? (
-                dataWithIndex.map((item) => (
-                  <Tables.Row key={item.id}>
-                    <Tables.Data>{item.index || "-"}</Tables.Data>
-                    {jwt?.level === "Super Admin" && (
-                      <Tables.Data>{item?.company_name || "N/A"}</Tables.Data>
-                    )}
-                    <Tables.Data>
-                      {item?.createdbydetail?.first_name || "belum ada"}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {item?.jabatan_pegawai || "belum ada"}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {capitalizeFirstLetter(item?.title) ||
-                        "Nama tidak tersedia"}
-                    </Tables.Data>
-                    <Tables.Data>
-                      {capitalizeFirstLetter(item?.description) || "-"}
-                    </Tables.Data>
-                    <Tables.Data center>
-                      <div className="flex items-center justify-center gap-2">
-                        {actions.map((action) => (
-                          <Tooltip key={action.name} tooltip={action.name}>
-                            <Button
-                              size={30}
-                              variant="tonal"
-                              color={action.color}
-                              onClick={() => action.func(item)}
-                              className={`cursor-pointer`}
-                            >
-                              {action.icon}
-                            </Button>
-                          </Tooltip>
-                        ))}
-                      </div>
-                    </Tables.Data>
-                  </Tables.Row>
-                ))
-              ) : (
-                <Tables.Row>
-                  <td colSpan="9" className="text-center">
-                    Tidak ada data yang tersedia
-                  </td>
-                </Tables.Row>
-              )}
-            </Tables.Body>
-          </Tables>
-        )}
-        <div className="flex justify-end items-center mt-4">
-          <Pagination
-            totalCount={getDelegationResult.count} // Total items count from the API result
-            pageSize={limit} // Items per page (limit)
-            currentPage={pageActive + 1} // Current page
-            onPageChange={handlePageClick} // Page change handler
-            siblingCount={1} // Number of sibling pages (adjust as needed)
-            activeColor="primary" // Optional: active page color
-            rounded="md" // Optional: rounded button style
-            variant="flat" // Optional: button variant
-            size="md" // Optional: button size
-          />
-        </div>
-      </Container>
+    <>
+      <DaftarCalonTugasTable
+        handleSearch={handleSearch}
+        handlePageClick={handlePageClick}
+        handleSelect={handleSelect}
+        limit={limit}
+        setLimit={setLimit}
+        pageActive={pageActive}
+        action={action}
+        search={search}
+        handleAdd={handleAdd}
+      />
 
       <Modal
-        show={showModal}
-        setShow={setShowModal}
+        show={modal}
+        setShow={setModal}
         width="md"
         btnClose={true}
         persistent={false}
       >
-        <div className="p-6 bg-white rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-center">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold mb-4 text-center">
             Detail Calon Tugas
           </h2>
-          {/* <div>Fitur Sedang dibuat</div> */}
-          <ul className="space-y-4">
+
+          <ul className="space-y-2">
             {jwt?.level === "Super Admin" && (
               <li className="flex justify-between">
                 <span className="font-medium">Perusahaan:</span>
-                <span className="text-gray-800">
-                  {detailDelegation?.company_name}
-                </span>
+                <span>{delegations?.company_name}</span>
               </li>
             )}
             <li className="flex justify-between">
               <span className="font-medium">Nama:</span>
-              <span className="text-gray-800">
-                {detailDelegation?.createdbydetail?.first_name}
-              </span>
+              <span>{delegations?.createdbydetail?.first_name}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">ID Pegawai:</span>
-              <span className="text-gray-800">
-                {detailDelegation?.id_pegawai}
-              </span>
+              <span>{delegations?.id_pegawai}</span>
             </li>
             <li className="flex justify-between">
               <span className="font-medium">Jabatan:</span>
-              <span className="text-gray-800">
-                {detailDelegation?.jabatan_pegawai}
-              </span>
+              <span>{delegations?.jabatan_pegawai}</span>
             </li>
           </ul>
-          <div className="mt-4  bg-white rounded-lg shadow-md">
-            <div className="font-medium text-gray-800 mb-2">
+          <div className="mt-4">
+            <div className="font-medium mb-2">
               Departemen Yang Akan Ditunjukan:
             </div>
             <div className="space-y-2">
-              {detailDelegation.departemen_details &&
-                detailDelegation.departemen_details.map((value, index) => (
+              {delegations?.departemen_details &&
+                delegations?.departemen_details.map((value, index) => (
                   <div
                     key={index}
-                    className="flex items-center p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition duration-200"
+                    className="flex items-center p-2 bg-gray-100 dark:bg-gray-300 rounded-md transition duration-200"
                   >
                     <div className="flex-shrink-0">
                       <svg
@@ -362,7 +220,7 @@ const DaftarCalonTugasPage = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 
