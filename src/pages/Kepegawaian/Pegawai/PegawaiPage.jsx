@@ -84,6 +84,12 @@ const AkunPage = () => {
   };
 
   const onEdit = async (item) => {
+    sessionStorage.setItem("isEdit", true);
+    sessionStorage.setItem("Pribadi", true);
+    sessionStorage.setItem("Pendidikan", true);
+    sessionStorage.setItem("Pegawai", true);
+    sessionStorage.setItem("Lainnya", true);
+    sessionStorage.setItem("Keluarga", true);
     try {
       const getDataUser = await axiosAPI.get(API_URL_getakun + item.id);
       // Store the item in localStorage
@@ -258,6 +264,12 @@ const AkunPage = () => {
   ]);
 
   const onAdd = () => {
+    sessionStorage.setItem("isEdit", false);
+    sessionStorage.setItem("Pribadi", false);
+    sessionStorage.setItem("Pendidikan", false);
+    sessionStorage.setItem("Pegawai", false);
+    sessionStorage.setItem("Lainnya", false);
+    sessionStorage.setItem("Keluarga", false);
     sessionStorage.setItem("url", location.pathname);
     localStorage.setItem(
       "editUserData",
@@ -267,7 +279,7 @@ const AkunPage = () => {
           nama: "",
           username: "",
           email: "",
-          is_staff: false,
+          is_staff: true,
           perusahaan: slug
             ? {
                 slug: slug,

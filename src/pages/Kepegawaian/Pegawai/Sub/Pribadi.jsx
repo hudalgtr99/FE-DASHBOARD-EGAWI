@@ -31,8 +31,6 @@ const Pribadi = ({ onTabChange }) => {
   const [userId, setUserid] = useState("");
   const [roles, setRoles] = useState([]);
 
-  const [isEdit, setIsEdit] = useState(pk && pk !== "add");
-
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
 
   useEffect(() => {
@@ -103,9 +101,6 @@ const Pribadi = ({ onTabChange }) => {
         ),
       // roles: Yup.object().required("Roles wajib diisi"),
     }),
-
-    context: { isEdit },
-
     onSubmit: async (values) => {
       try {
         const updatedValues = {
@@ -117,9 +112,7 @@ const Pribadi = ({ onTabChange }) => {
           perusahaan_id: values.perusahaan.id || values.perusahaan.value,
         };
 
-        console.log(isEdit);
-
-        if (isEdit) {
+        if (sessionStorage.getItem("isEdit") === "true") {
           delete updatedValues.password;
 
           const data = await updateData(
@@ -165,10 +158,6 @@ const Pribadi = ({ onTabChange }) => {
             "ADD_PEGAWAI"
           );
 
-          console.log("data ini apa", data);
-          console.log("add pegawai loading apa", !addPegawaiLoading);
-          console.log("add pegawai loading apa", addPegawaiResult);
-
           if (data && !addPegawaiLoading) {
             setUserid(data.user_id);
             const storedData = localStorage.getItem("editUserData");
@@ -178,6 +167,12 @@ const Pribadi = ({ onTabChange }) => {
               parsedData.datapribadi.user_id = data.user_id;
               localStorage.setItem("editUserData", JSON.stringify(parsedData));
             }
+
+            if (isLanjut) {
+              sessionStorage.setItem("Pribadi", true);
+              sessionStorage.setItem("Pegawai", true);
+            }
+
             isLanjut
               ? onTabChange("1")
               : (sessionStorage.getItem("url")
@@ -211,49 +206,7 @@ const Pribadi = ({ onTabChange }) => {
       }));
 
       setPerusahaanOptions(options);
-
-      // console.log(options);
-
-      const storedData = localStorage.getItem("editUserData");
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        // Set perusahaan to the first option if not set
-        if (options.length === 1) {
-          parsedData.datapribadi.perusahaan = options[0] || null;
-          localStorage.setItem("editUserData", JSON.stringify(parsedData));
-        }
-        // Update Formik values with the stored data
-        formik.setValues(parsedData.datapribadi);
-      }
     };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axiosAPI.get(API_URL_getperusahaan);
-      const options = response.data.map((item) => ({
-        value: item.pk,
-        label: item.nama,
-      }));
-
-      setPerusahaanOptions(options);
-      formik.setFieldValue("perusahaan", {
-        value: options.find((opt) => opt.pk === formik.values?.perusahaan?.pk)
-          .value,
-      });
-
-      // console.log(options);
-
-      const storedData = localStorage.getItem("editUserData");
-      if (storedData && options.length === 1) {
-        const parsedData = JSON.parse(storedData);
-        parsedData.datapribadi.perusahaan = options[0];
-        localStorage.setItem("editUserData", JSON.stringify(parsedData));
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -305,9 +258,8 @@ const Pribadi = ({ onTabChange }) => {
   const handleLanjut = () => {
     try {
       setIsLanjut(true);
+      formik.handleSubmit();
       if (formik.isValid) {
-        formik.handleSubmit();
-
         const storedData = localStorage.getItem("editUserData");
         if (storedData) {
           const parsedData = JSON.parse(storedData);
@@ -347,7 +299,11 @@ const Pribadi = ({ onTabChange }) => {
           >
             <IoMdReturnLeft />
           </button>
-          <h1>{isEdit ? "Edit Data Pribadi" : "Tambah Data Pribadi"}</h1>
+          <h1>
+            {sessionStorage.getItem("isEdit") === "true"
+              ? "Edit Data Pribadi"
+              : "Tambah Data Pribadi"}
+          </h1>
         </div>
         <div>
           <form
@@ -576,7 +532,7 @@ const Pribadi = ({ onTabChange }) => {
               /> */}
             </div>
             <div className="justify-end flex gap-3">
-              {isEdit && (
+              {sessionStorage.getItem("isEdit") === "true" && (
                 <Button
                   onClick={() => formik.handleSubmit()}
                   loading={addPegawaiLoading}

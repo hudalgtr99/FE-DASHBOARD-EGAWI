@@ -286,6 +286,11 @@ const Router = () => {
             element={<FormCalonTugasPage />}
           />
 
+          <Route
+            path="/manajemen-tugas/daftar-proyek/form"
+            element={<DetailProyekPage />}
+          />
+
           {/* Tunjangan */}
           <Route path="/tunjangan/form" element={<TunjanganForm />} />
 

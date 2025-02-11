@@ -74,6 +74,11 @@ const Keluarga = ({ onTabChange }) => {
         "ADD_PEGAWAI"
       );
       if (data && !addPegawaiLoading) {
+        if (isLanjut) {
+          sessionStorage.setItem("Pendidikan", true);
+          sessionStorage.setItem("Keluarga", true);
+        }
+
         isLanjut
           ? onTabChange("3")
           : (sessionStorage.getItem("url")

@@ -52,7 +52,8 @@ const Pegawai = ({ onTabChange }) => {
       tgl_bergabung: initialData?.tgl_bergabung || "",
       tgl_resign: initialData?.tgl_resign || "",
       status: initialData?.status || "",
-      departemen_id: initialData?.departemen_id || initialData?.departemen?.id || "",
+      departemen_id:
+        initialData?.departemen_id || initialData?.departemen?.id || "",
     },
     validationSchema: Yup.object().shape({
       id_pegawai: Yup.string().required("ID Pegawai wajib diisi"),
@@ -77,6 +78,11 @@ const Pegawai = ({ onTabChange }) => {
           "ADD_PEGAWAI" // Unified action for add/update
         );
         if (data && !addPegawaiLoading) {
+          if (isLanjut) {
+            sessionStorage.setItem("Pegawai", true);
+            sessionStorage.setItem("Keluarga", true);
+          }
+
           isLanjut
             ? onTabChange("2")
             : (sessionStorage.getItem("url")
@@ -135,7 +141,6 @@ const Pegawai = ({ onTabChange }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleLanjut();
             }}
             className="space-y-6"
           >
@@ -290,7 +295,11 @@ const Pegawai = ({ onTabChange }) => {
                 >
                   Simpan
                 </Button>
-                <Button loading={addPegawaiLoading} type="submit">
+                <Button
+                  onClick={() => handleLanjut()}
+                  loading={addPegawaiLoading}
+                  type="submit"
+                >
                   Lanjut
                 </Button>
               </div>
