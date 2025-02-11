@@ -7,8 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addFormData,
   decrypted_id,
-  encodeURL,
-  encrypted,
   encrypted_id,
   updateFormData,
 } from "@/actions";
@@ -184,8 +182,8 @@ const FormMasterGajiPage = () => {
                       }
                       addParams={
                         formik.values.perusahaan?.value
-                          ? `&perusahaan=${encodeURL(
-                              encrypted(formik.values.perusahaan.value)
+                          ? `&perusahaan=${encrypted_id(
+                              formik.values.perusahaan.value
                             )}`
                           : ""
                       }
@@ -211,8 +209,8 @@ const FormMasterGajiPage = () => {
                   }
                   addParams={
                     formik.values.perusahaan?.value
-                      ? `&perusahaan=${encodeURL(
-                          encrypted(formik.values.perusahaan.value)
+                      ? `&perusahaan=${encrypted_id(
+                          formik.values.perusahaan.value
                         )}`
                       : ""
                   }

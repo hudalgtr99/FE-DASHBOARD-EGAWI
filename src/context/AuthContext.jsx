@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axiosAPI from "@/authentication/axiosApi";
 import { API_URL_getperusahaan } from "@/constants";
-import { encodeURL, encrypted } from "../actions";
+import { encrypted_id } from "../actions";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         const options = [
           { value: null, label: "Semua" },
           ...response.data.map((opt) => ({
-            value: encodeURL(encrypted(opt.id)),
+            value: encrypted_id(opt.id),
             label: opt.nama,
           })),
         ];

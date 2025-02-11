@@ -24,10 +24,12 @@ const EditProfilePribadiPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axiosAPI.get(API_URL_getperusahaan);
-      setperusahaanOptions(response.data.map((item) => ({
-        value: item.pk,
-        label: item.nama,
-      })));
+      setperusahaanOptions(
+        response.data.map((item) => ({
+          value: item.pk,
+          label: item.nama,
+        }))
+      );
     };
 
     fetchData();
@@ -36,7 +38,7 @@ const EditProfilePribadiPage = () => {
   const handleInputError = (values) => {
     // Validate values and handle errors as needed
     // Example logic, replace with your own
-    if (!values || typeof values !== 'object') {
+    if (!values || typeof values !== "object") {
       console.error("Invalid input values:", values);
       return {}; // Return an empty object or handle as needed
     }
@@ -73,7 +75,9 @@ const EditProfilePribadiPage = () => {
     validationSchema: Yup.object({
       nama: Yup.string().required("Nama is required"),
       username: Yup.string().required("Username is required"),
-      email: Yup.string().email("Invalid email format").required("Email is required"),
+      email: Yup.string()
+        .email("Invalid email format")
+        .required("Email is required"),
       no_identitas: Yup.string().required("No Identitas is required"),
       jenis_kelamin: Yup.string().required("Jenis Kelamin is required"),
       no_telepon: Yup.string().required("No Telepon is required"),
@@ -172,13 +176,27 @@ const EditProfilePribadiPage = () => {
               required
               label="Jenis Kelamin"
               name="jenis_kelamin"
-              value={formik.values.jenis_kelamin ? { value: formik.values.jenis_kelamin, label: formik.values.jenis_kelamin } : null}
-              onChange={(option) => formik.setFieldValue('jenis_kelamin', option ? option.value : '')}
+              value={
+                formik.values.jenis_kelamin
+                  ? {
+                      value: formik.values.jenis_kelamin,
+                      label: formik.values.jenis_kelamin,
+                    }
+                  : null
+              }
+              onChange={(option) =>
+                formik.setFieldValue(
+                  "jenis_kelamin",
+                  option ? option.value : ""
+                )
+              }
               options={[
-                { value: 'Laki Laki', label: 'Laki Laki' },
-                { value: 'Perempuan', label: 'Perempuan' },
+                { value: "Laki Laki", label: "Laki Laki" },
+                { value: "Perempuan", label: "Perempuan" },
               ]}
-              error={formik.touched.jenis_kelamin && formik.errors.jenis_kelamin}
+              error={
+                formik.touched.jenis_kelamin && formik.errors.jenis_kelamin
+              }
             />
             <TextField
               required
@@ -212,8 +230,14 @@ const EditProfilePribadiPage = () => {
               required
               label="Agama"
               name="agama"
-              value={formik.values.agama ? { value: formik.values.agama, label: formik.values.agama } : null}
-              onChange={(option) => formik.setFieldValue('agama', option ? option.value : '')}
+              value={
+                formik.values.agama
+                  ? { value: formik.values.agama, label: formik.values.agama }
+                  : null
+              }
+              onChange={(option) =>
+                formik.setFieldValue("agama", option ? option.value : "")
+              }
               options={[
                 { label: "Islam", value: "Islam" },
                 { label: "Protestan", value: "Protestan" },
@@ -249,16 +273,29 @@ const EditProfilePribadiPage = () => {
               value={formik.values.alamat_domisili}
               onChange={formik.handleChange}
               onBlur={(e) => formik.handleBlur}
-              error={formik.touched.alamat_domisili && formik.errors.alamat_domisili}
+              error={
+                formik.touched.alamat_domisili && formik.errors.alamat_domisili
+              }
             />
             <Select
               required
               label="perusahaan ID"
               name="perusahaan_id"
-              value={perusahaanOptions.find(option => option.value === formik.values.perusahaan_id) || null}
-              onChange={(option) => formik.setFieldValue('perusahaan_id', option ? option.value : '')}
+              value={
+                perusahaanOptions.find(
+                  (option) => option.value === formik.values.perusahaan_id
+                ) || null
+              }
+              onChange={(option) =>
+                formik.setFieldValue(
+                  "perusahaan_id",
+                  option ? option.value : ""
+                )
+              }
               options={perusahaanOptions}
-              error={formik.touched.perusahaan_id && formik.errors.perusahaan_id}
+              error={
+                formik.touched.perusahaan_id && formik.errors.perusahaan_id
+              }
             />
           </div>
           <div className="mt-6 flex justify-end">

@@ -20,7 +20,9 @@ import { jwtDecode } from "jwt-decode";
 
 const Pribadi = ({ onTabChange }) => {
   const { pk } = useParams();
-  const { addPegawaiLoading } = useSelector((state) => state.kepegawaian);
+  const { addPegawaiResult, addPegawaiLoading } = useSelector(
+    (state) => state.kepegawaian
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [perusahaanOptions, setPerusahaanOptions] = useState([]);
@@ -29,7 +31,7 @@ const Pribadi = ({ onTabChange }) => {
   const [userId, setUserid] = useState("");
   const [roles, setRoles] = useState([]);
 
-  const isEdit = pk && pk !== "add";
+  const [isEdit, setIsEdit] = useState(pk && pk !== "add");
 
   const [jwt, setJwt] = useState({}); // Initialize jwt variable
 
@@ -115,6 +117,8 @@ const Pribadi = ({ onTabChange }) => {
           perusahaan_id: values.perusahaan.id || values.perusahaan.value,
         };
 
+        console.log(isEdit);
+
         if (isEdit) {
           delete updatedValues.password;
 
@@ -160,6 +164,10 @@ const Pribadi = ({ onTabChange }) => {
             API_URL_createuser,
             "ADD_PEGAWAI"
           );
+
+          console.log("data ini apa", data);
+          console.log("add pegawai loading apa", !addPegawaiLoading);
+          console.log("add pegawai loading apa", addPegawaiResult);
 
           if (data && !addPegawaiLoading) {
             setUserid(data.user_id);
@@ -228,15 +236,12 @@ const Pribadi = ({ onTabChange }) => {
       const options = response.data.map((item) => ({
         value: item.pk,
         label: item.nama,
-        slug: item.slug,
       }));
 
       setPerusahaanOptions(options);
-      console.log(formik.values?.perusahaan?.slug);
       formik.setFieldValue("perusahaan", {
-        value: options.find(
-          (opt) => opt.slug === formik.values?.perusahaan?.slug
-        ).value,
+        value: options.find((opt) => opt.pk === formik.values?.perusahaan?.pk)
+          .value,
       });
 
       // console.log(options);
@@ -538,7 +543,6 @@ const Pribadi = ({ onTabChange }) => {
                 onBlur={formik.handleBlur}
                 options={roles}
                 error={formik.touched.roles ? formik.errors.roles : ""}
-                disabled={jwt.level !== "Super Admin"}
               ></Select>
               <Select
                 required
@@ -572,12 +576,14 @@ const Pribadi = ({ onTabChange }) => {
               /> */}
             </div>
             <div className="justify-end flex gap-3">
-              <Button
-                onClick={() => formik.handleSubmit()}
-                loading={addPegawaiLoading}
-              >
-                Simpan
-              </Button>
+              {isEdit && (
+                <Button
+                  onClick={() => formik.handleSubmit()}
+                  loading={addPegawaiLoading}
+                >
+                  Simpan
+                </Button>
+              )}
               <Button
                 loading={addPegawaiLoading}
                 type="submit"

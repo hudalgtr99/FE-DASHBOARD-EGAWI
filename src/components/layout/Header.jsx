@@ -114,6 +114,9 @@ const Header = ({ setSideOpen }) => {
               if (updatedPathSegments.includes("detail")) {
                 updatedPathSegments.pop();
               }
+              if (updatedPathSegments.includes("changepassword")) {
+                updatedPathSegments.pop();
+              }
 
               // Temukan indeks dari 'form'
               const formIndex = updatedPathSegments.indexOf("form");

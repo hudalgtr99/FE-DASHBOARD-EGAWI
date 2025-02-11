@@ -6,7 +6,7 @@ import * as Yup from "yup";
 // components
 import { Button, Container, TextField } from "@/components";
 
-import { updateData } from "@/actions";
+import { encrypted_id, updateData } from "@/actions";
 import { API_URL_changepassword } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
 import { TbEye, TbEyeOff } from "react-icons/tb";
@@ -26,12 +26,18 @@ const UbahPasswordPage = () => {
       konfirmasi_password_baru: "",
     },
     validationSchema: Yup.object({
-      password_baru: Yup.string().required("Password baru wajib diisi"),
+      password_baru: Yup.string()
+        .min(8, "Password baru minimal 8 karakter")
+        .required("Password baru wajib diisi"),
       konfirmasi_password_baru: Yup.string()
-        .required("Konfirmasi password wajib diisi")
-        .oneOf([Yup.ref("password_baru"), null], "Password tidak cocok"),
+        .oneOf(
+          [Yup.ref("password_baru"), null],
+          "Password baru dan konfirmasi password tidak cocok"
+        )
+        .required("Konfirmasi password wajib diisi"),
     }),
     onSubmit: (values) => {
+      console.log(id);
       updateData(
         { dispatch, redux: userReducer },
         {

@@ -38,23 +38,36 @@ export function decrypted(encrypted) {
   return decrypted;
 }
 
-export function encodeURL(url) {
-  return encodeURIComponent(url);
+function encodeUrl(url) {
+  return url
+    .replace(/\+/g, "-") // Mengganti '+' dengan '-'
+    .replace(/\//g, "_") // Mengganti '/' dengan '_'
+    .replace(/=+$/, ""); // Menghapus '=' di akhir
 }
 
 // Fungsi untuk mendecode URL
-export function decodeURL(encodedUrl) {
-  return decodeURIComponent(encodedUrl);
+function decodeUrl(encodedUrl) {
+  // Menambahkan '=' kembali di akhir jika panjangnya mod 4 tidak sama dengan 0
+  const padding = (4 - (encodedUrl.length % 4)) % 4;
+  const paddedUrl = encodedUrl + "=".repeat(padding);
+
+  return paddedUrl
+    .replace(/-/g, "+") // Mengganti '-' kembali menjadi '+'
+    .replace(/_/g, "/"); // Mengganti '_' kembali menjadi '/'
 }
 
 export function encrypted_id(id) {
-  var enkripsi = encrypted(id);
-  var encodeurl_enkripsi = encodeURL(enkripsi);
-  return encodeurl_enkripsi;
+  if (id) {
+    var enkripsi = encrypted(id);
+    var encodeurl_enkripsi = encodeUrl(enkripsi);
+    return encodeurl_enkripsi;
+  } else {
+    return null;
+  }
 }
 
 export function decrypted_id(encrypt_id) {
-  var decodeurl = decodeURL(encrypt_id);
+  var decodeurl = decodeUrl(encrypt_id);
   var decodeurl_decrypt = decrypted(decodeurl);
   return decodeurl_decrypt;
 }
@@ -225,70 +238,74 @@ export const getData = (reducers, data, url, type) => {
 };
 
 export const addData = (reducers, data, url, type) => {
-  const { dispatch, redux } = reducers;
+  return new Promise((resolve, reject) => {
+    const { dispatch, redux } = reducers;
 
-  // Dispatch loading state
-  dispatch(
-    redux({
-      type: type,
-      payload: {
-        loading: true,
-        data: false,
+    // Dispatch loading state
+    dispatch(
+      redux({
+        type: type,
+        payload: {
+          loading: true,
+          data: false,
+        },
+      })
+    );
+
+    // Kembalikan promise dari axios
+    axiosAPI({
+      method: "POST",
+      url: url,
+      timeout: 120000,
+      data: data,
+      headers: {
+        "Content-Type": "multipart/form-data",
       },
     })
-  );
-
-  // Kembalikan promise dari axios
-  axiosAPI({
-    method: "POST",
-    url: url,
-    timeout: 120000,
-    data: data,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  })
-    .then((response) => {
-      // Menangani respons
-      showToast("success", response?.data?.messages || response?.data?.message);
-
-      // Dispatch data dari respons
-      dispatch(
-        redux({
-          type: type,
-          payload: {
-            loading: false,
-            data: response?.data,
-          },
-        })
-      );
-
-      // Kembalikan respons
-      return response?.data; // Mengembalikan data respons
-    })
-    .catch((error) => {
-      // Menangani error
-
-      if (error.request.status === 401) {
+      .then((response) => {
+        // Menangani respons
         showToast(
-          "The user session has expired, please log in again. 3 seconds for redirection..."
+          "success",
+          response?.data?.messages || response?.data?.message
         );
-        Logout();
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 3000);
-        return;
-      }
 
-      if (error.response.data && error.response.status !== 500) {
-        // Jika respons mengandung data objek, tampilkan sebagai daftar
-        Swal.fire({
-          icon: "error",
-          title: "Oops sorry...",
-          customClass: {
-            container: "z-[99999]",
-          },
-          html: `
+        // Dispatch data dari respons
+        dispatch(
+          redux({
+            type: type,
+            payload: {
+              loading: false,
+              data: response?.data,
+            },
+          })
+        );
+
+        // Kembalikan respons
+        resolve(response?.data);
+      })
+      .catch((error) => {
+        // Menangani error
+
+        if (error.request.status === 401) {
+          showToast(
+            "The user session has expired, please log in again. 3 seconds for redirection..."
+          );
+          Logout();
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 3000);
+          return;
+        }
+
+        if (error.response.data && error.response.status !== 500) {
+          // Jika respons mengandung data objek, tampilkan sebagai daftar
+          Swal.fire({
+            icon: "error",
+            title: "Oops sorry...",
+            customClass: {
+              container: "z-[99999]",
+            },
+            html: `
           <div>
             <ul>
               ${(() => {
@@ -306,30 +323,30 @@ export const addData = (reducers, data, url, type) => {
             </ul>
           </div>
         `,
-        });
-      } else {
-        // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
-        Swal.fire({
-          icon: "error",
-          title: "Oops sorry...",
-          text: error.message,
-        });
-      }
+          });
+        } else {
+          // Jika respons tidak mengandung data objek, tampilkan pesan error langsung
+          Swal.fire({
+            icon: "error",
+            title: "Oops sorry...",
+            text: error.message,
+          });
+        }
 
-      // Dispatch error state
-      dispatch(
-        redux({
-          type: type,
-          payload: {
-            loading: false,
-            data: false,
-          },
-        })
-      );
+        // Dispatch error state
+        dispatch(
+          redux({
+            type: type,
+            payload: {
+              loading: false,
+              data: false,
+            },
+          })
+        );
 
-      // Lempar error untuk penanganan lebih lanjut
-      throw error; // Mengembalikan error untuk ditangani di luar
-    });
+        reject(error);
+      });
+  });
 };
 
 export const updateData = (reducers, data, url, type, method = "PUT") => {

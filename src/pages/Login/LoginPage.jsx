@@ -33,7 +33,7 @@ const LoginPage = () => {
     e.preventDefault();
     if (validate()) {
       loginUser(dispatch, { email, password });
-    }else{
+    } else {
       setPassword("");
     }
   };
@@ -50,7 +50,7 @@ const LoginPage = () => {
       window.location.href = "/";
     } else {
       setPassword("");
-      setTimeout(() => setPassword(""), 500); 
+      setTimeout(() => setPassword(""), 500);
       // console.log("password salah");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,8 +168,8 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-2 flex flex-col gap-2">
                 <TextField
-                  label="Email"
-                  placeholder="Email"
+                  label="Username atau Email"
+                  placeholder="Masukkan Username atau Email"
                   id="email"
                   name="email"
                   error={errors.email}
@@ -179,7 +179,7 @@ const LoginPage = () => {
 
                 <TextField
                   label="Password"
-                  placeholder="Password"
+                  placeholder="Masukkan Password"
                   id="password"
                   name="password"
                   type={isShow ? "text" : "password"}
@@ -202,6 +202,12 @@ const LoginPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />
+              </div>
+
+              <div className="flex flex-row justify-end">
+                <button type="button" className="text-sm">
+                  Lupa Password
+                </button>
               </div>
 
               <br />

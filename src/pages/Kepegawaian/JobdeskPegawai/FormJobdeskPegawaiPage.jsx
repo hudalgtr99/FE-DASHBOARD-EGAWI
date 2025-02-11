@@ -8,8 +8,6 @@ import {
   addData,
   addFormData,
   decrypted_id,
-  encodeURL,
-  encrypted,
   encrypted_id,
   updateFormData,
 } from "@/actions";
@@ -239,8 +237,8 @@ const FormJobdeskPegawaiPage = () => {
                       }
                       addParams={
                         formik.values.perusahaan?.value
-                          ? `&perusahaan=${encodeURL(
-                              encrypted(formik.values.perusahaan.value)
+                          ? `&perusahaan=${encrypted_id(
+                              formik.values.perusahaan.value
                             )}`
                           : ""
                       }
@@ -265,8 +263,8 @@ const FormJobdeskPegawaiPage = () => {
                   }
                   addParams={
                     formik.values.perusahaan?.value
-                      ? `&perusahaan=${encodeURL(
-                          encrypted(formik.values.perusahaan.value)
+                      ? `&perusahaan=${encrypted_id(
+                          formik.values.perusahaan.value
                         )}`
                       : ""
                   }

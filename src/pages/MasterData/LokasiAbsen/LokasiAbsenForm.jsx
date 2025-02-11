@@ -113,6 +113,8 @@ const LokasiAbsenForm = () => {
             "ADD_perusahaan"
           );
 
+          console.log("create Data", data);
+
           if (data && !addperusahaanLoading) {
             navigate(
               sessionStorage.getItem("url")

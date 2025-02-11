@@ -23,7 +23,7 @@ const EditProfilePendidikanPage = () => {
   const handleInputError = (values) => {
     // Validate values and handle errors as needed
     // Example logic, replace with your own
-    if (!values || typeof values !== 'object') {
+    if (!values || typeof values !== "object") {
       console.error("Invalid input values:", values);
       return {}; // Return an empty object or handle as needed
     }
@@ -37,46 +37,41 @@ const EditProfilePendidikanPage = () => {
   };
 
   // Parse the formal and non_formal fields
-  const formalData = JSON.parse(location.state?.data.formal || '[]');
-  const nonFormalData = JSON.parse(location.state?.data.non_formal || '[]');
+  const formalData = JSON.parse(location.state?.data.formal || "[]");
+  const nonFormalData = JSON.parse(location.state?.data.non_formal || "[]");
 
   const initialData = {
-    formal: formalData.length > 0 ? formalData : [
-      { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
-    ],
-    non_formal: nonFormalData.length > 0 ? nonFormalData : [
-      { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
-    ],
+    formal:
+      formalData.length > 0
+        ? formalData
+        : [{ asal_sekolah: "", masa_waktu: "", keterangan_pendidikan: "" }],
+    non_formal:
+      nonFormalData.length > 0
+        ? nonFormalData
+        : [{ nama_lembaga: "", tahun_lulus: "", sertifikat: null }],
   };
 
   // console.log(initialData)
 
   const formik = useFormik({
     initialValues: initialData,
-    validationSchema: Yup.object().shape({
-      formal: Yup.array().of(
-        Yup.object().shape({
-          asal_sekolah: Yup.string().required('Asal Sekolah is required'),
-          masa_waktu: Yup.string().required('Masa Waktu is required'),
-          keterangan_pendidikan: Yup.string().required('Keterangan is required'),
-        })
-      ),
-      non_formal: Yup.array().of(
-        Yup.object().shape({
-          nama_lembaga: Yup.string().required('Nama Lembaga is required'),
-          tahun_lulus: Yup.string().required('Tahun Lulus is required'),
-          sertifikat: Yup.mixed().nullable(),
-        })
-      ),
-    }),
     onSubmit: (values) => {
       const newInput = handleInputError(values);
+      var formal = "";
+      var non_formal = "";
+
+      if (values.formal) {
+        formal = JSON.stringify(values.formal);
+      }
+      if (values.non_formal) {
+        non_formal = JSON.stringify(values.non_formal);
+      }
 
       const payload = {
         pk: "datapendidikan",
         user_id: isAuthenticated().user_id,
-        formal: JSON.stringify(values.formal), // Serialize formal education array
-        non_formal: JSON.stringify(values.non_formal), // Serialize non-formal education array
+        formal: formal, // Serialize formal education array
+        non_formal: non_formal, // Serialize non-formal education array
       };
 
       if (isAuthenticated().user_id) {
@@ -106,27 +101,27 @@ const EditProfilePendidikanPage = () => {
   }, [addPegawaiResult, dispatch, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addFormalEducation = () => {
-    formik.setFieldValue('formal', [
+    formik.setFieldValue("formal", [
       ...formik.values.formal,
-      { asal_sekolah: '', masa_waktu: '', keterangan_pendidikan: '' },
+      { asal_sekolah: "", masa_waktu: "", keterangan_pendidikan: "" },
     ]);
   };
 
   const addNonFormalEducation = () => {
-    formik.setFieldValue('non_formal', [
+    formik.setFieldValue("non_formal", [
       ...formik.values.non_formal,
-      { nama_lembaga: '', tahun_lulus: '', sertifikat: null },
+      { nama_lembaga: "", tahun_lulus: "", sertifikat: null },
     ]);
   };
 
   const removeFormalEducation = (index) => {
     const newEducation = formik.values.formal.filter((_, i) => i !== index);
-    formik.setFieldValue('formal', newEducation);
+    formik.setFieldValue("formal", newEducation);
   };
 
   const removeNonFormalEducation = (index) => {
     const newEducation = formik.values.non_formal.filter((_, i) => i !== index);
-    formik.setFieldValue('non_formal', newEducation);
+    formik.setFieldValue("non_formal", newEducation);
   };
 
   return (
@@ -143,16 +138,18 @@ const EditProfilePendidikanPage = () => {
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div>
-            <div className='flex justify-between'>
-              <h3 className='font-medium'>Pendidikan Formal</h3>
-              <div className='flex gap-2 items-center cursor-pointer'>
+            <div className="flex justify-between">
+              <h3 className="font-medium">Pendidikan Formal</h3>
+              <div className="flex gap-2 items-center cursor-pointer">
                 {formik.values.formal.length > 0 && (
                   <div>
                     {formik.values.formal.length > 1 && (
                       <button
                         type="button"
-                        className='bg-gray-200 p-1 rounded-lg'
-                        onClick={() => removeFormalEducation(formik.values.formal.length - 1)}
+                        className="bg-gray-200 p-1 rounded-lg"
+                        onClick={() =>
+                          removeFormalEducation(formik.values.formal.length - 1)
+                        }
                       >
                         <FaTimes />
                       </button>
@@ -160,7 +157,11 @@ const EditProfilePendidikanPage = () => {
                   </div>
                 )}
                 <div>
-                  <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addFormalEducation}>
+                  <button
+                    type="button"
+                    className="bg-gray-200 p-1 rounded-lg"
+                    onClick={addFormalEducation}
+                  >
                     <FaPlus />
                   </button>
                 </div>
@@ -168,7 +169,7 @@ const EditProfilePendidikanPage = () => {
             </div>
             {formik.values.formal.map((edu, index) => (
               <div key={index}>
-                <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4'>
+                <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4">
                   <TextField
                     required
                     label="Asal Sekolah"
@@ -179,7 +180,7 @@ const EditProfilePendidikanPage = () => {
                     error={
                       formik.touched.formal?.[index]?.asal_sekolah
                         ? formik.errors.formal?.[index]?.asal_sekolah
-                        : ''
+                        : ""
                     }
                   />
                   <TextField
@@ -192,7 +193,7 @@ const EditProfilePendidikanPage = () => {
                     error={
                       formik.touched.formal?.[index]?.masa_waktu
                         ? formik.errors.formal?.[index]?.masa_waktu
-                        : ''
+                        : ""
                     }
                   />
                   <TextField
@@ -205,7 +206,7 @@ const EditProfilePendidikanPage = () => {
                     error={
                       formik.touched.formal?.[index]?.keterangan_pendidikan
                         ? formik.errors.formal?.[index]?.keterangan_pendidikan
-                        : ''
+                        : ""
                     }
                   />
                 </div>
@@ -216,16 +217,20 @@ const EditProfilePendidikanPage = () => {
           <hr />
 
           <div>
-            <div className='flex justify-between'>
-              <h3 className='font-medium'>Pendidikan Non Formal</h3>
-              <div className='flex gap-2 items-center cursor-pointer'>
+            <div className="flex justify-between">
+              <h3 className="font-medium">Pendidikan Non Formal</h3>
+              <div className="flex gap-2 items-center cursor-pointer">
                 {formik.values.non_formal.length > 0 && (
                   <div>
                     {formik.values.non_formal.length > 1 && (
                       <button
                         type="button"
-                        className='bg-gray-200 p-1 rounded-lg'
-                        onClick={() => removeNonFormalEducation(formik.values.non_formal.length - 1)}
+                        className="bg-gray-200 p-1 rounded-lg"
+                        onClick={() =>
+                          removeNonFormalEducation(
+                            formik.values.non_formal.length - 1
+                          )
+                        }
                       >
                         <FaTimes />
                       </button>
@@ -233,7 +238,11 @@ const EditProfilePendidikanPage = () => {
                   </div>
                 )}
                 <div>
-                  <button type="button" className='bg-gray-200 p-1 rounded-lg' onClick={addNonFormalEducation}>
+                  <button
+                    type="button"
+                    className="bg-gray-200 p-1 rounded-lg"
+                    onClick={addNonFormalEducation}
+                  >
                     <FaPlus />
                   </button>
                 </div>
@@ -241,7 +250,7 @@ const EditProfilePendidikanPage = () => {
             </div>
             {formik.values.non_formal.map((edu, index) => (
               <div key={index}>
-                <div className='sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2'>
+                <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-2">
                   <TextField
                     required
                     label="Nama Lembaga"
@@ -252,7 +261,7 @@ const EditProfilePendidikanPage = () => {
                     error={
                       formik.touched.non_formal?.[index]?.nama_lembaga
                         ? formik.errors.non_formal?.[index]?.nama_lembaga
-                        : ''
+                        : ""
                     }
                   />
                   <TextField
@@ -265,7 +274,7 @@ const EditProfilePendidikanPage = () => {
                     error={
                       formik.touched.non_formal?.[index]?.tahun_lulus
                         ? formik.errors.non_formal?.[index]?.tahun_lulus
-                        : ''
+                        : ""
                     }
                   />
                   <TextField
@@ -289,7 +298,7 @@ const EditProfilePendidikanPage = () => {
           </div>
         </form>
       </Container>
-    </div >
+    </div>
   );
 };
 

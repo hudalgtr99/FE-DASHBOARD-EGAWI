@@ -44,35 +44,23 @@ const Pendidikan = ({ onTabChange }) => {
 
   const formik = useFormik({
     initialValues: initialData,
-    validationSchema: Yup.object().shape({
-      formal: Yup.array().of(
-        Yup.object().shape({
-          asal_sekolah: Yup.string()
-            .required("Asal Sekolah wajib diisi")
-            .max(255, "Asal Sekolah harus kurang dari 255 karakter"),
-          masa_waktu: Yup.string()
-            .required("Masa Waktu wajib diisi")
-            .max(255, "Masa Waktu harus kurang dari 255 karakter"),
-          keterangan_pendidikan: Yup.string().required(
-            "Keterangan wajib diisi"
-          ),
-        })
-      ),
-      non_formal: Yup.array().of(
-        Yup.object().shape({
-          nama_lembaga: Yup.string().required("Nama Lembaga wajib diisi"),
-          tahun_lulus: Yup.string().required("Tahun Lulus wajib diisi"),
-          sertifikat: Yup.mixed().nullable(),
-        })
-      ),
-    }),
     onSubmit: async (values) => {
       const formData = new FormData();
+      var formal = "";
+      var non_formal = "";
+
+      if (values.formal) {
+        formal = JSON.stringify(values.formal);
+      }
+      if (values.non_formal) {
+        non_formal = JSON.stringify(values.non_formal);
+      }
+
       const payload = {
         pk: "datapendidikan",
         user_id: values.user_id,
-        formal: JSON.stringify(values.formal),
-        non_formal: JSON.stringify(values.non_formal),
+        formal: formal,
+        non_formal: non_formal,
       };
 
       for (const key in payload) {
@@ -224,7 +212,6 @@ const Pendidikan = ({ onTabChange }) => {
                   className="sm:flex block sm:gap-4 max-[640px]:space-y-4 mb-4"
                 >
                   <TextField
-                    required
                     label="Asal Sekolah"
                     name={`formal[${index}].asal_sekolah`}
                     value={edu.asal_sekolah}
@@ -237,7 +224,6 @@ const Pendidikan = ({ onTabChange }) => {
                     }
                   />
                   <TextField
-                    required
                     label="Masa Waktu"
                     name={`formal[${index}].masa_waktu`}
                     value={edu.masa_waktu}
@@ -250,7 +236,6 @@ const Pendidikan = ({ onTabChange }) => {
                     }
                   />
                   <TextField
-                    required
                     label="Keterangan Pendidikan"
                     name={`formal[${index}].keterangan_pendidikan`}
                     value={edu.keterangan_pendidikan}
@@ -305,7 +290,6 @@ const Pendidikan = ({ onTabChange }) => {
                   >
                     <div className="flex flex-col gap-2 col-span-2">
                       <TextField
-                        required
                         label="Nama Lembaga"
                         name={`non_formal[${index}].nama_lembaga`}
                         value={edu.nama_lembaga}
@@ -319,7 +303,6 @@ const Pendidikan = ({ onTabChange }) => {
                       />
                       <div className="flex flex-col gap-2">
                         <TextField
-                          required
                           label="Tahun Lulus"
                           name={`non_formal[${index}].tahun_lulus`}
                           value={edu.tahun_lulus}
@@ -331,16 +314,17 @@ const Pendidikan = ({ onTabChange }) => {
                               : ""
                           }
                         />
-                        {typeof edu.sertifikat === 'string' && edu.sertifikat && (
-                          <div className="">
-                            <Button
-                            className="inline-block"
-                            onClick={() => handlePreview(edu.sertifikat)}
-                          >
-                            Lihat Gambar
-                          </Button>
-                          </div>
-                        )}
+                        {typeof edu.sertifikat === "string" &&
+                          edu.sertifikat && (
+                            <div className="">
+                              <Button
+                                className="inline-block"
+                                onClick={() => handlePreview(edu.sertifikat)}
+                              >
+                                Lihat Gambar
+                              </Button>
+                            </div>
+                          )}
                       </div>
                     </div>
                     <FileInput
@@ -406,7 +390,7 @@ const Pendidikan = ({ onTabChange }) => {
         </div>
         <Modal show={showModal} width="md" setShow={setShowModal} persistent>
           <div>
-          <img src={imageModal} alt="" />
+            <img src={imageModal} alt="" />
           </div>
         </Modal>
       </Container>

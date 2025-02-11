@@ -10,12 +10,10 @@ import Swal from "sweetalert2";
 import { Button, Container, TextField } from "@/components";
 
 // functions
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { updateData } from "@/actions";
-import { API_URL_changepassword } from "@/constants";
+import { updateData, updateFormData } from "@/actions";
+import { API_URL_changepassworduser } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
 import { icons } from "../../../public/icons";
-
 
 const UbahPasswordPage = () => {
   const { addUserLoading } = useSelector((state) => state.auth);
@@ -28,25 +26,34 @@ const UbahPasswordPage = () => {
   // Formik setup
   const formik = useFormik({
     initialValues: {
+      old_password: "",
       password_baru: "",
       konfirmasi_password_baru: "",
     },
     validationSchema: Yup.object({
-      password_baru: Yup.string().required("Password wajib diisi"),
+      old_password: Yup.string().required("Password lama wajib diisi"),
+      password_baru: Yup.string()
+        .min(8, "Password baru minimal 8 karakter")
+        .required("Password baru wajib diisi"),
       konfirmasi_password_baru: Yup.string()
-        .required("Konfirmasi Password wajib diisi")
-        .oneOf([Yup.ref('password_baru'), null], "Password tidak cocok"),
+        .oneOf(
+          [Yup.ref("password_baru"), null],
+          "Password baru dan konfirmasi password tidak cocok"
+        )
+        .required("Konfirmasi password wajib diisi"),
     }),
     onSubmit: (values) => {
-      updateData(
+      const formdata = new FormData();
+
+      formdata.append("old_password", values.old_password);
+      formdata.append("new_password", values.password_baru);
+
+      updateFormData(
         { dispatch, redux: userReducer },
-        {
-          pk: isAuthenticated().user_id,
-          old_password: values.password,
-          new_password: values.password_baru,
-        },
-        API_URL_changepassword,
-        "ADD_USER"
+        formdata,
+        API_URL_changepassworduser,
+        "ADD_USER",
+        ""
       )
         .then(() => {
           formik.resetForm(); // Reset form if update was successful
@@ -61,7 +68,7 @@ const UbahPasswordPage = () => {
           Swal.fire({
             icon: "error",
             title: "Error changing password!",
-            text: error.message,
+            text: error.message?.messages,
           });
         });
     },
@@ -70,11 +77,23 @@ const UbahPasswordPage = () => {
   return (
     <div>
       <Container>
-        <div className='font-semibold mb-4'>
-          <h1>Ubah Password</h1>
+        <div className="font-semibold mb-4">
+          <h1>Ganti Password</h1>
         </div>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div className="relative">
+            <TextField
+              required
+              label="Password Lama"
+              name="old_password"
+              type={visibleOldPassword ? "text" : "password"}
+              value={formik.values.old_password}
+              onChange={formik.handleChange}
+              onBlur={(e) => formik.handleBlur}
+              error={
+                formik.touched.old_password ? formik.errors.old_password : ""
+              }
+            />
             <div
               className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
               onClick={() => setVisibleOldPassword(!visibleOldPassword)}
@@ -91,6 +110,9 @@ const UbahPasswordPage = () => {
               value={formik.values.password_baru}
               onChange={formik.handleChange}
               onBlur={(e) => formik.handleBlur}
+              error={
+                formik.touched.password_baru ? formik.errors.password_baru : ""
+              }
             />
             <div
               className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
@@ -108,16 +130,25 @@ const UbahPasswordPage = () => {
               value={formik.values.konfirmasi_password_baru}
               onChange={formik.handleChange}
               onBlur={(e) => formik.handleBlur}
+              error={
+                formik.touched.konfirmasi_password_baru
+                  ? formik.errors.konfirmasi_password_baru
+                  : ""
+              }
             />
             <div
               className="absolute text-gray-400 top-[44px] right-4 transform -translate-y-2/4 text-2xl cursor-pointer"
               onClick={() => setVisibleConfirmPassword(!visibleConfirmPassword)}
             >
-              {visibleConfirmPassword ? icons.aifilleyeinvisible : icons.aifilleye}
+              {visibleConfirmPassword
+                ? icons.aifilleyeinvisible
+                : icons.aifilleye}
             </div>
           </div>
           <div className="mt-6 flex justify-end">
-            <Button type="submit" loading={addUserLoading}>Simpan</Button>
+            <Button type="submit" loading={addUserLoading}>
+              Simpan
+            </Button>
           </div>
         </form>
       </Container>

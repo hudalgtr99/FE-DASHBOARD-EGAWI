@@ -7,16 +7,18 @@ import { Tabs } from "@/components"; // Assuming this is the correct Tabs compon
 // sub-components
 import PengaturanAkunSub from "./Sub/PengaturanAkunSub";
 import PengaturanProfilSub from "./Sub/PengaturanProfilSub";
+import UbahPasswordPage from "../UbahPassword/UbahPasswordPage";
 
 // Define tab components in an array with key, label, and component
 const tabComponents = [
-  { key: '0', label: 'Pengaturan Akun', Component: PengaturanAkunSub },
-  { key: '1', label: 'Pengaturan Profil', Component: PengaturanProfilSub }
+  { key: "0", label: "Pengaturan Akun", Component: PengaturanAkunSub },
+  { key: "1", label: "Ganti Password", Component: UbahPasswordPage },
+  { key: "2", label: "Pengaturan Profil", Component: PengaturanProfilSub },
 ];
 
 const ProfilePage = () => {
   const { state } = useLocation(); // Access location state
-  const initialTab = `${state?.activeTab || '0'}`; // Default to '0' if no state is found
+  const initialTab = `${state?.activeTab || "0"}`; // Default to '0' if no state is found
 
   const [activeTab, setActiveTab] = useState(initialTab); // Initialize active tab
 
@@ -25,13 +27,17 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4'>
-      <Tabs activeTab={activeTab} tabComponents={tabComponents} onTabChange={handleTabChange} />
-      
+    <div className="flex flex-col gap-4">
+      <Tabs
+        activeTab={activeTab}
+        tabComponents={tabComponents}
+        onTabChange={handleTabChange}
+      />
+
       {/* Render the tab content based on the active tab */}
-      {tabComponents.map(({ key, Component }) => (
-        activeTab === key && <Component key={key} />
-      ))}
+      {tabComponents.map(
+        ({ key, Component }) => activeTab === key && <Component key={key} />
+      )}
     </div>
   );
 };

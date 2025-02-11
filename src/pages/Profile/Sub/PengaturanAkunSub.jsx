@@ -13,7 +13,7 @@ import { API_URL_updateakun, API_URL_updateprofile } from "@/constants";
 import { fetchUserDetails } from "@/constants/user";
 import { Avatar, PulseLoading } from "../../../components";
 import { TbPhotoPlus } from "react-icons/tb";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const PengaturanAkunSub = () => {
   const { addUserResult, addUserLoading } = useSelector((state) => state.auth);

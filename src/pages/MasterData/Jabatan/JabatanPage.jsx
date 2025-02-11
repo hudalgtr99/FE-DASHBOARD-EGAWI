@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteData, getData } from "@/actions";
+import { deleteData, encrypted_id, getData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";
 import { API_URL_edeljabatan, API_URL_getjabatan } from "@/constants";
 import {
@@ -21,9 +21,6 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
-import { encodeURL, encrypted } from "../../../actions";
-import encBase64url from "crypto-js/enc-base64url";
-import { TbMessageCircleQuestion, TbQuestionMark } from "react-icons/tb";
 import { FaCircleQuestion } from "react-icons/fa6";
 import KewenanganModal from "../../../components/molecules/KewenanganModal";
 
@@ -94,7 +91,7 @@ const JabatanSub = () => {
   const onEdit = (item) => {
     sessionStorage.setItem("url", location.pathname);
 
-    navigate(`/masterdata/jabatan/form/${encodeURL(encrypted(item?.pk))}`, {
+    navigate(`/masterdata/jabatan/form/${encrypted_id(item?.pk)}`, {
       state: {
         item,
       },

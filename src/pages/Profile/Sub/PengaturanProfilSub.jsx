@@ -59,7 +59,7 @@ const PengaturanProfilSub = () => {
   const datalainnyaNew = JSON.parse(datalainnya?.data || "[]");
 
   return (
-    <div className="flex flex-col gap-4 lg:w-full px-4">
+    <div className="flex flex-col gap-4 lg:w-full">
       <Container>
         <InputWrapper title="Data Pribadi">
           <InputProfile title="Nama">{datapribadi?.nama || "-"}</InputProfile>

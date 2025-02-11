@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, TextArea, Select } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
-import { addData, updateData } from "@/actions";
+import { addData, decrypted_id, updateData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";
 import {
   API_URL_createjabatan,
@@ -13,7 +13,6 @@ import {
   API_URL_getperusahaan,
 } from "@/constants";
 import axiosAPI from "@/authentication/axiosApi";
-import { decodeURL, decrypted } from "../../../actions";
 import KewenanganModal from "../../../components/molecules/KewenanganModal";
 import { FaCircleQuestion } from "react-icons/fa6";
 
@@ -85,7 +84,7 @@ const JabatanSubForm = () => {
       if (isEdit) {
         const data = await updateData(
           { dispatch, redux: jabatanReducers },
-          { pk: decodeURL(decrypted(pk)), ...values },
+          { pk: decrypted_id(pk), ...values },
           API_URL_edeljabatan,
           "ADD_JABATAN"
         );
