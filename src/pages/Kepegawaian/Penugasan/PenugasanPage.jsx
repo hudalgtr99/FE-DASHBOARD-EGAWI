@@ -23,7 +23,7 @@ import moment from "moment";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
-import { LuEye, LuTrash2 } from "react-icons/lu";
+import { LuEye, LuPencil, LuTrash2 } from "react-icons/lu";
 
 const PenugasanPage = () => {
   const { getTugasResult, getTugasLoading, addTugasResult, deleteTugasResult } =

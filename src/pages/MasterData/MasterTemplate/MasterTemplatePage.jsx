@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
 import { Checkbox, Select } from "../../../components";
-import { LuPencil, LuTrash } from "react-icons/lu";
+import { LuPencil, LuTrash, LuTrash2 } from "react-icons/lu";
 import { templateReducer } from "@/reducers/templateReducers";
 
 export default function MasterTemplate() {
@@ -247,7 +247,7 @@ export default function MasterTemplate() {
 														onClick={() => onDelete(item)}
 														className="cursor-pointer"
 													>
-														<LuTrash />
+														<LuTrash2 />
 													</Button>
 												</Tooltip>
 											</div>
