@@ -1,6 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { Button, Limit, Modal, Select, Tables, TextField, Tooltip } from "@/components";
+import {
+  Button,
+  Limit,
+  Modal,
+  Select,
+  Tables,
+  TextField,
+  Tooltip,
+} from "@/components";
 import {
   API_URL_deductiontypes,
   API_URL_incometypes,
@@ -144,8 +152,13 @@ const SalaryComponentManager = () => {
     onSubmit: (values) => {
       const formData = new FormData();
       formData.append("type_component", values.type_component);
-      formData.append("income_type", values.income_type);
-      formData.append("deduction_type", values.deduction_type);
+
+      if (values.income_type) {
+        formData.append("income_type", values.income_type);
+      }
+      if (values.deduction_type) {
+        formData.append("deduction_type", values.deduction_type);
+      }
       formData.append("fixed_presentase", values.fixed_presentase);
       formData.append("value", values.value);
       formData.append("status", values.status);
@@ -184,18 +197,23 @@ const SalaryComponentManager = () => {
 
   //Delete
   const onDelete = (item) => {
-    showSweetAlert(`Apakah Anda yakin menghapus ${item.name}`, () => {
-      deleteSettingComponentSalary.mutate(item.id, {
-        onSuccess: (res) => {
-          showToast(res.message, "success", 3000);
-          getSettingComponentSalary.refetch();
-        },
-        onError: (error) => {
-          console.log(error);
-          showToast(error.message, "warning", 3000);
-        },
-      });
-    });
+    showSweetAlert(
+      `Apakah Anda yakin menghapus ${
+        item.deduction_type_name || item.income_type_name
+      }`,
+      () => {
+        deleteSettingComponentSalary.mutate(item.id, {
+          onSuccess: (res) => {
+            showToast(res.message, "success", 3000);
+            getSettingComponentSalary.refetch();
+          },
+          onError: (error) => {
+            console.log(error);
+            showToast(error.message, "warning", 3000);
+          },
+        });
+      }
+    );
   };
 
   const onEdit = (item) => {
@@ -257,7 +275,7 @@ const SalaryComponentManager = () => {
       name: "Edit",
       // icon: <BiEdit size={20} />,
       // color: "text-yellow-500",
-      icon:<LuPencil size={20} />,
+      icon: <LuPencil size={20} />,
       color: "success",
       func: onEdit,
     },
@@ -265,7 +283,7 @@ const SalaryComponentManager = () => {
       name: "Hapus",
       // icon: <BiTrash size={20} />,
       // color: "text-red-500",
-      icon: <LuTrash2 size={20}  />,
+      icon: <LuTrash2 size={20} />,
       color: "danger",
       func: onDelete,
     },
@@ -442,10 +460,10 @@ const SalaryComponentManager = () => {
                             ))}
                           </div>
                         </Tables.Data> */}
-                        
+
                         <Tables.Data center>
                           <div className="flex items-center justify-center gap-2">
-                            {action.map((action) =>(
+                            {action.map((action) => (
                               <Tooltip key={action.name} tooltip={action.name}>
                                 <Button
                                   size={30}
@@ -461,7 +479,6 @@ const SalaryComponentManager = () => {
                             ))}
                           </div>
                         </Tables.Data>
-
                       </Tables.Row>
                     )
                   )}
@@ -474,7 +491,7 @@ const SalaryComponentManager = () => {
               getSettingComponentSalary.data?.count > 0
                 ? getSettingComponentSalary.data?.count
                 : 0
-            }  
+            }
             limit={queryParams.limit}
             setLimit={handleSelect}
           />

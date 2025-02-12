@@ -75,8 +75,6 @@ const DaftarCalonTugasPage = () => {
 
   const get = useCallback(
     async (param) => {
-      navigate("", { state: { fetch: params } });
-
       const queryString = toQueryString(param);
       const fullUrl = `${API_URL_delegation}?${queryString}`;
 
@@ -117,6 +115,10 @@ const DaftarCalonTugasPage = () => {
   useEffect(() => {
     fetchData({ limit, perusahaan: selectedPerusahaan?.value });
   }, [selectedPerusahaan]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    fetchData({ limit, perusahaan: selectedPerusahaan?.value });
+  }, []);
 
   useEffect(() => {
     if (firstFetch) {

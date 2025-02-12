@@ -14,17 +14,19 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
-import { getData, updateData } from "@/actions";
+import { deleteData, getData, updateData } from "@/actions";
 import {
   API_URL_gettemplatesurattugas,
   API_URL_changeactivedata,
+  API_URL_edeltemplatesurattugas,
 } from "@/constants";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
 import { Checkbox, Select } from "../../../components";
-import { LuPencil } from "react-icons/lu";
+import { LuPencil, LuTrash } from "react-icons/lu";
+import { templateReducer } from "@/reducers/templateReducers";
 
 export default function MasterTemplate() {
   const navigate = useNavigate();
@@ -34,8 +36,12 @@ export default function MasterTemplate() {
   const [search, setSearch] = useState("");
   const { slug } = useParams();
   const location = useLocation();
-  const { getTugasResult, addTugasResult, deleteTugasResult, getTugasLoading } =
-    useSelector((state) => state.tugas);
+  const {
+    getTemplateResult,
+    addTemplateResult,
+    deleteTemplateResult,
+    getTemplateLoading,
+  } = useSelector((state) => state.template);
 
   const [jwt, setJwt] = useState({});
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();
@@ -100,13 +106,13 @@ export default function MasterTemplate() {
     }).then((result) => {
       if (result.isConfirmed) {
         const data = updateData(
-          { dispatch, redux: penugasanReducer },
+          { dispatch, redux: templateReducer },
           {
             pk: "template-tugas",
             slug: item.slug,
           },
           API_URL_changeactivedata,
-          "ADD_TUGAS"
+          "ADD_TEMPLATE"
         );
       }
     });
@@ -122,13 +128,23 @@ export default function MasterTemplate() {
     });
   };
 
+  const onDelete = (item) => {
+    console.log("woii");
+    deleteData(
+      { dispatch, redux: templateReducer },
+      item.slug,
+      API_URL_edeltemplatesurattugas,
+      "DELETE_TEMPLATE"
+    );
+  };
+
   const get = useCallback(
     async (param) => {
       getData(
-        { dispatch, redux: penugasanReducer },
+        { dispatch, redux: templateReducer },
         param,
         API_URL_gettemplatesurattugas,
-        "GET_TUGAS"
+        "GET_TEMPLATE"
       );
     },
     [dispatch]
@@ -164,7 +180,7 @@ export default function MasterTemplate() {
   }, [slug, selectedPerusahaan, limit, pageActive, search, get]);
 
   useEffect(() => {
-    if (addTugasResult || deleteTugasResult) {
+    if (addTemplateResult || deleteTemplateResult) {
       const param = search
         ? {
             param: `?search=${search}&perusahaan=${
@@ -179,8 +195,8 @@ export default function MasterTemplate() {
       get(param);
     }
   }, [
-    addTugasResult,
-    deleteTugasResult,
+    addTemplateResult,
+    deleteTemplateResult,
     selectedPerusahaan,
     search,
     limit,
@@ -189,8 +205,8 @@ export default function MasterTemplate() {
   ]);
 
   const dataWithIndex =
-    !loadingPerusahaan && getTugasResult.results
-      ? getTugasResult.results.map((item, index) => ({
+    !loadingPerusahaan && getTemplateResult.results
+      ? getTemplateResult.results.map((item, index) => ({
           ...item,
           index: pageActive * limit + index + 1,
         }))
@@ -214,7 +230,7 @@ export default function MasterTemplate() {
             </div>
           </Button>
         </div>
-        {getTugasLoading ? ( // Show loading indicator if loading is true
+        {getTemplateLoading ? ( // Show loading indicator if loading is true
           <div className="flex justify-center py-4">
             <PulseLoading />
           </div>
@@ -266,6 +282,18 @@ export default function MasterTemplate() {
                             <LuPencil />
                           </Button>
                         </Tooltip>
+
+                        <Tooltip tooltip="Hapus">
+                          <Button
+                            size={30}
+                            variant="tonal"
+                            color={"danger"}
+                            onClick={() => onDelete(item)}
+                            className="cursor-pointer"
+                          >
+                            <LuTrash />
+                          </Button>
+                        </Tooltip>
                       </div>
                     </Tables.Data>
                   </Tables.Row>
@@ -282,7 +310,7 @@ export default function MasterTemplate() {
         )}
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            totalCount={getTugasResult.count || 0} // Dynamic total count
+            totalCount={getTemplateResult.count || 0} // Dynamic total count
             pageSize={limit} // Use current limit for page size
             currentPage={pageActive + 1} // Adjust for zero-indexed pages
             onPageChange={handlePageClick} // Handle page changes

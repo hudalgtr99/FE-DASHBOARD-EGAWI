@@ -443,7 +443,6 @@ const ValidasiLemburSub = ({ type }) => {
         <div className="text-lg font-normal p-5">
           <div className="mb-3 font-semibold">Catatan Disetujui </div>
           <TextField
-            required
             type="text"
             placeholder="Tuliskan catatan disetujuinya ..."
             value={catatanDisetujui}

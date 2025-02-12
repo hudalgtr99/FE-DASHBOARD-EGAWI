@@ -502,7 +502,6 @@ const ValidasiReimbursementSub = ({ type }) => {
           <div className="mb-4">
             <div className="mb-3 font-medium">Catatan Disetujui </div>
             <TextField
-              required
               type="text"
               placeholder="Tuliskan catatan disetujuinya ..."
               value={catatanDisetujui}
