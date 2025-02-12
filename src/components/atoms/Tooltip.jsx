@@ -11,8 +11,8 @@ import {
 	useRole,
 } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
-import { useState } from "react";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 /**
  *
@@ -23,20 +23,13 @@ import PropTypes from "prop-types";
  * fill: boolean;
  * delay: number;
  * position: "relative" | "fixed" | "absolute" | "sticky";
+ * disabled: boolean;
  * children: React.ReactNode;
  * }}
  *
  */
 
-const Tooltip = ({
-	tooltip = null,
-	placement = "top",
-	spacing = 5,
-	fill = false,
-	delay = 0,
-	position = "relative",
-	children = null,
-}) => {
+const Tooltip = ({ tooltip, placement, spacing, fill, delay, position, disabled, children }) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const { refs, floatingStyles, context } = useFloating({
@@ -58,20 +51,15 @@ const Tooltip = ({
 	const dismiss = useDismiss(context);
 	const role = useRole(context, { role: "tooltip" });
 
-	const { getReferenceProps, getFloatingProps } = useInteractions([
-		hover,
-		focus,
-		dismiss,
-		role,
-	]);
+	const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
 
 	return (
-		<div>
-			<div ref={refs.setReference} {...getReferenceProps()}>
+		<span className="relative leading-3">
+			<span className="leading-3" ref={refs.setReference} {...getReferenceProps()}>
 				{children}
-			</div>
+			</span>
 			<Transition
-				show={isOpen}
+				show={isOpen && !disabled && Boolean(tooltip)}
 				className={`${position} z-10`}
 				enter="transition duration-100 ease-out"
 				enterFrom="transform scale-95 opacity-0"
@@ -91,7 +79,7 @@ const Tooltip = ({
 					{tooltip}
 				</div>
 			</Transition>
-		</div>
+		</span>
 	);
 };
 
@@ -115,31 +103,19 @@ Tooltip.propTypes = {
 	fill: PropTypes.bool,
 	delay: PropTypes.number,
 	position: PropTypes.oneOf(["relative", "fixed", "absolute", "sticky"]),
+	disabled: PropTypes.bool,
 	children: PropTypes.node,
+};
+
+Tooltip.defaultProps = {
+	tooltip: null,
+	placement: "top",
+	spacing: 5,
+	fill: false,
+	delay: 0,
+	position: "relative",
+	disabled: false,
+	children: null,
 };
 
 export default Tooltip;
-
-
-Tooltip.propTypes = {
-	tooltip: PropTypes.node,
-	placement: PropTypes.oneOf([
-		"top",
-		"top-start",
-		"top-end",
-		"right",
-		"right-start",
-		"right-end",
-		"bottom",
-		"bottom-start",
-		"bottom-end",
-		"left",
-		"left-start",
-		"left-end",
-	]),
-	spacing: PropTypes.number,
-	fill: PropTypes.bool,
-	delay: PropTypes.number,
-	position: PropTypes.oneOf(["relative", "fixed", "absolute", "sticky"]),
-	children: PropTypes.node,
-};

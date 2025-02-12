@@ -1,25 +1,20 @@
+import { ButtonRipple, Drawer, Popover, Radio } from "@/components";
 import { themeBgs, themeColors } from "@/constants/theme";
 import { ThemeContext } from "@/context/ThemeContext";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ChromePicker } from "react-color";
-import {
-	TbArrowUp,
-	TbCheck,
-	TbPencil,
-	TbPhotoOff,
-	TbSettings,
-} from "react-icons/tb";
+import { TbArrowUp, TbCheck, TbPencil, TbPhotoOff, TbSettings } from "react-icons/tb";
 import { Outlet } from "react-router-dom";
-import { ButtonRipple, Drawer, Popover, Radio } from "@/components";
+import BreadCrumb from "./BreadCrumb";
 import Footer from "./Footer";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
 const Layout = () => {
-	const [sideOpen, setSideOpen] = useLocalStorage("side-open", true);
+	// const [sideOpen, setSideOpen] = useLocalStorage("side-open", true);
 	const {
+		sideOpen,
 		colorMode,
 		setColorMode,
 		themeColor,
@@ -65,18 +60,21 @@ const Layout = () => {
 			<main
 				ref={mainRef}
 				className={`w-full scroll-smooth text-base-300 dark:text-base-200 font-light h-screen overflow-y-auto custom-scroll ${
-					themeSkin === "default"
-						? "bg-base-50 dark:bg-base-700"
-						: "bg-white dark:bg-base-700"
+					themeSkin === "default" ? "bg-base-50 dark:bg-base-700" : "bg-white dark:bg-base-700"
 				}`}
 			>
-				<Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
+				<Sidebar />
 				<div
 					className={`w-full transition-[padding] duration-500 ${
 						contentType === "compact" ? "max-w-[1440px] mx-auto" : ""
 					} ${sideOpen ? "lg:pl-64" : "lg:pl-20"}`}
 				>
-					<Header sideOpen={sideOpen} setSideOpen={setSideOpen} />
+					<Header />
+					<div className={` mx-6 mt-4 block lg:hidden`}>
+						<div className="flex flex-row h-full items-center gap-x-2 font-semibold">
+							<BreadCrumb />
+						</div>
+					</div>
 					<section className="min-h-screen w-full p-6">
 						<Outlet />
 					</section>
@@ -91,9 +89,7 @@ const Layout = () => {
 				}}
 				onClick={() => mainRef.current.scrollTo(0, 0)}
 				className={`fixed text-xl text-white shadow-lg bottom-10 right-12 z-30 p-2 rounded-lg transition-opacity duration-300 ${
-					toTop
-						? "opacity-100 pointer-events-auto"
-						: "opacity-0 pointer-events-none"
+					toTop ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
 				}`}
 			>
 				<TbArrowUp />
@@ -123,9 +119,7 @@ const Layout = () => {
 			>
 				{/* Theme */}
 				<div className="p-5 border-b border-neutral-200 dark:border-base-500">
-					<div className="mb-2 font-semibold text-xs tracking-widest">
-						THEME
-					</div>
+					<div className="mb-2 font-semibold text-xs tracking-widest">THEME</div>
 					{/* Primary Color */}
 					<div className="mb-4">
 						<div className="text-sm mb-1">Primary Color</div>
@@ -138,8 +132,7 @@ const Layout = () => {
 									}}
 									style={{
 										backgroundColor: color,
-										boxShadow:
-											color === themeColor ? `0px 0px 10px 0px ${color}60` : "",
+										boxShadow: color === themeColor ? `0px 0px 10px 0px ${color}60` : "",
 									}}
 									className="w-10 h-10 rounded text-white flex items-center justify-center"
 								>
@@ -245,9 +238,7 @@ const Layout = () => {
 
 				{/* Layout */}
 				<div className="p-5 border-b border-neutral-200 dark:border-base-500">
-					<div className="mb-2 font-semibold text-xs tracking-widest">
-						LAYOUT
-					</div>
+					<div className="mb-2 font-semibold text-xs tracking-widest">LAYOUT</div>
 
 					{/* Navbar Type */}
 					<div className="mb-4">
