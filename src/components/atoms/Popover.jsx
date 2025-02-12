@@ -1,12 +1,7 @@
-import {
-	autoUpdate,
-	flip,
-	offset,
-	shift,
-	useFloating,
-} from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover as PopoverHeadless, Transition } from "@headlessui/react";
 import PropTypes from "prop-types";
+import { forwardRef, useImperativeHandle } from "react";
 
 /**
  *
@@ -20,23 +15,14 @@ import PropTypes from "prop-types";
  * isShift: boolean;
  * position: "relative" | "fixed" | "absolute" | "sticky";
  * children: React.ReactNode;
- * full: boolean;
  * }}
  *
  */
 
-const Popover = ({
-	placement = "bottom",
-	spacing = 5,
-	fill = false,
-	rounded = "rounded",
-	isFlip = true,
-	isShift = true,
-	position = "relative",
-	full = false,
-	button = null,
-	children = null,
-}) => {
+const Popover = forwardRef(function Popover(
+	{ button, placement, spacing, fill, rounded, isFlip, isShift, position, children },
+	ref
+) {
 	// Rounded
 	const panelRounded =
 		{
@@ -54,16 +40,19 @@ const Popover = ({
 	const { refs, floatingStyles } = useFloating({
 		placement,
 		whileElementsMounted: autoUpdate,
-		middleware: [
-			offset(spacing),
-			isFlip ? flip() : null,
-			isShift ? shift({ padding: 10 }) : null,
-		],
+		middleware: [offset(spacing), isFlip ? flip() : null, isShift ? shift({ padding: 10 }) : null],
 	});
 
+	const onClose = () => {
+		refs.reference.current.click();
+	};
+	useImperativeHandle(ref, () => ({
+		onClose,
+	}));
+
 	return (
-		<PopoverHeadless className={`relative ${full ? "w-full" : "w-fit"}`}>
-			<PopoverHeadless.Button ref={refs.setReference} as="div">
+		<PopoverHeadless className="relative w-fit">
+			<PopoverHeadless.Button ref={refs.setReference} as="div" className="leading-3">
 				{button}
 			</PopoverHeadless.Button>
 
@@ -88,7 +77,7 @@ const Popover = ({
 			</Transition>
 		</PopoverHeadless>
 	);
-};
+});
 
 Popover.propTypes = {
 	button: PropTypes.node,
@@ -108,22 +97,21 @@ Popover.propTypes = {
 	]),
 	spacing: PropTypes.number,
 	fill: PropTypes.bool,
-	rounded: PropTypes.oneOf([
-		"none",
-		"sm",
-		"rounded",
-		"md",
-		"lg",
-		"xl",
-		"2xl",
-		"3xl",
-		"full",
-	]),
+	rounded: PropTypes.oneOf(["none", "sm", "rounded", "md", "lg", "xl", "2xl", "3xl", "full"]),
 	isFlip: PropTypes.bool,
 	isShift: PropTypes.bool,
 	position: PropTypes.oneOf(["relative", "fixed", "absolute", "sticky"]),
 	children: PropTypes.node,
-	full: PropTypes.bool,
+};
+
+Popover.defaultProps = {
+	placement: "bottom",
+	spacing: 5,
+	fill: false,
+	rounded: "rounded",
+	isFlip: true,
+	isShift: true,
+	position: "relative",
 };
 
 export default Popover;

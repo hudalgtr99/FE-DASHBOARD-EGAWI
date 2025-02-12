@@ -1,9 +1,17 @@
+/* eslint-disable react-refresh/only-export-components */
 import { themeColors } from "@/constants/theme";
 import { createContext, useEffect, useState } from "react";
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
+	// SideOpen
+	const sideopen = localStorage.getItem("side-open");
+	const [sideOpen, setSideOpen] = useState(sideopen || true);
+	useEffect(() => {
+		localStorage.setItem("side-open", sideOpen.toString());
+	}, [sideOpen]);
+
 	// Theme Color
 	const themecolor = localStorage.getItem("theme-color");
 	const [themeColor, setThemeColor] = useState(themecolor || themeColors[0]);
@@ -32,9 +40,7 @@ export const ThemeProvider = ({ children }) => {
 		const className = "dark";
 		const bodyClassList = document.body.classList;
 
-		colorMode === "dark"
-			? bodyClassList.add(className)
-			: bodyClassList.remove(className);
+		colorMode === "dark" ? bodyClassList.add(className) : bodyClassList.remove(className);
 
 		localStorage.setItem("theme-color-mode", colorMode.toString());
 	}, [colorMode]);
@@ -63,6 +69,8 @@ export const ThemeProvider = ({ children }) => {
 	return (
 		<ThemeContext.Provider
 			value={{
+				sideOpen,
+				setSideOpen,
 				themeColor,
 				setThemeColor,
 				themeBg,
