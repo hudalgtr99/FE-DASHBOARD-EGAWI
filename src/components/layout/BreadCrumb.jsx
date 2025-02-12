@@ -30,7 +30,7 @@ const BreadCrumb = () => {
 						if (itemIdx !== 0 && itemIdx + 1 !== pathMenu.length) {
 							return (
 								<div key={itemIdx} className="flex items-center gap-x-2 text-base-100">
-									<Link
+									<div
 										onMouseEnter={() => {
 											if (itemIdx + 1 !== pathMenu.length) {
 												const tmp = [...isHover];
@@ -49,10 +49,13 @@ const BreadCrumb = () => {
 											color: isHover[itemIdx]?.status ? themeColor : "inherit",
 										}}
 										className="capitalize line-clamp-1 hover:text-base-300 cursor-pointer"
-										to={`/${pathMenu.slice(0, itemIdx + 1).join("/")}`}
+										onClick={() => {
+											if (item === "form") return;
+											navigate(`/${pathMenu.slice(0, itemIdx + 1).join("/")}`);
+										}}
 									>
 										{item.split("-").join(" ")}
-									</Link>
+									</div>
 									<TbChevronRight size={16} />
 								</div>
 							);

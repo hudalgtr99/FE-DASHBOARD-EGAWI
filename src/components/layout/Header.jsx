@@ -38,10 +38,6 @@ const Header = () => {
 		fetchData();
 	}, [fetchData]);
 
-	// const [dataNotif, setDataNotif] = useState([
-	// 	// Data notifikasi
-	// ]);
-
 	const onLogout = (e) => {
 		e.preventDefault();
 		logoutUser(dispatch);
@@ -82,13 +78,17 @@ const Header = () => {
 								<Select
 									options={perusahaanOptions}
 									placeholder="Filter perusahaan"
-									onChange={handleSelect} // Memanggil handleSelect saat ada perubahan
-									value={selectedPerusahaan} // Menampilkan perusahaan yang dipilih
+									onChange={handleSelect}
+									value={selectedPerusahaan}
 								/>
 							</div>
 						)}
 						{/* Dark Mode */}
-						<Tooltip tooltip={colorMode === "light" ? "Dark Mode" : "Light Mode"} delay={500}>
+						<Tooltip
+							placement="bottom"
+							tooltip={colorMode === "light" ? "Dark Mode" : "Light Mode"}
+							delay={500}
+						>
 							<ButtonDarkMode />
 						</Tooltip>
 					</div>

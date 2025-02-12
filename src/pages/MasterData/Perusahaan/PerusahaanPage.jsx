@@ -1,21 +1,10 @@
-import { useCallback, useEffect } from "react";
-import PerusahaanList from "./PerusahaanList";
-import MyPerusahaan from "./MyPerusahaan";
-import axiosAPI from "@/authentication/axiosApi";
-import { API_URL_getperusahaan } from "@/constants";
-import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
+import MyPerusahaan from "./MyPerusahaan";
+import PerusahaanList from "./PerusahaanList";
 
 export default function PerusahaanPage() {
-  const { jwt } = useContext(AuthContext);
+	const { jwt } = useContext(AuthContext);
 
-  return (
-    <>
-      {jwt && jwt?.level === "Super Admin" ? (
-        <PerusahaanList />
-      ) : (
-        <MyPerusahaan />
-      )}
-    </>
-  );
+	return <>{jwt && jwt?.level === "Super Admin" ? <PerusahaanList /> : <MyPerusahaan />}</>;
 }
