@@ -387,8 +387,7 @@ const PayrollGajiPage = () => {
           </h2>
 
           <div className="flex justify-center">
-
-            {/* <DatePicker
+            <DatePicker
               showIcon
               className="border border-gray-200 text-sm w-full rounded-lg"
               icon=<FaCalendar />
@@ -400,9 +399,9 @@ const PayrollGajiPage = () => {
               locale={id}
               showTwoColumnMonthYearPicker
               placeholderText="Pilih Bulan & Tahun"
-            /> */}
+            />
 
-              <SelectMonthYear
+            {/* <SelectMonthYear
                 selected={periodeMonth}
                 onChange={(date) => {
                   const validDate = date ? new Date(date) : null;
@@ -410,8 +409,7 @@ const PayrollGajiPage = () => {
                     validDate && !isNaN(validDate) ? validDate : null
                   );
                 }}
-              />
-
+              /> */}
           </div>
 
           <div className="mt-4 flex flex-row justify-between">

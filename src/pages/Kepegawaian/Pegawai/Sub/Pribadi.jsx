@@ -51,6 +51,7 @@ const Pribadi = ({ onTabChange }) => {
     return {
       user_id: "",
       nama: "",
+      username: "",
       email: "",
       password: "",
       pangkat_id: "",
@@ -73,6 +74,9 @@ const Pribadi = ({ onTabChange }) => {
     initialValues: initialValuesFromLocalStorage(),
     validationSchema: Yup.object().shape({
       nama: Yup.string()
+        .required("Nama wajib diisi")
+        .max(255, "Nama harus kurang dari 255 karakter"),
+      username: Yup.string()
         .required("Nama wajib diisi")
         .max(255, "Nama harus kurang dari 255 karakter"),
       email: Yup.string()
@@ -158,7 +162,7 @@ const Pribadi = ({ onTabChange }) => {
             "ADD_PEGAWAI"
           );
 
-          if (data && !addPegawaiLoading) {
+          if (data) {
             setUserid(data.user_id);
             const storedData = localStorage.getItem("editUserData");
             if (storedData) {
@@ -167,6 +171,9 @@ const Pribadi = ({ onTabChange }) => {
               parsedData.datapribadi.user_id = data.user_id;
               localStorage.setItem("editUserData", JSON.stringify(parsedData));
             }
+
+            //ketika selesai create skrng jadi mode isEdit
+            sessionStorage.setItem("isEdit", true);
 
             if (isLanjut) {
               sessionStorage.setItem("Pribadi", true);
@@ -206,6 +213,18 @@ const Pribadi = ({ onTabChange }) => {
       }));
 
       setPerusahaanOptions(options);
+
+      // jika options hanya 1 berarti dia bukan superadmin hanya perusahaan dia sendiri
+      const storedData = localStorage.getItem("editUserData");
+      if (storedData && options.length === 1) {
+        formik.setFieldValue("perusahaan", {
+          value: options.find((opt) => opt.pk === formik.values?.perusahaan?.pk)
+            .value,
+        });
+        const parsedData = JSON.parse(storedData);
+        parsedData.datapribadi.perusahaan = options[0];
+        localStorage.setItem("editUserData", JSON.stringify(parsedData));
+      }
     };
     fetchData();
   }, []);
@@ -259,13 +278,6 @@ const Pribadi = ({ onTabChange }) => {
     try {
       setIsLanjut(true);
       formik.handleSubmit();
-      if (formik.isValid) {
-        const storedData = localStorage.getItem("editUserData");
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          localStorage.setItem("editUserData", JSON.stringify(parsedData));
-        }
-      }
     } catch (error) {
       console.error("Error in form submission: ", error);
     }
@@ -356,6 +368,15 @@ const Pribadi = ({ onTabChange }) => {
             <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <TextField
                 required
+                label="Username"
+                name="username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.username ? formik.errors.username : ""}
+              />
+              <TextField
+                required
                 label="No Identitas"
                 name="no_identitas"
                 value={formik.values.no_identitas}
@@ -365,34 +386,7 @@ const Pribadi = ({ onTabChange }) => {
                   formik.touched.no_identitas ? formik.errors.no_identitas : ""
                 }
               />
-              <Select
-                required
-                label="Jenis Kelamin"
-                name="jenis_kelamin"
-                value={
-                  formik.values.jenis_kelamin
-                    ? {
-                        value: formik.values.jenis_kelamin,
-                        label: formik.values.jenis_kelamin,
-                      }
-                    : null
-                }
-                onChange={(option) =>
-                  formik.setFieldValue(
-                    "jenis_kelamin",
-                    option ? option.value : ""
-                  )
-                }
-                options={[
-                  { value: "Laki Laki", label: "Laki Laki" },
-                  { value: "Perempuan", label: "Perempuan" },
-                ]}
-                error={
-                  formik.touched.jenis_kelamin
-                    ? formik.errors.jenis_kelamin
-                    : ""
-                }
-              />
+
               <TextField
                 required
                 label="No Telepon"
@@ -484,6 +478,34 @@ const Pribadi = ({ onTabChange }) => {
             <div className="sm:flex block sm:gap-4 max-[640px]:space-y-4">
               <Select
                 required
+                label="Jenis Kelamin"
+                name="jenis_kelamin"
+                value={
+                  formik.values.jenis_kelamin
+                    ? {
+                        value: formik.values.jenis_kelamin,
+                        label: formik.values.jenis_kelamin,
+                      }
+                    : null
+                }
+                onChange={(option) =>
+                  formik.setFieldValue(
+                    "jenis_kelamin",
+                    option ? option.value : ""
+                  )
+                }
+                options={[
+                  { value: "Laki Laki", label: "Laki Laki" },
+                  { value: "Perempuan", label: "Perempuan" },
+                ]}
+                error={
+                  formik.touched.jenis_kelamin
+                    ? formik.errors.jenis_kelamin
+                    : ""
+                }
+              />
+              <Select
+                required
                 label="Role"
                 name="role"
                 value={
@@ -519,17 +541,6 @@ const Pribadi = ({ onTabChange }) => {
                   formik.touched.lokasi_absen ? formik.errors.lokasi_absen : ""
                 }
               />
-              {/* <Select
-                required
-                label="Penerima"
-                name="penerima"
-                value={formik.values.penerima}
-                onChange={(options) =>
-                  formik.setFieldValue("penerima", options)
-                }
-                options={pegawaiOptions}
-                error={formik.touched.penerima && formik.errors.penerima}
-              /> */}
             </div>
             <div className="justify-end flex gap-3">
               {sessionStorage.getItem("isEdit") === "true" && (
