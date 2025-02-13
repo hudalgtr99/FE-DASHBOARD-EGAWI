@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getData } from "@/actions";
 import { pengajuanIzinReducer } from "@/reducers/asesmenReducers";
 import {
@@ -17,7 +17,6 @@ import {
   Tooltip,
 } from "@/components";
 import { CiSearch } from "react-icons/ci";
-import moment from "moment";
 import { Modal, Select } from "../../../../components";
 import { updateFormData } from "../../../../actions";
 import { isAuthenticated } from "../../../../authentication/authenticationApi";

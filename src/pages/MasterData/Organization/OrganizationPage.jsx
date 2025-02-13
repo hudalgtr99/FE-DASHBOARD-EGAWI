@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom'; // Use useLocation for accessing the location
 import DepartemenSub from "./Sub/DepartemenSub";
 import DivisiSub from "./Sub/DivisiSub";

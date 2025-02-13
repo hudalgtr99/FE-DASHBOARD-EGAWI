@@ -1,9 +1,6 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, Limit, Modal, Tables, TextField, Tooltip } from "@/components";
-import { useDispatch } from "react-redux";
+import { Button, Limit, Modal, Tables, TextField, Tooltip } from "@/components";
 import * as Yup from "yup";
 import {
   useDeleteData,
@@ -21,7 +18,6 @@ import {
 } from "react-icons/bi";
 import CompPagination from "@/components/atoms/CompPagination";
 import { SyncLoader } from "react-spinners";
-import { CiSearch } from "react-icons/ci";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
 import { API_URL_deductiontypes } from "@/constants";

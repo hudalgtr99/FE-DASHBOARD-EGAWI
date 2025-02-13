@@ -1,6 +1,6 @@
 import { isAuthenticated } from "@/authentication/authenticationApi";
-import { Button, Container, TextField, Select } from "@/components";
-import { updateData, handleInputError } from "@/actions";
+import { Button, Container, TextField } from "@/components";
+import { updateData } from "@/actions";
 import { API_URL_edeluser } from "@/constants";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";

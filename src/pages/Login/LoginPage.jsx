@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/actions/auth";
 import { isAuthenticated } from "@/authentication/authenticationApi";

@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getData, deleteData } from "@/actions";
 import { API_URL_edeltugas, API_URL_gettugas } from "@/constants";
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
@@ -12,7 +11,6 @@ import {
   TextField,
   Tooltip,
   PulseLoading,
-  Select,
 } from "@/components";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { debounce } from "lodash";

@@ -6,7 +6,7 @@ import * as Yup from "yup";
 // components
 import { Button, Container, TextField } from "@/components";
 
-import { encrypted_id, updateData } from "@/actions";
+import { updateData } from "@/actions";
 import { API_URL_changepassword } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
 import { TbEye, TbEyeOff } from "react-icons/tb";

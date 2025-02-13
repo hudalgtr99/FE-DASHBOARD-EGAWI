@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPencil, FaPlug, FaPlus, FaTrash, FaX } from "react-icons/fa6";
+import { FaPencil, FaPlus, FaTrash, FaX } from "react-icons/fa6";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import formatRupiah from "@/utils/formatRupiah";
 import CurrencyInput from "@/components/atoms/CurrencyInput";

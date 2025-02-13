@@ -17,8 +17,7 @@ import {
   API_URL_getdataperusahaanall,
   API_URL_jobdesk,
 } from "@/constants";
-import { IoAdd, IoAddCircle, IoAddOutline, IoTrash } from "react-icons/io5";
-import AsyncSelect from "react-select/async";
+import { IoAddCircle} from "react-icons/io5";
 import SelectSync from "@/components/atoms/SelectSync";
 import { AuthContext } from "@/context/AuthContext";
 import { apiReducer } from "@/reducers/apiReducers";

@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { gajiReducer } from "@/reducers/gajiReducers";
 import { API_URL_edelgaji, API_URL_getgaji } from "@/constants";
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,

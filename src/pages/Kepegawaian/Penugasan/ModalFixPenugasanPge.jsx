@@ -7,7 +7,6 @@ import {
   API_URL_gettugas,
   API_URL_getdetailtugas,
 } from "@/constants";
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,

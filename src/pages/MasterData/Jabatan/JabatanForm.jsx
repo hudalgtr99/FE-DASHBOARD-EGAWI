@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, TextArea, Select } from "@/components";
+import { Button, Container, TextField, Select } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, decrypted_id, updateData } from "@/actions";
 import { jabatanReducers } from "@/reducers/strataReducers";

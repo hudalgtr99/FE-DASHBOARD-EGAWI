@@ -12,7 +12,7 @@ import {
   PulseLoading,
 } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
-import { addData, updateData } from "@/actions";
+import { addData } from "@/actions";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
 import {
   API_URL_createtugas,

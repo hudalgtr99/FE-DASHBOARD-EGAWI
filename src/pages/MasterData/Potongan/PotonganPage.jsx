@@ -2,15 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
-  addData,
   deleteData,
   getData,
-  handleInputError,
-  updateData,
 } from "@/actions";
 import { potonganReducer } from "@/reducers/potonganReducers";
 import { API_URL_edelpotongan, API_URL_getpotongan } from "@/constants";
-import { icons } from "../../../../public/icons";
 import {
   Button,
   Container,
