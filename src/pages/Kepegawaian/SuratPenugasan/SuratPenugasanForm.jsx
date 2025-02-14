@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, Select, PulseLoading, Checkbox } from "@/components";
+import { Button, Container, TextField, Select, PulseLoading } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { penugasanReducer } from "@/reducers/penugasanReducers";
@@ -17,8 +17,6 @@ import {
 import axiosAPI from "@/authentication/axiosApi";
 import { fetchUserDetails } from "@/constants/user";
 import CKEditor from "@/components/forms/CKEditor";
-import { SuratTutorial, Tooltip } from "@/components";
-import { Drawer } from "../../../components";
 
 const SuratPenugasanSlug = () => {
 	const { addTugasLoading } = useSelector((state) => state.tugas);
@@ -31,7 +29,6 @@ const SuratPenugasanSlug = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [user, setUser] = useState([]);
 	const [jumlahSurat, setJumlahSurat] = useState(null);
-	const [drawer, setDrawer] = useState(false);
 
 	const fetchData = useCallback(async () => {
 		try {

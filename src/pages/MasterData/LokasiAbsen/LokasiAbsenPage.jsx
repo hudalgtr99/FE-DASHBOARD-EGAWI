@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { perusahaanReducer } from "@/reducers/perusahaanReducers";
 import { API_URL_getlokasiabsenwithpaginations, API_URL_edellokasi } from "@/constants";
-import { icons } from "../../../../public/icons";
 import { Button, Container, Pagination, Tables, TextField, Tooltip, PulseLoading } from "@/components";
 import { debounce } from "lodash";
 import { FaPlus } from "react-icons/fa";
@@ -12,7 +11,6 @@ import { CiSearch } from "react-icons/ci";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
-import { Select } from "../../../components";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 
 const LokasiAbsenPage = () => {

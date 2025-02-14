@@ -8,7 +8,6 @@ import { MoonLoader, PulseLoader } from "react-spinners";
 import { CKEditor } from "ckeditor4-react";
 import { masterEmailReducer } from "@/reducers/masterEmailReducers";
 import { Container } from "@/components";
-import { Breadcrumbs } from "@material-tailwind/react";
 import { addFormData, getData } from "@/actions";
 import { API_URL_masteremail } from "@/constants";
 
