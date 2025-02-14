@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -12,7 +11,6 @@ import { Button, Container, TextField } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { addFormData, decrypted_id, updateFormData } from "@/actions";
 import { API_URL_templates } from "@/constants";
-import { AuthContext } from "@/context/AuthContext";
 import axiosAPI from "@/authentication/axiosApi";
 import * as Yup from "yup";
 import { templateReducer } from "@/reducers/templateReducers";

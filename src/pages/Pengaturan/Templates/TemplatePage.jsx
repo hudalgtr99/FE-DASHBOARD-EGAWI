@@ -20,7 +20,6 @@ import { AuthContext, useAuth } from "@/context/AuthContext";
 import { LuEye, LuPencil } from "react-icons/lu";
 import { Modal } from "../../../components";
 import axiosAPI from "../../../authentication/axiosApi";
-import formatRupiah from "@/utils/formatRupiah";
 import { templateReducer } from "@/reducers/templateReducers";
 
 const TemplatePage = () => {

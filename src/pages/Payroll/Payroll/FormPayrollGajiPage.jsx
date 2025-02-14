@@ -12,7 +12,7 @@ import {
 import { AuthContext, useAuth } from "@/context/AuthContext";
 import axiosAPI from "@/authentication/axiosApi";
 import formatRupiah from "@/utils/formatRupiah";
-import { useGetData, usePostData, usePutData } from "@/actions/auth";
+import { useGetData, usePutData } from "@/actions/auth";
 import DeductionComponent from "./child/DeductionComponent";
 import IncomeComponent from "./child/IncomeComponent";
 import { showToast } from "@/utils/showToast";

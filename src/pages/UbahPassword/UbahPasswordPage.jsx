@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { Button, Container, TextField } from "@/components";
 
 // functions
-import { updateData, updateFormData } from "@/actions";
+import { updateFormData } from "@/actions";
 import { API_URL_changepassworduser } from "@/constants";
 import { userReducer } from "@/reducers/authReducers";
 import { icons } from "../../../public/icons";

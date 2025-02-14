@@ -1,9 +1,6 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, Modal, Tables, TextField } from "@/components";
-import { useDispatch } from "react-redux";
+import { Button, Modal, Tables, TextField } from "@/components";
 import { API_URL_incometypes } from "@/constants";
 import * as Yup from "yup";
 import {
@@ -14,15 +11,11 @@ import {
 } from "@/actions/auth";
 import { debounce } from "lodash";
 import {
-  BiEdit,
-  BiSearch,
   BiSortDown,
   BiSortUp,
-  BiTrash,
 } from "react-icons/bi";
 import CompPagination from "@/components/atoms/CompPagination";
 import { SyncLoader } from "react-spinners";
-import { CiSearch } from "react-icons/ci";
 import { showSweetAlert } from "@/utils/showSweetAlert";
 import { showToast } from "@/utils/showToast";
 import { AuthContext, useAuth } from "@/context/AuthContext";

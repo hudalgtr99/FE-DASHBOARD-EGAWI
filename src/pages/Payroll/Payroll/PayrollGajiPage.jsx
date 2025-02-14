@@ -11,7 +11,6 @@ import { AuthContext, useAuth } from "@/context/AuthContext";
 import { LuEye, LuPencil } from "react-icons/lu";
 import { Modal } from "../../../components";
 import axiosAPI from "../../../authentication/axiosApi";
-import { masterGajiReducer } from "@/reducers/masterGajiReducers";
 import formatRupiah from "@/utils/formatRupiah";
 import { FaCalendar } from "react-icons/fa6";
 import DatePicker from "react-datepicker";

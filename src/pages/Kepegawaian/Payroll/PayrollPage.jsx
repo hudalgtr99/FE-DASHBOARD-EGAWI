@@ -6,17 +6,12 @@ import { API_URL_edeluser, API_URL_datapegawaijobdesk } from "@/constants";
 import { Button, Container, Pagination, Tables, TextField, Tooltip, PulseLoading } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
-import { FaFileExcel, FaPlus } from "react-icons/fa";
-
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { jwtDecode } from "jwt-decode";
-import Swal from "sweetalert2";
+import { FaPlus } from "react-icons/fa";
 import { AuthContext, useAuth } from "@/context/AuthContext";
 import { LuEye, LuPencil } from "react-icons/lu";
 import { jobdeskPegawaiReducer } from "../../../reducers/jobdeskPegawaiReducers";
 import { Modal } from "../../../components";
 import axiosAPI from "../../../authentication/axiosApi";
-import { set } from "date-fns";
 import moment from "moment";
 
 const JobdeskPegawaiPage = () => {

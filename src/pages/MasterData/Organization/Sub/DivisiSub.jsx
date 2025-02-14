@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { divisiReducers } from "@/reducers/organReducers";
 import { API_URL_edeldivisi, API_URL_getdivisi, API_URL_getperusahaan } from "@/constants";
-import { icons } from "../../../../../public/icons";
 import {
 	Button,
 	Container,

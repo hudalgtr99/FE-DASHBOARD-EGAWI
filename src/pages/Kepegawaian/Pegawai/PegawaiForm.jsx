@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Import useLocation
+import React, { useState } from "react";
 import Pribadi from "./Sub/Pribadi";
 import Pegawai from "./Sub/Pegawai";
 import Keluarga from "./Sub/Keluarga";

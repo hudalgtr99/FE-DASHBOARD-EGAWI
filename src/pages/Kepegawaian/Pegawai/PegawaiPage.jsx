@@ -10,7 +10,6 @@ import {
 	API_URL_changeoutofarea,
 	API_URL_getakun,
 } from "@/constants";
-import { icons } from "../../../../public/icons";
 import { Button, Container, Pagination, Tables, TextField, Tooltip, PulseLoading, Checkbox } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";

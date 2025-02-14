@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getData } from "@/actions";
-import { pengajuanIzinReducer } from "@/reducers/asesmenReducers";
 import { icons } from "../../../../../public/icons";
 import {
   Button,

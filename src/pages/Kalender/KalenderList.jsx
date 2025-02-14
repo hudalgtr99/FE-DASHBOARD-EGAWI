@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { addData, deleteData, getData } from "@/actions";
+import { deleteData, getData } from "@/actions";
 import { kalenderReducer } from "@/reducers/kalenderReducers";
 import { API_URL_getkalender_all } from "@/constants";
 import { icons } from "../../../public/icons";

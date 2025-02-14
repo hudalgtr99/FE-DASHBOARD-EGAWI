@@ -12,7 +12,6 @@ import { AuthContext, useAuth } from "@/context/AuthContext";
 import { LuEye, LuPencil } from "react-icons/lu";
 import { Modal } from "../../../components";
 import axiosAPI from "../../../authentication/axiosApi";
-import moment from "moment";
 import { masterGajiReducer } from "@/reducers/masterGajiReducers";
 import formatRupiah from "@/utils/formatRupiah";
 

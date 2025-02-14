@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import { MdQuestionMark } from "react-icons/md";
 import { Button, Container, TextField, Select, PulseLoading, Checkbox } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, updateData } from "@/actions";
