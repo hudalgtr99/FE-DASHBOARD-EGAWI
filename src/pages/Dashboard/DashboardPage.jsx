@@ -275,8 +275,8 @@ const DashboardPage = () => {
                     <Tables.Row>
                       <Tables.Header>No</Tables.Header>
                       <Tables.Header>Nama Pegawai</Tables.Header>
-                      <Tables.Header>Tanggal</Tables.Header>
-                      <Tables.Header>Status</Tables.Header>
+                      <Tables.Header>Masuk</Tables.Header>
+                      <Tables.Header>Keluar</Tables.Header>
                     </Tables.Row>
                   </Tables.Head>
                   <Tables.Body>
@@ -285,8 +285,8 @@ const DashboardPage = () => {
                         <Tables.Row key={index}>
                           <Tables.Data>{item?.index}</Tables.Data>
                           <Tables.Data>{item.nama}</Tables.Data>
-                          <Tables.Data>{item.tanggal}</Tables.Data>
-                          <Tables.Data>{item.keterangan}</Tables.Data>
+                          <Tables.Data>{item.masuk || "-"}</Tables.Data>
+                          <Tables.Data>{item.keluar || "-"}</Tables.Data>
                         </Tables.Row>
                       ))
                     ) : (
@@ -350,9 +350,8 @@ const DashboardPage = () => {
                     <Tables.Row>
                       <Tables.Header>No</Tables.Header>
                       <Tables.Header>Nama Pegawai</Tables.Header>
-                      <Tables.Header>Tanggal</Tables.Header>
                       <Tables.Header>Keterangan</Tables.Header>
-                      {/* <Tables.Header>Status</Tables.Header> */}
+                      <Tables.Header>Status</Tables.Header>
                     </Tables.Row>
                   </Tables.Head>
                   <Tables.Body>
@@ -361,9 +360,8 @@ const DashboardPage = () => {
                         <Tables.Row key={index}>
                           <Tables.Data>{item?.index}</Tables.Data>
                           <Tables.Data>{item.nama}</Tables.Data>
-                          <Tables.Data>{item.tanggal}</Tables.Data>
                           <Tables.Data>{item.keterangan}</Tables.Data>
-                          {/* <Tables.Data>{item.status}</Tables.Data> */}
+                          <Tables.Data>{item.status}</Tables.Data>
                         </Tables.Row>
                       ))
                     ) : (

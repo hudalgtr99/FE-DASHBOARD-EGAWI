@@ -206,3 +206,7 @@ export const API_URL_settingcomponentsalary = `${baseurl}/settingcomponentsalary
 // payroll
 export const API_URL_payroll = `${baseurl}/payroll/`;
 export const API_URL_generatepayroll = `${baseurl}/generate-payroll/`;
+//Log Email
+export const API_URL_logemail = `${baseurl}/logemail/`;
+
+e;
