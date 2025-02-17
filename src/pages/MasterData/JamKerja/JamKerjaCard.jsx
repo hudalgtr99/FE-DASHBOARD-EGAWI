@@ -8,7 +8,7 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/context/AuthContext";
 import axiosAPI from "@/authentication/axiosApi";
-import { LuPencil, LuPencilLine } from "react-icons/lu";
+import { LuPencilLine } from "react-icons/lu";
 
 const JamKerjaPage = () => {
 	const { slug } = useParams();

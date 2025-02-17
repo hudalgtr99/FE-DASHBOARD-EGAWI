@@ -1,11 +1,7 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { isAuthenticated } from "@/authentication/authenticationApi";
-import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState, useCallback } from "react";
 import axiosAPI from "@/authentication/axiosApi";
 import { CKEditor } from "ckeditor4-react";
 import { API_URL_getalltemplatesurattugas } from "@/constants";
-import { Checkbox } from "@/components";
-import { set } from "date-fns";
 
 export default function CKEditorInput({
   values = "",
@@ -44,7 +40,7 @@ export default function CKEditorInput({
 
   const [editorKey, setEditorKey] = useState(null);
   const [html, setHtml] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [setLoading] = useState(false);
   const [loadingEditor, setLoadingEditor] = useState(true);
   const [template, setTemplate] = useState([]);
 

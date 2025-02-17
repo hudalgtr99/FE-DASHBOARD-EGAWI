@@ -7,17 +7,13 @@ import {
 	API_URL_edeluser,
 	API_URL_changeactive,
 	API_URL_changeoutofarea,
-	API_URL_getperusahaan,
 	API_URL_getakun,
 } from "@/constants";
-import { icons } from "../../../../public/icons";
 import { Button, Container, Pagination, Tables, Select, TextField, Tooltip, PulseLoading } from "@/components";
 import { debounce } from "lodash"; // Import lodash debounce
 import { CiSearch } from "react-icons/ci";
 import axiosAPI from "@/authentication/axiosApi";
 import { FaFileExcel } from "react-icons/fa";
-import { jwtDecode } from "jwt-decode";
-import { isAuthenticated } from "@/authentication/authenticationApi";
 import { Checkbox } from "../../../components";
 import { LuKeyRound, LuPencil, LuTrash2 } from "react-icons/lu";
 import { useAuth } from "../../../context/AuthContext";

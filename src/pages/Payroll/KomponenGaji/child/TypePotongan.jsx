@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
-import { Button, Limit, Modal, Tables, TextField, Tooltip } from "@/components";
+import { Button, Modal, Tables, TextField } from "@/components";
 import * as Yup from "yup";
 import {
   useDeleteData,
@@ -10,11 +10,8 @@ import {
 } from "@/actions/auth";
 import { debounce } from "lodash";
 import {
-  BiEdit,
-  BiSearch,
   BiSortDown,
   BiSortUp,
-  BiTrash,
 } from "react-icons/bi";
 import CompPagination from "@/components/atoms/CompPagination";
 import { SyncLoader } from "react-spinners";
@@ -28,7 +25,7 @@ const TypePotongan = () => {
   const [showModal, setShowModal] = useState(false);
   const [pk, setPk] = useState("");
   const { jwt } = useContext(AuthContext);
-  const { selectedPerusahaan, loadingPerusahaan } = useAuth();
+  const { selectedPerusahaan } = useAuth();
 
   const [queryParams, setQueryParams] = useState({
     limit: 10,

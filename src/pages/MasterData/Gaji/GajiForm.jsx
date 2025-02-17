@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IoMdReturnLeft } from "react-icons/io";
-import { Button, Container, TextField, TextArea } from "@/components";
+import { Button, Container, TextField } from "@/components";
 import { useDispatch } from "react-redux";
 import { addData, updateData } from "@/actions";
 import { gajiReducer } from "@/reducers/gajiReducers";

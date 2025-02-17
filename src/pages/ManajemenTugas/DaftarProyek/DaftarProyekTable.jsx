@@ -22,7 +22,6 @@ const DaftarProyekTable = ({
   setLimit,
   pageActive,
   action,
-  handleAdd,
 }) => {
   const { getTaskResult, getTaskLoading, getTaskError } = useSelector(
     (state) => state.task

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addData, deleteData, getData } from "@/actions";
+import { deleteData, getData } from "@/actions";
 import { callbackReducer } from "@/reducers/apiReducers";
 import { API_URL_edelcallback, API_URL_getcallback } from "@/constants";
 import { icons } from "../../../../public/icons";

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
   Button,
-  Limit,
   Modal,
   Select,
   Tables,
@@ -21,7 +20,7 @@ import {
   usePutData,
 } from "@/actions/auth";
 import { debounce } from "lodash";
-import { BiEdit, BiSortDown, BiSortUp, BiTrash } from "react-icons/bi";
+import { BiSortDown, BiSortUp } from "react-icons/bi";
 import CompPagination from "@/components/atoms/CompPagination";
 import { SyncLoader } from "react-spinners";
 import { showSweetAlert } from "@/utils/showSweetAlert";

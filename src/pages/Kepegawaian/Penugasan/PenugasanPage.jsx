@@ -34,7 +34,6 @@ const PenugasanPage = () => {
   const [limit, setLimit] = useState(10);
   const [pageActive, setPageActive] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
   const [jwt, setJwt] = useState({});
   const { selectedPerusahaan, loadingPerusahaan } = useAuth();

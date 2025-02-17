@@ -5,7 +5,6 @@ import { IoMdReturnLeft } from "react-icons/io";
 import { Button, Container, TextField, Select } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addData,
   addFormData,
   decrypted_id,
   encrypted_id,
@@ -20,7 +19,6 @@ import {
 import { IoAddCircle} from "react-icons/io5";
 import SelectSync from "@/components/atoms/SelectSync";
 import { AuthContext } from "@/context/AuthContext";
-import { apiReducer } from "@/reducers/apiReducers";
 import { jobdeskPegawaiReducer } from "@/reducers/jobdeskPegawaiReducers";
 import axiosAPI from "@/authentication/axiosApi";
 import { LuTrash2 } from "react-icons/lu";

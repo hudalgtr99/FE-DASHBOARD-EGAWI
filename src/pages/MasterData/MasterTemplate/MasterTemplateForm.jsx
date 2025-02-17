@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,8 +12,6 @@ import CKEditor from "../../../components/forms/CKEditor";
 import axiosAPI from "@/authentication/axiosApi";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
-import { Drawer, SuratTutorial, Tooltip } from "../../../components";
-import { MdQuestionMark } from "react-icons/md";
 
 const MasterTemplateForm = () => {
 	const { addTugasLoading } = useSelector((state) => state.tugas);
@@ -22,8 +20,6 @@ const MasterTemplateForm = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [idTemplate, setIdTemplate] = useState(pk);
-
-	const [drawer, setDrawer] = useState(false);
 
 	const [perusahaanOptions, setPerusahaanOptions] = useState([]);
 	const [perusahaan, Setperusahaan] = useState([]);

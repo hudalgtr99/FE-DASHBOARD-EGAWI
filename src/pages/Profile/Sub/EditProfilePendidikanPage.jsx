@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { pegawaiReducer } from "@/reducers/kepegawaianReducers";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
-import * as Yup from "yup";
 import { FaPlus, FaTimes } from "react-icons/fa";
 
 const EditProfilePendidikanPage = () => {

@@ -5,7 +5,6 @@ import { CiSearch } from "react-icons/ci";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { isAuthenticated } from "@/authentication/authenticationApi";
 import { jwtDecode } from "jwt-decode";
-import { penugasanReducer } from "@/reducers/penugasanReducers";
 import { deleteData, getData, updateData } from "@/actions";
 import { API_URL_gettemplatesurattugas, API_URL_changeactivedata, API_URL_edeltemplatesurattugas } from "@/constants";
 import { useCallback, useEffect, useState } from "react";

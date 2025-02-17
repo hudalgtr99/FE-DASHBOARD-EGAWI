@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { API_URL_getkalender } from "@/constants";
@@ -14,7 +14,6 @@ import { isAuthenticated } from "@/authentication/authenticationApi";
 
 const KalenderSubPage = () => {
   const { pk } = useParams();
-  const navigate = useNavigate();
   const { addKalenderResult } = useSelector((state) => state.kalender);
   const calendarRef = useRef(null);
   const [kalender, setKalender] = useState([]);

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteData, getData } from "@/actions";
 import { divisiReducers } from "@/reducers/organReducers";
-import { API_URL_edeldepartemen, API_URL_getdepartemen, API_URL_getperusahaan } from "@/constants";
+import { API_URL_edeldepartemen, API_URL_getdepartemen } from "@/constants";
 import {
 	Button,
 	Container,
