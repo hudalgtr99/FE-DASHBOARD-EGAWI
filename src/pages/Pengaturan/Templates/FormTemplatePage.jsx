@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoMdReturnLeft } from "react-icons/io";
@@ -110,6 +105,7 @@ const FormTemplatePage = () => {
       formik.setFieldValue("type", dataResponse?.type);
       formik.setFieldValue("message", dataResponse?.message);
       formik.setFieldValue("subject", dataResponse?.subject);
+      setRefreshEditor(!refreshEditor);
     } else {
       navigate(-1);
     }
@@ -120,13 +116,6 @@ const FormTemplatePage = () => {
       get();
     }
   }, [pk]);
-
-  // Mengatur data CKEditor setelah data diambil
-  useEffect(() => {
-    if (formik.values.message) {
-      setRefreshEditor(!refreshEditor);
-    }
-  }, [formik.values.message]);
 
   return (
     <div>

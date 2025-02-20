@@ -65,7 +65,6 @@ const DaftarProyekPage = () => {
 
   const get = useCallback(
     async (param) => {
-      navigate("", { state: { fetch: param } });
       const queryString = toQueryString(param);
       const fullUrl = `${API_URL_task}?${queryString}`;
 
